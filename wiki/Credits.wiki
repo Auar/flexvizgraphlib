@@ -1,5 +1,5 @@
 #summary One-sentence summary of this page.
-#labels Credits,Attribution
+#labels Credits,Attribution,References
 
 = Credits =
 
@@ -8,4 +8,3 @@ Credit is due to those who have provided source and published works critical to 
 = Details =
 
 This library is a derivative work from Mark Shepherd's SpringGraph component and the published work of:
-
