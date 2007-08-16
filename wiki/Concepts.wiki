@@ -1,0 +1,11 @@
+#summary Visualization and graph related concepts.
+#labels Featured
+
+= Details =
+
+Node:  a single graphed object or item;
+Edge: a link between two nodes;
+GraphML: a standard XML-based graph dataprovider structure;
+Node Renderer: the look and function of a node which is based on the concept of an item renderer;
+Layout:  a mathematically based method/algorithm for drawing nodes and edges in an ordered structure;
+Degrees of Separation: the distance between interrelated nodes, e.g. a node link node relation represents two degrees of separation.
