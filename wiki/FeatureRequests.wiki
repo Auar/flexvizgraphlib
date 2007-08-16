@@ -1,7 +1,5 @@
+#summary Submit your requests for enhancements and functionality.
 #labels Requests,Enhancements
-= Feature Requests =
-
-Submit your requests for enhancements and functionality.
 
 
 = Details =
