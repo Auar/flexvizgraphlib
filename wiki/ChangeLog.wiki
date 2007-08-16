@@ -1,7 +1,5 @@
+#summary A description of the changes between each release.
 #labels Changes
-= Change Log =
-
-A description of the changes between each release.
 
 
 = Details =
