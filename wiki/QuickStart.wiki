@@ -1,7 +1,5 @@
+#summary How to get started using the library in your projects.
 #labels Featured
-= QuickStart =
-
-How to get started using the library in your projects.
 
 = Details =
 
