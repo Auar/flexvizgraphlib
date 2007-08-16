@@ -1,9 +1,5 @@
-#summary One-sentence summary of this page.
+#summary Credit is due to those who have provided source and published works critical to the design of the library.
 #labels Credits,Attribution,References
-
-= Credits =
-
-Credit is due to those who have provided source and published works critical to the design of the library.
 
 = Details =
 
