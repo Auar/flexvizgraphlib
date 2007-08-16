@@ -1,6 +1,4 @@
-#summary One-sentence summary of this page.
 #labels Featured
-
 = QuickStart =
 
 How to get started using the library in your projects.
