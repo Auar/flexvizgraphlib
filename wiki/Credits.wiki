@@ -4,3 +4,10 @@
 = Details =
 
 This library is a derivative work from Mark Shepherd's SpringGraph component and the published work of:
+
+1.) A parent-centered radial layout algorithm for interactive graph visualization and animation; Authors: Pavlo, Andrew; Homan, Christopher; Schull, Jonathan;
+
+2.) Animated Exploration of Dynamic Graphs with Radial Layout; Authors:   	
+Yee, Fisher, Dhamija, Hearst;
+
+3.) PhylloTrees: Harnessing Nature’s Phyllotactic Patterns for Tree Layout; Authors: Carpendale, Agarawala
