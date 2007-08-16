@@ -10,4 +10,6 @@ This library is a derivative work from Mark Shepherd's SpringGraph component and
 2.) Animated Exploration of Dynamic Graphs with Radial Layout; Authors:   	
 Yee, Fisher, Dhamija, Hearst;
 
-3.) PhylloTrees: Harnessing Nature’s Phyllotactic Patterns for Tree Layout; Authors: Carpendale, Agarawala
+3.) PhylloTrees: Harnessing Nature’s Phyllotactic Patterns for Tree Layout; Authors: Carpendale, Agarawala;
+
+4.) NicheWorks - Interactive Visualization of Very Large Graphs; Author: Wills;
