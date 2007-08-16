@@ -1,7 +1,5 @@
+#summary Project design and development support.
 #labels Featured
-= Project Contributors =
-
-Project design and development support.
 
 
 = Details =
