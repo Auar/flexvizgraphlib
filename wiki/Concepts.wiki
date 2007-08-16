@@ -1,7 +1,7 @@
 #summary Visualization and graph related concepts.
 #labels Featured
 
-= Details =
+=== Terminology ===
 
   * Node:  a single graphed object or item;
   * Edge: a link between two nodes;
