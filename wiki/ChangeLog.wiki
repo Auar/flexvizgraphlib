@@ -1,7 +1,10 @@
 #summary A description of the changes between each release.
 #labels Changes
 
+=== Production ===
 
-= Details =
+=== Beta ===
 
-Under contruction
+=== Alpha ===
+
+  * 0.1: Initial Release
