@@ -1,6 +1,6 @@
 #summary Try the demonstration apps to explore the potential.
 #labels Featured
 
-= Details =
+=== Layout Explorer ===
 
-Under construction
+  * [http://flexvizgraphlib.googlecode.com/files/RelationNavigatorDemo.swf Demo 1]
