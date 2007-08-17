@@ -1,7 +1,7 @@
 #summary Project design and development support are provided by...
 #labels Featured
 
-Daniel Lang
-Jason Bellone
-Juan Rodriguez
-Segolene de Basquiat
+  * Daniel Lang
+  * Jason Bellone
+  * Juan Rodriguez
+  * Segolene de Basquiat
