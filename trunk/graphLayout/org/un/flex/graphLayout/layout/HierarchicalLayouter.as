@@ -246,6 +246,21 @@ package org.un.flex.graphLayout.layout {
 			return _defaultNodeDistance;
 		}		
 
+		/**
+		 * Enable a spreading out of sibling nodes to
+		 * make labels more legible in some cases.
+		 * */
+		public function set enableSiblingSpread(ss:Boolean):void {
+			_siblingSpreadEnabled = ss;
+		}
+		
+		/**
+		 * @private
+		 * */
+		public function get enableSiblingSpread():Boolean {
+			return _siblingSpreadEnabled;
+		}
+
 		public function set orientation(o:uint):void {
 			switch(o) {
 				case ORIENT_LEFT_RIGHT:
