@@ -9,4 +9,4 @@
 
 === Alpha ===
 
-  * 0.1: Initial Release
+  * 0.1: Initial Release (17-Aug-2007)
