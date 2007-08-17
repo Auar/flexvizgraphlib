@@ -2,6 +2,7 @@
 #labels Requests,Enhancements
 
 
-= Details =
+=== Layouts ===
 
-Under construction.
+  # Hyperbolic
+  # 3D
