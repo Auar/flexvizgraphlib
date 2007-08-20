@@ -13,6 +13,6 @@ a small library package (2 SWC files) which is available
 the download section.
 
 There is a lot of AS code in the demo application to handle
-the various layouters, etc. The heart is the VisualGraph
+the various layouters, etc. The heart is the [http://flexvizgraphlib.googlecode.com/svn/trunk/graphLayout/asdoc-output/index.html?org/un/flex/graphLayout/visual/VisualGraph.html&org/un/flex/graphLayout/visual/class-list.html VisualGraph]
 component, which is (as being derived from Canvas) a UIComponent
 that can just be easily included in the layout.
