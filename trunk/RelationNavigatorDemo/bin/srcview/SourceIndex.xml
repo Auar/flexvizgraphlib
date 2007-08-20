@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<index>
+	<title>Source of RelationNavigatorDemo</title>
+	<nodes>
+		<node label="css">
+			<node icon="cssIcon" label="main.css" url="source/css/main.css.html"/>
+		</node>
+		<node label="data">
+			<node label="asdocs.xml" url="source/data/asdocs.xml.txt"/>
+		</node>
+		<node icon="mxmlAppIcon" selected="true" label="RelationNavigatorDemo.mxml" url="source/RelationNavigatorDemo.mxml.html"/>
+	</nodes>
+	<zipfile label="Download source (ZIP, 12K)" url="RelationNavigatorDemo.zip"/>
+	<sdklink label="Download Flex 2 SDK" url="http://www.adobe.com/go/flex2_sdk"/>
+</index>
