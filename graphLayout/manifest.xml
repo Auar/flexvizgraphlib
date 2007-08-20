@@ -6,10 +6,5 @@
 	namespace un
 	package org.un.flex.graphLayout
 -->
-
 	<component id="VisualGraph" class="org.un.flex.graphLayout.visual.VisualGraph"/>
-<!--
-	<component id="Roamer" class="com.adobe.flex.extras.controls.springgraph.Roamer"/>
--->
-
 </componentPackage>
