@@ -1,0 +1,175 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Geometry.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="asComment">/* 
+ * The MIT License
+ *
+ * Copyright (c) 2007 The SixDegrees Project Team
+ * (Jason Bellone, Juan Rodriguez, Segolene de Basquiat, Daniel Lang).
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the &quot;Software&quot;), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */</span>
+<span class="asPackage">package</span> org.un.flex.utils <span class="asBracket">{</span>
+    <span class="asReserved">import</span> flash.geom.Point;
+    
+    
+    <span class="asDoc">/**
+     * This is a class to provide some static functions
+     * to help with angles and geometry.
+     * */</span>
+    <span class="asReserved">public</span> <span class="asClass">class</span> Geometry <span class="asBracket">{</span>
+        
+        <span class="asDoc">/**
+         * Calculate the polar Angle of a Point.
+         * @param p The Point to which the Angle is needed.
+         * @return The polar angle in radians. The range is from 0 to 2 * PI. Returns 0 for the origin.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asReserved">static</span> <span class="asFunction">function</span> polarAngle<span class="asBracket">(</span>p<span class="asOperator">:</span>Point<span class="asBracket">)</span><span class="asOperator">:</span>Number <span class="asBracket">{</span>
+            
+            <span class="asComment">/* the length is 0 if the node is the origin
+             * in this case the angle makes no sense and would
+             * be returned as NaN, so we return 0 in this case */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>p.length <span class="asOperator">==</span> 0<span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">return</span> 0;
+            <span class="asBracket">}</span> <span class="asReserved">else</span> <span class="asBracket">{</span>
+                <span class="asReserved">return</span> normaliseAngle<span class="asBracket">(</span>Math.atan2<span class="asBracket">(</span>p.y, p.x<span class="asBracket">))</span>;
+            <span class="asBracket">}</span>
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * Calculate the polar Angle of a Point in degrees.
+         * @param p The Point to which the Angle is needed.
+         * @return The polar angle in degrees. The range is from 0 to 360. Returns 0 for the origin.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asReserved">static</span> <span class="asFunction">function</span> polarAngleDeg<span class="asBracket">(</span>p<span class="asOperator">:</span>Point<span class="asBracket">)</span><span class="asOperator">:</span>Number <span class="asBracket">{</span>
+            
+            <span class="asComment">/* the length is 0 if the node is the origin
+             * in this case the angle makes no sense and would
+             * be returned as NaN, so we return 0 in this case */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>p.length <span class="asOperator">==</span> 0<span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">return</span> 0;
+            <span class="asBracket">}</span> <span class="asReserved">else</span> <span class="asBracket">{</span>
+                <span class="asReserved">return</span> rad2deg<span class="asBracket">(</span>normaliseAngle<span class="asBracket">(</span>Math.atan2<span class="asBracket">(</span>p.y, p.x<span class="asBracket">)))</span>;
+            <span class="asBracket">}</span>
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * Calculate the polar radius for a given point. This just calles
+         * the length method of the Point object, which is the same. It is
+         * part of this class for consistency.
+         * @param p The point to receive the polar radius from.
+         * @return The polar radius.
+         * @see Point#length
+         * */</span>
+        <span class="asReserved">public</span> <span class="asReserved">static</span> <span class="asFunction">function</span> polarRadius<span class="asBracket">(</span>p<span class="asOperator">:</span>Point<span class="asBracket">)</span><span class="asOperator">:</span>Number <span class="asBracket">{</span>
+            <span class="asReserved">return</span> p.length;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * Calculate cartesian coordinates from polar coordinates,
+         * again this uses the polar method from the Point class,
+         * here for completeness.
+         * @param r The polar radius.
+         * @param a The polar angle in radians.
+         * @return A Point object with the cartesian coordinates.
+         * @see Point#polar()
+         * */</span>
+        <span class="asReserved">public</span> <span class="asReserved">static</span> <span class="asFunction">function</span> cartFromPolar<span class="asBracket">(</span>r<span class="asOperator">:</span>Number, a<span class="asOperator">:</span>Number<span class="asBracket">)</span><span class="asOperator">:</span>Point <span class="asBracket">{</span>
+            <span class="asReserved">return</span> Point.polar<span class="asBracket">(</span>r,a<span class="asBracket">)</span>;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * Calculate cartesian coordinates from polar coordinates,
+         * again this uses the polar method from the Point class,
+         * here for completeness.
+         * @param r The polar radius.
+         * @param a The polar angle in degrees.
+         * @return A Point object with the cartesian coordinates.
+         * @see Point#polar()
+         * */</span>
+        <span class="asReserved">public</span> <span class="asReserved">static</span> <span class="asFunction">function</span> cartFromPolarDeg<span class="asBracket">(</span>r<span class="asOperator">:</span>Number, a<span class="asOperator">:</span>Number<span class="asBracket">)</span><span class="asOperator">:</span>Point <span class="asBracket">{</span>
+            <span class="asReserved">return</span> Point.polar<span class="asBracket">(</span>r,deg2rad<span class="asBracket">(</span>a<span class="asBracket">))</span>;
+        <span class="asBracket">}</span>
+        
+        
+        <span class="asDoc">/**
+         * Normalizes angles to be within the range of 0 to 2*PI
+         * by adding or subtracting 2 * PI until the angle is within
+         * the range.
+         * @param a The angle to normalise in radians.
+         * @return The normalized angle.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asReserved">static</span> <span class="asFunction">function</span> normaliseAngle<span class="asBracket">(</span>a<span class="asOperator">:</span>Number<span class="asBracket">)</span><span class="asOperator">:</span>Number <span class="asBracket">{</span>
+            
+            <span class="asReserved">while</span><span class="asBracket">(</span>a <span class="asOperator">&gt;=</span> <span class="asBracket">(</span>2 <span class="asOperator">*</span> Math.PI<span class="asBracket">))</span> <span class="asBracket">{</span>
+                a <span class="asOperator">-=</span> <span class="asBracket">(</span>2 <span class="asOperator">*</span> Math.PI<span class="asBracket">)</span>;
+            <span class="asBracket">}</span>
+            <span class="asReserved">while</span><span class="asBracket">(</span>a <span class="asOperator">&lt;</span> 0<span class="asBracket">)</span> <span class="asBracket">{</span>
+                a <span class="asOperator">+=</span> <span class="asBracket">(</span>2 <span class="asOperator">*</span> Math.PI<span class="asBracket">)</span>;
+            <span class="asBracket">}</span>
+            <span class="asReserved">return</span> a;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * Normalizes angles to be within the range of 0 to 360
+         * by adding or subtracting 360 until the angle is within
+         * the range.
+         * @param a The angle to normalise in degrees.
+         * @return The normalized angle.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asReserved">static</span> <span class="asFunction">function</span> normaliseAngleDeg<span class="asBracket">(</span>a<span class="asOperator">:</span>Number<span class="asBracket">)</span><span class="asOperator">:</span>Number <span class="asBracket">{</span>
+            
+            <span class="asReserved">while</span><span class="asBracket">(</span>a <span class="asOperator">&gt;=</span> 360<span class="asBracket">)</span> <span class="asBracket">{</span>
+                a <span class="asOperator">-=</span> 360;
+            <span class="asBracket">}</span>
+            <span class="asReserved">while</span><span class="asBracket">(</span>a <span class="asOperator">&lt;</span> 0<span class="asBracket">)</span> <span class="asBracket">{</span>
+                a <span class="asOperator">+=</span> 360;
+            <span class="asBracket">}</span>
+            <span class="asReserved">return</span> a;
+        <span class="asBracket">}</span>
+        
+        
+        <span class="asDoc">/**
+         * Turns an angle given in radians into degrees
+         * @param a The angle given in radians.
+         * @return The angle in degrees.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asReserved">static</span> <span class="asFunction">function</span> rad2deg<span class="asBracket">(</span>a<span class="asOperator">:</span>Number<span class="asBracket">)</span><span class="asOperator">:</span>Number <span class="asBracket">{</span>
+            <span class="asReserved">return</span> <span class="asBracket">(</span>a <span class="asOperator">*</span> 180 <span class="asOperator">/</span> Math.PI<span class="asBracket">)</span>;
+
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * Turns an angle given in degrees into radians.
+         * @param a The angle given in degrees.
+         * @return The angle in radians.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asReserved">static</span> <span class="asFunction">function</span> deg2rad<span class="asBracket">(</span>a<span class="asOperator">:</span>Number<span class="asBracket">)</span><span class="asOperator">:</span>Number <span class="asBracket">{</span>
+            <span class="asReserved">return</span> <span class="asBracket">(</span>a <span class="asOperator">*</span> Math.PI <span class="asOperator">/</span> 180<span class="asBracket">)</span>;
+        <span class="asBracket">}</span>
+        
+    <span class="asBracket">}</span>
+<span class="asBracket">}</span></pre></body>
+</html>

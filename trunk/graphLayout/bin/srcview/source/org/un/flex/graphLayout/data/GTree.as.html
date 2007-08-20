@@ -1,0 +1,440 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>GTree.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="asComment">/* 
+ * The MIT License
+ *
+ * Copyright (c) 2007 The SixDegrees Project Team
+ * (Jason Bellone, Juan Rodriguez, Segolene de Basquiat, Daniel Lang).
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the &quot;Software&quot;), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */</span>
+
+<span class="asPackage">package</span> org.un.flex.graphLayout.data <span class="asBracket">{</span>
+    
+    <span class="asReserved">import</span> flash.utils.Dictionary;
+    <span class="asReserved">import</span> mx.events.IndexChangedEvent;
+    
+    
+    <span class="asDoc">/**
+     * This class represents a spanning
+     * tree, rooted in the given root node
+     * of the connected component of the
+     * associated graph.
+     * &lt;p&gt;
+     * It stores the predecessors of each node
+     * to allow the traversal
+     * and also the distance of each node to the
+     * root.
+     * &lt;/p&gt;
+     * */</span>
+    <span class="asReserved">public</span> <span class="asClass">class</span> GTree <span class="asReserved">implements</span> IGTree <span class="asBracket">{</span>
+        
+        <span class="asReserved">private</span> <span class="asVar">var</span> _graph<span class="asOperator">:</span>IGraph;
+        <span class="asReserved">private</span> <span class="asVar">var</span> _root<span class="asOperator">:</span>INode;
+
+        <span class="asComment">/* max depth of the tree */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _maxDepth<span class="asOperator">:</span>int <span class="asOperator">=</span> 0;
+        
+        <span class="asComment">/* the following are indexed by node objects */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _parentMap<span class="asOperator">:</span>Dictionary;
+        <span class="asReserved">private</span> <span class="asVar">var</span> _childrenMap<span class="asOperator">:</span>Dictionary;
+        <span class="asReserved">private</span> <span class="asVar">var</span> _distanceMap<span class="asOperator">:</span>Dictionary;
+        
+        <span class="asComment">/* this is indexed by a distance value and stores
+         * the number of nodes with that distance. Since this
+         * is compact it can be an array */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _amountNodesWithDistance<span class="asOperator">:</span>Array;
+        
+        <span class="asComment">/* this is the maximum of nodes that are in a certain distance */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _maxNumberPerLayer<span class="asOperator">:</span>uint;
+        
+        <span class="asComment">/* for some algorithms
+         * we also need to establish a specific order, i.e.
+         * for each node to know that it is the &apos;i&apos;th child
+         * and it has m siblings */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _nodeChildIndexMap<span class="asOperator">:</span>Dictionary;
+        <span class="asReserved">private</span> <span class="asVar">var</span> _nodeNoChildrenMap<span class="asOperator">:</span>Dictionary;
+
+        <span class="asComment">/* in some cases we rather build a tree
+         * that is restriced to the _visible_ nodes
+         * we create a flag for that, which has to be
+         * set in the constructor */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _restrictToVisible<span class="asOperator">:</span>Boolean;
+
+        <span class="asDoc">/**
+         * Constructor to create a new GTree object, the tree will not immediately
+         * be initialised, but this will happen as soon as any attributes or methods
+         * are accessed, that require the tree to be initialised (late initialisation).
+         * @param root The root node of the tree.
+         * @param graph The graph that this tree is a subset of.
+         * @param restrict A flag to indicate that the resulting tree should be restricted to currently invisible nodes.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> GTree<span class="asBracket">(</span>root<span class="asOperator">:</span>INode, graph<span class="asOperator">:</span>IGraph, restrict<span class="asOperator">:</span>Boolean <span class="asOperator">=</span> <span class="asReserved">false</span><span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            _parentMap <span class="asOperator">=</span> <span class="asReserved">null</span>;
+            _childrenMap <span class="asOperator">=</span> <span class="asReserved">null</span>;
+            _distanceMap <span class="asOperator">=</span> <span class="asReserved">null</span>;
+            _nodeChildIndexMap <span class="asOperator">=</span> <span class="asReserved">null</span>;
+            _nodeNoChildrenMap <span class="asOperator">=</span> <span class="asReserved">null</span>;
+            _amountNodesWithDistance <span class="asOperator">=</span> <span class="asReserved">null</span>;
+            
+            _maxNumberPerLayer <span class="asOperator">=</span> 0;
+            
+            _root <span class="asOperator">=</span> root;
+            _graph <span class="asOperator">=</span> graph;
+            
+            _maxDepth <span class="asOperator">=</span> 0;
+            
+            _restrictToVisible <span class="asOperator">=</span> restrict;
+        <span class="asBracket">}</span>
+
+        <span class="asDoc">/**
+         * @inheritDoc
+         * */</span> 
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">get</span> restricted<span class="asBracket">()</span><span class="asOperator">:</span>Boolean <span class="asBracket">{</span>
+            <span class="asReserved">return</span> _restrictToVisible;
+        <span class="asBracket">}</span>
+
+        <span class="asDoc">/**
+         * @inheritDoc
+         * */</span> 
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">get</span> parents<span class="asBracket">()</span><span class="asOperator">:</span>Dictionary <span class="asBracket">{</span>
+            <span class="asComment">/* we make sure to initialise here */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_parentMap <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asBracket">{</span>
+                initTree<span class="asBracket">()</span>;
+            <span class="asBracket">}</span>
+            <span class="asReserved">return</span> _parentMap;
+        <span class="asBracket">}</span>
+
+        <span class="asDoc">/**
+         * @inheritDoc
+         * */</span> 
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">get</span> distances<span class="asBracket">()</span><span class="asOperator">:</span>Dictionary <span class="asBracket">{</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_distanceMap <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asBracket">{</span>
+                initTree<span class="asBracket">()</span>;
+            <span class="asBracket">}</span>
+            <span class="asReserved">return</span> _distanceMap;
+        <span class="asBracket">}</span>
+
+        <span class="asDoc">/**
+         * @inheritDoc
+         * */</span> 
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">get</span> maxDepth<span class="asBracket">()</span><span class="asOperator">:</span>int <span class="asBracket">{</span>
+            <span class="asReserved">return</span> _maxDepth;
+        <span class="asBracket">}</span>
+
+        <span class="asDoc">/**
+         * @inheritDoc
+         * */</span> 
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">get</span> root<span class="asBracket">()</span><span class="asOperator">:</span>INode <span class="asBracket">{</span>
+            <span class="asReserved">return</span> _root;
+        <span class="asBracket">}</span>
+        <span class="asDoc">/**
+         * @private
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">set</span> root<span class="asBracket">(</span>r<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            _root <span class="asOperator">=</span> r;
+            <span class="asComment">/* we need to invalidate if we change the root */</span>
+            initMaps<span class="asBracket">()</span>;
+        <span class="asBracket">}</span>
+        
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">get</span> maxNumberPerLayer<span class="asBracket">()</span><span class="asOperator">:</span>uint <span class="asBracket">{</span>
+            <span class="asReserved">return</span> _maxNumberPerLayer;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * @inheritDoc
+         * */</span> 
+        <span class="asReserved">public</span> <span class="asFunction">function</span> getDistance<span class="asBracket">(</span>n<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span>int <span class="asBracket">{</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_distanceMap <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asBracket">{</span>
+                initTree<span class="asBracket">()</span>;
+            <span class="asBracket">}</span>
+            <span class="asReserved">return</span> _distanceMap<span class="asBracket">[</span>n<span class="asBracket">]</span>;
+        <span class="asBracket">}</span>
+        
+        
+         
+        <span class="asDoc">/**
+         * @inheritDoc
+         * */</span> 
+        <span class="asReserved">public</span> <span class="asFunction">function</span> getChildIndex<span class="asBracket">(</span>n<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span>int <span class="asBracket">{</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_nodeChildIndexMap <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asBracket">{</span>
+                initTree<span class="asBracket">()</span>;
+            <span class="asBracket">}</span>
+            <span class="asReserved">return</span> _nodeChildIndexMap<span class="asBracket">[</span>n<span class="asBracket">]</span>;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * @inheritDoc
+         * */</span> 
+        <span class="asReserved">public</span> <span class="asFunction">function</span> getNoChildren<span class="asBracket">(</span>n<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span>int <span class="asBracket">{</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_nodeNoChildrenMap <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asBracket">{</span>
+                initTree<span class="asBracket">()</span>;
+            <span class="asBracket">}</span>
+            <span class="asReserved">return</span> _nodeNoChildrenMap<span class="asBracket">[</span>n<span class="asBracket">]</span>;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * @inheritDoc
+         * */</span> 
+        <span class="asReserved">public</span> <span class="asFunction">function</span> getChildren<span class="asBracket">(</span>n<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span>Array <span class="asBracket">{</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_childrenMap <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asBracket">{</span>
+                initTree<span class="asBracket">()</span>;
+            <span class="asBracket">}</span>
+            <span class="asReserved">return</span> <span class="asBracket">(</span>_childrenMap<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asReserved">as</span> Array<span class="asBracket">)</span>;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * @inheritDoc
+         * 
+         * @internal
+         * this basically calls the number of children
+         * from the node&apos;s parent, if it has a
+         * parent. It not it is the root node and
+         * that is currently considered to have no
+         * other siblings but itself, so 1 is returned
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> getNoSiblings<span class="asBracket">(</span>n<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span>int <span class="asBracket">{</span>
+            <span class="asVar">var</span> p<span class="asOperator">:</span>INode;
+            
+            <span class="asReserved">if</span><span class="asBracket">(</span>_parentMap <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asBracket">{</span>
+                initTree<span class="asBracket">()</span>;
+            <span class="asBracket">}</span>
+            
+            p <span class="asOperator">=</span> <span class="asReserved">this</span>.parents<span class="asBracket">[</span>n<span class="asBracket">]</span>;
+            <span class="asReserved">if</span><span class="asBracket">(</span>p <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">return</span> 1;
+            <span class="asBracket">}</span> <span class="asReserved">else</span> <span class="asBracket">{</span>
+                <span class="asReserved">return</span> <span class="asReserved">this</span>.getNoChildren<span class="asBracket">(</span>p<span class="asBracket">)</span>;
+            <span class="asBracket">}</span>
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * @inheritDoc
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> areSiblings<span class="asBracket">(</span>n<span class="asOperator">:</span>INode, m<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span>Boolean <span class="asBracket">{</span>
+            <span class="asComment">/* get the parent of each node and test if they are the same */</span>
+            <span class="asReserved">return</span> <span class="asBracket">(</span><span class="asReserved">this</span>.parents<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">==</span> <span class="asReserved">this</span>.parents<span class="asBracket">[</span>m<span class="asBracket">])</span>;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * @inheritDoc
+         * */</span> 
+        <span class="asReserved">public</span> <span class="asFunction">function</span> getIthChildPerNode<span class="asBracket">(</span>n<span class="asOperator">:</span>INode,i<span class="asOperator">:</span>int<span class="asBracket">)</span><span class="asOperator">:</span>INode <span class="asBracket">{</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_childrenMap <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asBracket">{</span>
+                initTree<span class="asBracket">()</span>;
+            <span class="asBracket">}</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_childrenMap<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">throw</span> Error<span class="asBracket">(</span><span class="asString">&quot;no childmap for node n:&quot;</span><span class="asOperator">+</span>n.id<span class="asBracket">)</span>;
+            <span class="asBracket">}</span>
+            <span class="asReserved">return</span> _childrenMap<span class="asBracket">[</span>n<span class="asBracket">][</span>i<span class="asBracket">]</span>;
+        <span class="asBracket">}</span> 
+        
+        <span class="asDoc">/**
+         * @inheritDoc
+         * */</span> 
+        <span class="asReserved">public</span> <span class="asFunction">function</span> initTree<span class="asBracket">()</span><span class="asOperator">:</span>Dictionary <span class="asBracket">{</span>
+            <span class="asVar">var</span> queue<span class="asOperator">:</span>Array <span class="asOperator">=</span> <span class="asReserved">new</span> Array<span class="asBracket">()</span>;
+            
+            <span class="asComment">/* we create this as a dummy parent node, but it should
+             * never be accessed */</span>
+            <span class="asVar">var</span> dummyParent<span class="asOperator">:</span>INode <span class="asOperator">=</span> <span class="asReserved">new</span> Node<span class="asBracket">(</span>0,<span class="asString">&quot;dummyNode&quot;</span>,<span class="asReserved">null</span>,<span class="asReserved">null</span><span class="asBracket">)</span>;
+            
+            <span class="asVar">var</span> u<span class="asOperator">:</span>INode,v<span class="asOperator">:</span>INode;
+            <span class="asVar">var</span> i<span class="asOperator">:</span>int,j<span class="asOperator">:</span>int;
+            <span class="asVar">var</span> childcount<span class="asOperator">:</span>int;
+            
+            <span class="asComment">//trace(&quot;initTree1: walking tree with root:&quot;+_root.id);
+</span>            
+            initMaps<span class="asBracket">()</span>;
+
+            <span class="asComment">/* root is the 1st child (i.e. 0th) and an only child */</span>
+            setValues<span class="asBracket">(</span>_root, dummyParent, 0, 0<span class="asBracket">)</span>;
+            
+            queue.push<span class="asBracket">(</span>_root<span class="asBracket">)</span>;
+            
+            <span class="asReserved">while</span><span class="asBracket">(</span>queue.length <span class="asOperator">&gt;</span> 0<span class="asBracket">)</span> <span class="asBracket">{</span>
+                u <span class="asOperator">=</span> <span class="asBracket">(</span>queue.pop<span class="asBracket">()</span> <span class="asReserved">as</span> INode<span class="asBracket">)</span>;
+                
+                <span class="asComment">/* this should not have an effect, but we&apos;ll see */</span>
+                <span class="asReserved">if</span><span class="asBracket">(</span>_restrictToVisible <span class="asOperator">&amp;&amp;</span> <span class="asOperator">!</span>u.vnode.isVisible<span class="asBracket">)</span> <span class="asBracket">{</span>
+                    <span class="asReserved">continue</span>;
+                <span class="asBracket">}</span>
+                
+                <span class="asComment">//trace(&quot;initTree2: queue node:&quot;+u.id+&quot; has successors:&quot;+u.successors.toString());
+</span>                
+                <span class="asComment">// here we could check if we want the node
+</span>                childcount <span class="asOperator">=</span> 0;
+                <span class="asReserved">for</span><span class="asBracket">(</span>j<span class="asOperator">=</span>0;j <span class="asOperator">&lt;</span> u.successors.length; <span class="asOperator">++</span>j<span class="asBracket">)</span> <span class="asBracket">{</span>
+                    v <span class="asOperator">=</span> u.successors<span class="asBracket">[</span>j<span class="asBracket">]</span>;
+                    
+                    <span class="asComment">/* here we check if the child vnode is visible
+                     * and if not, not take it into account */</span>
+                    <span class="asReserved">if</span><span class="asBracket">(</span>_restrictToVisible <span class="asOperator">&amp;&amp;</span> <span class="asOperator">!</span>v.vnode.isVisible<span class="asBracket">)</span> <span class="asBracket">{</span>
+                        <span class="asReserved">continue</span>;
+                    <span class="asBracket">}</span>
+                    
+                    <span class="asComment">//trace(&quot;initTree3: working on successor index:&quot;+j+
+</span>                    <span class="asComment">//&quot; which is node:&quot;+v.id+&quot; and has current parent:&quot;+_parentMap[v]);
+</span>                    
+                    <span class="asComment">/* check if visited before */</span>
+                    <span class="asReserved">if</span><span class="asBracket">(</span>_parentMap<span class="asBracket">[</span>v<span class="asBracket">]</span> <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asBracket">{</span>
+                        <span class="asComment">/*
+                         * v is the child of u, meaning in the successor list
+                         * of u, but that does not mean it is the
+                         * i&apos;th child in terms of the tree
+                         * the Number of all children is yet unknown ....
+                         */</span>
+                    
+                        setValues<span class="asBracket">(</span>v,u,_distanceMap<span class="asBracket">[</span>u<span class="asBracket">]</span> <span class="asOperator">+</span> 1,childcount<span class="asBracket">)</span>;
+                        
+                        queue.push<span class="asBracket">(</span>v<span class="asBracket">)</span>;
+                        
+                        <span class="asOperator">++</span>childcount; <span class="asComment">// we have to increase here (i.e. after setValues)
+</span>                        <span class="asComment">//trace(&quot;initTree4 added node:&quot;+v.id+&quot; with distance:&quot;+_distanceMap[v]);
+</span>                    <span class="asBracket">}</span>
+                <span class="asBracket">}</span>
+                <span class="asComment">/* only here we now know the number of childen
+                 * in childcount so we need to set it here */</span>
+                _nodeNoChildrenMap<span class="asBracket">[</span>u<span class="asBracket">]</span> <span class="asOperator">=</span> childcount;
+                
+            <span class="asBracket">}</span>
+            <span class="asComment">/* reset the dummy to null */</span>
+            _parentMap<span class="asBracket">[</span>_root<span class="asBracket">]</span> <span class="asOperator">=</span> <span class="asReserved">null</span>;
+            
+            <span class="asReserved">return</span> _parentMap;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * @inheritDoc
+         * */</span> 
+        <span class="asReserved">public</span> <span class="asFunction">function</span> getLimitedNodes<span class="asBracket">(</span>limit<span class="asOperator">:</span>int<span class="asBracket">)</span><span class="asOperator">:</span>Dictionary <span class="asBracket">{</span>
+            <span class="asVar">var</span> result<span class="asOperator">:</span>Dictionary <span class="asOperator">=</span> <span class="asReserved">new</span> Dictionary;
+            <span class="asVar">var</span> key<span class="asOperator">:</span>Object;
+            <span class="asVar">var</span> on<span class="asOperator">:</span>INode;
+        
+            <span class="asReserved">if</span><span class="asBracket">(</span>_distanceMap <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asBracket">{</span>
+                initTree<span class="asBracket">()</span>;
+            <span class="asBracket">}</span>
+            
+            <span class="asComment">/* walk the nodes in the distance Map and
+             * include all which have a distance not too big 
+             */</span>            
+            <span class="asReserved">for</span><span class="asBracket">(</span>key <span class="asReserved">in</span> _distanceMap<span class="asBracket">)</span> <span class="asBracket">{</span>
+                on <span class="asOperator">=</span> <span class="asBracket">(</span>key <span class="asReserved">as</span> INode<span class="asBracket">)</span>;
+                <span class="asReserved">if</span><span class="asBracket">(</span>_distanceMap<span class="asBracket">[</span>on<span class="asBracket">]</span> <span class="asOperator">&lt;=</span> limit<span class="asBracket">)</span> <span class="asBracket">{</span>
+                    <span class="asComment">/* we use the same stringid as the original node
+                     * but it is in fact a copy */</span>
+                    <span class="asComment">//trace(&quot;getLimitedNodes: adding node id:&quot;+on.id);
+</span>                    result<span class="asBracket">[</span>on<span class="asBracket">]</span> <span class="asOperator">=</span> on;
+                <span class="asBracket">}</span>
+            <span class="asBracket">}</span>
+            <span class="asReserved">return</span> result;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * @inheritDoc
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> getNumberNodesWithDistance<span class="asBracket">(</span>d<span class="asOperator">:</span>uint<span class="asBracket">)</span><span class="asOperator">:</span>uint <span class="asBracket">{</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_amountNodesWithDistance <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asBracket">{</span>
+                initTree<span class="asBracket">()</span>;
+            <span class="asBracket">}</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_amountNodesWithDistance<span class="asBracket">[</span>d<span class="asBracket">]</span> <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">return</span> 0;
+            <span class="asBracket">}</span> <span class="asReserved">else</span> <span class="asBracket">{</span>
+                <span class="asReserved">return</span> _amountNodesWithDistance<span class="asBracket">[</span>d<span class="asBracket">]</span>;
+            <span class="asBracket">}</span>
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * @internal
+         * Initialises all the maps, throwing away old values. 
+         * */</span>
+         <span class="asReserved">private</span> <span class="asFunction">function</span> initMaps<span class="asBracket">()</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>                
+            _parentMap <span class="asOperator">=</span> <span class="asReserved">new</span> Dictionary;
+            _childrenMap <span class="asOperator">=</span> <span class="asReserved">new</span> Dictionary;
+            _distanceMap <span class="asOperator">=</span> <span class="asReserved">new</span> Dictionary;
+            
+            _amountNodesWithDistance <span class="asOperator">=</span> <span class="asReserved">new</span> Array;
+            
+            _nodeChildIndexMap <span class="asOperator">=</span> <span class="asReserved">new</span> Dictionary;
+            _nodeNoChildrenMap <span class="asOperator">=</span> <span class="asReserved">new</span> Dictionary;
+        
+            _maxNumberPerLayer <span class="asOperator">=</span> 0;
+        
+            _maxDepth <span class="asOperator">=</span> 0;
+        
+            <span class="asComment">/* init the parent Map with null parents 
+             * XXX maybe this is redundant.... */</span>
+            <span class="asReserved">for</span><span class="asBracket">(</span><span class="asVar">var</span> i<span class="asOperator">:</span>int<span class="asOperator">=</span>0; i<span class="asOperator">&lt;</span>_graph.noNodes; <span class="asOperator">++</span>i<span class="asBracket">)</span> <span class="asBracket">{</span>
+                _parentMap<span class="asBracket">[</span>_graph.nodes<span class="asBracket">[</span>i<span class="asBracket">]]</span> <span class="asOperator">=</span> <span class="asReserved">null</span>;
+                
+            <span class="asBracket">}</span>
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * @internal
+         * Helper function to set various map values in one go
+         * @param n The current node.
+         * @param p The parent node of n.
+         * @param d The distance of node n from the root.
+         * @param cindex The child index of node n among p&apos;s children.
+         * */</span> 
+        <span class="asReserved">private</span> <span class="asFunction">function</span> setValues<span class="asBracket">(</span>n<span class="asOperator">:</span>INode, p<span class="asOperator">:</span>INode, d<span class="asOperator">:</span>Number, cindex<span class="asOperator">:</span>int<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+        
+            <span class="asVar">var</span> childarray<span class="asOperator">:</span>Array;
+        
+            _parentMap<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">=</span> p;
+            _distanceMap<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">=</span> d;
+        
+            <span class="asComment">/* increase the count of nodes with that distance */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_amountNodesWithDistance<span class="asBracket">[</span>d<span class="asBracket">]</span> <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asBracket">{</span>
+                _amountNodesWithDistance<span class="asBracket">[</span>d<span class="asBracket">]</span> <span class="asOperator">=</span> 0;
+            <span class="asBracket">}</span>
+            <span class="asOperator">++</span>_amountNodesWithDistance<span class="asBracket">[</span>d<span class="asBracket">]</span>;
+            
+            <span class="asComment">/* update the maximum */</span>
+            _maxNumberPerLayer <span class="asOperator">=</span> Math.max<span class="asBracket">(</span>_maxNumberPerLayer, _amountNodesWithDistance<span class="asBracket">[</span>d<span class="asBracket">])</span>;
+        
+            _nodeChildIndexMap<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">=</span> cindex;
+
+            <span class="asComment">/* update the maxDepth which is also the max distance 
+             * from the root obviously */</span>
+            _maxDepth <span class="asOperator">=</span> Math.max<span class="asBracket">(</span>_maxDepth, d<span class="asBracket">)</span>;
+
+            <span class="asComment">/* add n as the child of p in its children map */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_childrenMap<span class="asBracket">[</span>p<span class="asBracket">]</span> <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asBracket">{</span>
+                _childrenMap<span class="asBracket">[</span>p<span class="asBracket">]</span> <span class="asOperator">=</span> <span class="asReserved">new</span> Array;
+            <span class="asBracket">}</span>
+            
+            _childrenMap<span class="asBracket">[</span>p<span class="asBracket">][</span>cindex<span class="asBracket">]</span> <span class="asOperator">=</span> n;
+            
+            <span class="asComment">//trace(&quot;added child:&quot;+_childrenMap[p][cindex]+&quot; of node:&quot;+p.id+&quot; to its map at index:&quot;+cindex);
+</span>            <span class="asComment">//trace(&quot;GTreeSetValues: set node:&quot;+n.id+&quot; as &quot;+cindex+&quot; child of parent:&quot;+p.id);
+</span>            <span class="asComment">//trace(&quot;GTreeSetValues: with key:&quot;+p.id.toString()+&quot;_&quot;+cindex.toString());
+</span>        <span class="asBracket">}</span>
+    <span class="asBracket">}</span>
+<span class="asBracket">}</span></pre></body>
+</html>

@@ -1,0 +1,198 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Edge.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="asComment">/* 
+ * The MIT License
+ *
+ * Copyright (c) 2007 The SixDegrees Project Team
+ * (Jason Bellone, Juan Rodriguez, Segolene de Basquiat, Daniel Lang).
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the &quot;Software&quot;), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */</span>
+<span class="asPackage">package</span> org.un.flex.graphLayout.data <span class="asBracket">{</span>
+    <span class="asReserved">import</span> org.un.flex.graphLayout.visual.IVisualEdge;
+    
+    
+    <span class="asDoc">/**
+     * Edge class that implements the IEdge interface
+     * an edge has an id, two nodes a potential data
+     * object and may be associated with an IVisualEdge
+     * @see IEdge
+     * @see INode
+     * @see Node
+     * @see IVisualEdge
+     * */</span>
+    <span class="asReserved">public</span> <span class="asClass">class</span> Edge <span class="asReserved">implements</span> IEdge <span class="asBracket">{</span>
+        
+        <span class="asDoc">/** 
+         * attributes
+         * 
+         * */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _graph<span class="asOperator">:</span>IGraph;
+        <span class="asReserved">private</span> <span class="asVar">var</span> _node1<span class="asOperator">:</span>INode; <span class="asComment">/* potential fromNode */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _node2<span class="asOperator">:</span>INode; <span class="asComment">/* potential toNode */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _dataObject<span class="asOperator">:</span>Object;
+        <span class="asReserved">private</span> <span class="asVar">var</span> _id<span class="asOperator">:</span>int;
+        <span class="asReserved">private</span> <span class="asVar">var</span> _vedge<span class="asOperator">:</span>IVisualEdge;
+        
+        <span class="asComment">/* per default we have undirected graphs */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _directional<span class="asOperator">:</span>Boolean;
+        
+        
+        <span class="asDoc">/**
+         * constructor for an Edge
+         * @param graph The graph that this edge is part of
+         * @param ve The VisualEdge that this Edge may be associated with
+         * @param id The internal id of this new edge
+         * @param node1 The first node (or fromNode) of this edge
+         * @param node2 The second node (or toNode) of this edge
+         * @param data The potentially associated data object, typically an XML object
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> Edge<span class="asBracket">(</span>graph<span class="asOperator">:</span>IGraph, ve<span class="asOperator">:</span>IVisualEdge, id<span class="asOperator">:</span>int, node1<span class="asOperator">:</span>INode, node2<span class="asOperator">:</span>INode, data<span class="asOperator">:</span>Object<span class="asBracket">)</span> <span class="asBracket">{</span>
+            
+            <span class="asDoc">/**
+             * @internal
+             * some constraints:
+             * the id must be unique, so we have to find a way to
+             * ensure that, maybe an integer counting up
+             * would be easier, but where should we keep
+             * track? It would need to be done in the Graph
+             * then we would need a reference to the Graph...
+             * 
+             * I leave it for now, not doing the check here
+             * it will be created from the graph normally,
+             * so we can make sure there....
+             * 
+             * ok we pass the graph rerence now, that means,
+             * we pull the id out of the graph
+             * * */</span>
+            
+            <span class="asComment">//_id = id; -&gt; pull the id out of the graph
+</span>            _graph <span class="asOperator">=</span> graph;
+            _vedge <span class="asOperator">=</span> ve;
+            _id <span class="asOperator">=</span> id;
+            _directional <span class="asOperator">=</span> graph.isDirectional;
+            _node1 <span class="asOperator">=</span> node1;
+            _node2 <span class="asOperator">=</span> node2;
+            _dataObject <span class="asOperator">=</span> data;
+    
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * @inheritDoc
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">get</span> toNode<span class="asBracket">()</span><span class="asOperator">:</span>INode <span class="asBracket">{</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_directional<span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">return</span> _node2;
+            <span class="asBracket">}</span> <span class="asReserved">else</span> <span class="asBracket">{</span>
+                <span class="asReserved">throw</span> Error<span class="asBracket">(</span><span class="asString">&quot;Graph: &quot;</span><span class="asOperator">+</span>_graph.id<span class="asOperator">+</span><span class="asString">&quot; is not directional&quot;</span><span class="asBracket">)</span>;
+            <span class="asBracket">}</span>
+        <span class="asBracket">}</span>
+
+        <span class="asDoc">/**
+         * @inheritDoc
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">get</span> fromNode<span class="asBracket">()</span><span class="asOperator">:</span>INode <span class="asBracket">{</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_directional<span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">return</span> _node1;
+            <span class="asBracket">}</span> <span class="asReserved">else</span> <span class="asBracket">{</span>
+                <span class="asReserved">throw</span> Error<span class="asBracket">(</span><span class="asString">&quot;Graph: &quot;</span><span class="asOperator">+</span>_graph.id<span class="asOperator">+</span><span class="asString">&quot; is not directional&quot;</span><span class="asBracket">)</span>;
+            <span class="asBracket">}</span>
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * @inheritDoc
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">get</span> node1<span class="asBracket">()</span><span class="asOperator">:</span>INode <span class="asBracket">{</span>
+            <span class="asReserved">return</span> _node1;
+        <span class="asBracket">}</span>
+
+        <span class="asDoc">/**
+         * @inheritDoc
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">get</span> node2<span class="asBracket">()</span><span class="asOperator">:</span>INode <span class="asBracket">{</span>
+            <span class="asReserved">return</span> _node2;
+        <span class="asBracket">}</span>
+    
+        <span class="asDoc">/**
+         * @inheritDoc
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> othernode<span class="asBracket">(</span>node<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span>INode <span class="asBracket">{</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>node <span class="asOperator">==</span> _node1<span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">return</span> _node2;
+            <span class="asBracket">}</span>
+            <span class="asReserved">else</span> <span class="asReserved">if</span><span class="asBracket">(</span>node <span class="asOperator">==</span> _node2<span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">return</span> _node1;
+            <span class="asBracket">}</span> <span class="asReserved">else</span> <span class="asBracket">{</span>
+                <span class="asReserved">return</span> <span class="asReserved">null</span>;
+            <span class="asBracket">}</span>
+        <span class="asBracket">}</span>
+    
+        <span class="asDoc">/**
+         * Access to the associated data object with this
+         * edge, in many cases an XML object is used.
+         * @see Object
+         * @see XML 
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">set</span> data<span class="asBracket">(</span>o<span class="asOperator">:</span>Object<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            _dataObject <span class="asOperator">=</span> o;
+        <span class="asBracket">}</span>
+        <span class="asDoc">/**
+         * @private
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">get</span> data<span class="asBracket">()</span><span class="asOperator">:</span>Object    <span class="asBracket">{</span>
+            <span class="asReserved">return</span> _dataObject;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * @inheritDoc
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">get</span> vedge<span class="asBracket">()</span><span class="asOperator">:</span>IVisualEdge <span class="asBracket">{</span>
+            <span class="asReserved">return</span> _vedge;
+        <span class="asBracket">}</span>
+        <span class="asDoc">/**
+         * @private
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">set</span> vedge<span class="asBracket">(</span>ve<span class="asOperator">:</span>IVisualEdge<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            _vedge <span class="asOperator">=</span> ve;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * @inheritDoc
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">get</span> isDirectional<span class="asBracket">()</span><span class="asOperator">:</span>Boolean <span class="asBracket">{</span>
+            <span class="asReserved">return</span> _directional;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * The id of this edge.
+         * @return the id of this edge
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">get</span> id<span class="asBracket">()</span><span class="asOperator">:</span>int <span class="asBracket">{</span>
+            <span class="asReserved">return</span> _id;
+        <span class="asBracket">}</span>
+    <span class="asBracket">}</span>
+<span class="asBracket">}</span></pre></body>
+</html>

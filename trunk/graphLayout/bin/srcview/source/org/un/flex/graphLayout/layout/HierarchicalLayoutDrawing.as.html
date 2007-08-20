@@ -1,0 +1,308 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>HierarchicalLayoutDrawing.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="asComment">/* 
+ * The MIT License
+ *
+ * Copyright (c) 2007 The SixDegrees Project Team
+ * (Jason Bellone, Juan Rodriguez, Segolene de Basquiat, Daniel Lang).
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the &quot;Software&quot;), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */</span>
+<span class="asPackage">package</span> org.un.flex.graphLayout.layout <span class="asBracket">{</span>
+    
+    <span class="asReserved">import</span> flash.utils.Dictionary;
+    <span class="asReserved">import</span> org.un.flex.graphLayout.data.INode;
+    <span class="asReserved">import</span> flash.geom.Point;
+    
+    <span class="asDoc">/**
+     * This class holds all the parameters needed
+     * for a drawing representation of a graph drawing
+     * with a Hierarchical Layout according to 
+     * */</span>
+    <span class="asReserved">public</span> <span class="asClass">class</span> HierarchicalLayoutDrawing <span class="asReserved">extends</span> BaseLayoutDrawing <span class="asBracket">{</span>
+
+        <span class="asComment">/* to hold the modifiers */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _modifiers<span class="asOperator">:</span>Dictionary;
+
+        <span class="asComment">/* to defer the subtree moves we need &quot;change&quot; and &quot;shift&quot; 
+         * for each node */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _changes<span class="asOperator">:</span>Dictionary;
+        <span class="asReserved">private</span> <span class="asVar">var</span> _shifts<span class="asOperator">:</span>Dictionary;
+
+        <span class="asComment">/* the &quot;threads&quot; */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _threads<span class="asOperator">:</span>Dictionary;
+        
+        <span class="asComment">/* the ancestors */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _ancestors<span class="asOperator">:</span>Dictionary;
+
+        <span class="asComment">/* the preliminary x values for the nodes */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _prelims<span class="asOperator">:</span>Dictionary;
+        
+        <span class="asComment">/* a depth offset to spread sibling nodes */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _depthOffsets<span class="asOperator">:</span>Dictionary;
+
+        <span class="asDoc">/**
+         * The constructor just initializes the internal data structures.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> HierarchicalLayoutDrawing<span class="asBracket">()</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            <span class="asReserved">super</span><span class="asBracket">()</span>;
+            _modifiers <span class="asOperator">=</span> <span class="asReserved">new</span> Dictionary;
+            _changes <span class="asOperator">=</span> <span class="asReserved">new</span> Dictionary;
+            _shifts <span class="asOperator">=</span> <span class="asReserved">new</span> Dictionary;
+            _threads <span class="asOperator">=</span> <span class="asReserved">new</span> Dictionary;
+            _ancestors <span class="asOperator">=</span> <span class="asReserved">new</span> Dictionary;
+            _prelims <span class="asOperator">=</span> <span class="asReserved">new</span> Dictionary;
+            _depthOffsets <span class="asOperator">=</span> <span class="asReserved">new</span> Dictionary;
+        <span class="asBracket">}</span>
+
+        <span class="asDoc">/**
+         * Get the modifier value for a node, default is 0.
+         * @param n The Node for which the modifier is needed.
+         * @return The modifier value for the node n.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> getModifier<span class="asBracket">(</span>n<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span>Number <span class="asBracket">{</span>
+            <span class="asComment">/* check if a value exists already. If not
+             * preset it to 0 */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_modifiers<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asBracket">{</span>
+                _modifiers<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">=</span> 0.0;
+            <span class="asBracket">}</span>
+            <span class="asReserved">return</span> _modifiers<span class="asBracket">[</span>n<span class="asBracket">]</span>;
+        <span class="asBracket">}</span>            
+
+        <span class="asDoc">/**
+         * Set the modifier value for a node.
+         * @param n The Node for which the modifier is to be set.
+         * @param v The modifier value for the node n.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> setModifier<span class="asBracket">(</span>n<span class="asOperator">:</span>INode, v<span class="asOperator">:</span>Number<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            _modifiers<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">=</span> v;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * Adds a value to the modifier
+         * @param n The node for the modifier is to b modified ;-)
+         * @param v The value to add.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> addToModifier<span class="asBracket">(</span>n<span class="asOperator">:</span>INode, v<span class="asOperator">:</span>Number<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            <span class="asComment">/* remember that a modifier is supposed to be
+             * preinitialised with 0, so if we do not have it
+             * yet, we just set the value */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_modifiers<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asBracket">{</span>
+                _modifiers<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">=</span> v;
+            <span class="asBracket">}</span> <span class="asReserved">else</span> <span class="asBracket">{</span>
+                _modifiers<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">+=</span> v;
+            <span class="asBracket">}</span>
+        <span class="asBracket">}</span>
+
+        <span class="asDoc">/**
+         * Get the change value for a node, default is 0.
+         * @param n The Node for which the change value is needed.
+         * @return The change value for the node n.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> getChange<span class="asBracket">(</span>n<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span>Number <span class="asBracket">{</span>
+            <span class="asComment">/* check if a value exists already. If not
+             * preset it to 0 */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_changes<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asBracket">{</span>
+                _changes<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">=</span> 0.0;
+            <span class="asBracket">}</span>
+            <span class="asReserved">return</span> _changes<span class="asBracket">[</span>n<span class="asBracket">]</span>;
+        <span class="asBracket">}</span>            
+
+        <span class="asDoc">/**
+         * Set the change value for a node.
+         * @param n The Node for which the change is to be set.
+         * @param v The change value for the node n.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> setChange<span class="asBracket">(</span>n<span class="asOperator">:</span>INode, v<span class="asOperator">:</span>Number<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            _changes<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">=</span> v;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * Adds a value to the change.
+         * @param n The node for the change is to be modified ;-)
+         * @param v The value to add.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> addToChange<span class="asBracket">(</span>n<span class="asOperator">:</span>INode, v<span class="asOperator">:</span>Number<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            <span class="asComment">/* remember that a change is supposed to be
+             * preinitialised with 0, so if we do not have it
+             * yet, we just set the value */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_changes<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asBracket">{</span>
+                _changes<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">=</span> v;
+            <span class="asBracket">}</span> <span class="asReserved">else</span> <span class="asBracket">{</span>
+                _changes<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">+=</span> v;
+            <span class="asBracket">}</span>
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * Get the shift value for a node, default is 0.
+         * @param n The Node for which the shift value is needed.
+         * @return The shift value for the node n.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> getShift<span class="asBracket">(</span>n<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span>Number <span class="asBracket">{</span>
+            <span class="asComment">/* check if a value exists already. If not
+             * preset it to 0 */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_shifts<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asBracket">{</span>
+                _shifts<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">=</span> 0.0;
+            <span class="asBracket">}</span>
+            <span class="asReserved">return</span> _shifts<span class="asBracket">[</span>n<span class="asBracket">]</span>;
+        <span class="asBracket">}</span>            
+
+        <span class="asDoc">/**
+         * Set the shift value for a node.
+         * @param n The Node for which the shift is to be set.
+         * @param v The shift value for the node n.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> setShift<span class="asBracket">(</span>n<span class="asOperator">:</span>INode, v<span class="asOperator">:</span>Number<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            _shifts<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">=</span> v;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * Adds a value to the shift.
+         * @param n The node for the shift is to be modified ;-)
+         * @param v The value to add.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> addToShift<span class="asBracket">(</span>n<span class="asOperator">:</span>INode, v<span class="asOperator">:</span>Number<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            <span class="asComment">/* remember that a shift is supposed to be
+             * preinitialised with 0, so if we do not have it
+             * yet, we just set the value */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_shifts<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asBracket">{</span>
+                _shifts<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">=</span> v;
+            <span class="asBracket">}</span> <span class="asReserved">else</span> <span class="asBracket">{</span>
+                _shifts<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">+=</span> v;
+            <span class="asBracket">}</span>
+        <span class="asBracket">}</span>
+
+        <span class="asDoc">/**
+         * Get the thread pointer for a node, default is null.
+         * @param n The Node for which the thread is needed.
+         * @return The thread target node.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> getThread<span class="asBracket">(</span>n<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span>INode <span class="asBracket">{</span>
+            <span class="asReserved">return</span> _threads<span class="asBracket">[</span>n<span class="asBracket">]</span>;
+        <span class="asBracket">}</span>            
+
+        <span class="asDoc">/**
+         * Set the thread pointer for a node.
+         * @param n The Node for which the modifier is to be set.
+         * @param t The thread target node for the node n.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> setThread<span class="asBracket">(</span>n<span class="asOperator">:</span>INode, t<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            _threads<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">=</span> t;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * Get the ancestor node for a node, default is the node itself.
+         * @param n The Node for which the ancestor is needed.
+         * @return The ancestor node.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> getAncestor<span class="asBracket">(</span>n<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span>INode <span class="asBracket">{</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_ancestors<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asBracket">{</span>
+                _ancestors<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">=</span> n;
+            <span class="asBracket">}</span>
+            <span class="asReserved">return</span> _ancestors<span class="asBracket">[</span>n<span class="asBracket">]</span>;
+        <span class="asBracket">}</span>            
+
+        <span class="asDoc">/**
+         * Set the ancestor for a node.
+         * @param n The Node for which the ancestor is to be set.
+         * @param a The ancestor node for the node n.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> setAncestor<span class="asBracket">(</span>n<span class="asOperator">:</span>INode, a<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            _ancestors<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">=</span> a;
+        <span class="asBracket">}</span>
+
+        <span class="asDoc">/**
+         * Get the preliminary x value for a node.
+         * @param n The Node for which the value is needed.
+         * @return The prelim value for the node n.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> getPrelim<span class="asBracket">(</span>n<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span>Number <span class="asBracket">{</span>
+            <span class="asReserved">return</span> _prelims<span class="asBracket">[</span>n<span class="asBracket">]</span>;
+        <span class="asBracket">}</span>            
+
+        <span class="asDoc">/**
+         * Set the preliminary x value for a node.
+         * @param n The Node for which the value is needed.
+         * @param v The prelim value for the node n.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> setPrelim<span class="asBracket">(</span>n<span class="asOperator">:</span>INode, v<span class="asOperator">:</span>Number<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            _prelims<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">=</span> v;
+        <span class="asBracket">}</span>
+
+        <span class="asDoc">/**
+         * Add a value to the preliminary x value for a node.
+         * @param n The Node for which the value is needed.
+         * @param v The prelim value for the node n to add.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> addToPrelim<span class="asBracket">(</span>n<span class="asOperator">:</span>INode, v<span class="asOperator">:</span>Number<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            <span class="asComment">/* Warning: There is no check here if the entry
+             * already exists, but also not sure if 0 init
+             * would be appropriate here */</span>
+            _prelims<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">+=</span> v;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * Set the depth offset of a node. This results in a variation
+         * of the depth of the node within the same layer.
+         * @param n The node for which to set the offset.
+         * @param v The offset value.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> setDepthOffset<span class="asBracket">(</span>n<span class="asOperator">:</span>INode, v<span class="asOperator">:</span>Number<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            _depthOffsets<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">=</span> v;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * Get the current depth offset of a node. The 
+         * default is 0.
+         * @param n The node for which the depth offset it needed.
+         * @return The depth offset of the given node (or 0).
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> getDepthOffset<span class="asBracket">(</span>n<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span>Number <span class="asBracket">{</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_depthOffsets<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">return</span> 0.0;
+            <span class="asBracket">}</span> <span class="asReserved">else</span> <span class="asBracket">{</span>
+                <span class="asReserved">return</span> _depthOffsets<span class="asBracket">[</span>n<span class="asBracket">]</span>;
+            <span class="asBracket">}</span>
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * Set the depth and breadth value of a node. Depending on the
+         * orientation this decides if which will be the X or
+         * Y value and computes it accordingly.
+         * @param n The node to set the values of.
+         * @param d The depth value.
+         * @param b The breadth value.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> setDepthAndBreadth<span class="asBracket">(</span>n<span class="asOperator">:</span>INode, d<span class="asOperator">:</span>Number, b<span class="asOperator">:</span>Number<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            
+            <span class="asComment">/* right now we do not implement the orientation changes,
+             * we directly use them as X and Y values */</span>
+            <span class="asReserved">this</span>.setCartCoordinates<span class="asBracket">(</span>n, <span class="asReserved">new</span> Point<span class="asBracket">(</span>b,d<span class="asBracket">))</span>; 
+        <span class="asBracket">}</span>
+
+    <span class="asBracket">}</span>
+<span class="asBracket">}</span></pre></body>
+</html>

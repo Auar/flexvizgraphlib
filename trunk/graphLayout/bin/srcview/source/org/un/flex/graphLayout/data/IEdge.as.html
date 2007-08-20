@@ -1,0 +1,109 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>IEdge.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="asComment">/* 
+ * The MIT License
+ *
+ * Copyright (c) 2007 The SixDegrees Project Team
+ * (Jason Bellone, Juan Rodriguez, Segolene de Basquiat, Daniel Lang).
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the &quot;Software&quot;), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */</span>
+
+<span class="asPackage">package</span> org.un.flex.graphLayout.data <span class="asBracket">{</span>
+
+
+    <span class="asReserved">import</span> org.un.flex.graphLayout.visual.IVisualEdge;
+
+    <span class="asDoc">/**
+     * The Edge interface for graph edges.
+     * It contains a reference to any associated
+     * object (like a label, or a visual item
+     * to be displayed, which could include more
+     * attributes like a length.
+     */</span>
+    <span class="asReserved">public</span> <span class="asInterface">interface</span> IEdge <span class="asReserved">extends</span> IDataItem <span class="asBracket">{</span>
+    
+        <span class="asDoc">/**
+         * Indicates if the graph that contains this edge is directional.
+         * @return if the graph that contains this edge is directional.
+         * */</span>
+        <span class="asFunction">function</span> <span class="asReserved">get</span> isDirectional<span class="asBracket">()</span><span class="asOperator">:</span>Boolean;
+    
+        <span class="asDoc">/**
+         * The first node associated with this edge.
+         * @return The first node associated with this edge.
+         * */</span>
+        <span class="asFunction">function</span> <span class="asReserved">get</span> node1<span class="asBracket">()</span><span class="asOperator">:</span>INode;
+        
+        <span class="asDoc">/**
+         * The second node associated with this edge.
+         * @return The second node associated with this edge.
+         * */</span>
+        <span class="asFunction">function</span> <span class="asReserved">get</span> node2<span class="asBracket">()</span><span class="asOperator">:</span>INode;
+    
+        <span class="asDoc">/**
+         * returns the source node (fromNode) of the edge.
+         * Only available if the graph is directional as otherwise
+         * there is no designated source node.
+         * @return The source node of this edge.
+         * @throws Error that the graph is not directional.
+         * */</span>
+        <span class="asFunction">function</span> <span class="asReserved">get</span> fromNode<span class="asBracket">()</span><span class="asOperator">:</span>INode;
+        
+        <span class="asDoc">/**
+         * returns the target node (toNode) of the edge.
+         * Only available if the graph is directional as otherwise
+         * there is no designated target node.
+         * @return The target node of this edge.
+         * @throws Error that the graph is not directional.
+         * */</span>
+        <span class="asFunction">function</span> <span class="asReserved">get</span> toNode<span class="asBracket">()</span><span class="asOperator">:</span>INode;
+        
+        <span class="asDoc">/**
+         * Access to the associated VisualEdge
+         * of this Edge.
+         * @internal
+         * this may be a breach of encapsulation if we explicitly
+         * use objects of the visualisation part.
+         */</span>
+        <span class="asFunction">function</span> <span class="asReserved">get</span> vedge<span class="asBracket">()</span><span class="asOperator">:</span>IVisualEdge;
+        
+        <span class="asDoc">/**
+         * @private
+         * */</span>
+        <span class="asFunction">function</span> <span class="asReserved">set</span> vedge<span class="asBracket">(</span>ve<span class="asOperator">:</span>IVisualEdge<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span>;
+    
+        <span class="asDoc">/**
+         * This method returns the other node than the node
+         * given as parameter, so it can be used to follow along
+         * the edge.
+         * @param node The node that is known (implicit source node)
+         * @return The node that is unknown (implicit target node)
+         * */</span>
+        <span class="asFunction">function</span> othernode<span class="asBracket">(</span>node<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span>INode;
+    <span class="asBracket">}</span>
+<span class="asBracket">}</span> <span class="asComment">// package</span></pre></body>
+</html>

@@ -1,0 +1,167 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>ILayoutAlgorithm.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="asComment">/* 
+ * The MIT License
+ *
+ * Copyright (c) 2007 The SixDegrees Project Team
+ * (Jason Bellone, Juan Rodriguez, Segolene de Basquiat, Daniel Lang).
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the &quot;Software&quot;), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */</span>
+<span class="asPackage">package</span> org.un.flex.graphLayout.layout <span class="asBracket">{</span>
+    <span class="asReserved">import</span> org.un.flex.graphLayout.visual.IVisualGraph;
+    <span class="asReserved">import</span> flash.events.Event;
+    <span class="asReserved">import</span> flash.events.MouseEvent;
+    <span class="asReserved">import</span> org.un.flex.graphLayout.visual.IVisualNode;
+    <span class="asReserved">import</span> org.un.flex.graphLayout.data.IGraph;
+    
+    
+    <span class="asDoc">/**
+     * this interface defines all function calls
+     * that are needed to rearrange/layout a visualised
+     * graph.
+     * It also handles mouse interaction for moving objects
+     * (not for other stuff)
+     * */</span>
+    
+    <span class="asDoc">/**
+     * The interface to all layout algorithms that should work
+     * with VisualGraph components and underlying Graph data
+     * structures. This interface defines all the methods required
+     * to control the aspects of a layouter.
+     * */</span>
+    <span class="asReserved">public</span> <span class="asInterface">interface</span> ILayoutAlgorithm <span class="asBracket">{</span>
+        
+        <span class="asDoc">/**
+         * Assign a VisualGraph object to the layouter,
+         * every layouter will need one to work, some may
+         * also offer to set it in their constructor.
+         * The layouter may choose to implicitly also set the
+         * graph object if it is found within the VisualGraph object.
+         * @param vg The VisualGraph object to assign.
+         * @see org.un.flex.graphLayout.visual.VisualGraph#graph
+         * */</span>
+        <span class="asFunction">function</span> <span class="asReserved">set</span> vgraph<span class="asBracket">(</span>vg<span class="asOperator">:</span>IVisualGraph<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span>;
+        
+        <span class="asDoc">/**
+         * Assign a Graph datastructure object to the
+         * layouter, every layouter will need one to work
+         * and some may allow to set it in their constructor
+         * @param g The Graph object to assign.
+         * */</span>
+        <span class="asFunction">function</span> <span class="asReserved">set</span> graph<span class="asBracket">(</span>g<span class="asOperator">:</span>IGraph<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span>;
+        
+        <span class="asDoc">/**
+         * Access to a value that controls the length
+         * of links (or rather edges). It is up to the
+         * layouter what to do with it, and some may ignore
+         * this value under certain circumstances (like autoFit).
+         * The interface requires the value to be between 0 and 100;
+         * @default 10
+         * @param r The value to set.
+         * */</span>
+        <span class="asFunction">function</span> <span class="asReserved">set</span> linkLength<span class="asBracket">(</span>r<span class="asOperator">:</span>Number<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span>;
+        
+        <span class="asDoc">/**
+         * @private
+         * */</span>
+        <span class="asFunction">function</span> <span class="asReserved">get</span> linkLength<span class="asBracket">()</span><span class="asOperator">:</span>Number;
+        
+        <span class="asDoc">/**
+         * Flag to indicate whether the Layouter should attempt
+         * to automatically fit the layout to the screen.
+         * */</span>
+        <span class="asFunction">function</span> <span class="asReserved">set</span> autoFitEnabled<span class="asBracket">(</span>af<span class="asOperator">:</span>Boolean<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span>;
+        
+        <span class="asDoc">/**
+         * @private
+         * */</span>
+        <span class="asFunction">function</span> <span class="asReserved">get</span> autoFitEnabled<span class="asBracket">()</span><span class="asOperator">:</span>Boolean;
+        
+        <span class="asDoc">/**
+         * Indicator if the layout has changed or not. This
+         * can be used to notify the layouter, that some external
+         * means (like dragging &amp; dropping a node) has changed the
+         * layout, and it will also be set by the layouter itself
+         * when the layouter updated the layout. This is used by
+         * the VisualGraphs &quot;updateDisplayList()&quot; method, to see
+         * whether to redraw all edges using the EdgeRenderer.
+         * @see org.un.flex.graphLayout.visual.VisualGraph#updateDisplayList()
+         * */</span>
+        <span class="asFunction">function</span> <span class="asReserved">set</span> layoutChanged<span class="asBracket">(</span>lc<span class="asOperator">:</span>Boolean<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span>;
+        
+        <span class="asDoc">/**
+         * @private
+         * */</span>
+        <span class="asFunction">function</span> <span class="asReserved">get</span> layoutChanged<span class="asBracket">()</span><span class="asOperator">:</span>Boolean;
+        
+        <span class="asDoc">/**
+         * Indicator if currently an animation sequence is still
+         * in progress. During certain animation sequences, drag&amp;drop
+         * might be disabled
+         * */</span>
+        <span class="asFunction">function</span> <span class="asReserved">get</span> animInProgress<span class="asBracket">()</span><span class="asOperator">:</span>Boolean;
+        
+        <span class="asDoc">/**
+         * This should reset all parameters of the layouter,
+         * which might not be needed for all layouters, and it is
+         * up to each layouter to do something with it.
+         * It would also stop any existing layouting loops/timers.
+         * */</span>
+        <span class="asFunction">function</span> resetAll<span class="asBracket">()</span><span class="asOperator">:</span><span class="asReserved">void</span>;
+        
+        <span class="asDoc">/**
+         * This is the main method of the layouter, that actually
+         * implements the calculation of the layout. It will be called
+         * by the VisualGraph on any significant change that will
+         * require a layout to be recomputed.
+         * @return true if something was done successfully, false otherwise.
+         * */</span>
+        <span class="asFunction">function</span> layoutPass<span class="asBracket">()</span><span class="asOperator">:</span>Boolean;
+        
+        <span class="asDoc">/**
+         * This is an initialisation method to do any kind
+         * of initialisation before a layout pass. Not all 
+         * layouters may require this and thus implement it
+         * meaningfully.
+         * */</span>
+        <span class="asFunction">function</span> refreshInit<span class="asBracket">()</span><span class="asOperator">:</span><span class="asReserved">void</span>;
+        
+        <span class="asDoc">/**
+         * Notifies the layouter of a node drag event, in case
+         * it wants to react to that in special way.
+         * */</span>
+        <span class="asFunction">function</span> dragEvent<span class="asBracket">(</span>event<span class="asOperator">:</span>MouseEvent, vn<span class="asOperator">:</span>IVisualNode<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span>;
+        
+        <span class="asDoc">/**
+         * Notifies the layouter of a node drop event, in case
+         * it wants to react to that in special way.
+         * */</span>
+        <span class="asFunction">function</span> dropEvent<span class="asBracket">(</span>event<span class="asOperator">:</span>MouseEvent, vn<span class="asOperator">:</span>IVisualNode<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span>;
+
+    <span class="asBracket">}</span>
+<span class="asBracket">}</span></pre></body>
+</html>

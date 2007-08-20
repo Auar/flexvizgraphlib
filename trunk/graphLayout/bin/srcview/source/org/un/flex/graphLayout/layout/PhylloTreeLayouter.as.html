@@ -1,0 +1,622 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>PhylloTreeLayouter.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="asComment">/* 
+ * The MIT License
+ *
+ * Copyright (c) 2007 The SixDegrees Project Team
+ * (Jason Bellone, Juan Rodriguez, Segolene de Basquiat, Daniel Lang).
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the &quot;Software&quot;), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */</span>
+<span class="asPackage">package</span> org.un.flex.graphLayout.layout <span class="asBracket">{</span>
+
+    <span class="asReserved">import</span> org.un.flex.graphLayout.visual.IVisualGraph;
+    <span class="asReserved">import</span> org.un.flex.graphLayout.data.IGraph;
+    <span class="asReserved">import</span> org.un.flex.graphLayout.data.Graph;
+    <span class="asReserved">import</span> org.un.flex.graphLayout.visual.IVisualNode;
+    <span class="asReserved">import</span> org.un.flex.graphLayout.data.IEdge;
+    <span class="asReserved">import</span> org.un.flex.graphLayout.data.INode;
+    <span class="asReserved">import</span> org.un.flex.graphLayout.visual.IVisualEdge;
+    <span class="asReserved">import</span> org.un.flex.graphLayout.data.IGTree;
+    <span class="asReserved">import</span> org.un.flex.utils.Geometry;
+    <span class="asReserved">import</span> flash.geom.Point;
+    <span class="asReserved">import</span> flash.utils.Dictionary;
+    <span class="asReserved">import</span> flash.events.TimerEvent;
+    <span class="asReserved">import</span> flash.utils.Timer;
+    <span class="asReserved">import</span> flash.events.MouseEvent;
+    
+    <span class="asDoc">/**
+     * This is an modification of the 
+     * parent centered radial layoute that draws the
+     * node radiuses not fixed but increasing resulting in
+     * a sea-shell like structure.
+     * @see org.un.flex.graphLayout.layout.ParentCenteredRadialLayouter
+     * */</span>
+    <span class="asReserved">public</span> <span class="asClass">class</span> PhylloTreeLayouter <span class="asReserved">extends</span> AnimatedBaseLayouter <span class="asReserved">implements</span> ILayoutAlgorithm <span class="asBracket">{</span>
+        
+        <span class="asComment">/* if we change phi we cannot set it directly
+         * in the drawing mode, because we throw it away
+         * and build a new one, so we need it here */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _phi<span class="asOperator">:</span>Number <span class="asOperator">=</span> 90;
+        <span class="asReserved">private</span> <span class="asVar">var</span> _rootR<span class="asOperator">:</span>Number <span class="asOperator">=</span> 10;
+        
+        <span class="asComment">/* the queue for the BFS style walk through the calculation */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _nodequeue<span class="asOperator">:</span>Array <span class="asOperator">=</span> <span class="asReserved">null</span>;
+        
+        <span class="asComment">/* this holds the data for the PhylloTre layout drawing */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _currentDrawing<span class="asOperator">:</span>PhylloTreeDrawingModel;
+        
+        <span class="asDoc">/**
+         * The constructor only initialises some data structures.
+         * @inheritDoc
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> PhylloTreeLayouter<span class="asBracket">(</span>vg<span class="asOperator">:</span>IVisualGraph <span class="asOperator">=</span> <span class="asReserved">null</span><span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            <span class="asReserved">super</span><span class="asBracket">(</span>vg<span class="asBracket">)</span>;
+            animationType <span class="asOperator">=</span> ANIM_RADIAL;
+            initModel<span class="asBracket">()</span>;
+        <span class="asBracket">}</span>
+
+        <span class="asDoc">/**
+         * @inheritDoc
+         * */</span>
+        <span class="asReserved">override</span> <span class="asReserved">public</span> <span class="asFunction">function</span> resetAll<span class="asBracket">()</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>            
+            
+            <span class="asComment">/* stop timer */</span>
+            killTimer<span class="asBracket">()</span>;
+            
+            _layoutChanged <span class="asOperator">=</span> <span class="asReserved">true</span>;
+            _nodequeue <span class="asOperator">=</span> <span class="asReserved">null</span>;
+            _stree <span class="asOperator">=</span> <span class="asReserved">null</span>;
+            _graph.purgeTrees<span class="asBracket">()</span>;
+            initModel<span class="asBracket">()</span>;
+        <span class="asBracket">}</span>
+
+        <span class="asDoc">/**
+         * This main interface method computes and
+         * and executes the new layout.
+         * @return Currently the return value is not set or used.
+         * */</span>
+        <span class="asReserved">override</span> <span class="asReserved">public</span> <span class="asFunction">function</span> layoutPass<span class="asBracket">()</span><span class="asOperator">:</span>Boolean <span class="asBracket">{</span>
+
+            <span class="asVar">var</span> i<span class="asOperator">:</span>int;
+            <span class="asVar">var</span> n<span class="asOperator">:</span>INode;
+            <span class="asVar">var</span> visVNodes<span class="asOperator">:</span>Dictionary;
+            <span class="asVar">var</span> vn<span class="asOperator">:</span>IVisualNode;
+            <span class="asVar">var</span> cindex<span class="asOperator">:</span>int;
+            <span class="asVar">var</span> nsiblings<span class="asOperator">:</span>int;
+            <span class="asVar">var</span> rv<span class="asOperator">:</span>Boolean;
+            <span class="asVar">var</span> children<span class="asOperator">:</span>Array;
+            
+            <span class="asComment">/* We could implement autoFit by tweaking the
+             * &quot;r&quot; parameter (radius) of the algorithm
+             */</span>
+            
+    
+            <span class="asComment">//trace(&quot;layoutPass called&quot;);
+</span>            
+            <span class="asReserved">if</span><span class="asBracket">(</span><span class="asOperator">!</span>_vgraph<span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">throw</span> Error<span class="asBracket">(</span><span class="asString">&quot;No Vgraph set in PCRLayouter, aborting&quot;</span><span class="asBracket">)</span>;
+            <span class="asBracket">}</span>
+            
+            <span class="asReserved">if</span><span class="asBracket">(</span><span class="asOperator">!</span>_vgraph.currentRootVNode<span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">throw</span> Error<span class="asBracket">(</span><span class="asString">&quot;This Layouter always requires a root node!&quot;</span><span class="asBracket">)</span>;
+            <span class="asBracket">}</span>
+            
+            <span class="asComment">/* nothing to do if we have no nodes */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_graph.noNodes <span class="asOperator">&lt;</span> 1<span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">return</span> <span class="asReserved">false</span>;
+            <span class="asBracket">}</span>
+            
+            <span class="asComment">/* if there is a timer, we have to stop it to
+             * prevent inconsistencies */</span>
+            killTimer<span class="asBracket">()</span>;
+            
+            <span class="asComment">/* establish the current root, if it has 
+             * changed we need to reinit the model */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_root <span class="asOperator">!=</span> _vgraph.currentRootVNode.node<span class="asBracket">)</span> <span class="asBracket">{</span>
+                _root <span class="asOperator">=</span> _vgraph.currentRootVNode.node;
+                _layoutChanged <span class="asOperator">=</span> <span class="asReserved">true</span>;
+            <span class="asBracket">}</span>
+            
+            <span class="asComment">/* needs to be before initModel() */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_autoFitEnabled<span class="asBracket">)</span> <span class="asBracket">{</span>
+                calculateAutoFit<span class="asBracket">()</span>;
+            <span class="asBracket">}</span>
+            
+            <span class="asComment">/* need to see where how we could get a clear
+             * list of situation how to deal with hab
+             * if the layout was changed (or any parameter)
+             * we have to reinit the model */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_layoutChanged<span class="asBracket">)</span> <span class="asBracket">{</span>
+                initModel<span class="asBracket">()</span>;
+            <span class="asBracket">}</span>
+            
+            <span class="asComment">/* init/reset the node queue */</span>
+            _nodequeue <span class="asOperator">=</span> <span class="asReserved">new</span> Array<span class="asBracket">()</span>;
+            
+            <span class="asComment">/* establish the spanning tree, restricted to visible nodes */</span>
+            _stree <span class="asOperator">=</span> _graph.getTree<span class="asBracket">(</span>_root, <span class="asReserved">true</span><span class="asBracket">)</span>;
+
+            <span class="asComment">/* check if the root is visible, if not
+             * this is an issue */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span><span class="asOperator">!</span>_root.vnode.isVisible<span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">throw</span> Error<span class="asBracket">(</span><span class="asString">&quot;Invisible root node, this is probably due to wrong initialisation of nodes or wrong defaults&quot;</span><span class="asBracket">)</span>;
+            <span class="asBracket">}</span>
+
+            <span class="asComment">/* push the root into the array */</span>
+            _nodequeue.unshift<span class="asBracket">(</span>_root<span class="asBracket">)</span>;
+
+            <span class="asComment">/* start the calculation */</span>
+            calculateNodes<span class="asBracket">()</span>;
+        
+            <span class="asComment">/* reset animation cycle */</span>
+            resetAnimation<span class="asBracket">()</span>;
+            
+            <span class="asComment">/* start the animation, does also the commit */</span>
+            startAnimation<span class="asBracket">()</span>;        
+        
+            _layoutChanged <span class="asOperator">=</span> <span class="asReserved">true</span>;
+            <span class="asReserved">return</span> rv;
+        <span class="asBracket">}</span>
+    
+        <span class="asDoc">/**
+         * @inheritDoc
+         * */</span>
+        <span class="asBracket">[</span><span class="asMetadata">Bindable</span><span class="asBracket">]</span>
+        <span class="asReserved">override</span> <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">get</span> linkLength<span class="asBracket">()</span><span class="asOperator">:</span>Number <span class="asBracket">{</span>
+            <span class="asReserved">return</span> _rootR <span class="asOperator">/</span> 5;
+        <span class="asBracket">}</span>
+        <span class="asDoc">/**
+         * @private
+         * */</span>
+        <span class="asReserved">override</span> <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">set</span> linkLength<span class="asBracket">(</span>rr<span class="asOperator">:</span>Number<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            _rootR <span class="asOperator">=</span> rr <span class="asOperator">*</span> 5;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * Access to the preset of the starting angle of the layout
+         * */</span>
+        <span class="asBracket">[</span><span class="asMetadata">Bindable</span><span class="asBracket">]</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">get</span> phi<span class="asBracket">()</span><span class="asOperator">:</span>Number <span class="asBracket">{</span>
+            <span class="asReserved">return</span> _phi
+            <span class="asComment">//return _currentDrawing.phi;
+</span>        <span class="asBracket">}</span>
+        <span class="asDoc">/**
+         * @private
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">set</span> phi<span class="asBracket">(</span>p<span class="asOperator">:</span>Number<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            _phi <span class="asOperator">=</span> p;
+            <span class="asComment">//_currentDrawing.phi = p;
+</span>        <span class="asBracket">}</span>
+        
+        <span class="asComment">/* private methods */</span>
+         
+        <span class="asDoc">/**
+         * @internal
+         * Create a new layout drawing object, which is required
+         * on any root change (and possibly during other occasions)
+         * and intialise various parameters of the drawing.
+         * */</span>
+        <span class="asReserved">private</span> <span class="asFunction">function</span> initModel<span class="asBracket">()</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>        
+            <span class="asComment">/* in the future we save the old model here */</span>
+            _currentDrawing <span class="asOperator">=</span> <span class="asReserved">null</span>;
+            _currentDrawing <span class="asOperator">=</span> <span class="asReserved">new</span> PhylloTreeDrawingModel<span class="asBracket">()</span>;
+            
+            <span class="asComment">/* set in super class */</span>
+            <span class="asReserved">super</span>.currentDrawing <span class="asOperator">=</span> _currentDrawing;
+            
+            _currentDrawing.originOffset <span class="asOperator">=</span> _vgraph.origin;
+            _currentDrawing.centerOffset <span class="asOperator">=</span> _vgraph.center;
+            _currentDrawing.centeredLayout <span class="asOperator">=</span> <span class="asReserved">true</span>;
+            _currentDrawing.phi <span class="asOperator">=</span> _phi;
+            _currentDrawing.rootR <span class="asOperator">=</span> _rootR;
+            <span class="asComment">//trace(&quot;New Model with phi:&quot;+_phi+&quot; and origin:&quot;+_currentDrawing.originOffset.toString());
+</span>        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * @internal
+         * Walk the tree again in a BFS manner to process all nodes.
+         * This relys on the nodequeue, which has to at least
+         * be initialised with the root node. */</span>
+        <span class="asReserved">private</span> <span class="asFunction">function</span> calculateNodes<span class="asBracket">()</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            
+            <span class="asVar">var</span> n<span class="asOperator">:</span>INode;
+            <span class="asVar">var</span> c<span class="asOperator">:</span>INode;
+            <span class="asVar">var</span> children<span class="asOperator">:</span>Array;
+            
+            <span class="asComment">/* pop the first node from the queue, in
+             * the first iteration this should be the root
+             */</span>
+            n <span class="asOperator">=</span> <span class="asBracket">(</span>_nodequeue.pop<span class="asBracket">()</span> <span class="asReserved">as</span> INode<span class="asBracket">)</span>;
+            
+            <span class="asComment">/* if the queue was empty, we are done */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>n <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">return</span>;
+            <span class="asBracket">}</span>
+            
+            <span class="asComment">//trace(&quot;popped node:&quot;+n.id+&quot; from queue, working on it&quot;);
+</span>            
+            <span class="asComment">/* first process the node */</span>
+            processNode<span class="asBracket">(</span>n<span class="asBracket">)</span>;
+            
+            <span class="asComment">/* now get the nodes children */</span>
+            children <span class="asOperator">=</span> _stree.getChildren<span class="asBracket">(</span>n<span class="asBracket">)</span>;
+            
+            <span class="asComment">/* add the children to the end of the _nodequeue
+             * if it is visible */</span>
+            <span class="asReserved">for</span> <span class="asReserved">each</span><span class="asBracket">(</span>c <span class="asReserved">in</span> children<span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">if</span><span class="asBracket">(</span>c.vnode.isVisible<span class="asBracket">)</span> <span class="asBracket">{</span>
+                    _nodequeue.unshift<span class="asBracket">(</span>c<span class="asBracket">)</span>;
+                    <span class="asComment">//trace(&quot;added node:&quot;+c.id+&quot; to nodequeue&quot;);
+</span>                <span class="asBracket">}</span>
+            <span class="asBracket">}</span>
+            
+            <span class="asComment">/* recurse, this should to until there are no
+             * more children left */</span>
+            calculateNodes<span class="asBracket">()</span>;
+        <span class="asBracket">}</span>
+        
+        
+        <span class="asDoc">/**
+         * @internal
+         * calculate the coordinates of a node, Requires all nodes in the
+         * parental level to be calculated.
+         * @param vi The current node to inspect v_i
+         * @param i the child index of the current node (beware this starts with 0)
+         * @param m the number of all children of the node&apos;s parent
+         * */</span>
+        <span class="asReserved">private</span> <span class="asFunction">function</span> processNode<span class="asBracket">(</span>vi<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            
+            <span class="asComment">/* XXX NEED TO CHANGE TO TOP DOWN &quot;recursion&quot; */</span>
+            
+            <span class="asVar">var</span> vp<span class="asOperator">:</span>INode;        <span class="asComment">// parent node of vi
+</span>            <span class="asVar">var</span> vs<span class="asOperator">:</span>INode;        <span class="asComment">// the next sibling of the parent
+</span>            <span class="asVar">var</span> vgp<span class="asOperator">:</span>INode;       <span class="asComment">// grandparent of vi (parent of vp)
+</span>            <span class="asVar">var</span> i<span class="asOperator">:</span>int;             <span class="asComment">// childindex of vi
+</span>            <span class="asVar">var</span> m<span class="asOperator">:</span>int;             <span class="asComment">// number of siblings (including vi) of vi
+</span>            <span class="asVar">var</span> mp<span class="asOperator">:</span>int;          <span class="asComment">// the number of siblings (m) of the parent node
+</span>            <span class="asVar">var</span> ip<span class="asOperator">:</span>int;          <span class="asComment">// child index (i) of parent node
+</span>            <span class="asVar">var</span> delta<span class="asOperator">:</span>Number;    <span class="asComment">// the angle between two siblings polar coordinates
+</span>            <span class="asComment">//var deltaY:Number;   // the difference of the y coordinate of 2 points
+</span>            <span class="asVar">var</span> angle1<span class="asOperator">:</span>Number;      <span class="asComment">// angle
+</span>            <span class="asVar">var</span> angle2<span class="asOperator">:</span>Number;      <span class="asComment">// angle
+</span>            <span class="asVar">var</span> lrgangle<span class="asOperator">:</span>Number;      <span class="asComment">// the larger of two angles
+</span>            <span class="asVar">var</span> smlangle<span class="asOperator">:</span>Number;      <span class="asComment">// the smaller of two angles
+</span>            <span class="asComment">//var distance:Number; // distance between two points
+</span>            <span class="asVar">var</span> vpcoords<span class="asOperator">:</span>Point;  <span class="asComment">// parent point
+</span>            <span class="asVar">var</span> vgpcoords<span class="asOperator">:</span>Point; <span class="asComment">// grandparent point
+</span>            <span class="asVar">var</span> vscoords<span class="asOperator">:</span>Point;  <span class="asComment">// parent sibling point
+</span>            <span class="asVar">var</span> magnitude<span class="asOperator">:</span>Number; <span class="asComment">// diameter of a node&apos;s view to measure occupied space.
+</span>            
+            <span class="asComment">/* the following are variables to be set in a drawing */</span>
+            <span class="asVar">var</span> nodeOrigin<span class="asOperator">:</span>Point;
+            <span class="asVar">var</span> zeroAngleOffset<span class="asOperator">:</span>Number;
+            <span class="asVar">var</span> nodePolarR<span class="asOperator">:</span>Number;
+            <span class="asVar">var</span> nodePolarPhi<span class="asOperator">:</span>Number;
+            
+            <span class="asComment">/* needed for the calculation */</span>
+            <span class="asVar">var</span> intersection<span class="asOperator">:</span>Point
+            <span class="asVar">var</span> phi<span class="asOperator">:</span>Number;
+
+            i <span class="asOperator">=</span> _stree.getChildIndex<span class="asBracket">(</span>vi<span class="asBracket">)</span>;
+            m <span class="asOperator">=</span> _stree.getNoSiblings<span class="asBracket">(</span>vi<span class="asBracket">)</span>;
+
+            <span class="asComment">/* the polar angle is also independent of the 
+             * number of siblings
+             * calculated according to the formula */</span>
+            phi <span class="asOperator">=</span> _currentDrawing.phi;
+        
+            <span class="asComment">/* some sanity checks */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>i <span class="asOperator">&lt;</span> 0<span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">throw</span> Error<span class="asBracket">(</span><span class="asString">&quot;i was &lt; 0&quot;</span><span class="asBracket">)</span>;
+            <span class="asBracket">}</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>m <span class="asOperator">&lt;</span> 1<span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">throw</span> Error<span class="asBracket">(</span><span class="asString">&quot;m was &lt; 1&quot;</span><span class="asBracket">)</span>;
+            <span class="asBracket">}</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>vi <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">throw</span> Error<span class="asBracket">(</span><span class="asString">&quot;Node was null&quot;</span><span class="asBracket">)</span>;
+            <span class="asBracket">}</span>
+            
+            <span class="asComment">/* all nodes here should be visible, but we check it anyway */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span><span class="asOperator">!</span>vi.vnode.isVisible<span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">throw</span> Error<span class="asBracket">(</span><span class="asString">&quot;found invisible node in recursion function, which should not happen&quot;</span><span class="asBracket">)</span>;
+            <span class="asBracket">}</span>
+
+            
+            <span class="asComment">//trace(&quot;RecurseCC1: called&quot;);
+</span>            
+            <span class="asReserved">if</span><span class="asBracket">(</span>vi <span class="asOperator">==</span> _root<span class="asBracket">)</span> <span class="asBracket">{</span>
+                
+                <span class="asComment">//trace(&quot;RecurseCC2: node:&quot;+vi.id+&quot; is root, setting all to 0&quot;);
+</span>                
+                <span class="asComment">/* if we are the root node we set the
+                 * static parameters of the root node */</span>
+                nodeOrigin <span class="asOperator">=</span> <span class="asReserved">new</span> Point<span class="asBracket">(</span>0,0<span class="asBracket">)</span>;
+                zeroAngleOffset <span class="asOperator">=</span> 0.0;
+                nodePolarR <span class="asOperator">=</span> 0.0;
+                nodePolarPhi <span class="asOperator">=</span> 0.0;
+    
+                <span class="asComment">/* set the values, this should apply the origin and zero-angle
+                 * offset to the cartesian coordinates */</span>            
+                _currentDrawing.
+                    setNodeCoordinates<span class="asBracket">(</span>vi,nodeOrigin,zeroAngleOffset,nodePolarR,nodePolarPhi<span class="asBracket">)</span>;
+                <span class="asReserved">return</span>;
+            <span class="asBracket">}</span>
+            
+            
+            <span class="asComment">/* else the node has a parent */</span>
+            vp <span class="asOperator">=</span> _stree.parents<span class="asBracket">[</span>vi<span class="asBracket">]</span>;
+
+            <span class="asComment">/* make sure it is the case */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>vp <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">throw</span> Error<span class="asBracket">(</span><span class="asString">&quot;Found non-root node without parent&quot;</span><span class="asBracket">)</span>;
+            <span class="asBracket">}</span>
+            
+            <span class="asComment">//trace(&quot;RecurseCC3: node:&quot;+vi.id+&quot; is NOT root, got parent:&quot;+vp.id);
+</span>            
+            <span class="asComment">/* we would now check if we already have
+             * the data of the parent node (in this case the root)
+             * and if not, we call this function (i.e. recurse)
+             * the other values on the model are Numbers, so we would
+             * need to check if the map has the key at all ....
+             */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span><span class="asOperator">!</span>_currentDrawing.nodeDataValid<span class="asBracket">(</span>vp<span class="asBracket">))</span> <span class="asBracket">{</span>
+                <span class="asComment">/* RECURSE upward, but should not happen */</span>
+                <span class="asComment">//trace(&quot;RecurseCC4: recursing with parent node:&quot;+vp.id+&quot; (current node:&quot;+vi.id+&quot;)&quot;);
+</span>                <span class="asComment">//recurseCoordinateCalculation(vp,_stree.getChildIndex(vp),_stree.getNoSiblings(vp));
+</span>                <span class="asReserved">throw</span> Error<span class="asBracket">(</span><span class="asString">&quot;Parent node data invalid, this should not have happened&quot;</span><span class="asBracket">)</span>;
+            <span class="asBracket">}</span>
+            
+            <span class="asComment">//trace(&quot;RecurseCC5: node:&quot;+vi.id+&quot;&apos;s parent:&quot;+vp.id+&quot; has values&quot;);
+</span>            
+            <span class="asComment">/* now if the parent (v) is the root, i.e. we have
+             * a tier-1 node we are still in a special case */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>vp <span class="asOperator">==</span> _root<span class="asBracket">)</span> <span class="asBracket">{</span>
+                                
+                <span class="asComment">//trace(&quot;RecurseCC6: node:&quot;+vi.id+&quot;&apos;s parent:&quot;+vp.id+&quot; is ROOT, applying special values&quot;);
+</span>                                
+                nodeOrigin <span class="asOperator">=</span> _currentDrawing.getOrigin<span class="asBracket">(</span>vp<span class="asBracket">)</span>;
+                zeroAngleOffset <span class="asOperator">=</span> _currentDrawing.getAngleOffset<span class="asBracket">(</span>vp<span class="asBracket">)</span>;
+                
+                nodePolarR <span class="asOperator">=</span> _currentDrawing.rootR <span class="asComment">// this is the initial user defined value
+</span>                
+                <span class="asComment">/* remember we use degrees now, not radians */</span>
+                nodePolarPhi <span class="asOperator">=</span> <span class="asBracket">(</span>360 <span class="asOperator">*</span> <span class="asBracket">(</span>i<span class="asOperator">+</span>1<span class="asBracket">)</span> <span class="asOperator">/</span> m<span class="asBracket">)</span>; <span class="asComment">// have to adjust for index starting with 0 instead of 1
+</span>                
+                <span class="asComment">//trace(&quot;RecurseCC6.1: node:&quot;+vi.id+&quot; gets rootR:&quot;+nodePolarR);
+</span>                
+                <span class="asComment">/* set the values */</span>                
+                _currentDrawing.
+                    setNodeCoordinates<span class="asBracket">(</span>vi,nodeOrigin,zeroAngleOffset,
+                    nodePolarR <span class="asOperator">*</span> <span class="asBracket">(</span>Math.sqrt<span class="asBracket">(</span>i<span class="asOperator">+</span>1<span class="asBracket">)</span> <span class="asOperator">/</span> Math.sqrt<span class="asBracket">(</span>m<span class="asOperator">+</span>1<span class="asBracket">))</span>,nodePolarPhi<span class="asBracket">)</span>;
+                <span class="asReserved">return</span>;
+            <span class="asBracket">}</span>
+            
+            <span class="asComment">//trace(&quot;RecurseCC7: node:&quot;+vi.id+&quot;&apos;s parent:&quot;+vp.id+&quot; is NOT root, calculating..&quot;);
+</span>            
+            <span class="asComment">/* now we use a regular node, again here we have 
+             * two cases, depending on if the node has 
+             * siblings or not but the origin references
+             * will be the same regardless */</span>
+            
+            <span class="asComment">/* origin will be the coordinates of the parent, but
+             * those are relative to the parents origin
+             * so we already need to apply the origin offset
+             * so that we can be sure all the origins are already
+             * absolute */</span>
+            <span class="asComment">/* XXX THIS SHOULD ENSURE THAT ALL ORIGINS ARE ACTUALLY ABSOLUTE COORDINATES
+             * WHILE OTHERS ARE RELATIVE */</span>
+             
+            nodeOrigin <span class="asOperator">=</span> _currentDrawing.getRelCartCoordinates<span class="asBracket">(</span>vp<span class="asBracket">)</span>;
+                
+            <span class="asComment">//XXX SHOULD NO LONGER BE NEEDED add(_currentDrawing.getOrigin(vp));
+</span>
+            <span class="asComment">/* it is the
+             * arcsin((parent.y - grandparent.y) / distance(parent,grandparent));
+             */</span>
+
+            <span class="asComment">/* first get a grandparent, there should be one
+             * because we are in the case where the parent is not root */</span>
+            vgp <span class="asOperator">=</span> _stree.parents<span class="asBracket">[</span>vp<span class="asBracket">]</span>;
+            <span class="asReserved">if</span><span class="asBracket">(</span>vgp <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">throw</span> Error<span class="asBracket">(</span><span class="asString">&quot;Node vi:&quot;</span><span class="asOperator">+</span>vi.id<span class="asOperator">+</span><span class="asString">&quot; with parent:&quot;</span><span class="asOperator">+</span>vp.id<span class="asOperator">+</span><span class="asString">&quot; has no grandparent but should have&quot;</span><span class="asBracket">)</span>;
+            <span class="asBracket">}</span>
+            
+            vgpcoords <span class="asOperator">=</span> _currentDrawing.getRelCartCoordinates<span class="asBracket">(</span>vgp<span class="asBracket">)</span>;
+            vpcoords <span class="asOperator">=</span> _currentDrawing.getRelCartCoordinates<span class="asBracket">(</span>vp<span class="asBracket">)</span>;
+            
+            <span class="asComment">//trace(&quot;Node:&quot;+vi.id+&quot; has parent:&quot;+vp.id+&quot; and grandparent:&quot;+vgp.id);
+</span>            
+            <span class="asComment">//deltaY = vgpcoords.y - vpcoords.y;
+</span>            <span class="asComment">//distance = Point.distance(vgpcoords, vpcoords);
+</span>            
+            <span class="asComment">/* XXX asin may not yield what we want, better to try to use atan() or atan2()
+             * and check the result values */</span>
+             
+            <span class="asComment">/* all angles are now in degrees */</span>
+            
+            <span class="asComment">/* big issue here is that the y axis direction is reversed
+             * that means the sign of the y.coordinates is probably
+             * reversed either, we try to compensate by changing the subtrating
+             * order of the y coordinates */</span>
+            zeroAngleOffset <span class="asOperator">=</span> Geometry.rad2deg<span class="asBracket">(</span>Math.atan2<span class="asBracket">(</span>vpcoords.y <span class="asOperator">-</span> vgpcoords.y, vgpcoords.x <span class="asOperator">-</span> vpcoords.x<span class="asBracket">))</span>;
+            
+            <span class="asComment">//zeroAngleOffset = Math.asin(deltaY / distance);
+</span>            
+            <span class="asComment">//trace(&quot;RecurseCC7.05: node:&quot;+vi.id+&quot; gets zero offset:&quot;+zeroAngleOffset);
+</span>
+            
+            <span class="asComment">//trace(&quot;RecurseCC7.1: node:&quot;+vi.id+&quot; gets phi:&quot;+phi);
+</span>            
+            <span class="asComment">//nodePolarPhi = 180 - (phi/2.0) + (phi * (i+1) / m) + (phi / (2 * m)); 
+</span>            <span class="asComment">//nodePolarPhi = - (phi/2.0) + (phi * (i+1) / m) + (phi / (2 * m));  
+</span>        
+            <span class="asComment">/* new reasoning */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>m <span class="asOperator">==</span> 1<span class="asBracket">)</span> <span class="asBracket">{</span>
+                nodePolarPhi <span class="asOperator">=</span> 180;
+            <span class="asBracket">}</span> <span class="asReserved">else</span> <span class="asBracket">{</span>
+                nodePolarPhi <span class="asOperator">=</span> 180 <span class="asOperator">-</span> <span class="asBracket">(</span>phi <span class="asOperator">/</span> 2.0<span class="asBracket">)</span> <span class="asOperator">+</span> <span class="asBracket">(</span>phi <span class="asOperator">*</span> i <span class="asOperator">/</span> <span class="asBracket">(</span>m<span class="asOperator">-</span>1<span class="asBracket">))</span>;
+            <span class="asBracket">}</span>
+        
+            <span class="asComment">//trace(&quot;RecurseCC7.2: node:&quot;+vi.id+&quot; with: i:&quot;+i+&quot; and m:&quot;+m+&quot; gets Polarphi:&quot;+nodePolarPhi);    
+</span>                
+            <span class="asComment">/* if the node has no siblings, m must be 1
+             * the magnitude of the parent is what? Maybe
+             * the r of the parent, which is then halved?
+             * XXXX
+             * MAGNITUDE probably refers to the &quot;importance&quot; in terms
+             * of social networking, which is often visualised
+             * by having a direct impact to the node&apos;s size.
+             * we do not use that, all nodes are created equal, so we
+             * could choose this factor to fit our needs
+             * right now we chose the node&apos;s view&apos;s average
+             * size by half, which may in the future also be multiplied by
+             * a certain factor (which could then be used in 
+             * autofitting)
+             */</span>
+            
+            mp <span class="asOperator">=</span> _stree.getNoSiblings<span class="asBracket">(</span>vp<span class="asBracket">)</span>;
+            ip <span class="asOperator">=</span> _stree.getChildIndex<span class="asBracket">(</span>vp<span class="asBracket">)</span>;
+            
+            <span class="asComment">//trace(&quot;RecurseCC8: set node:&quot;+vi.id+&quot;&apos;s polarPhi to:&quot;+nodePolarPhi);
+</span>            <span class="asReserved">if</span><span class="asBracket">(</span>mp <span class="asOperator">==</span> 1<span class="asBracket">)</span> <span class="asBracket">{</span>
+                
+                magnitude <span class="asOperator">=</span> Math.sqrt<span class="asBracket">((</span>vp.vnode.view.width <span class="asOperator">*</span> vp.vnode.view.width<span class="asBracket">)</span> <span class="asOperator">+</span>
+                    <span class="asBracket">(</span>vp.vnode.view.height <span class="asOperator">*</span> vp.vnode.view.height<span class="asBracket">))</span>;
+                
+                <span class="asComment">//trace(&quot;RecurseCC8.1: parent node:&quot;+vp.id+&quot; has no siblings&quot;);            
+</span>                <span class="asComment">/* the diameter might be better here, but anyway */</span>
+                <span class="asComment">//nodePolarR = (vp.vnode.view.width + vp.vnode.view.height) / 4;
+</span>                
+                nodePolarR <span class="asOperator">=</span> magnitude <span class="asOperator">/</span> 2.0;
+                                
+            <span class="asBracket">}</span> <span class="asReserved">else</span> <span class="asBracket">{</span>
+                
+                <span class="asComment">//trace(&quot;RecurseCC8.2: parent node:&quot;+vp.id+&quot; has &quot;+mp+&quot; siblings&quot;);
+</span>                
+                <span class="asComment">/* literally: the radius of the circle centered at vp (parent node)
+                 * and intersecting the midway point between vp and vp&apos;s nearest
+                 * sibling on their shared containment circle */</span>
+                 
+                <span class="asComment">/* we need to get a sibling from vp, but first we need to know
+                 * if we need to take the following or preceding sibling,
+                 * (either would do) so we do not overrun */</span>
+
+                <span class="asComment">/* check if there is a next sibling, i.e. the index must be less
+                 * than the maximum number -1 (which is the last index) */</span>
+                <span class="asReserved">if</span><span class="asBracket">(</span>ip <span class="asOperator">&lt;</span> <span class="asBracket">(</span>mp <span class="asOperator">-</span> 1<span class="asBracket">))</span> <span class="asBracket">{</span>
+                    <span class="asComment">//trace(&quot;RecurseCC8.2.0.1: ip:&quot;+ip+&quot; is &lt; mp:&quot;+mp);
+</span>                    vs <span class="asOperator">=</span> _stree.getIthChildPerNode<span class="asBracket">(</span>vgp,ip<span class="asOperator">+</span>1<span class="asBracket">)</span>;
+                    <span class="asComment">//trace(&quot;RecurseCC8.2.0.2: sibling node vs:&quot;+vs.id);
+</span>                <span class="asBracket">}</span>
+                <span class="asComment">/* no? but if the index is &gt; 0 we have a previous sibling */</span>
+                <span class="asReserved">else</span> <span class="asReserved">if</span><span class="asBracket">(</span>ip <span class="asOperator">&gt;</span> 0<span class="asBracket">)</span> <span class="asBracket">{</span>
+                    <span class="asComment">//trace(&quot;RecurseCC8.2.0.3: ip:&quot;+ip+&quot; is &gt; 1 and mp:&quot;+mp);
+</span>                    vs <span class="asOperator">=</span> _stree.getIthChildPerNode<span class="asBracket">(</span>vgp,ip<span class="asOperator">-</span>1<span class="asBracket">)</span>;
+                    <span class="asComment">//trace(&quot;RecurseCC8.2.0.4: sibling node vs:&quot;+vs.id);
+</span>                <span class="asBracket">}</span>
+                <span class="asComment">/* we have neither? so vp is childindex 1 and mp is 1 
+                 * that means vp was an only child ... hmmm unclear if
+                 * I work in the wrong tier??? XXXX */</span>
+                <span class="asReserved">else</span> <span class="asBracket">{</span>
+                    <span class="asReserved">throw</span> Error<span class="asBracket">(</span><span class="asString">&quot;vp:&quot;</span><span class="asOperator">+</span>vp.id<span class="asOperator">+</span><span class="asString">&quot; has no sibling, but mp &gt; 1? this is very wrong&quot;</span><span class="asBracket">)</span>;
+                <span class="asBracket">}</span>
+                
+                <span class="asComment">/* since we compute from root down, this should not happen */</span>
+                <span class="asReserved">if</span><span class="asBracket">(</span><span class="asOperator">!</span>_currentDrawing.nodeDataValid<span class="asBracket">(</span>vs<span class="asBracket">))</span> <span class="asBracket">{</span>
+                    <span class="asReserved">throw</span> Error<span class="asBracket">(</span><span class="asString">&quot;Parent siblings node data invalid, this should not have happened&quot;</span><span class="asBracket">)</span>;
+                <span class="asBracket">}</span>
+                
+                angle1 <span class="asOperator">=</span> _currentDrawing.getLocalPolarPhi<span class="asBracket">(</span>vp<span class="asBracket">)</span>;
+                angle2 <span class="asOperator">=</span> _currentDrawing.getLocalPolarPhi<span class="asBracket">(</span>vs<span class="asBracket">)</span>;
+                
+                <span class="asComment">/* *
+                trace(&quot;RecurseCC8.3: vi:&quot;+vi.id+&quot; parent:&quot;+vp.id+&quot;&apos;s phi:&quot;+
+                angle1+
+                &quot; sibling:&quot;+vs.id+&quot;&apos;s phi:&quot;+
+                angle2);
+                /* */</span>
+                
+                <span class="asComment">/* establish the larger of the two angles */</span>
+                <span class="asReserved">if</span><span class="asBracket">(</span>angle1 <span class="asOperator">&gt;</span> angle2<span class="asBracket">)</span> <span class="asBracket">{</span>
+                    lrgangle <span class="asOperator">=</span> angle1;
+                    smlangle <span class="asOperator">=</span> angle2;
+                <span class="asBracket">}</span> <span class="asReserved">else</span> <span class="asBracket">{</span>
+                    lrgangle <span class="asOperator">=</span> angle2;
+                    smlangle <span class="asOperator">=</span> angle1;
+                <span class="asBracket">}</span>
+                
+                <span class="asComment">/* if the difference is larger than 180, we want
+                 * to use the complementary angle */</span>
+                <span class="asReserved">if</span><span class="asBracket">(</span>lrgangle <span class="asOperator">&lt;</span> <span class="asBracket">(</span>smlangle <span class="asOperator">+</span> 180<span class="asBracket">))</span> <span class="asBracket">{</span>
+                    delta <span class="asOperator">=</span> lrgangle <span class="asOperator">-</span> smlangle;
+                <span class="asBracket">}</span> <span class="asReserved">else</span> <span class="asBracket">{</span>
+                    delta <span class="asOperator">=</span> 360 <span class="asOperator">-</span> <span class="asBracket">(</span>lrgangle <span class="asOperator">-</span> smlangle<span class="asBracket">)</span>;
+                <span class="asBracket">}</span>
+
+                <span class="asComment">/* now half it */</span>
+                delta <span class="asOperator">=</span> delta <span class="asOperator">/</span> 2.0;
+                
+                <span class="asComment">/*
+                trace(&quot;Half Angular diff between:&quot;+vp.id+&quot; and:&quot;+vs.id+&quot; is:&quot;+delta);
+                trace(&quot;Radius of vp:&quot;+_currentDrawing.getLocalPolarR(vp)+&quot; and vs:&quot;+
+                    _currentDrawing.getLocalPolarR(vs));
+                */</span>
+                
+                <span class="asComment">/* delta is an angle in degrees now */</span>
+                
+                <span class="asComment">/* now multiply with radius to get the segments length */</span>
+                nodePolarR <span class="asOperator">=</span> Geometry.deg2rad<span class="asBracket">(</span>delta<span class="asBracket">)</span> <span class="asOperator">*</span> _currentDrawing.getLocalPolarR<span class="asBracket">(</span>vp<span class="asBracket">)</span>;
+            
+            <span class="asBracket">}</span>
+            <span class="asComment">//trace(&quot;RecurseCC9: set node:&quot;+vi.id+&quot;&apos;s polarR to:&quot;+nodePolarR);
+</span>            
+            <span class="asComment">/* set the values */</span>                
+            _currentDrawing.
+                setNodeCoordinates<span class="asBracket">(</span>vi,nodeOrigin,zeroAngleOffset,
+                nodePolarR <span class="asOperator">*</span> <span class="asBracket">(</span>Math.sqrt<span class="asBracket">(</span>i<span class="asOperator">+</span>1<span class="asBracket">)</span> <span class="asOperator">/</span> Math.sqrt<span class="asBracket">(</span>m<span class="asOperator">+</span>1<span class="asBracket">))</span>,nodePolarPhi<span class="asBracket">)</span>;
+                
+            <span class="asReserved">return</span>;
+        <span class="asBracket">}</span>        
+
+        <span class="asDoc">/**
+         * @internal
+         * do all the calculations required for autoFit
+         * */</span>
+        <span class="asReserved">private</span> <span class="asFunction">function</span> calculateAutoFit<span class="asBracket">()</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            
+            <span class="asVar">var</span> maxlen<span class="asOperator">:</span>Number;
+            
+            maxlen <span class="asOperator">=</span> Math.min<span class="asBracket">(</span>_vgraph.width,_vgraph.height<span class="asBracket">)</span> <span class="asOperator">-</span> DEFAULT_MARGIN;
+                        
+            _rootR <span class="asOperator">=</span> 2 <span class="asOperator">*</span> maxlen <span class="asOperator">*</span> Math.pow<span class="asBracket">(</span>0.6,_vgraph.maxVisibleDistance <span class="asOperator">+</span> 1<span class="asBracket">)</span>;
+
+            <span class="asComment">//trace(&quot;autofitting rootR to:&quot;+_rootR+&quot; with ml:&quot;+maxlen+&quot; and md:&quot;+_vgraph.maxVisibleDistance);
+</span>
+        <span class="asBracket">}</span>
+    <span class="asBracket">}</span>
+<span class="asBracket">}</span></pre></body>
+</html>

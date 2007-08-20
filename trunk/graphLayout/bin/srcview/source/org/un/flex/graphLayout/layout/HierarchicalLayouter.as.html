@@ -1,0 +1,681 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>HierarchicalLayouter.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="asComment">/* 
+ * The MIT License
+ *
+ * Copyright (c) 2007 The SixDegrees Project Team
+ * (Jason Bellone, Juan Rodriguez, Segolene de Basquiat, Daniel Lang).
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the &quot;Software&quot;), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */</span>
+<span class="asPackage">package</span> org.un.flex.graphLayout.layout <span class="asBracket">{</span>
+
+    <span class="asReserved">import</span> org.un.flex.graphLayout.visual.IVisualGraph;
+    <span class="asReserved">import</span> org.un.flex.graphLayout.data.IGraph;
+    <span class="asReserved">import</span> org.un.flex.graphLayout.data.Graph;
+    <span class="asReserved">import</span> org.un.flex.graphLayout.visual.IVisualNode;
+    <span class="asReserved">import</span> org.un.flex.graphLayout.data.IEdge;
+    <span class="asReserved">import</span> org.un.flex.graphLayout.data.INode;
+    <span class="asReserved">import</span> org.un.flex.graphLayout.visual.IVisualEdge;
+    <span class="asReserved">import</span> org.un.flex.graphLayout.data.IGTree;
+    <span class="asReserved">import</span> org.un.flex.utils.Geometry;
+    <span class="asReserved">import</span> flash.geom.Point;
+    <span class="asReserved">import</span> flash.utils.Dictionary;
+    <span class="asReserved">import</span> flash.events.TimerEvent;
+    <span class="asReserved">import</span> flash.utils.Timer;
+    <span class="asReserved">import</span> flash.events.MouseEvent;
+    
+    <span class="asDoc">/**
+     * This layouter implements the drawing of generalized trees
+     * in a hierarchical fashion using the algorithm by
+     * Christoph Buchheim, Michael Juenger and Sebastian Leipert
+     * presented in their paper 
+     * &quot;Improving Walker&apos;s Algorithm to run in linear time&quot;
+     * */</span>
+    <span class="asReserved">public</span> <span class="asClass">class</span> HierarchicalLayouter <span class="asReserved">extends</span> AnimatedBaseLayouter <span class="asReserved">implements</span> ILayoutAlgorithm <span class="asBracket">{</span>
+        
+        <span class="asDoc">/**
+         * Set the orientation to this to result in a
+         * left to right layout.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asReserved">const</span> ORIENT_LEFT_RIGHT<span class="asOperator">:</span>uint <span class="asOperator">=</span> 0;
+
+        <span class="asDoc">/**
+         * Set the orientation to this to result in a
+         * right to left layout.
+         * */</span>        
+        <span class="asReserved">public</span> <span class="asReserved">const</span> ORIENT_RIGHT_LEFT<span class="asOperator">:</span>uint <span class="asOperator">=</span> 1;
+        
+        <span class="asDoc">/**
+         * Set the orientation to this to result in a
+         * top down layout.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asReserved">const</span> ORIENT_TOP_DOWN<span class="asOperator">:</span>uint <span class="asOperator">=</span> 2;
+        
+        <span class="asDoc">/**
+         * Set the orientation to this to result in a
+         * bottom up layout.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asReserved">const</span> ORIENT_BOTTOM_UP<span class="asOperator">:</span>uint <span class="asOperator">=</span> 3;
+        
+        <span class="asComment">/* this holds the data for the Hierarchical layout drawing */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _currentDrawing<span class="asOperator">:</span>HierarchicalLayoutDrawing;
+        
+        <span class="asComment">/* this is the distance between nodes within a layer
+         * typically x distance if top-bottom orientation
+         * it may be preset by autofit */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _defaultNodeDistance<span class="asOperator">:</span>Number;
+        
+        <span class="asComment">/* set to true if you want node sizes to be taken
+         * into account */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _honorNodeSize<span class="asOperator">:</span>Boolean;
+        
+        <span class="asComment">/* this is the distance between layers, or typically
+         * the y distance if top-bottom orientation.
+         * Again it may be set by autofit */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _layerDistance<span class="asOperator">:</span>Number;
+        
+        <span class="asComment">/* this is the default ancestor node used in the algorithm */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _defaultAncestor<span class="asOperator">:</span>INode;
+        
+        <span class="asComment">/* this holds the actual orientation */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _orientation<span class="asOperator">:</span>uint;
+        
+        <span class="asComment">/* this enables an additional spread of nodes within the
+         * same layer, but which are all siblings */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _siblingSpreadEnabled<span class="asOperator">:</span>Boolean;
+        
+        <span class="asComment">/* the corresponding distance, should be at least */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _siblingSpreadDistance<span class="asOperator">:</span>Number;
+        
+        <span class="asDoc">/**
+         * The constructor only initialises some data structures.
+         * @inheritDoc
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> HierarchicalLayouter<span class="asBracket">(</span>vg<span class="asOperator">:</span>IVisualGraph <span class="asOperator">=</span> <span class="asReserved">null</span><span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            <span class="asReserved">super</span><span class="asBracket">(</span>vg<span class="asBracket">)</span>;
+            animationType <span class="asOperator">=</span> ANIM_STRAIGHT; <span class="asComment">// inherited
+</span>            initModel<span class="asBracket">()</span>;
+            
+            _defaultNodeDistance <span class="asOperator">=</span> 10;
+            _layerDistance <span class="asOperator">=</span> 10;
+            _orientation <span class="asOperator">=</span> ORIENT_TOP_DOWN;
+            _siblingSpreadEnabled <span class="asOperator">=</span> <span class="asReserved">true</span>;
+            _siblingSpreadDistance <span class="asOperator">=</span> 10;
+            _honorNodeSize <span class="asOperator">=</span> <span class="asReserved">false</span>;
+        <span class="asBracket">}</span>
+
+        <span class="asDoc">/**
+         * @inheritDoc
+         * */</span>
+        <span class="asReserved">override</span> <span class="asReserved">public</span> <span class="asFunction">function</span> resetAll<span class="asBracket">()</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>            
+            
+            killTimer<span class="asBracket">()</span>;
+            
+            _layoutChanged <span class="asOperator">=</span> <span class="asReserved">true</span>;
+            
+            <span class="asComment">/* invalidate all trees in the graph */</span>
+            _stree <span class="asOperator">=</span> <span class="asReserved">null</span>;
+            _graph.purgeTrees<span class="asBracket">()</span>;
+            
+            initModel<span class="asBracket">()</span>;
+        <span class="asBracket">}</span>
+
+        <span class="asDoc">/**
+         * This main interface method computes and
+         * and executes the new layout.
+         * @return Currently the return value is not set or used.
+         * */</span>
+        <span class="asReserved">override</span> <span class="asReserved">public</span> <span class="asFunction">function</span> layoutPass<span class="asBracket">()</span><span class="asOperator">:</span>Boolean <span class="asBracket">{</span>
+
+            <span class="asVar">var</span> i<span class="asOperator">:</span>int;
+            <span class="asVar">var</span> n<span class="asOperator">:</span>INode;
+            <span class="asVar">var</span> visVNodes<span class="asOperator">:</span>Dictionary;
+            <span class="asVar">var</span> vn<span class="asOperator">:</span>IVisualNode;
+            <span class="asVar">var</span> cindex<span class="asOperator">:</span>int;
+            <span class="asVar">var</span> nsiblings<span class="asOperator">:</span>int;
+            <span class="asVar">var</span> rv<span class="asOperator">:</span>Boolean;
+            <span class="asVar">var</span> children<span class="asOperator">:</span>Array;
+            
+            <span class="asComment">//trace(&quot;layoutPass called&quot;);
+</span>            
+            <span class="asReserved">if</span><span class="asBracket">(</span><span class="asOperator">!</span>_vgraph<span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">throw</span> Error<span class="asBracket">(</span><span class="asString">&quot;No Vgraph set in PCRLayouter, aborting&quot;</span><span class="asBracket">)</span>;
+            <span class="asBracket">}</span>
+            
+            <span class="asReserved">if</span><span class="asBracket">(</span><span class="asOperator">!</span>_vgraph.currentRootVNode<span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">throw</span> Error<span class="asBracket">(</span><span class="asString">&quot;This Layouter always requires a root node!&quot;</span><span class="asBracket">)</span>;
+            <span class="asBracket">}</span>
+            
+            <span class="asComment">/* nothing to do if we have no nodes */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_graph.noNodes <span class="asOperator">&lt;</span> 1<span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">return</span> <span class="asReserved">false</span>;
+            <span class="asBracket">}</span>
+            
+            <span class="asComment">/* if there is a timer, we have to stop it to
+             * prevent inconsistencies */</span>
+            killTimer<span class="asBracket">()</span>;
+            
+            <span class="asComment">/* establish the current root, if it has 
+             * changed we need to reinit the model */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_root <span class="asOperator">!=</span> _vgraph.currentRootVNode.node<span class="asBracket">)</span> <span class="asBracket">{</span>
+                _root <span class="asOperator">=</span> _vgraph.currentRootVNode.node;
+                _layoutChanged <span class="asOperator">=</span> <span class="asReserved">true</span>;
+            <span class="asBracket">}</span>
+            
+                    
+            <span class="asComment">/* establish the spanning tree */</span>
+            _stree <span class="asOperator">=</span> _graph.getTree<span class="asBracket">(</span>_root,<span class="asReserved">true</span><span class="asBracket">)</span>;
+
+            <span class="asComment">/* check if the root is visible, if not
+             * this is an issue */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span><span class="asOperator">!</span>_root.vnode.isVisible<span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">throw</span> Error<span class="asBracket">(</span><span class="asString">&quot;Invisible root node, this is probably due to wrong initialisation of nodes or wrong defaults&quot;</span><span class="asBracket">)</span>;
+            <span class="asBracket">}</span>
+
+            <span class="asComment">/* need to see where how we could get a clear
+             * list of situation how to deal with hab
+             * if the layout was changed (or any parameter)
+             * we have to reinit the model */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_layoutChanged<span class="asBracket">)</span> <span class="asBracket">{</span>
+                initModel<span class="asBracket">()</span>;
+            <span class="asBracket">}</span>
+
+            <span class="asComment">/* this is complicated. */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_autoFitEnabled<span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asComment">/* now we calculate the best spacing */</span>
+                calculateAutoFit<span class="asBracket">()</span>;
+            <span class="asBracket">}</span>
+
+            <span class="asComment">/* do the first pass */</span>
+            firstWalk<span class="asBracket">(</span>_root<span class="asBracket">)</span>;
+            
+            <span class="asComment">/* and now the second */</span>
+            secondWalk<span class="asBracket">(</span>_root, <span class="asOperator">-</span>_currentDrawing.getPrelim<span class="asBracket">(</span>_root<span class="asBracket">))</span>;
+        
+            <span class="asComment">/* reset animation cycle */</span>
+            resetAnimation<span class="asBracket">()</span>;
+            
+            <span class="asComment">/* start the animation, does also the commit */</span>
+            startAnimation<span class="asBracket">()</span>;        
+        
+            _layoutChanged <span class="asOperator">=</span> <span class="asReserved">true</span>;
+            <span class="asReserved">return</span> rv;
+        <span class="asBracket">}</span>
+    
+        <span class="asDoc">/**
+         * @inheritDoc
+         * */</span>
+        <span class="asBracket">[</span><span class="asMetadata">Bindable</span><span class="asBracket">]</span>
+        <span class="asReserved">override</span> <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">get</span> linkLength<span class="asBracket">()</span><span class="asOperator">:</span>Number <span class="asBracket">{</span>
+            <span class="asReserved">return</span> _layerDistance <span class="asOperator">/</span> 10;
+        <span class="asBracket">}</span>
+        <span class="asDoc">/**
+         * @private
+         * */</span>
+        <span class="asReserved">override</span> <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">set</span> linkLength<span class="asBracket">(</span>rr<span class="asOperator">:</span>Number<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            _layerDistance <span class="asOperator">=</span> rr <span class="asOperator">*</span> 10;
+        <span class="asBracket">}</span>
+
+        <span class="asDoc">/**
+         * Set the spacing between the nodes within a layer.
+         * Typical range 0 .. 100 should be ok.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">set</span> breadth<span class="asBracket">(</span>b<span class="asOperator">:</span>Number<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            _defaultNodeDistance <span class="asOperator">=</span> b;
+        <span class="asBracket">}</span>
+
+        <span class="asDoc">/**
+         * @private
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">get</span> breadth<span class="asBracket">()</span><span class="asOperator">:</span>Number <span class="asBracket">{</span>
+            <span class="asReserved">return</span> _defaultNodeDistance;
+        <span class="asBracket">}</span>        
+
+        <span class="asDoc">/**
+         * Enable a spreading out of sibling nodes to
+         * make labels more legible in some cases.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">set</span> enableSiblingSpread<span class="asBracket">(</span>ss<span class="asOperator">:</span>Boolean<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            _siblingSpreadEnabled <span class="asOperator">=</span> ss;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * @private
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">get</span> enableSiblingSpread<span class="asBracket">()</span><span class="asOperator">:</span>Boolean <span class="asBracket">{</span>
+            <span class="asReserved">return</span> _siblingSpreadEnabled;
+        <span class="asBracket">}</span>
+
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">set</span> orientation<span class="asBracket">(</span>o<span class="asOperator">:</span>uint<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            <span class="asReserved">switch</span><span class="asBracket">(</span>o<span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">case</span> ORIENT_LEFT_RIGHT<span class="asOperator">:</span>
+                <span class="asReserved">case</span> ORIENT_RIGHT_LEFT<span class="asOperator">:</span>
+                <span class="asReserved">case</span> ORIENT_TOP_DOWN<span class="asOperator">:</span>
+                <span class="asReserved">case</span> ORIENT_BOTTOM_UP<span class="asOperator">:</span>
+                    _orientation <span class="asOperator">=</span> 0;
+                    <span class="asReserved">break</span>;
+                <span class="asReserved">default</span><span class="asOperator">:</span>
+                    <span class="asReserved">throw</span> Error<span class="asBracket">(</span><span class="asString">&quot;orientation:&quot;</span><span class="asOperator">+</span>o<span class="asOperator">+</span><span class="asString">&quot; not supported&quot;</span><span class="asBracket">)</span>;
+            <span class="asBracket">}</span>
+        <span class="asBracket">}</span>
+        
+        <span class="asComment">/* private methods */</span>
+        
+        <span class="asDoc">/**
+         * @internal
+         * This does the first pass over the nodes, recursing
+         * downwards to each leaf and computing the preliminary
+         * x value for each node. It also calls the &quot;apportion()&quot;
+         * function which is the heart of the algorithm.
+         * Then the children are spaced by executeShifts and finally
+         * the node is moved to the center of its children.
+         * @param v The root of the current subtree to work on.
+         * */</span>
+        <span class="asReserved">private</span> <span class="asFunction">function</span> firstWalk<span class="asBracket">(</span>v<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            <span class="asVar">var</span> nochild<span class="asOperator">:</span>uint;
+            <span class="asVar">var</span> child<span class="asOperator">:</span>INode;
+            <span class="asVar">var</span> sibling<span class="asOperator">:</span>INode;
+            <span class="asVar">var</span> i<span class="asOperator">:</span>uint;
+            <span class="asVar">var</span> midpoint<span class="asOperator">:</span>Number;
+            <span class="asVar">var</span> prelimsib<span class="asOperator">:</span>Number;
+            <span class="asVar">var</span> vindex<span class="asOperator">:</span>uint;
+            <span class="asVar">var</span> depthOffset<span class="asOperator">:</span>Number;
+            
+            nochild <span class="asOperator">=</span> _stree.getNoChildren<span class="asBracket">(</span>v<span class="asBracket">)</span>;
+            vindex <span class="asOperator">=</span> _stree.getChildIndex<span class="asBracket">(</span>v<span class="asBracket">)</span>;
+            
+            <span class="asReserved">if</span><span class="asBracket">(</span>nochild <span class="asOperator">==</span> 0<span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asComment">/* if v&apos;s childindex is &gt; 0 then there is a 
+                 * node with a smaller one, i.e. one on the left and we need to space it */</span>
+                <span class="asReserved">if</span><span class="asBracket">(</span>vindex <span class="asOperator">&gt;</span> 0<span class="asBracket">)</span> <span class="asBracket">{</span>
+                    <span class="asComment">/* get the left sibling by getting the vindex - 1&apos;th child of
+                     * it&apos;s parent */</span>
+                    sibling <span class="asOperator">=</span> _stree.getIthChildPerNode<span class="asBracket">(</span>_stree.parents<span class="asBracket">[</span>v<span class="asBracket">]</span>,vindex <span class="asOperator">-</span> 1<span class="asBracket">)</span>;
+                    
+                    <span class="asComment">/* get the prelim value of the sibling */</span>
+                    prelimsib <span class="asOperator">=</span> _currentDrawing.getPrelim<span class="asBracket">(</span>sibling<span class="asBracket">)</span>;
+                    
+                    <span class="asComment">/* now set it for this node, but add the spacing */</span>
+                    _currentDrawing.setPrelim<span class="asBracket">(</span>v, prelimsib <span class="asOperator">+</span> spacing<span class="asBracket">(</span>sibling, v<span class="asBracket">))</span>;
+                <span class="asBracket">}</span> <span class="asReserved">else</span> <span class="asBracket">{</span>
+                    _currentDrawing.setPrelim<span class="asBracket">(</span>v,0<span class="asBracket">)</span>;
+                <span class="asBracket">}</span>
+            <span class="asBracket">}</span> <span class="asReserved">else</span> <span class="asBracket">{</span>
+                <span class="asComment">/* init to the first (0th, leftmost) child of v, 
+                 * may be modified by apportion() */</span>
+                _defaultAncestor <span class="asOperator">=</span> _stree.getIthChildPerNode<span class="asBracket">(</span>v,0<span class="asBracket">)</span>;
+                
+                depthOffset <span class="asOperator">=</span> 0;
+                <span class="asReserved">for</span><span class="asBracket">(</span>i<span class="asOperator">=</span>0; i <span class="asOperator">&lt;</span> nochild; <span class="asOperator">++</span>i<span class="asBracket">)</span> <span class="asBracket">{</span>
+                    child <span class="asOperator">=</span> _stree.getIthChildPerNode<span class="asBracket">(</span>v,i<span class="asBracket">)</span>;
+                    <span class="asComment">/* recurse */</span>
+                    firstWalk<span class="asBracket">(</span>child<span class="asBracket">)</span>;
+                    <span class="asComment">/* and call apportion */</span>
+                    apportion<span class="asBracket">(</span>child<span class="asBracket">)</span>;
+                    
+                    <span class="asComment">/* apply the depth offset for each child */</span>
+                    <span class="asReserved">if</span><span class="asBracket">(</span>_siblingSpreadEnabled<span class="asBracket">)</span> <span class="asBracket">{</span>
+                        _currentDrawing.setDepthOffset<span class="asBracket">(</span>child,depthOffset<span class="asBracket">)</span>;
+                        depthOffset <span class="asOperator">+=</span> _siblingSpreadDistance;
+                    <span class="asBracket">}</span>
+                <span class="asBracket">}</span>
+                
+                <span class="asComment">/* do the shifts */</span>
+                executeShifts<span class="asBracket">(</span>v<span class="asBracket">)</span>;
+                
+                <span class="asComment">/* now center the node above its children */</span>
+                
+                <span class="asComment">/* get the prelim value of the leftmost child */</span>
+                child <span class="asOperator">=</span> _stree.getIthChildPerNode<span class="asBracket">(</span>v,0<span class="asBracket">)</span>;
+                midpoint <span class="asOperator">=</span> _currentDrawing.getPrelim<span class="asBracket">(</span>child<span class="asBracket">)</span>;
+                
+                <span class="asComment">/* now add the prelim of the rightmost child */</span>
+                child <span class="asOperator">=</span> _stree.getIthChildPerNode<span class="asBracket">(</span>v,nochild <span class="asOperator">-</span> 1<span class="asBracket">)</span>;
+                midpoint <span class="asOperator">+=</span> _currentDrawing.getPrelim<span class="asBracket">(</span>child<span class="asBracket">)</span>;
+                
+                <span class="asComment">/* now half it to get the center */</span>
+                midpoint <span class="asOperator">=</span> 0.5 <span class="asOperator">*</span> midpoint;
+                
+                <span class="asComment">/* if v&apos;s childindex is &gt; 0 then there is a 
+                 * node with a smaller one, i.e. one on the left.
+                 */</span>
+                <span class="asReserved">if</span><span class="asBracket">(</span>vindex <span class="asOperator">&gt;</span> 0<span class="asBracket">)</span> <span class="asBracket">{</span>
+                    <span class="asComment">/* get the left sibling by getting the vindex - 1&apos;th child of
+                     * it&apos;s parent */</span>
+                    sibling <span class="asOperator">=</span> _stree.getIthChildPerNode<span class="asBracket">(</span>_stree.parents<span class="asBracket">[</span>v<span class="asBracket">]</span>,vindex <span class="asOperator">-</span> 1<span class="asBracket">)</span>;
+                    
+                    <span class="asComment">/* get the prelim value of the sibling */</span>
+                    prelimsib <span class="asOperator">=</span> _currentDrawing.getPrelim<span class="asBracket">(</span>sibling<span class="asBracket">)</span>;
+                    
+                    <span class="asComment">/* now set it for this node, but add the spacing */</span>
+                    _currentDrawing.setPrelim<span class="asBracket">(</span>v, prelimsib <span class="asOperator">+</span> spacing<span class="asBracket">(</span>sibling,v<span class="asBracket">))</span>;
+                    
+                    <span class="asComment">/* also set the modifier for v */</span>
+                    _currentDrawing.setModifier<span class="asBracket">(</span>v, _currentDrawing.getPrelim<span class="asBracket">(</span>v<span class="asBracket">)</span> <span class="asOperator">-</span> midpoint<span class="asBracket">)</span>;
+                <span class="asBracket">}</span> <span class="asReserved">else</span> <span class="asBracket">{</span>
+                    _currentDrawing.setPrelim<span class="asBracket">(</span>v,midpoint<span class="asBracket">)</span>;
+                <span class="asBracket">}</span>
+            <span class="asBracket">}</span>
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * This method combines a subtree with other subtrees, traverses
+         * their contours/outlines using &apos;thread&apos; pointers, etc.
+         * @param v The node (root of subtree) to work on.
+         * @param defaultAncestor (self explaining).
+         * */</span>
+        <span class="asReserved">private</span> <span class="asFunction">function</span> apportion<span class="asBracket">(</span>v<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            <span class="asVar">var</span> vinsideleft<span class="asOperator">:</span>INode;
+            <span class="asVar">var</span> vinsideright<span class="asOperator">:</span>INode;
+            <span class="asVar">var</span> voutsideleft<span class="asOperator">:</span>INode;
+            <span class="asVar">var</span> voutsideright<span class="asOperator">:</span>INode;
+            <span class="asVar">var</span> sumileft<span class="asOperator">:</span>Number;
+            <span class="asVar">var</span> sumiright<span class="asOperator">:</span>Number;
+            <span class="asVar">var</span> sumoleft<span class="asOperator">:</span>Number;
+            <span class="asVar">var</span> sumoright<span class="asOperator">:</span>Number;
+            <span class="asVar">var</span> shift<span class="asOperator">:</span>Number;
+            <span class="asVar">var</span> vindex<span class="asOperator">:</span>uint;
+            <span class="asVar">var</span> w<span class="asOperator">:</span>INode;
+            <span class="asVar">var</span> lgua<span class="asOperator">:</span>INode; <span class="asComment">// left greatest uncommon ancestor
+</span>            
+            <span class="asComment">/* if we have a left sibling w */</span>
+            vindex <span class="asOperator">=</span> _stree.getChildIndex<span class="asBracket">(</span>v<span class="asBracket">)</span>;
+            <span class="asReserved">if</span><span class="asBracket">(</span>vindex <span class="asOperator">&gt;</span> 0<span class="asBracket">)</span> <span class="asBracket">{</span>
+                w <span class="asOperator">=</span> _stree.getIthChildPerNode<span class="asBracket">(</span>_stree.parents<span class="asBracket">[</span>v<span class="asBracket">]</span>, vindex <span class="asOperator">-</span> 1<span class="asBracket">)</span>;
+                
+                vinsideright <span class="asOperator">=</span> v;
+                voutsideright <span class="asOperator">=</span> v;
+                vinsideleft <span class="asOperator">=</span> w;
+                
+                <span class="asComment">/* the leftmost sibling of vinsideright which is v */</span>
+                voutsideleft <span class="asOperator">=</span> _stree.getIthChildPerNode<span class="asBracket">(</span>_stree.parents<span class="asBracket">[</span>v<span class="asBracket">]</span>,0<span class="asBracket">)</span>;
+            
+                sumiright <span class="asOperator">=</span> _currentDrawing.getModifier<span class="asBracket">(</span>vinsideright<span class="asBracket">)</span>;
+                sumoright <span class="asOperator">=</span> _currentDrawing.getModifier<span class="asBracket">(</span>voutsideright<span class="asBracket">)</span>;
+                sumileft <span class="asOperator">=</span> _currentDrawing.getModifier<span class="asBracket">(</span>vinsideleft<span class="asBracket">)</span>;
+                sumoleft <span class="asOperator">=</span> _currentDrawing.getModifier<span class="asBracket">(</span>voutsideleft<span class="asBracket">)</span>;
+                
+                <span class="asReserved">while</span><span class="asBracket">((</span>nextRight<span class="asBracket">(</span>vinsideleft<span class="asBracket">)</span> <span class="asOperator">!=</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asOperator">&amp;&amp;</span> <span class="asBracket">(</span>nextLeft<span class="asBracket">(</span>vinsideright<span class="asBracket">)</span> <span class="asOperator">!=</span> <span class="asReserved">null</span><span class="asBracket">))</span> <span class="asBracket">{</span>
+                    
+                    <span class="asComment">/* traverse the inside nodes more to the inside
+                     * and the outside nodes further out */</span>
+                    vinsideright <span class="asOperator">=</span> nextLeft<span class="asBracket">(</span>vinsideright<span class="asBracket">)</span>;
+                    voutsideright <span class="asOperator">=</span> nextRight<span class="asBracket">(</span>voutsideright<span class="asBracket">)</span>;
+                    vinsideleft <span class="asOperator">=</span> nextRight<span class="asBracket">(</span>vinsideleft<span class="asBracket">)</span>;
+                    voutsideleft <span class="asOperator">=</span> nextLeft<span class="asBracket">(</span>voutsideleft<span class="asBracket">)</span>;
+                    
+                    <span class="asComment">/* adjust the ancestor */</span>
+                    _currentDrawing.setAncestor<span class="asBracket">(</span>voutsideright,v<span class="asBracket">)</span>;
+                    
+                    shift <span class="asOperator">=</span> <span class="asBracket">(</span>sumileft <span class="asOperator">+</span> _currentDrawing.getPrelim<span class="asBracket">(</span>vinsideleft<span class="asBracket">))</span> <span class="asOperator">-</span>
+                        <span class="asBracket">(</span>sumiright <span class="asOperator">+</span> _currentDrawing.getPrelim<span class="asBracket">(</span>vinsideright<span class="asBracket">))</span> <span class="asOperator">+</span>
+                        spacing<span class="asBracket">(</span>vinsideleft,vinsideright<span class="asBracket">)</span>;
+                    
+                    <span class="asReserved">if</span><span class="asBracket">(</span>shift <span class="asOperator">&gt;</span> 0<span class="asBracket">)</span> <span class="asBracket">{</span>
+                        <span class="asComment">/* get the left greatest uncommon ancestor */</span>
+                        lgua <span class="asOperator">=</span> leftGrUnAncestor<span class="asBracket">(</span>vinsideleft, v<span class="asBracket">)</span>;
+                        <span class="asComment">/* now move the subtree by shift */</span>
+                        moveSubtree<span class="asBracket">(</span>lgua, v, shift<span class="asBracket">)</span>;
+                        <span class="asComment">/* adjust sums */</span>
+                        sumiright <span class="asOperator">+=</span> shift;
+                        sumoright <span class="asOperator">+=</span> shift;
+                    <span class="asBracket">}</span>
+                    
+                    sumileft <span class="asOperator">+=</span> _currentDrawing.getModifier<span class="asBracket">(</span>vinsideleft<span class="asBracket">)</span>;
+                    sumiright <span class="asOperator">+=</span> _currentDrawing.getModifier<span class="asBracket">(</span>vinsideright<span class="asBracket">)</span>;
+                    sumoleft <span class="asOperator">+=</span> _currentDrawing.getModifier<span class="asBracket">(</span>voutsideleft<span class="asBracket">)</span>;
+                    sumoright <span class="asOperator">+=</span> _currentDrawing.getModifier<span class="asBracket">(</span>voutsideright<span class="asBracket">)</span>;
+                <span class="asBracket">}</span> <span class="asComment">// while
+</span>            <span class="asBracket">}</span> <span class="asComment">// if vindex &gt; 0
+</span>            
+            <span class="asReserved">if</span><span class="asBracket">((</span>nextRight<span class="asBracket">(</span>vinsideleft<span class="asBracket">)</span> <span class="asOperator">!=</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asOperator">&amp;&amp;</span> <span class="asBracket">(</span>nextRight<span class="asBracket">(</span>voutsideright<span class="asBracket">)</span> <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">))</span> <span class="asBracket">{</span>
+                <span class="asComment">/* set the thread pointer */</span>
+                _currentDrawing.setThread<span class="asBracket">(</span>voutsideright, nextRight<span class="asBracket">(</span>vinsideleft<span class="asBracket">))</span>;
+                <span class="asComment">/* add to the modifier */</span>
+                _currentDrawing.addToModifier<span class="asBracket">(</span>voutsideright, <span class="asBracket">(</span>sumileft <span class="asOperator">-</span> sumoright<span class="asBracket">))</span>;
+            <span class="asBracket">}</span>
+            
+            <span class="asReserved">if</span><span class="asBracket">((</span>nextLeft<span class="asBracket">(</span>vinsideright<span class="asBracket">)</span> <span class="asOperator">!=</span> <span class="asReserved">null</span><span class="asBracket">)</span> <span class="asOperator">&amp;&amp;</span> <span class="asBracket">(</span>nextLeft<span class="asBracket">(</span>voutsideleft<span class="asBracket">)</span> <span class="asOperator">==</span> <span class="asReserved">null</span><span class="asBracket">))</span> <span class="asBracket">{</span>
+                <span class="asComment">/* set the thread pointer */</span>
+                _currentDrawing.setThread<span class="asBracket">(</span>voutsideleft, nextLeft<span class="asBracket">(</span>vinsideright<span class="asBracket">))</span>;
+                <span class="asComment">/* add to the modifier */</span>
+                _currentDrawing.addToModifier<span class="asBracket">(</span>voutsideleft, <span class="asBracket">(</span>sumiright <span class="asOperator">-</span> sumoleft<span class="asBracket">))</span>;
+                <span class="asComment">/* update the default ancestor */</span>
+                _defaultAncestor <span class="asOperator">=</span> v;
+            <span class="asBracket">}</span>
+        <span class="asBracket">}</span> <span class="asComment">// function 
+</span>        
+        
+        <span class="asDoc">/**
+         * returns the next node of the left contour/outline
+         * of the subtree */</span>
+        <span class="asReserved">private</span> <span class="asFunction">function</span> nextLeft<span class="asBracket">(</span>v<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span>INode <span class="asBracket">{</span>
+            <span class="asComment">/* if the node has children we return the leftmost
+             * child, if not, we return the thread of the node */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_stree.getNoChildren<span class="asBracket">(</span>v<span class="asBracket">)</span> <span class="asOperator">&gt;</span> 0<span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">return</span> _stree.getIthChildPerNode<span class="asBracket">(</span>v,0<span class="asBracket">)</span>;
+            <span class="asBracket">}</span> <span class="asReserved">else</span> <span class="asBracket">{</span>
+                <span class="asReserved">return</span> _currentDrawing.getThread<span class="asBracket">(</span>v<span class="asBracket">)</span>;
+            <span class="asBracket">}</span>
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * returns the next node of the right contour/outline
+         * of the subtree */</span>
+        <span class="asReserved">private</span> <span class="asFunction">function</span> nextRight<span class="asBracket">(</span>v<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span>INode <span class="asBracket">{</span>
+            <span class="asVar">var</span> nochildren<span class="asOperator">:</span>uint;
+            
+            nochildren <span class="asOperator">=</span> _stree.getNoChildren<span class="asBracket">(</span>v<span class="asBracket">)</span>;
+            
+            <span class="asComment">/* if the node has children we return the rightmost
+             * child, if not, we return the thread of the node */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>nochildren <span class="asOperator">&gt;</span> 0<span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">return</span> _stree.getIthChildPerNode<span class="asBracket">(</span>v,nochildren <span class="asOperator">-</span> 1<span class="asBracket">)</span>;
+            <span class="asBracket">}</span> <span class="asReserved">else</span> <span class="asBracket">{</span>
+                <span class="asReserved">return</span> _currentDrawing.getThread<span class="asBracket">(</span>v<span class="asBracket">)</span>;
+            <span class="asBracket">}</span>
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * Moves the subtree in wright by shift, all other moves
+         * are done later, but we remember their change and shift
+         * values.
+         * */</span>
+        <span class="asReserved">private</span> <span class="asFunction">function</span> moveSubtree<span class="asBracket">(</span>wleft<span class="asOperator">:</span>INode, wright<span class="asOperator">:</span>INode, shift<span class="asOperator">:</span>Number<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            <span class="asVar">var</span> subtrees<span class="asOperator">:</span>int;
+            
+            <span class="asComment">/* the number of subtrees between the two nodes */</span>
+            subtrees <span class="asOperator">=</span> _stree.getChildIndex<span class="asBracket">(</span>wright<span class="asBracket">)</span> <span class="asOperator">-</span> _stree.getChildIndex<span class="asBracket">(</span>wleft<span class="asBracket">)</span>;
+            
+            _currentDrawing.addToChange<span class="asBracket">(</span>wright, <span class="asOperator">-</span><span class="asBracket">(</span>shift <span class="asOperator">/</span> subtrees<span class="asBracket">))</span>;
+            _currentDrawing.addToChange<span class="asBracket">(</span>wleft, <span class="asBracket">(</span>shift <span class="asOperator">/</span> subtrees<span class="asBracket">))</span>;
+            _currentDrawing.addToShift<span class="asBracket">(</span>wright, shift<span class="asBracket">)</span>;
+            _currentDrawing.addToPrelim<span class="asBracket">(</span>wright, shift<span class="asBracket">)</span>;
+            _currentDrawing.addToModifier<span class="asBracket">(</span>wright, shift<span class="asBracket">)</span>;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * Finally execute all shifts that were accumulated
+         * in previous moveSubtree calls
+         * */</span>
+        <span class="asReserved">private</span> <span class="asFunction">function</span> executeShifts<span class="asBracket">(</span>v<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            <span class="asVar">var</span> shift<span class="asOperator">:</span>Number;
+            <span class="asVar">var</span> change<span class="asOperator">:</span>Number;
+            <span class="asVar">var</span> w<span class="asOperator">:</span>INode;
+            <span class="asVar">var</span> nochildren<span class="asOperator">:</span>uint;
+            <span class="asVar">var</span> i<span class="asOperator">:</span>int;
+            
+            shift <span class="asOperator">=</span> 0;
+            change <span class="asOperator">=</span> 0;
+            
+            nochildren <span class="asOperator">=</span> _stree.getNoChildren<span class="asBracket">(</span>v<span class="asBracket">)</span>;
+            <span class="asComment">/* need to walk from right to left here */</span>
+            <span class="asReserved">for</span><span class="asBracket">(</span>i<span class="asOperator">=</span><span class="asBracket">(</span>nochildren <span class="asOperator">-</span>1<span class="asBracket">)</span>; i <span class="asOperator">&gt;=</span> 0; <span class="asOperator">--</span>i<span class="asBracket">)</span> <span class="asBracket">{</span>
+                w <span class="asOperator">=</span> _stree.getIthChildPerNode<span class="asBracket">(</span>v,i<span class="asBracket">)</span>;
+                _currentDrawing.addToPrelim<span class="asBracket">(</span>w,shift<span class="asBracket">)</span>;
+                _currentDrawing.addToModifier<span class="asBracket">(</span>w,shift<span class="asBracket">)</span>;
+            
+                change <span class="asOperator">+=</span> _currentDrawing.getChange<span class="asBracket">(</span>w<span class="asBracket">)</span>;
+                shift <span class="asOperator">+=</span> _currentDrawing.getShift<span class="asBracket">(</span>w<span class="asBracket">)</span> <span class="asOperator">+</span> change;
+            <span class="asBracket">}</span>
+        <span class="asBracket">}</span>
+        
+        
+        <span class="asDoc">/**
+         * Finds and returns the left one of the greatest
+         * uncommon ancestors of vileft and its right neighbour.
+         * */</span>
+        <span class="asReserved">private</span> <span class="asFunction">function</span> leftGrUnAncestor<span class="asBracket">(</span>vileft<span class="asOperator">:</span>INode, v<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span>INode <span class="asBracket">{</span>
+            <span class="asVar">var</span> avileft<span class="asOperator">:</span>INode;
+            
+            avileft <span class="asOperator">=</span> _currentDrawing.getAncestor<span class="asBracket">(</span>vileft<span class="asBracket">)</span>;
+            
+            <span class="asReserved">if</span><span class="asBracket">(</span>_stree.areSiblings<span class="asBracket">(</span>avileft,v<span class="asBracket">))</span> <span class="asBracket">{</span>
+                <span class="asReserved">return</span> avileft;
+            <span class="asBracket">}</span> <span class="asReserved">else</span> <span class="asBracket">{</span>
+                <span class="asReserved">return</span> _defaultAncestor;
+            <span class="asBracket">}</span>
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * Computes the real x values from all the saved parameters
+         * this is not yet subject to orientation, but could be
+         * done here.
+         * @param n The node set its coordinates.
+         * @param m An accumulated modifier.
+         * */</span>
+        <span class="asReserved">private</span> <span class="asFunction">function</span> secondWalk<span class="asBracket">(</span>v<span class="asOperator">:</span>INode, m<span class="asOperator">:</span>Number<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            <span class="asVar">var</span> breadth<span class="asOperator">:</span>Number;
+            <span class="asVar">var</span> depth<span class="asOperator">:</span>Number;
+            <span class="asVar">var</span> children<span class="asOperator">:</span>Array;
+            <span class="asVar">var</span> w<span class="asOperator">:</span>INode;
+            
+            <span class="asComment">/* the depth value is the depth from the root times
+             * the layerDistance. */</span>
+            depth <span class="asOperator">=</span> _stree.getDistance<span class="asBracket">(</span>v<span class="asBracket">)</span> <span class="asOperator">*</span> _layerDistance;
+            breadth <span class="asOperator">=</span> _currentDrawing.getPrelim<span class="asBracket">(</span>v<span class="asBracket">)</span> <span class="asOperator">+</span> m;
+            
+            <span class="asReserved">if</span><span class="asBracket">(</span>_siblingSpreadEnabled<span class="asBracket">)</span> <span class="asBracket">{</span>
+                depth <span class="asOperator">-=</span> _currentDrawing.getDepthOffset<span class="asBracket">(</span>v<span class="asBracket">)</span>;
+            <span class="asBracket">}</span>
+            
+            _currentDrawing.setDepthAndBreadth<span class="asBracket">(</span>v,depth,breadth<span class="asBracket">)</span>;
+            
+            <span class="asComment">/* recurse over the children */</span>
+            children <span class="asOperator">=</span> _stree.getChildren<span class="asBracket">(</span>v<span class="asBracket">)</span>;
+            <span class="asReserved">for</span> <span class="asReserved">each</span><span class="asBracket">(</span>w <span class="asReserved">in</span> children<span class="asBracket">)</span> <span class="asBracket">{</span>
+                secondWalk<span class="asBracket">(</span>w, m <span class="asOperator">+</span> _currentDrawing.getModifier<span class="asBracket">(</span>v<span class="asBracket">))</span>;
+            <span class="asBracket">}</span>
+        <span class="asBracket">}</span>
+        
+         
+        <span class="asDoc">/**
+         * @internal
+         * Create a new layout drawing object, which is required
+         * on any root change (and possibly during other occasions)
+         * and intialise various parameters of the drawing.
+         * */</span>
+        <span class="asReserved">private</span> <span class="asFunction">function</span> initModel<span class="asBracket">()</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>        
+            _currentDrawing <span class="asOperator">=</span> <span class="asReserved">null</span>;
+            _currentDrawing <span class="asOperator">=</span> <span class="asReserved">new</span> HierarchicalLayoutDrawing;
+            
+            <span class="asComment">/* set in super class */</span>
+            <span class="asReserved">super</span>.currentDrawing <span class="asOperator">=</span> _currentDrawing;
+            
+            _currentDrawing.originOffset <span class="asOperator">=</span> _vgraph.origin;
+            
+            <span class="asComment">/* XXX this really depends on the orientation */</span>
+            _currentDrawing.centerOffset <span class="asOperator">=</span> <span class="asReserved">new</span> Point<span class="asBracket">((</span>_vgraph.width <span class="asOperator">/</span> 2<span class="asBracket">)</span>, DEFAULT_MARGIN<span class="asBracket">)</span>;
+            _currentDrawing.centeredLayout <span class="asOperator">=</span> <span class="asReserved">true</span>;
+
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * @internal
+         * Returns a calculated spacing, that can take node size
+         * into account.
+         * @param l The left node.
+         * @param r The right node.
+         * */</span>
+        <span class="asReserved">private</span> <span class="asFunction">function</span> spacing<span class="asBracket">(</span>l<span class="asOperator">:</span>INode, r<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span>Number <span class="asBracket">{</span>
+            
+            <span class="asVar">var</span> result<span class="asOperator">:</span>Number;
+            result <span class="asOperator">=</span> _defaultNodeDistance;
+            
+            <span class="asComment">/* we assume that both INodes, l and r have a vnode and a view */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>_honorNodeSize<span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">switch</span><span class="asBracket">(</span>_orientation<span class="asBracket">)</span> <span class="asBracket">{</span>
+                    <span class="asReserved">case</span> ORIENT_LEFT_RIGHT<span class="asOperator">:</span>
+                    <span class="asReserved">case</span> ORIENT_RIGHT_LEFT<span class="asOperator">:</span>
+                        result <span class="asOperator">+=</span> 0.5 <span class="asOperator">*</span> <span class="asBracket">(</span>l.vnode.view.height <span class="asOperator">+</span> r.vnode.view.height<span class="asBracket">)</span>;
+                        <span class="asReserved">break</span>;
+                    <span class="asReserved">case</span> ORIENT_TOP_DOWN<span class="asOperator">:</span>
+                    <span class="asReserved">case</span> ORIENT_BOTTOM_UP<span class="asOperator">:</span>
+                        result <span class="asOperator">+=</span> 0.5 <span class="asOperator">*</span> <span class="asBracket">(</span>l.vnode.view.width <span class="asOperator">+</span> r.vnode.view.width<span class="asBracket">)</span>;
+                        <span class="asReserved">break</span>;
+                    <span class="asReserved">default</span><span class="asOperator">:</span>
+                        <span class="asReserved">throw</span> Error<span class="asBracket">(</span><span class="asString">&quot;Invalid orientation value found in internal variable&quot;</span><span class="asBracket">)</span>;
+                    
+                <span class="asBracket">}</span>
+            <span class="asBracket">}</span>
+            <span class="asReserved">return</span> result;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * @internal
+         * do autofitting the layer distance. The node distance cannot
+         * be pre-computed, so we leave it alone.
+         * */</span>
+        <span class="asReserved">private</span> <span class="asFunction">function</span> calculateAutoFit<span class="asBracket">()</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            
+            <span class="asReserved">if</span><span class="asBracket">(</span>_stree.maxDepth <span class="asOperator">&gt;</span> 0<span class="asBracket">)</span> <span class="asBracket">{</span>
+                <span class="asReserved">switch</span><span class="asBracket">(</span>_orientation<span class="asBracket">)</span> <span class="asBracket">{</span>
+                    <span class="asReserved">case</span> ORIENT_LEFT_RIGHT<span class="asOperator">:</span>
+                    <span class="asReserved">case</span> ORIENT_RIGHT_LEFT<span class="asOperator">:</span>
+                        _layerDistance <span class="asOperator">=</span> <span class="asBracket">(</span>_vgraph.width <span class="asOperator">-</span> <span class="asBracket">(</span>2 <span class="asOperator">*</span> DEFAULT_MARGIN<span class="asBracket">))</span>  <span class="asOperator">/</span> _stree.maxDepth;
+                        _defaultNodeDistance <span class="asOperator">=</span> <span class="asBracket">(</span>_vgraph.height <span class="asOperator">-</span> <span class="asBracket">(</span>2 <span class="asOperator">*</span> DEFAULT_MARGIN<span class="asBracket">))</span> <span class="asOperator">/</span> _stree.maxNumberPerLayer;
+                        <span class="asReserved">break</span>;
+                    <span class="asReserved">case</span> ORIENT_TOP_DOWN<span class="asOperator">:</span>
+                    <span class="asReserved">case</span> ORIENT_BOTTOM_UP<span class="asOperator">:</span>
+                        _layerDistance <span class="asOperator">=</span> <span class="asBracket">(</span>_vgraph.height <span class="asOperator">-</span> <span class="asBracket">(</span>2 <span class="asOperator">*</span> DEFAULT_MARGIN<span class="asBracket">))</span>  <span class="asOperator">/</span> _stree.maxDepth;
+                        _defaultNodeDistance <span class="asOperator">=</span> <span class="asBracket">(</span>_vgraph.width <span class="asOperator">-</span> <span class="asBracket">(</span>2 <span class="asOperator">*</span> DEFAULT_MARGIN<span class="asBracket">))</span> <span class="asOperator">/</span> _stree.maxNumberPerLayer;
+                        <span class="asReserved">break</span>;
+                    <span class="asReserved">default</span><span class="asOperator">:</span>
+                        <span class="asReserved">throw</span> Error<span class="asBracket">(</span><span class="asString">&quot;Invalid orientation value found in internal variable&quot;</span><span class="asBracket">)</span>;
+                    
+                <span class="asBracket">}</span>
+                <span class="asComment">/*
+                trace(&quot;h:&quot;+_vgraph.height+&quot; w:&quot;+_vgraph.width+&quot; md:&quot;+_stree.maxDepth+
+                    &quot; mnpl:&quot;+_stree.maxNumberPerLayer+&quot; ld:&quot;+_layerDistance+&quot; nd:&quot;+_defaultNodeDistance);
+                */</span>
+            <span class="asBracket">}</span> <span class="asReserved">else</span> <span class="asBracket">{</span>
+                <span class="asComment">//trace(&quot;TreeMaxDepth:&quot;+_stree.maxDepth+&quot; is 0&quot;);
+</span>            <span class="asBracket">}</span>
+        <span class="asBracket">}</span>
+    <span class="asBracket">}</span>
+<span class="asBracket">}</span></pre></body>
+</html>
