@@ -1,0 +1,222 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>PhylloTreeDrawingModel.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="asComment">/* 
+ * The MIT License
+ *
+ * Copyright (c) 2007 The SixDegrees Project Team
+ * (Jason Bellone, Juan Rodriguez, Segolene de Basquiat, Daniel Lang).
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the &quot;Software&quot;), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */</span>
+<span class="asPackage">package</span> org.un.flex.graphLayout.layout <span class="asBracket">{</span>
+    
+    <span class="asReserved">import</span> flash.utils.Dictionary;
+    <span class="asReserved">import</span> flash.geom.Point;
+    <span class="asReserved">import</span> org.un.flex.graphLayout.data.INode;
+    <span class="asReserved">import</span> org.un.flex.utils.Geometry;
+    
+    <span class="asDoc">/**
+     * This class is similar to the parent centered layout drawing
+     * model. The actual layouter is different only in the aspect
+     * of the node radius which creates a sea-shell like structure.
+     * @see org.un.flex.graphLayout.layout.ParentCenteredDrawingModel
+     * */</span>
+    <span class="asReserved">public</span> <span class="asClass">class</span> PhylloTreeDrawingModel    <span class="asReserved">extends</span> BaseLayoutDrawing <span class="asBracket">{</span>
+
+        <span class="asComment">/* radius of tier-1 nodes */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _rootR<span class="asOperator">:</span>Number;
+        
+        <span class="asComment">/* user set spreading angle */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _phi<span class="asOperator">:</span>Number;
+        
+        <span class="asComment">/* in this layout each node has its parent as origin, thus
+         * we have an origin for each node */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _nodeOrigins<span class="asOperator">:</span>Dictionary;
+        
+        <span class="asComment">/* for each node, there is also an angular origin i.e. a
+         * relative zero angle */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _nodeZeroAngleOffsets<span class="asOperator">:</span>Dictionary;
+
+        <span class="asComment">/* in addition to the relative coordaintes, we need
+         * to keep track of the relative relative polar coordinates */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _localPolarRs<span class="asOperator">:</span>Dictionary;
+        <span class="asReserved">private</span> <span class="asVar">var</span> _localPolarPhis<span class="asOperator">:</span>Dictionary;
+
+
+        <span class="asDoc">/**
+         * The constructor only initializes the datastructures.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> PhylloTreeDrawingModel<span class="asBracket">()</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            
+            <span class="asReserved">super</span><span class="asBracket">()</span>;
+            
+            _nodeOrigins <span class="asOperator">=</span> <span class="asReserved">new</span> Dictionary;
+            _nodeZeroAngleOffsets <span class="asOperator">=</span> <span class="asReserved">new</span> Dictionary;
+            
+            _localPolarRs <span class="asOperator">=</span> <span class="asReserved">new</span> Dictionary;
+            _localPolarPhis <span class="asOperator">=</span> <span class="asReserved">new</span> Dictionary;
+            
+            <span class="asComment">/* default root radius */</span>
+            _rootR <span class="asOperator">=</span> 30;
+            
+            <span class="asComment">/* default starting angle */</span>
+            _phi <span class="asOperator">=</span> 60;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * Access to the starting polar radius of the layout.
+         * */</span>
+        <span class="asBracket">[</span><span class="asMetadata">Bindable</span><span class="asBracket">]</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">get</span> rootR<span class="asBracket">()</span><span class="asOperator">:</span>Number <span class="asBracket">{</span>
+            <span class="asReserved">return</span> _rootR;
+        <span class="asBracket">}</span>
+        <span class="asDoc">/**
+         * @private
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">set</span> rootR<span class="asBracket">(</span>rr<span class="asOperator">:</span>Number<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            _rootR <span class="asOperator">=</span> rr;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * Access to the starting polar angle of the layout in radians.
+         * */</span>
+        <span class="asBracket">[</span><span class="asMetadata">Bindable</span><span class="asBracket">]</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">get</span> phi<span class="asBracket">()</span><span class="asOperator">:</span>Number <span class="asBracket">{</span>
+            <span class="asReserved">return</span> _phi;
+        <span class="asBracket">}</span>
+        <span class="asDoc">/**
+         * @private
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">set</span> phi<span class="asBracket">(</span>p<span class="asOperator">:</span>Number<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            _phi <span class="asOperator">=</span> p;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * This method sets polar coordinates along with the
+         * node&apos;s origin and zero angle offset.
+         * @param n The node for which to set the values.
+         * @param origin The node&apos;s origin (typically parents relative coordinates)
+         * @param angleOff The node&apos;s zero angle offset (in degrees).
+         * @param polarR The relative polar radius of the node.
+         * @param polarPhi The relative polar angle of the node (in degrees).
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> setNodeCoordinates<span class="asBracket">(</span>n<span class="asOperator">:</span>INode, origin<span class="asOperator">:</span>Point, angleOff<span class="asOperator">:</span>Number, polarR<span class="asOperator">:</span>Number, polarPhi<span class="asOperator">:</span>Number<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            
+            <span class="asVar">var</span> p<span class="asOperator">:</span>Point;
+            
+            <span class="asComment">/* we have to void NaN values */</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>isNaN<span class="asBracket">(</span>angleOff<span class="asBracket">))</span> <span class="asBracket">{</span>
+                <span class="asReserved">throw</span> Error<span class="asBracket">(</span><span class="asString">&quot;angleOffset tried to set to NaN&quot;</span><span class="asBracket">)</span>;
+            <span class="asBracket">}</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>isNaN<span class="asBracket">(</span>polarR<span class="asBracket">))</span> <span class="asBracket">{</span>
+                <span class="asReserved">throw</span> Error<span class="asBracket">(</span><span class="asString">&quot;polarR tried to set to NaN&quot;</span><span class="asBracket">)</span>;
+            <span class="asBracket">}</span>
+            <span class="asReserved">if</span><span class="asBracket">(</span>isNaN<span class="asBracket">(</span>polarPhi<span class="asBracket">))</span> <span class="asBracket">{</span>
+                <span class="asReserved">throw</span> Error<span class="asBracket">(</span><span class="asString">&quot;polarPhi tried to set to NaN&quot;</span><span class="asBracket">)</span>;
+            <span class="asBracket">}</span>
+            
+            <span class="asComment">/* normalize angles */</span>
+            angleOff <span class="asOperator">=</span> Geometry.normaliseAngleDeg<span class="asBracket">(</span>angleOff<span class="asBracket">)</span>;
+            polarPhi <span class="asOperator">=</span> Geometry.normaliseAngleDeg<span class="asBracket">(</span>polarPhi<span class="asBracket">)</span>;
+            
+            <span class="asComment">/* set the local params */</span>
+            _nodeOrigins<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">=</span> origin;
+            _nodeZeroAngleOffsets<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">=</span> angleOff;
+            
+            _localPolarRs<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">=</span> polarR;
+            _localPolarPhis<span class="asBracket">[</span>n<span class="asBracket">]</span> <span class="asOperator">=</span> polarPhi;
+            
+            <span class="asComment">/*
+            trace(&quot;Raw polar calc node:&quot;+n.id+&quot; origin:&quot;+origin.toString()+&quot; angleOff:&quot;+angleOff+
+            &quot; polarRadius:&quot;+polarR+&quot; polarPhi:&quot;+polarPhi+&quot; result:&quot;+Geometry.cartFromPolarDeg(polarR,polarPhi));
+            */</span>
+            
+            <span class="asComment">/* set the values of the base class, BUT the relative coordinates
+             * must be consistent relative coordinates, but we may
+             * need to store the current polarR and polarPhis too...
+             * due to the y-axis orientation, we have to change the sign
+             * of the angle */</span>
+            <span class="asReserved">this</span>.setPolarCoordinates<span class="asBracket">(</span>n, polarR, <span class="asOperator">-</span>Geometry.normaliseAngleDeg<span class="asBracket">(</span>polarPhi<span class="asOperator">+</span>angleOff<span class="asBracket">))</span>;
+            
+            <span class="asComment">/* now get the relative cartesians, but we need to add the
+             * local origin offset */</span>
+            p <span class="asOperator">=</span> <span class="asReserved">this</span>.getRelCartCoordinates<span class="asBracket">(</span>n<span class="asBracket">)</span>;
+            
+            <span class="asComment">//trace(&quot;With angle offset:&quot;+p.toString());
+</span>            
+            p <span class="asOperator">=</span> p.add<span class="asBracket">(</span>origin<span class="asBracket">)</span>;
+            
+            <span class="asComment">//trace(&quot;With origin:&quot;+origin.toString()+&quot; offset = &quot;+p.toString());
+</span>            
+            <span class="asComment">/* and set them again */</span>
+            <span class="asReserved">this</span>.setCartCoordinates<span class="asBracket">(</span>n, p<span class="asBracket">)</span>;
+            
+            <span class="asComment">/*
+            trace(&quot;SetNodeCoordinates of node:&quot;+n.id+&quot; origin:&quot;+origin.toString()+&quot; angleOff:&quot;+angleOff+
+            &quot; polarRadius:&quot;+polarR+&quot; polarPhi:&quot;+polarPhi+&quot; and in cartesian:&quot;+this.getRelCartCoordinates(n).toString());
+            */</span>
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * Access to the local origin of each node
+         * @param n The node of which the origin is requested.
+         * @return The origin as a Point.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> getOrigin<span class="asBracket">(</span>n<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span>Point <span class="asBracket">{</span>
+            <span class="asReserved">return</span> _nodeOrigins<span class="asBracket">[</span>n<span class="asBracket">]</span>
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * Access to the local zero angle offset of each node.
+         * @param n The node to which the zero angle offset is requested.
+         * @return The zero angle offset in radians.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> getAngleOffset<span class="asBracket">(</span>n<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span>Number <span class="asBracket">{</span>
+            <span class="asReserved">return</span> _nodeZeroAngleOffsets<span class="asBracket">[</span>n<span class="asBracket">]</span>;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * Access to the local polar radius (without zero angle offset
+         * or local origin applied).
+         * @param n The node for which the local polar radius is requested.
+         * @return The local polar radius.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> getLocalPolarR<span class="asBracket">(</span>n<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span>Number <span class="asBracket">{</span>
+            <span class="asReserved">return</span> _localPolarRs<span class="asBracket">[</span>n<span class="asBracket">]</span>;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * Access to the local polar angle (without zero angle offset
+         * or local origin applied).
+         * @param n The node for which the local polar angle is requested.
+         * @return The local polar angle in radians.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> getLocalPolarPhi<span class="asBracket">(</span>n<span class="asOperator">:</span>INode<span class="asBracket">)</span><span class="asOperator">:</span>Number <span class="asBracket">{</span>
+            <span class="asReserved">return</span> _localPolarPhis<span class="asBracket">[</span>n<span class="asBracket">]</span>;
+        <span class="asBracket">}</span>
+    <span class="asBracket">}</span>
+<span class="asBracket">}</span></pre></body>
+</html>

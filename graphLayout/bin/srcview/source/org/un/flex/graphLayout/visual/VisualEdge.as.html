@@ -1,0 +1,112 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>VisualEdge.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="asComment">/* 
+ * The MIT License
+ *
+ * Copyright (c) 2007 The SixDegrees Project Team
+ * (Jason Bellone, Juan Rodriguez, Segolene de Basquiat, Daniel Lang).
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the &quot;Software&quot;), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */</span>
+<span class="asPackage">package</span> org.un.flex.graphLayout.visual <span class="asBracket">{</span>
+    
+    <span class="asReserved">import</span> org.un.flex.graphLayout.data.IEdge;
+    
+    <span class="asDoc">/**
+     * A visual edge is just a representation of a graph edge
+     * in the VisualGraph context. However, right now the only
+     * feature a VisualEdge has is a reference to its Graph Edge
+     * and a data object to support it&apos;s drawing features.
+     * There is a small possibility that this class will be removed.
+     * */</span>
+    <span class="asReserved">public</span> <span class="asClass">class</span> VisualEdge <span class="asReserved">implements</span> IVisualEdge <span class="asBracket">{</span>
+        
+        <span class="asComment">/* internal id of the edge */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _id<span class="asOperator">:</span>int;
+        
+        <span class="asComment">/* VEdge data object, including data for drawing of the edge */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _data<span class="asOperator">:</span>Object;
+        
+        <span class="asComment">/* we already link a graph edge with it */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _edge<span class="asOperator">:</span>IEdge;
+        
+        <span class="asComment">/* the associated VGraph of this VEdge */</span>
+        <span class="asReserved">private</span> <span class="asVar">var</span> _vgraph<span class="asOperator">:</span>IVisualGraph;
+        
+        <span class="asDoc">/**
+         * The constructor initialiazes the edge and must be preset with almost
+         * all parameters. 
+         * @param vg The associated VisualGraph.
+         * @param edge The associated Graph Edge.
+         * @param id The internal id of this VisualEdge.
+         * @param data The associated data Object.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> VisualEdge<span class="asBracket">(</span>vg<span class="asOperator">:</span>IVisualGraph, edge<span class="asOperator">:</span>IEdge, id<span class="asOperator">:</span>int, data<span class="asOperator">:</span>Object <span class="asOperator">=</span> <span class="asReserved">null</span><span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            _vgraph <span class="asOperator">=</span> vg;
+            _edge <span class="asOperator">=</span> edge;
+            _id <span class="asOperator">=</span> id;
+            _data <span class="asOperator">=</span> data;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * Access to the associated Graph Edge.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">get</span> edge<span class="asBracket">()</span><span class="asOperator">:</span>IEdge <span class="asBracket">{</span>
+            <span class="asReserved">return</span> _edge;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * Access to the associated VisualGraph.
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">get</span> vgraph<span class="asBracket">()</span><span class="asOperator">:</span>IVisualGraph <span class="asBracket">{</span>
+            <span class="asReserved">return</span> _vgraph;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * Access to the data object.
+         * */</span>
+        <span class="asBracket">[</span><span class="asMetadata">Bindable</span><span class="asBracket">]</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">get</span> data<span class="asBracket">()</span><span class="asOperator">:</span>Object <span class="asBracket">{</span>
+            <span class="asReserved">return</span> _data;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * @private
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">set</span> data<span class="asBracket">(</span>o<span class="asOperator">:</span>Object<span class="asBracket">)</span><span class="asOperator">:</span><span class="asReserved">void</span> <span class="asBracket">{</span>
+            _data <span class="asOperator">=</span> o;
+        <span class="asBracket">}</span>
+        
+        <span class="asDoc">/**
+         * Access to the id of the VEdge
+         * */</span>
+        <span class="asReserved">public</span> <span class="asFunction">function</span> <span class="asReserved">get</span> id<span class="asBracket">()</span><span class="asOperator">:</span>int <span class="asBracket">{</span>
+            <span class="asReserved">return</span> _id;
+        <span class="asBracket">}</span>
+        
+    <span class="asBracket">}</span>
+<span class="asBracket">}</span></pre></body>
+</html>
