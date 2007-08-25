@@ -38,6 +38,7 @@
 
 	<mx:Script>
 		<![CDATA[
+			import org.un.flex.graphLayout.data.IGTree;
 			import mx.core.IDataRenderer;
 			import mx.core.UIComponent;
 			import org.un.flex.graphLayout.data.Graph;			
@@ -158,6 +159,11 @@
 				refreshUI();
 
 				initDone = true;
+				
+				/* debug new XML feature */
+				var testtree:IGTree = graph.getTree(startRoot.node,false,true);
+				var testxml:XML = testtree.XMLtree;
+				trace(testxml.toXMLString());
 			}
 			
 			/* re-enable the refresh button in all cases */
