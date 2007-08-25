@@ -231,7 +231,12 @@ package org.un.flex.graphLayout.data {
 		/**
 		 * @inheritDoc
 		 * */
-		public function getTree(n:INode, restr:Boolean = false):IGTree {
+		public function getTree(n:INode, restr:Boolean = false, nocache:Boolean = false):IGTree {
+			/* If nocache is set, we just return a new tree */
+			if(nocache) {
+				return new GTree(n,this,restr);
+			}
+			
 			if(!_treeMap.hasOwnProperty(n)) {
 				_treeMap[n] = new GTree(n,this,restr);
 				/* do the init now, not lazy */

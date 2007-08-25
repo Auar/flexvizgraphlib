@@ -66,6 +66,15 @@ package org.un.flex.graphLayout.data {
 		 * of any node from the root 
 		 * */
 		function get maxDepth():int;
+	
+		/**
+		 * Returns a nested XML representation of the tree.
+		 * It will only contain <Node> tags with all the attributes
+		 * of the source GraphML data, nothing else.
+		 * Beware, if the created tree is restriced to visible nodes,
+		 * you will only get those.
+		 * */
+		function get XMLtree():XML;
 		
 		/**
 		 * Get the distance of a particular node from the root.

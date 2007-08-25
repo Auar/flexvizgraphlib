@@ -126,14 +126,18 @@ package org.un.flex.graphLayout.data {
 		/**
 		 * returns the current BFS tree of the graph, rooted in the given node,
 		 * optionally the tree is restricted to only contain currently visible
-		 * nodes.
+		 * nodes. 
 		 * The trees are cached, that means a tree is only created once and then
-		 * stored in a map.
+		 * stored in a map, unless the "nocache" flag is set! If the flag is set,
+		 * then the tree will be created once and returned, the existing cache will
+		 * not be touched or overwritten, this is useful if a full tree is needed
+		 * for a specific purpose but the cache should not be overwritten or consulted.
 		 * @param n The root node of the tree.
 		 * @param restr This flag specifies if the resulting tree should be restricted to currently visible nodes.
+		 * @param nocache If set, always a new tree will be created and returned and the cache will be untouched.
 		 * @return The a GTree object that contains the tree.
 		 * */
-		function getTree(n:INode,restr:Boolean = false):IGTree;
+		function getTree(n:INode,restr:Boolean = false, nocache:Boolean = false):IGTree;
 		
 		/**
 		 * Under certain circumstances all cached trees need
