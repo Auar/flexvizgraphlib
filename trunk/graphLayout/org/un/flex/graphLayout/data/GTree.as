@@ -155,6 +155,54 @@ package org.un.flex.graphLayout.data {
 			return _maxNumberPerLayer;
 		}
 		
+		
+		/**
+		 * @inheritDoc
+		 * */
+		public function get XMLtree():XML {
+			var resXML:XML;
+			var nxml:XML;
+			var pxml:XML;
+			var children:Array;
+			var queue:Array;
+			var nodeToXML:Dictionary;
+			var i:uint;
+			var n:INode;
+			var p:INode;
+			
+			/* make sure tree is initialised */
+			if(_childrenMap == null) {
+				initTree();
+			}	
+			
+			queue = new Array;
+			nodeToXML = new Dictionary;
+			
+			/* the root object will be the corresponding item of the root node */
+			resXML = new XML(_root.data);
+			pxml = resXML;
+			nodeToXML[_root] = pxml;
+			queue.unshift(_root);
+			
+			/* work on the children */
+			while(queue.length > 0) {
+				p = queue.pop();
+				pxml = nodeToXML[p];
+				children = (_childrenMap[p] as Array);
+				for(i=0;i<children.length;++i) {
+					n = (children[i] as INode);
+					nodeToXML[n] = new XML(n.data);
+					pxml.appendChild(nodeToXML[n]);
+					if(_nodeNoChildrenMap[n] > 0) {
+						queue.unshift(n);
+					}
+				}
+			}
+			return resXML;	
+		}
+		
+		
+		
 		/**
 		 * @inheritDoc
 		 * */ 
