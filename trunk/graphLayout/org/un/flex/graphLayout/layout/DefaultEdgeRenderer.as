@@ -29,6 +29,7 @@ package org.un.flex.graphLayout.layout {
 	import org.un.flex.graphLayout.visual.IVisualEdge;
 	import org.un.flex.graphLayout.visual.IVisualNode;
 	import flash.display.Graphics;
+	import mx.core.UIComponent;
 
 
 	/**
@@ -48,7 +49,7 @@ package org.un.flex.graphLayout.layout {
 		 * 
 		 * @inheritDoc
 		 * */
-		public function draw(g:Graphics, edge:IEdge, disting:Boolean):void {
+		public function draw(g:Graphics, edge:IEdge, disting:Boolean, edgeLabelRenderer:UIComponent = null):void {
 			
 			/* first get the corresponding visual object */
 			var vedge:IVisualEdge = edge.vedge;
