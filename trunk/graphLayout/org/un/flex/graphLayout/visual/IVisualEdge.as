@@ -25,6 +25,7 @@
 package org.un.flex.graphLayout.visual {
 	
 	import org.un.flex.graphLayout.data.IEdge;
+	import mx.core.UIComponent;
 
 	/** 
 	 * Interface for a visual edge. This does not do
@@ -37,5 +38,16 @@ package org.un.flex.graphLayout.visual {
 		 * Access to the associated graph Edge.
 		 * */ 
 		function get edge():IEdge;
+		
+		/**
+		 * Access to an associated UIComponent to
+		 * display a label.
+		 * */
+		function get labelView():UIComponent;
+		
+		/**
+		 * @private
+		 * */
+		function set labelView(lv:UIComponent):void;
 	}
 }
