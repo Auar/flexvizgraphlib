@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.un.flex.graphLayout.layout {
+package org.un.flex.graphLayout.visual {
 
 	import flash.display.Graphics;
 	import org.un.flex.graphLayout.data.IGraph;
