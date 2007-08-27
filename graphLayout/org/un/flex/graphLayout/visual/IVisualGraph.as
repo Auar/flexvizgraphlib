@@ -86,6 +86,25 @@ package org.un.flex.graphLayout.visual {
 		function set itemRenderer(ifac:IFactory):void;
 		
 		/**
+		 * Allow to provide an EdgeLabelRenderer in order to
+		 * display edge labels. The created instances must be
+		 * UIComponents.
+		 * */
+		function set edgeLabelRenderer(elr:IFactory):void;
+		
+		/**
+		 * Specify whether to display edge labels or not.
+		 * If no edge label renderer is present a default
+		 * will be used.
+		 * */
+		function set displayEdgeLabels(del:Boolean):void;
+		
+		/**
+		 * @private
+		 * */
+		function get displayEdgeLabels():Boolean;
+		
+		/**
 		 * Access to the layouter to be used for the
 		 * layout of the graph.
 		 * */

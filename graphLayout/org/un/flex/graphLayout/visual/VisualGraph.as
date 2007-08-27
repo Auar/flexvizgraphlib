@@ -32,9 +32,9 @@ package org.un.flex.graphLayout.visual {
 	import org.un.flex.graphLayout.data.IGraph;
 	import org.un.flex.graphLayout.data.INode;
 	import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
-	import org.un.flex.graphLayout.layout.IEdgeRenderer;
+	import org.un.flex.graphLayout.visual.IEdgeRenderer;
 	
-	import org.un.flex.graphLayout.layout.DefaultEdgeRenderer;
+	import org.un.flex.graphLayout.visual.DefaultEdgeRenderer;
 	import org.un.flex.utils.events.VGraphEvent;
 	
 	import flash.events.MouseEvent;
@@ -52,6 +52,7 @@ package org.un.flex.graphLayout.visual {
 	import flash.display.DisplayObject;
 	import flash.geom.Point;
 	import flash.display.Graphics;
+	import mx.controls.Label;
 
 	/**
 	 *  Dispatched when there is any change to the nodes and/or links of this graph.
@@ -117,6 +118,11 @@ package org.un.flex.graphLayout.visual {
 		private var _viewToVNodeMap:Dictionary;
 
 		/**
+		 * A similar map needs to exist for edges
+		 * */
+		private var _viewToVEdgeMap:Dictionary;
+
+		/**
 		 * The standard origin is the upper left corner, but if
 		 * the graph is scrolled, this origin may change, so we keep
 		 * track of that here.
@@ -177,6 +183,17 @@ package org.un.flex.graphLayout.visual {
 		 * that allows us to specify the view's for each node in MXML
 		 * */
         private var _itemRendererFactory:IFactory = null;
+        
+        /**
+         * Also allow the specification of an IFactory for edge
+         * labels.
+         * */
+        private var _edgeLabelRendererFactory:IFactory = null;
+        
+        /**
+         * Specify whether edge labels should be displayed or not
+         * */
+        private var _displayEdgeLabels:Boolean = false;
         
         /* Spring Graph also allowed a specification of an IViewFactory
          * which is a custom implementation of a factory that returns
@@ -361,6 +378,7 @@ package org.un.flex.graphLayout.visual {
 			
 			/* initialise view/ItemRenderer and visibility mapping */
 			_viewToVNodeMap = new Dictionary;
+			_viewToVEdgeMap = new Dictionary;
 			_visibleVNodes = new Dictionary;
 			_visibleEdges = new Dictionary;
 			_noVisibleVNodes = 0;
@@ -441,6 +459,48 @@ package org.un.flex.graphLayout.visual {
 		 * */
 		public function set itemRenderer(ifac:IFactory):void {
 			_itemRendererFactory = ifac;
+		}
+
+		/**
+		 * @inheritDoc
+		 * */
+		public function set edgeLabelRenderer(elr:IFactory):void {
+			_edgeLabelRendererFactory = elr;
+		}
+
+		/**
+		 * @inheritDoc
+		 * */
+		public function set displayEdgeLabels(del:Boolean):void {
+			var e:IEdge;
+			
+			if(_displayEdgeLabels == del) {
+				// no change
+			} else {
+				_displayEdgeLabels = del;
+				
+				/* from false to true */
+				if(del == true) {
+					/* walk through all visible edges and create and display their labels */
+					for each(e in _visibleEdges) {
+						createVEdgeView(e.vedge);
+					}
+				/* true to false */
+				} else {
+					/* walk again, but remove labels this time */
+					for each(e in _visibleEdges) {
+						removeVEdgeView(e.vedge.labelView);
+					}
+				}
+			}				
+			this.invalidateDisplayList(); // maybe this is enough
+		}
+
+		/**
+		 * @private
+		 * */
+		public function get displayEdgeLabels():Boolean {
+			return _displayEdgeLabels;
 		}
 
 		/**
@@ -725,9 +785,15 @@ package org.un.flex.graphLayout.visual {
 			/* The children should only be the visible node's views and
 			 * the drawing surface for the edges, so we
 			 * add a safeguard here to see of these are actually much more */
+			
+			/* since the edge labels were introduced this no longer works
+			 * because we also need to count each displayed edge label
+			 * but we have no counter yet for that, so the check is commented
+			 * for now
 			if(children.length > _noVisibleVNodes + 1) {
 				throw Error("Children are more than visible nodes plus drawing surface");
 			}
+			*/
 			
 			/* now walk through all children, which are UIComponents
 			 * and not our drawing surface and expand the result rectangle */
@@ -1100,7 +1166,7 @@ package org.un.flex.graphLayout.visual {
 			var n1:INode;
 			var n2:INode;
 			
-			vedge = new VisualEdge(this, e, e.id);
+			vedge = new VisualEdge(this, e, e.id, e.data);
 			
 			/* set the VisualEdge reference in the graph edge */
 			e.vedge = vedge;
@@ -1205,6 +1271,16 @@ package org.un.flex.graphLayout.visual {
 					distinguished = false;
 				}
 
+				/* now check if we should display edge labels, and if so
+				 * create an edge view to display the label, if it is not
+				 * there already */
+				if(_displayEdgeLabels) {
+					if(edge.vedge.labelView == null) {
+						createVEdgeView(edge.vedge);
+					}
+				}
+
+
 				/* Change: we do not pass the nodes or the vnodes, but the
 				 * edge. The reason is that the edge can have properties
 				 * assigned with it that affect the drawing. Right now we 
@@ -1219,18 +1295,16 @@ package org.un.flex.graphLayout.visual {
 		/**
 		 * this currently ONLY calls the edge renderer, this 
 		 * method is basically useless and we could move the call
-		 * into redrawEdges(). For now we leave it like this */
+		 * into redrawEdges(). For now we leave it like this
+		 * 
+		 * */
 		private function drawEdge(edge:IEdge, distinguished:Boolean):void {
-			/* at this point, the edgeRenderer takes over,
-			 * SG had kind of a default renderer implicitly added
-			 * while we stick to that being modular
-			 */
 			
 			/* another idea would be to let the edge implement the
 			 * edge renderer interface and draw itself, but that would
 			 * make this less modular and interchangeable
 			 * we stick to the separate edge renderer */
-			_edgeRenderer.draw(_drawingSurface.graphics, edge, distinguished);
+			_edgeRenderer.draw(_drawingSurface.graphics, edge, distinguished, _displayEdgeLabels);
 		}
 		
 
@@ -1365,6 +1439,88 @@ package org.un.flex.graphLayout.visual {
 				//trace("removed component from node:"+vn.id);
 			}
 		}
+		
+		/**
+		 * Create a "view" object (UIComponent) for the given edge and
+		 * return it.
+		 * @param ve The edge to replace/add a view object.
+		 * @return The created view object.
+		 * */
+		private function createVEdgeView(ve:IVisualEdge):UIComponent {
+			
+			var mycomponent:UIComponent = null;
+
+			if(_edgeLabelRendererFactory != null) {
+				mycomponent = _edgeLabelRendererFactory.newInstance();
+			} else {
+				mycomponent = new Label; // this is our default label.
+			}			
+				
+			/* assigns the edge to the IDataRenderer part of the view
+			 * this is important to access the data object of the VEdge
+			 * which contains information for rendering. */		
+			if(mycomponent is IDataRenderer) {
+				(mycomponent as IDataRenderer).data = ve;
+			}
+			
+			/* set initial x/y values */
+			mycomponent.x = _canvas.width / 2.0;
+			mycomponent.y = _canvas.height / 2.0;
+			
+			/* add the component to its parent component
+			 * this can create problems, we have to see where we
+			 * check for all children */
+			_canvas.addChild(mycomponent);
+			
+			/* register it the view in the vnode and the mapping */
+			ve.labelView = mycomponent;
+			_viewToVEdgeMap[mycomponent] = ve;
+			
+			/* increase the component counter */
+			//++_componentCounter;
+			
+			/* assertion there should not be more components than
+			 * visible nodes */
+			/*
+			if(_componentCounter > (_noVisibleVNodes)) {
+				throw Error("Got too many components:"+_componentCounter+" but only:"+_noVisibleVNodes
+				+" nodes visible");
+			}
+			*/
+			
+			/* we need to invalidate the display list since
+			 * we created new children */
+			refresh();
+			
+			return mycomponent;
+		}
+		
+		/**
+		 * Remove a "view" object (UIComponent) for the given edge.
+		 * @param component The UIComponent to be removed.
+		 * */
+		private function removeVEdgeView(component:UIComponent):void {
+			
+			var ve:IVisualEdge;
+			
+			
+			/* remove the component from it's parent (which should be the canvas) */
+			if(component.parent != null) {
+				component.parent.removeChild(component);
+			}
+
+			/* get the associated VEdge and remove the view from it
+			 * and also remove the map entry */
+			ve = _viewToVEdgeMap[component];
+			ve.labelView = null;
+			delete _viewToVEdgeMap[component];
+				
+			/* decreate component counter */
+			//--_componentCounter;
+			
+			//trace("removed component from node:"+vn.id);
+		}
+		
 		
 		/**
 		 * Event handler for a removal node procedure. Calls
@@ -1860,6 +2016,7 @@ package org.un.flex.graphLayout.visual {
 				/* remove the edges */
 				edges = vn.node.inEdges.concat(vn.node.outEdges);
 				for each(e in edges) {
+					removeVEdgeView(e.vedge.labelView);
 					delete _visibleEdges[e];
 				}
 			}
@@ -1881,23 +2038,11 @@ package org.un.flex.graphLayout.visual {
 					 * visible */
 					if(vno.isVisible || (newVisibleNodes[vno] != null)) {
 						_visibleEdges[e] = e;
+						createVEdgeView(e.vedge);
 					}
 				}
 				
 			}
-			
-			/* now all node visibility is updated, so we can update the
-			 * edge visibility 
-			 * THIS IS STILL VERY BAD, HAVE TO FIND A SIMILAR SOLUTION AS FOR NODES */
-			/*
-			_visibleEdges = new Dictionary;
-			for each(e in _graph.edges) {
-				/* if both vnodes are visible, we add the edge *
-				if(e.node1.vnode.isVisible && e.node2.vnode.isVisible) {
-					_visibleEdges[e] = e;		
-				}
-			}
-			*/
 			
 			/* this restarts any layouting */
 			draw();

@@ -25,6 +25,7 @@
 package org.un.flex.graphLayout.visual {
 	
 	import org.un.flex.graphLayout.data.IEdge;
+	import mx.core.UIComponent;
 	
 	/**
 	 * A visual edge is just a representation of a graph edge
@@ -47,6 +48,9 @@ package org.un.flex.graphLayout.visual {
 		/* the associated VGraph of this VEdge */
 		private var _vgraph:IVisualGraph;
 		
+		/* the associated label view if set */
+		private var _labelView:UIComponent;
+		
 		/**
 		 * The constructor initialiazes the edge and must be preset with almost
 		 * all parameters. 
@@ -54,12 +58,14 @@ package org.un.flex.graphLayout.visual {
 		 * @param edge The associated Graph Edge.
 		 * @param id The internal id of this VisualEdge.
 		 * @param data The associated data Object.
+		 * @param lview The associated label view.
 		 * */
-		public function VisualEdge(vg:IVisualGraph, edge:IEdge, id:int, data:Object = null):void {
+		public function VisualEdge(vg:IVisualGraph, edge:IEdge, id:int, data:Object = null, lview:UIComponent = null):void {
 			_vgraph = vg;
 			_edge = edge;
 			_id = id;
 			_data = data;
+			_labelView = lview;
 		}
 		
 		/**
@@ -96,6 +102,20 @@ package org.un.flex.graphLayout.visual {
 		 * */
 		public function get id():int {
 			return _id;
+		}
+		
+		/**
+		 * @inheritDoc
+		 * */
+		public function get labelView():UIComponent {
+			return _labelView;
+		}
+		
+		/**
+		 * @private
+		 * */
+		public function set labelView(lv:UIComponent):void {
+			_labelView = lv;
 		}
 		
 	}

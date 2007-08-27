@@ -30,6 +30,7 @@ package org.un.flex.graphLayout.visual {
 	import org.un.flex.graphLayout.visual.IVisualNode;
 	import flash.display.Graphics;
 	import mx.core.UIComponent;
+	import mx.controls.Label;
 
 
 	/**
@@ -49,7 +50,7 @@ package org.un.flex.graphLayout.visual {
 		 * 
 		 * @inheritDoc
 		 * */
-		public function draw(g:Graphics, edge:IEdge, disting:Boolean, edgeLabelRenderer:UIComponent = null):void {
+		public function draw(g:Graphics, edge:IEdge, disting:Boolean, displayLabel:Boolean = false):void {
 			
 			/* first get the corresponding visual object */
 			var vedge:IVisualEdge = edge.vedge;
@@ -61,6 +62,10 @@ package org.un.flex.graphLayout.visual {
 			var fromY:Number = fromNode.view.y + (fromNode.view.height / 2.0);
 			var toX:Number = toNode.view.x + (toNode.view.width / 2.0);
 			var toY:Number = toNode.view.y + (toNode.view.height / 2.0);	
+			
+			/* calculate the midpoint */
+			var midX:Number = (toX - fromX) / 2.0;
+			var midY:Number = (toY - fromY) / 2.0;
 			
 			/* XXX drawing parameters with default values, these could
 			 * be taken from the graph object actually, although this
@@ -94,6 +99,17 @@ package org.un.flex.graphLayout.visual {
 			g.moveTo(fromX, fromY);
 			g.lineTo(toX, toY);
 			g.endFill();
+			
+			if(displayLabel) {
+				vedge.labelView.x = midX;
+				vedge.labelView.y = midY;
+				/* the following should rather be done during
+				 * the EdgeRendererFactory setting, we leave it
+				 * here only for the default "Label" */
+				if(vedge.labelView is Label) {
+					(vedge.labelView as Label).text = vedge.data.@association;
+				}
+			}
 		}
 	}
 }
