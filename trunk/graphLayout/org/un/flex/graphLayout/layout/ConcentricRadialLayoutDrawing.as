@@ -58,12 +58,14 @@ package org.un.flex.graphLayout.layout {
 		public function setAngularWidth(n:INode, w:Number):void {
 			
 			//trace("Setting angular width for node:"+n.id+" to:"+degrees+" degrees");
+			/*
 			if(w > 360) {
 				trace("Width of node:"+n.id+" larger than 360:"+w);
 			}
 			if(w < 0) {
 				trace("Width of node:"+n.id+" smaller than 0:"+w);
 			}
+			*/
 			_nodeAngularWidths[n] = w;
 		}
 		

@@ -1012,10 +1012,9 @@ package org.un.flex.graphLayout.visual {
 			 * are not the drawing surface and which are UIComponents
 			 * (they should be all node views) and move them according
 			 * to the scroll offset */
-			//for(i = 1;i < children.length; ++i) {
-			//	var view:UIComponent = (children[i] as UIComponent);
 			for each(view in children) {
 				if(view != _drawingSurface) {
+					//trace("scrolling view of:"+(view as IDataRenderer).data.id);
 					view.x += deltaX;
 					view.y += deltaY;
 				}
@@ -1276,6 +1275,7 @@ package org.un.flex.graphLayout.visual {
 				 * there already */
 				if(_displayEdgeLabels) {
 					if(edge.vedge.labelView == null) {
+						trace("Created missing labelView for edge:"+edge.id);
 						createVEdgeView(edge.vedge);
 					}
 				}
@@ -1454,6 +1454,7 @@ package org.un.flex.graphLayout.visual {
 				mycomponent = _edgeLabelRendererFactory.newInstance();
 			} else {
 				mycomponent = new Label; // this is our default label.
+				mycomponent.setStyle("textAlign","center");
 			}			
 				
 			/* assigns the edge to the IDataRenderer part of the view
