@@ -9,7 +9,6 @@
     <classEntry path="org.un.flex.graphLayout.layout.SpringForceDirectedLayouter"/>
     <classEntry path="org.un.flex.graphLayout.layout.HierarchicalLayouter"/>
     <classEntry path="org.un.flex.graphLayout.layout.ParentCenteredRadialLayouter"/>
-    <classEntry path="org.un.flex.graphLayout.layout.IEdgeRenderer"/>
     <classEntry path="org.un.flex.graphLayout.visual.VisualGraph"/>
     <classEntry path="org.un.flex.graphLayout.layout.BaseLayoutDrawing"/>
     <classEntry path="org.un.flex.graphLayout.data.Graph"/>
@@ -23,7 +22,6 @@
     <classEntry path="org.un.flex.graphLayout.data.IDataItem"/>
     <classEntry path="org.un.flex.graphLayout.visual.VisualNode"/>
     <classEntry path="org.un.flex.graphLayout.layout.PhylloTreeDrawingModel"/>
-    <classEntry path="org.un.flex.graphLayout.layout.DefaultEdgeRenderer"/>
     <classEntry path="org.un.flex.graphLayout.layout.ILayoutAlgorithm"/>
     <classEntry path="org.un.flex.utils.Geometry"/>
     <classEntry path="org.un.flex.graphLayout.data.GTree"/>
