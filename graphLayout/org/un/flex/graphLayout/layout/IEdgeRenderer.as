@@ -27,6 +27,7 @@ package org.un.flex.graphLayout.layout {
 	import flash.display.Graphics;
 	import org.un.flex.graphLayout.data.IGraph;
 	import org.un.flex.graphLayout.data.IEdge;
+	import mx.core.UIComponent;
 	
 	/**
 	 * Interface for any Edge renderers,
@@ -43,7 +44,9 @@ package org.un.flex.graphLayout.layout {
 		 * @param g Reference to the Graphics object of the Drawing surface.
 		 * @param edge The edge to draw, it needs to provide all the information required, i.e. locations.
 		 * @param disting This is in indicator if this edge is distinguished in a certain way.
+		 * @param edgeLabelRenderer If there is an edgeLabelRenderer passed, it will be used to render a label.
+		 *
 		 * */
-		function draw(g:Graphics,edge:IEdge,disting:Boolean):void;
+		function draw(g:Graphics,edge:IEdge,disting:Boolean,edgeLabelRenderer:UIComponent = null):void;
 	}
 }
