@@ -152,6 +152,9 @@
 				rootNodeHistory.push(startRoot);
 				currentHistoryIndex = 0;
 
+				/* set if edge labels should be displayed */
+				vgraph.displayEdgeLabels = delCheckBox.selected;
+
 				/* the following kicks it off .... */
 				vgraph.currentRootVNode = startRoot;
 
@@ -426,6 +429,10 @@
 				vgraph.showHistory = showHistory.selected;
 			}
  			
+ 			private function displayEdgeLabels():void {
+ 				vgraph.displayEdgeLabels = delCheckBox.selected;
+ 			}
+ 			
  			private function changeDamping():void {
  				if(layouter is SpringForceDirectedLayouter) {
  					(layouter as SpringForceDirectedLayouter).dampingActive = dampCheck.selected;
@@ -614,57 +621,57 @@
 		    <Node id="polarAngle" name="polarAngle" nodeType="PrimitiveReverseBurst" description="Calculate the polar Angle of a Point." />
 		    <Node id="polarRadius" name="polarRadius" nodeType="PrimitiveReverseBurst" description="Calculate the polar radius for a given point." />
 
-			<Edge fromID="vizgraph" toID="graphlayout_data" />
-			<Edge fromID="vizgraph" toID="graphlayout_layout" />
-			<Edge fromID="vizgraph" toID="graphlayout_visual" />
-			<Edge fromID="vizgraph" toID="flex_utils" />
+			<Edge fromID="vizgraph" toID="graphlayout_data" association="subpackage" />
+			<Edge fromID="vizgraph" toID="graphlayout_layout" association="subpackage" />
+			<Edge fromID="vizgraph" toID="graphlayout_visual" association="subpackage" />
+			<Edge fromID="vizgraph" toID="flex_utils" association="subpackage" />
 			
-			<Edge fromID="graphlayout_data" toID="idataitem" />
-			<Edge fromID="idataitem" toID="data" />
-			<Edge fromID="idataitem" toID="id" />
+			<Edge fromID="graphlayout_data" toID="idataitem" association="class" />
+			<Edge fromID="idataitem" toID="data" association="property" />
+			<Edge fromID="idataitem" toID="id" association="property" />
 	
-			<Edge fromID="graphlayout_data" toID="iedge" />
-			<Edge fromID="iedge" toID="fromnode" />
-			<Edge fromID="iedge" toID="isdirectional" />
-			<Edge fromID="iedge" toID="node1" />
-			<Edge fromID="iedge" toID="node2" />
-			<Edge fromID="iedge" toID="tonode" />
-			<Edge fromID="iedge" toID="vedge" />
-			<Edge fromID="iedge" toID="othernode" />
+			<Edge fromID="graphlayout_data" toID="iedge" association="interface" />
+			<Edge fromID="iedge" toID="fromnode" association="property" />
+			<Edge fromID="iedge" toID="isdirectional" association="property" />
+			<Edge fromID="iedge" toID="node1" association="property" />
+			<Edge fromID="iedge" toID="node2" association="property" />
+			<Edge fromID="iedge" toID="tonode" association="property" />
+			<Edge fromID="iedge" toID="vedge" association="property" />
+			<Edge fromID="iedge" toID="othernode" association="property" />
 	
-			<Edge fromID="graphlayout_data" toID="igraph" />
-			<Edge fromID="graphlayout_data" toID="igtree" />
-			<Edge fromID="graphlayout_data" toID="edge" />
-			<Edge fromID="graphlayout_data" toID="graph" />
-			<Edge fromID="graphlayout_data" toID="gtree" />
-			<Edge fromID="graphlayout_data" toID="node" />
+			<Edge fromID="graphlayout_data" toID="igraph" association="interface" />
+			<Edge fromID="graphlayout_data" toID="igtree" association="interface" />
+			<Edge fromID="graphlayout_data" toID="edge" association="class" />
+			<Edge fromID="graphlayout_data" toID="graph" association="class" />
+			<Edge fromID="graphlayout_data" toID="gtree" association="class" />
+			<Edge fromID="graphlayout_data" toID="node" association="class" />
 			
-			<Edge fromID="graphlayout_layout" toID="iedgerenderer" />
-			<Edge fromID="graphlayout_layout" toID="ilayoutalgorithm" />
-			<Edge fromID="graphlayout_layout" toID="baselayoutdrawing" />
-			<Edge fromID="graphlayout_layout" toID="baselayouter" />
-			<Edge fromID="graphlayout_layout" toID="concentricradiallayoutdrawing" />
-			<Edge fromID="graphlayout_layout" toID="concentricradiallayouter" />
-			<Edge fromID="graphlayout_layout" toID="defaultedgerenderer" />
-			<Edge fromID="graphlayout_layout" toID="parentcentereddrawingmodel" />
-			<Edge fromID="graphlayout_layout" toID="parentcenteredradiallayouter" />
-			<Edge fromID="graphlayout_layout" toID="phyllotreedrawingmodel" />
-			<Edge fromID="graphlayout_layout" toID="phyllotreelayouter" />
-			<Edge fromID="graphlayout_layout" toID="springforcedirectedlayouter" />	
+			<Edge fromID="graphlayout_layout" toID="iedgerenderer" association="interface" />
+			<Edge fromID="graphlayout_layout" toID="ilayoutalgorithm" association="interface" />
+			<Edge fromID="graphlayout_layout" toID="baselayoutdrawing" association="class" />
+			<Edge fromID="graphlayout_layout" toID="baselayouter" association="class" />
+			<Edge fromID="graphlayout_layout" toID="concentricradiallayoutdrawing" association="class" />
+			<Edge fromID="graphlayout_layout" toID="concentricradiallayouter" association="class" />
+			<Edge fromID="graphlayout_layout" toID="defaultedgerenderer" association="class" />
+			<Edge fromID="graphlayout_layout" toID="parentcentereddrawingmodel" association="class" />
+			<Edge fromID="graphlayout_layout" toID="parentcenteredradiallayouter" association="class" />
+			<Edge fromID="graphlayout_layout" toID="phyllotreedrawingmodel" association="class" />
+			<Edge fromID="graphlayout_layout" toID="phyllotreelayouter" association="class" />
+			<Edge fromID="graphlayout_layout" toID="springforcedirectedlayouter" association="class" />	
 			
-			<Edge fromID="graphlayout_visual" toID="ivisualedge" />
-			<Edge fromID="graphlayout_visual" toID="ivisualgraph" />
-			<Edge fromID="graphlayout_visual" toID="ivisualitem" />
-			<Edge fromID="graphlayout_visual" toID="ivisualnode" />
-			<Edge fromID="graphlayout_visual" toID="visualedge" />
-			<Edge fromID="graphlayout_visual" toID="visualgraph" />
-			<Edge fromID="graphlayout_visual" toID="visualnode" />
+			<Edge fromID="graphlayout_visual" toID="ivisualedge" association="interface" />
+			<Edge fromID="graphlayout_visual" toID="ivisualgraph" association="interface" />
+			<Edge fromID="graphlayout_visual" toID="ivisualitem" association="interface" />
+			<Edge fromID="graphlayout_visual" toID="ivisualnode" association="interface" />
+			<Edge fromID="graphlayout_visual" toID="visualedge" association="class" />
+			<Edge fromID="graphlayout_visual" toID="visualgraph" association="class" />
+			<Edge fromID="graphlayout_visual" toID="visualnode" association="class" />
 			
-			<Edge fromID="flex_utils" toID="geometry" />
-			<Edge fromID="geometry" toID="cartFromPolar" />
-			<Edge fromID="geometry" toID="normaliseAngle" />
-			<Edge fromID="geometry" toID="polarAngle" />
-			<Edge fromID="geometry" toID="polarRadius" />
+			<Edge fromID="flex_utils" toID="geometry" association="class" />
+			<Edge fromID="geometry" toID="cartFromPolar" association="method" />
+			<Edge fromID="geometry" toID="normaliseAngle" association="method" />
+			<Edge fromID="geometry" toID="polarAngle" association="method" />
+			<Edge fromID="geometry" toID="polarRadius" association="method" />
 		</Graph>
 	</mx:XML>
 	
@@ -748,6 +755,11 @@
 							<mx:Label toolTip="Use this control to increase/decrease text size" text="Scaling" fontSize="9" textAlign="center" />
 							<mx:HSlider id="scaleSlider" value="1" minimum="0.5" maximum="2.0" liveDragging="true" width="95%" tickInterval="0.1" snapInterval="0.1"
 									change="updateScale();"/>
+							<mx:HRule width="95%"/>
+							<mx:HBox>
+								<mx:CheckBox selected="true" toolTip="Select to show edge labels."
+									id="delCheckBox" label="Edge Labels" click="displayEdgeLabels()" />
+							</mx:HBox>
 							<mx:HRule width="95%"/>
 							<mx:HBox>
 								<mx:CheckBox selected="true" toolTip="Select to restrict graph to boundaries of current view space.  Graph will autofit its size so that all nodes are visible."
