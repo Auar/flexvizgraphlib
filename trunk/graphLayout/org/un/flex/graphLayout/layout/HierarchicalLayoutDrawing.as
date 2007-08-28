@@ -278,21 +278,5 @@ package org.un.flex.graphLayout.layout {
 				return _depthOffsets[n];
 			}
 		}
-		
-		/**
-		 * Set the depth and breadth value of a node. Depending on the
-		 * orientation this decides if which will be the X or
-		 * Y value and computes it accordingly.
-		 * @param n The node to set the values of.
-		 * @param d The depth value.
-		 * @param b The breadth value.
-		 * */
-		public function setDepthAndBreadth(n:INode, d:Number, b:Number):void {
-			
-			/* right now we do not implement the orientation changes,
-			 * we directly use them as X and Y values */
-			this.setCartCoordinates(n, new Point(b,d)); 
-		}
-
 	}
 }

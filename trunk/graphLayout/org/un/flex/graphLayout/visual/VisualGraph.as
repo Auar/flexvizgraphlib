@@ -514,6 +514,9 @@ package org.un.flex.graphLayout.visual {
 		 * @private
 		 * */
 		public function set layouter(l:ILayoutAlgorithm):void {
+			if(_layouter != null) {
+				_layouter.resetAll(); // to stop any pending animations
+			}
 			_layouter = l;
 		}
 
