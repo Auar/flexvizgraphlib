@@ -4,7 +4,7 @@
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="../../../../../style.css" type="text/css" media="screen">
 <link rel="stylesheet" href="../../../../../print.css" type="text/css" media="print">
-<meta content="IVisualGraph,org.un.flex.graphLayout.visual.IVisualGraph,graph,globalEdgeSettings,lineColor,itemRenderer,layouter,origin,center,visibleVNodes,noVisibleVNodes,visibleEdges,showHistory,currentRootVNode,visibilityLimitActive,maxVisibleDistance,initFromGraph,clearHistory,createNode,removeNode,linkNodes,unlinkNodes,refresh,refresh,refresh,draw,calcNodesBoundingBox,scroll" name="keywords">
+<meta content="IVisualGraph,org.un.flex.graphLayout.visual.IVisualGraph,graph,globalEdgeSettings,lineColor,itemRenderer,edgeLabelRenderer,displayEdgeLabels,layouter,origin,center,visibleVNodes,noVisibleVNodes,visibleEdges,showHistory,currentRootVNode,visibilityLimitActive,maxVisibleDistance,initFromGraph,clearHistory,createNode,removeNode,linkNodes,unlinkNodes,refresh,refresh,refresh,draw,calcNodesBoundingBox,scroll" name="keywords">
 <title>org.un.flex.graphLayout.visual.IVisualGraph</title>
 </head>
 <body>
@@ -67,6 +67,17 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("In
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#currentRootVNode">currentRootVNode</a> : <a href="../visual/IVisualNode.html">IVisualNode</a>
 <div class="summaryTableDescription">
    Set or get the current root node (or focused node).</div>
+</td><td class="summaryTableOwnerCol">IVisualGraph</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#displayEdgeLabels">displayEdgeLabels</a> : Boolean<div class="summaryTableDescription">
+   Specify whether to display edge labels or not.</div>
+</td><td class="summaryTableOwnerCol">IVisualGraph</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#edgeLabelRenderer">edgeLabelRenderer</a> : IFactory<div class="summaryTableDescription">[write-only]
+   Allow to provide an EdgeLabelRenderer in order to
+   display edge labels.</div>
 </td><td class="summaryTableOwnerCol">IVisualGraph</td>
 </tr>
 <tr class="">
@@ -299,6 +310,40 @@ showHideInherited();
 <code>&nbsp;&nbsp;&nbsp;&nbsp;public function set currentRootVNode(value:<a href="../visual/IVisualNode.html">IVisualNode</a>):void</code>
 <br>
 </div>
+<a name="displayEdgeLabels"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">displayEdgeLabels</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>displayEdgeLabels:Boolean</code>&nbsp;&nbsp;[read-write]<p>
+   Specify whether to display edge labels or not.
+   If no edge label renderer is present a default
+   will be used.
+   </p><span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get displayEdgeLabels():Boolean</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set displayEdgeLabels(value:Boolean):void</code>
+<br>
+</div>
+<a name="edgeLabelRenderer"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">edgeLabelRenderer</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>edgeLabelRenderer:IFactory</code>&nbsp;&nbsp;[write-only]<p>
+   Allow to provide an EdgeLabelRenderer in order to
+   display edge labels. The created instances must be
+   UIComponents.
+   </p><span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set edgeLabelRenderer(value:IFactory):void</code>
+<br>
+</div>
 <a name="globalEdgeSettings"></a>
 <table cellspacing="0" cellpadding="0" class="detailHeader">
 <tr>
@@ -324,9 +369,7 @@ showHideInherited();
 <p>
 <span class="label">See also</span>
 </p>
-<div class="seeAlso">
-<a href="../layout/IEdgeRenderer.html" target="">org.un.flex.graphLayout.layout.IEdgeRenderer</a>
-</div>
+<div class="seeAlso">org.un.flex.graphLayout.layout.IEdgeRenderer</div>
 </div>
 <a name="graph"></a>
 <table cellspacing="0" cellpadding="0" class="detailHeader">

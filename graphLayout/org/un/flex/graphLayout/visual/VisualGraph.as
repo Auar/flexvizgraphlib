@@ -1474,6 +1474,15 @@ package org.un.flex.graphLayout.visual {
 			_canvas.addChild(mycomponent);
 			
 			/* register it the view in the vnode and the mapping */
+			/*
+			if(ve.labelView != null) {
+				trace("Edge:"+ve.edge.id+" has already view:"+ve.labelView.toString()+" will be overwritten");
+			} else {
+				trace("Edge:"+ve.edge.id+" gets new view.");
+			}
+			*/
+			
+			
 			ve.labelView = mycomponent;
 			_viewToVEdgeMap[mycomponent] = ve;
 			
@@ -2039,7 +2048,10 @@ package org.un.flex.graphLayout.visual {
 					 * visible */
 					if(vno.isVisible || (newVisibleNodes[vno] != null)) {
 						_visibleEdges[e] = e;
-						createVEdgeView(e.vedge);
+						/* check if there is no view */
+						if(e.vedge.labelView == null) {
+							createVEdgeView(e.vedge);
+						}
 					}
 				}
 				

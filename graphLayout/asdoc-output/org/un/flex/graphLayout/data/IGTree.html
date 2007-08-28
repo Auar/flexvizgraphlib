@@ -4,7 +4,7 @@
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="../../../../../style.css" type="text/css" media="screen">
 <link rel="stylesheet" href="../../../../../print.css" type="text/css" media="print">
-<meta content="IGTree,org.un.flex.graphLayout.data.IGTree,restricted,parents,distances,root,maxDepth,maxNumberPerLayer,getDistance,getChildIndex,getNoChildren,getNoSiblings,areSiblings,getChildren,getIthChildPerNode,initTree,getLimitedNodes,getNumberNodesWithDistance" name="keywords">
+<meta content="IGTree,org.un.flex.graphLayout.data.IGTree,restricted,parents,distances,root,maxDepth,XMLtree,maxNumberPerLayer,getDistance,getChildIndex,getNoChildren,getNoSiblings,areSiblings,getChildren,getIthChildPerNode,initTree,getLimitedNodes,getNumberNodesWithDistance" name="keywords">
 <title>org.un.flex.graphLayout.data.IGTree</title>
 </head>
 <body>
@@ -90,6 +90,11 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("In
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#root">root</a> : <a href="../data/INode.html">INode</a>
 <div class="summaryTableDescription">
    access to the current root node of the tree.</div>
+</td><td class="summaryTableOwnerCol">IGTree</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#XMLtree">XMLtree</a> : XML<div class="summaryTableDescription">[read-only]
+   Returns a nested XML representation of the tree.</div>
 </td><td class="summaryTableOwnerCol">IGTree</td>
 </tr>
 </table>
@@ -292,6 +297,24 @@ showHideInherited();
 <code>&nbsp;&nbsp;&nbsp;&nbsp;public function get root():<a href="../data/INode.html">INode</a></code>
 <br>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;public function set root(value:<a href="../data/INode.html">INode</a>):void</code>
+<br>
+</div>
+<a name="XMLtree"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">XMLtree</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>XMLtree:XML</code>&nbsp;&nbsp;[read-only]<p>
+   Returns a nested XML representation of the tree.
+   It will only contain <Node> tags with all the attributes
+   of the source GraphML data, nothing else.
+   Beware, if the created tree is restriced to visible nodes,
+   you will only get those.
+   </p><span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get XMLtree():XML</code>
 <br>
 </div>
 <a name="methodDetail"></a>
