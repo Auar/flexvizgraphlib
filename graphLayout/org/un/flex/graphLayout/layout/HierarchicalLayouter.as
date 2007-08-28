@@ -114,6 +114,7 @@ package org.un.flex.graphLayout.layout {
 			_defaultNodeDistance = 10;
 			_layerDistance = 10;
 			_orientation = ORIENT_TOP_DOWN;
+			//_orientation = ORIENT_BOTTOM_UP;
 			_siblingSpreadEnabled = true;
 			_siblingSpreadDistance = 10;
 			_honorNodeSize = false;
@@ -267,7 +268,11 @@ package org.un.flex.graphLayout.layout {
 				case ORIENT_RIGHT_LEFT:
 				case ORIENT_TOP_DOWN:
 				case ORIENT_BOTTOM_UP:
-					_orientation = 0;
+					_orientation = o;
+					adjustCenter();
+					
+					/* do a redraw */
+					layoutPass();
 					break;
 				default:
 					throw Error("orientation:"+o+" not supported");
@@ -564,6 +569,7 @@ package org.un.flex.graphLayout.layout {
 			var depth:Number;
 			var children:Array;
 			var w:INode;
+			var result:Point;
 			
 			/* the depth value is the depth from the root times
 			 * the layerDistance. */
@@ -574,7 +580,23 @@ package org.un.flex.graphLayout.layout {
 				depth -= _currentDrawing.getDepthOffset(v);
 			}
 			
-			_currentDrawing.setDepthAndBreadth(v,depth,breadth);
+			switch(_orientation) {
+				case ORIENT_TOP_DOWN:
+					result = new Point(breadth, depth);
+					break;
+				case ORIENT_BOTTOM_UP:
+					//result = new Point(breadth - DEFAULT_MARGIN, _vgraph.height - depth - (2 * DEFAULT_MARGIN));
+					result = new Point(breadth, -depth);
+					break;
+				case ORIENT_LEFT_RIGHT:
+					result = new Point(depth, breadth);
+				break;
+				case ORIENT_RIGHT_LEFT:
+					result = new Point(-depth, breadth);
+				break; 
+			}
+			
+			_currentDrawing.setCartCoordinates(v, result); 
 			
 			/* recurse over the children */
 			children = _stree.getChildren(v);
@@ -599,11 +621,35 @@ package org.un.flex.graphLayout.layout {
 			
 			_currentDrawing.originOffset = _vgraph.origin;
 			
-			/* XXX this really depends on the orientation */
-			_currentDrawing.centerOffset = new Point((_vgraph.width / 2), DEFAULT_MARGIN);
-			_currentDrawing.centeredLayout = true;
-
+			adjustCenter();
 		}
+		
+		/**
+		 * @internal
+		 * This method adjusts the reference center depending
+		 * on the current orientation */
+		private function adjustCenter():void {
+			switch(_orientation) {
+				case ORIENT_TOP_DOWN:
+					_currentDrawing.centerOffset = new Point((_vgraph.width / 2), DEFAULT_MARGIN);
+					break;
+				case ORIENT_BOTTOM_UP:
+					_currentDrawing.centerOffset =
+						new Point((_vgraph.width / 2), (_vgraph.height - DEFAULT_MARGIN));
+					break;
+				case ORIENT_LEFT_RIGHT:
+					_currentDrawing.centerOffset = new Point(DEFAULT_MARGIN, (_vgraph.height / 2) - DEFAULT_MARGIN);
+					break;
+				case ORIENT_RIGHT_LEFT:
+					_currentDrawing.centerOffset =
+						new Point((_vgraph.width - DEFAULT_MARGIN), (_vgraph.height / 2) - DEFAULT_MARGIN);
+					break;
+				default:
+					throw Error("Invalid orientation value found in internal variable");
+			}
+			_currentDrawing.centeredLayout = true;
+		}
+		
 		
 		/**
 		 * @internal
