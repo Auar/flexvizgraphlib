@@ -15,4 +15,11 @@
 		<nature>com.adobe.flexbuilder.project.flexnature</nature>
 		<nature>com.adobe.flexbuilder.project.actionscriptnature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>[source path] renderers</name>
+			<type>2</type>
+			<location>C:/Documents and Settings/Daniel.Lang/My Documents/eclipse/RelationNavigatorDemo/renderers</location>
+		</link>
+	</linkedResources>
 </projectDescription>
