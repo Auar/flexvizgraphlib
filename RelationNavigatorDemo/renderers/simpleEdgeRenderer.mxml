@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" borderStyle="inset"  borderThickness="1" borderColor="0x000000">
+	<mx:Label text="{this.data.data.@association}" width="50" />
+	<mx:Label text="TESTTEXT" />
+</mx:VBox>
