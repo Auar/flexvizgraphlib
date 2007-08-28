@@ -205,6 +205,7 @@
 						bslider.visible = false;
 						bsliderlabel.visible = false;
 						siblingSpread.visible = false;
+						orientationSelector.visible = false;
 						
 						phidial.includeInLayout = false;
 						phidiallabel.includeInLayout = false;
@@ -212,6 +213,7 @@
 						bslider.includeInLayout = false;
 						bsliderlabel.includeInLayout = false;
 						siblingSpread.includeInLayout = false;
+						orientationSelector.includeInLayout = false;
 						break;
 					case "ParentCenteredRadial":
 						layouter = new ParentCenteredRadialLayouter(vgraph);
@@ -222,6 +224,7 @@
 						bslider.visible = false;
 						bsliderlabel.visible = false;
 						siblingSpread.visible = false;
+						orientationSelector.visible = false;
 						
 						phidial.includeInLayout = true;
 						phidiallabel.includeInLayout = true;
@@ -229,6 +232,7 @@
 						bslider.includeInLayout = false;
 						bsliderlabel.includeInLayout = false;
 						siblingSpread.includeInLayout = false;
+						orientationSelector.includeInLayout = false;
 						break;
 					case "PhylloTree":
 						layouter = new PhylloTreeLayouter(vgraph);
@@ -239,6 +243,7 @@
 						bslider.visible = false;
 						bsliderlabel.visible = false;
 						siblingSpread.visible = false;
+						orientationSelector.visible = false;
 						
 						phidial.includeInLayout = true;
 						phidiallabel.includeInLayout = true;
@@ -246,6 +251,7 @@
 						bslider.includeInLayout = false;
 						bsliderlabel.includeInLayout = false;
 						siblingSpread.includeInLayout = false;
+						orientationSelector.includeInLayout = false;
 						break;
 					case "ForceDirected":
 						layouter = new SpringForceDirectedLayouter(vgraph);
@@ -256,6 +262,7 @@
 						bslider.visible = false;
 						bsliderlabel.visible = false;
 						siblingSpread.visible = false;
+						orientationSelector.visible = false;
 						
 						phidial.includeInLayout = false;
 						phidiallabel.includeInLayout = false;
@@ -263,6 +270,7 @@
 						bslider.includeInLayout = false;
 						bsliderlabel.includeInLayout = false;
 						siblingSpread.includeInLayout = false;	
+						orientationSelector.includeInLayout = false;
 						break;
 					case "Hierarchical":
 						layouter = new HierarchicalLayouter(vgraph);
@@ -274,6 +282,7 @@
 						phidiallabel.visible = false;
 						dampCheck.visible = false;
 						siblingSpread.visible = true;
+						orientationSelector.visible = true;
 						
 						bslider.includeInLayout = true;
 						bsliderlabel.includeInLayout = true;
@@ -281,6 +290,7 @@
 						phidial.includeInLayout = false;
 						phidiallabel.includeInLayout = false;
 						siblingSpread.includeInLayout = true;
+						orientationSelector.includeInLayout = true;
 						break;
 					default:
 						layouter = new ConcentricRadialLayouter(vgraph);
@@ -290,6 +300,7 @@
 						bslider.visible = false;
 						bsliderlabel.visible = false;
 						siblingSpread.visible = false;
+						orientationSelector.visible = false;
 						
 						phidial.includeInLayout = false;
 						phidiallabel.includeInLayout = false;
@@ -297,6 +308,7 @@
 						bslider.includeInLayout = false;
 						bsliderlabel.includeInLayout = false;
 						siblingSpread.includeInLayout = false;
+						orientationSelector.includeInLayout = false;
 				}
 				vgraph.layouter = layouter;
 				layouter.autoFitEnabled = autoFit.selected;
@@ -348,6 +360,36 @@
 			private function enableSiblingSpread():void {
 				if(layouter is HierarchicalLayouter) {
 					(layouter as HierarchicalLayouter).enableSiblingSpread = siblingSpread.selected;
+					layouter.layoutChanged = true;
+					vgraph.draw();
+				}
+			}
+			
+			private function setOrientation():void {
+				var or:String;
+				if(layouter is HierarchicalLayouter) {
+					or = orientationSelector.selectedItem as String;
+					switch(or) {
+						case "Top Down":
+							(layouter as HierarchicalLayouter).orientation = 
+								(layouter as HierarchicalLayouter).ORIENT_TOP_DOWN;
+							break;
+						case "Bottom Up":
+							(layouter as HierarchicalLayouter).orientation = 
+								(layouter as HierarchicalLayouter).ORIENT_BOTTOM_UP;
+							break;
+						case "Left-Right":
+							(layouter as HierarchicalLayouter).orientation = 
+								(layouter as HierarchicalLayouter).ORIENT_LEFT_RIGHT;
+							break;
+						case "Right-Left":
+							(layouter as HierarchicalLayouter).orientation = 
+								(layouter as HierarchicalLayouter).ORIENT_RIGHT_LEFT;
+							break;
+						default:
+							throw Error("Illegal orientation selected:"+or);
+							break;
+					}
 					layouter.layoutChanged = true;
 					vgraph.draw();
 				}
@@ -701,9 +743,10 @@
 									</mx:ArrayCollection>
 								</mx:ComboBox>	
 							</mx:HBox>
-							<mx:HRule width="95%"/>
+							
 							
 							<!--
+							<mx:HRule width="95%"/>
 							<mx:HBox horizontalAlign="center" width="100%" height="100%" >
 								<mx:Image source="{EmbeddedIcons.leftButton}" click="historyForward()" alpha="{getButtonAlpha(this.histForwardOk())}"
 									/>
@@ -731,6 +774,16 @@
 							<mx:Label id="phidiallabel" toolTip="This control to changes the angle but only in the ParentCentered Layout" text="Starting Angle" fontSize="9"  textAlign="center"/>
 							<mx:HSlider tickInterval="1" width="95%" id="phidial" value="160" minimum="-360" maximum="360"
 								liveDragging="true" change="updatePhi()" />
+							<mx:HBox>
+								<mx:ComboBox id="orientationSelector" width="95%" toolTip="Select the orientation" change="setOrientation()" >
+									<mx:ArrayCollection>
+										<mx:String>Top Down</mx:String>
+										<mx:String>Bottom Up</mx:String>
+										<mx:String>Left-Right</mx:String>
+										<mx:String>Right-Left</mx:String>
+									</mx:ArrayCollection>
+								</mx:ComboBox>	
+							</mx:HBox>
 							<mx:HRule width="95%"/>
 							<mx:Label toolTip="Use this control to size graph" text="Link Length" fontSize="9"  textAlign="center"/>
 							<mx:HSlider tickInterval="1" width="95%" id="linkLength" value="20" minimum="0" maximum="100"
