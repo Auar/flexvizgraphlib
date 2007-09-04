@@ -271,7 +271,7 @@ package org.un.flex.graphLayout.visual {
 		/**
 		 * The number of currently visible VNodes.
 		 * */
-		private var _noVisibleVNodes:uint;
+		private var _noVisibleVNodes:int;
 		
 		/**
 		 * This Dictionary keeps track of all currently
@@ -419,17 +419,27 @@ package org.un.flex.graphLayout.visual {
 		 * */
 		public function set graph(g:IGraph):void {
 			
+			
+			
 			if(_graph != null) {
 				trace("WARNING: _graph in VisualGraph was not null when new graph was assigned."+
 					" Some cleanup done, but this may leak memory");
 				/* this cleanes the VGraph so we are pristine */
 				purgeVGraph();
+				_graph.purgeGraph();
 			}
 			
 			/* assign defaults */
 			_graph = g;
+			
 			/* better safe than sorry even if it is an empty one */
 			initFromGraph();
+			
+			/* we also need a new root node */
+			_currentRootVNode = null;
+			
+			trace("WARNING: setting a new graph object invalidates the root node,"+
+				" you need to set it afterwards to avoid crashes");
 		}
 
 		/**
@@ -735,6 +745,7 @@ package org.un.flex.graphLayout.visual {
 			/* create the vnode from the node */
 			for each(node in _graph.nodes) {
 				this.createVNode(node);
+				trace("created VNode for node:"+node.id);
 			}
 			
 			/* we also create the edge objects, since they
@@ -1149,8 +1160,10 @@ package org.un.flex.graphLayout.visual {
 			}
 			
 			/* remove from the visible vnode map if present */
-			delete _visibleVNodes[vn];
-			--_noVisibleVNodes;
+			if(_visibleVNodes.hasOwnProperty(vn)) {
+				delete _visibleVNodes[vn];
+				--_noVisibleVNodes;
+			}
 			
 			/* this should clean up all references to this VNode
 			 * thus freeing it for garbage collection */
@@ -1189,6 +1202,11 @@ package org.un.flex.graphLayout.visual {
 		 * @param ve The VisualEdge to be removed.
 		 * */
 		private function removeVEdge(ve:IVisualEdge):void {
+			
+			/* see if the edge has a view and remove that */
+			if(ve.labelView != null) {
+				removeVEdgeView(ve.labelView);
+			}
 			
 			/* remove the reference from the real edge */
 			ve.edge.vedge = null;

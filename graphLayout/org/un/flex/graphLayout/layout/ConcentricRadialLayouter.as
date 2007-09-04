@@ -118,7 +118,7 @@ package org.un.flex.graphLayout.layout {
 		 * @inheritDoc
 		 * */
 		public override function resetAll():void {		
-			_layoutChanged = true;
+			super.resetAll();
 			_stree = null;
 			_graph.purgeTrees();
 		}
