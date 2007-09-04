@@ -1232,8 +1232,9 @@ package org.un.flex.graphLayout.visual {
 		/**
 		 * Redraw all edges, this is called from the updateDisplayList()
 		 * method.
+		 * @inheritDoc
 		 * */
-		private function redrawEdges():void {
+		public function redrawEdges():void {
 			
 			var vn1:IVisualNode;
 			var vn2:IVisualNode;

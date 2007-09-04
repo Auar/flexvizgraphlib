@@ -310,7 +310,9 @@ package org.un.flex.graphLayout.layout {
 				
 				/* make sure the edges are redrawn */
 				_layoutChanged = true;
-				_vgraph.invalidateDisplayList();
+				//_vgraph.dispatchEvent(new MouseEvent("forceRedrawEvent"));
+				//_vgraph.invalidateDisplayList();
+				_vgraph.redrawEdges();
 			}
 			
 			/* check if we ran out of anim cycles, but are not finished */
@@ -416,7 +418,9 @@ package org.un.flex.graphLayout.layout {
 				
 				/* make sure the edges are redrawn */
 				_layoutChanged = true;
-				_vgraph.invalidateDisplayList();
+				//_vgraph.dispatchEvent(new MouseEvent("forceRedrawEvent"));
+				//_vgraph.invalidateDisplayList();
+				_vgraph.redrawEdges();	
 			}
 			
 			/* check if we ran out of anim cycles, but are not finished */
