@@ -299,6 +299,10 @@ package org.un.flex.graphLayout.visual {
 		function draw():void;
 
 		/**
+		 * This forces a redraw of all edges */
+		function redrawEdges():void;
+
+		/**
 		 * Calculate and return the current bounding box of all visible nodes.
 		 * This is required by some layouters.
 		 * @return The bounding box rectangle of all visible nodes.
