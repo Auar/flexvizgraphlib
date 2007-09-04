@@ -2029,7 +2029,9 @@ package org.un.flex.graphLayout.visual {
 				/* remove the edges */
 				edges = vn.node.inEdges.concat(vn.node.outEdges);
 				for each(e in edges) {
-					removeVEdgeView(e.vedge.labelView);
+					if(e.vedge.labelView != null) {
+						removeVEdgeView(e.vedge.labelView);
+					}
 					delete _visibleEdges[e];
 				}
 			}
