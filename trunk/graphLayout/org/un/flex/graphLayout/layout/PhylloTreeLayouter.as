@@ -75,10 +75,8 @@ package org.un.flex.graphLayout.layout {
 		 * */
 		override public function resetAll():void {			
 			
-			/* stop timer */
-			killTimer();
+			super.resetAll();
 			
-			_layoutChanged = true;
 			_nodequeue = null;
 			_stree = null;
 			_graph.purgeTrees();

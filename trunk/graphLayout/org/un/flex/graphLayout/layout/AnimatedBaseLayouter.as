@@ -134,6 +134,14 @@ package org.un.flex.graphLayout.layout {
 		/**
 		 * @inheritDoc
 		 * */
+		override public function resetAll():void {
+			super.resetAll();
+			killTimer();
+		}
+
+		/**
+		 * @inheritDoc
+		 * */
 		override protected function set currentDrawing(dr:BaseLayoutDrawing):void {
 			_currentDrawing = dr;
 			

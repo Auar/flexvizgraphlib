@@ -533,6 +533,29 @@ package org.un.flex.graphLayout.data {
 			
 			/* invalidate trees */
 			_treeMap = new Dictionary;
+		}
+		
+		/**
+		 * @inheritDoc
+		 * */
+		public function purgeGraph():void {
+			var edges:Array;
+			var nodes:Array;
+			
+			var edge:IEdge;
+			var node:INode;
+			
+			edges = _edges.concat();
+			nodes = _nodes.concat();
+			
+			
+			for each(edge in edges) {
+				removeEdge(edge);
+			}
+			
+			for each(node in nodes) {
+				removeNode(node);
+			}
 		}						
 	}
 }

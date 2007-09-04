@@ -181,5 +181,9 @@ package org.un.flex.graphLayout.data {
 		 * */		
 		function removeEdge(e:IEdge):void;			  
 		
+		/**
+		 * Remove all edges and nodes from the Graph.
+		 * */
+		function purgeGraph():void;
 	}
 }

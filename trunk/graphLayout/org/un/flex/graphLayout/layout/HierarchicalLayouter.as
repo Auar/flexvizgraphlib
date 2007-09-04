@@ -122,9 +122,7 @@ package org.un.flex.graphLayout.layout {
 		 * */
 		override public function resetAll():void {			
 			
-			killTimer();
-			
-			_layoutChanged = true;
+			super.resetAll();
 			
 			/* invalidate all trees in the graph */
 			_stree = null;
