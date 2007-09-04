@@ -128,6 +128,9 @@ package org.un.flex.graphLayout.layout {
 		 * @param v The change value for the node n.
 		 * */
 		public function setChange(n:INode, v:Number):void {
+			if(isNaN(v) || !isFinite(v)) {
+				throw Error("illegal set change value for node:"+n.id);
+			}
 			_changes[n] = v;
 		}
 		
@@ -137,6 +140,10 @@ package org.un.flex.graphLayout.layout {
 		 * @param v The value to add.
 		 * */
 		public function addToChange(n:INode, v:Number):void {
+			
+			if(isNaN(v) || !isFinite(v)) {
+				throw Error("illegal addto change value for node:"+n.id);
+			}			
 			/* remember that a change is supposed to be
 			 * preinitialised with 0, so if we do not have it
 			 * yet, we just set the value */
@@ -167,6 +174,9 @@ package org.un.flex.graphLayout.layout {
 		 * @param v The shift value for the node n.
 		 * */
 		public function setShift(n:INode, v:Number):void {
+			if(isNaN(v) || !isFinite(v)) {
+				throw Error("illegal set shift value for node:"+n.id);
+			}			
 			_shifts[n] = v;
 		}
 		
@@ -176,6 +186,9 @@ package org.un.flex.graphLayout.layout {
 		 * @param v The value to add.
 		 * */
 		public function addToShift(n:INode, v:Number):void {
+			if(isNaN(v) || !isFinite(v)) {
+				throw Error("illegal addto shift value for node:"+n.id);
+			}
 			/* remember that a shift is supposed to be
 			 * preinitialised with 0, so if we do not have it
 			 * yet, we just set the value */

@@ -89,9 +89,6 @@ package org.un.flex.graphLayout.layout {
 		 * Again it may be set by autofit */
 		private var _layerDistance:Number;
 		
-		/* this is the default ancestor node used in the algorithm */
-		private var _defaultAncestor:INode;
-		
 		/* this holds the actual orientation */
 		private var _orientation:uint;
 		
@@ -180,6 +177,7 @@ package org.un.flex.graphLayout.layout {
 			
 					
 			/* establish the spanning tree */
+			//_graph.purgeTrees();
 			_stree = _graph.getTree(_root,true);
 
 			/* check if the root is visible, if not
@@ -192,9 +190,7 @@ package org.un.flex.graphLayout.layout {
 			 * list of situation how to deal with hab
 			 * if the layout was changed (or any parameter)
 			 * we have to reinit the model */
-			if(_layoutChanged) {
-				initModel();
-			}
+			initModel();
 
 			/* this is complicated. */
 			if(_autoFitEnabled) {
@@ -300,6 +296,7 @@ package org.un.flex.graphLayout.layout {
 			var prelimsib:Number;
 			var vindex:uint;
 			var depthOffset:Number;
+			var defaultAncestor:INode;
 			
 			nochild = _stree.getNoChildren(v);
 			vindex = _stree.getChildIndex(v);
@@ -323,7 +320,7 @@ package org.un.flex.graphLayout.layout {
 			} else {
 				/* init to the first (0th, leftmost) child of v, 
 				 * may be modified by apportion() */
-				_defaultAncestor = _stree.getIthChildPerNode(v,0);
+				defaultAncestor = _stree.getIthChildPerNode(v,0);
 				
 				depthOffset = 0;
 				for(i=0; i < nochild; ++i) {
@@ -331,7 +328,7 @@ package org.un.flex.graphLayout.layout {
 					/* recurse */
 					firstWalk(child);
 					/* and call apportion */
-					apportion(child);
+					defaultAncestor = apportion(child, defaultAncestor);
 					
 					/* apply the depth offset for each child */
 					if(_siblingSpreadEnabled) {
@@ -384,7 +381,7 @@ package org.un.flex.graphLayout.layout {
 		 * @param v The node (root of subtree) to work on.
 		 * @param defaultAncestor (self explaining).
 		 * */
-		private function apportion(v:INode):void {
+		private function apportion(v:INode, da:INode):INode {
 			var vinsideleft:INode;
 			var vinsideright:INode;
 			var voutsideleft:INode;
@@ -396,7 +393,10 @@ package org.un.flex.graphLayout.layout {
 			var shift:Number;
 			var vindex:uint;
 			var w:INode;
+			var defaultAncestor:INode;
 			var lgua:INode; // left greatest uncommon ancestor
+			
+			defaultAncestor = da;
 			
 			/* if we have a left sibling w */
 			vindex = _stree.getChildIndex(v);
@@ -433,7 +433,7 @@ package org.un.flex.graphLayout.layout {
 					
 					if(shift > 0) {
 						/* get the left greatest uncommon ancestor */
-						lgua = leftGrUnAncestor(vinsideleft, v);
+						lgua = leftGrUnAncestor(vinsideleft, v, defaultAncestor);
 						/* now move the subtree by shift */
 						moveSubtree(lgua, v, shift);
 						/* adjust sums */
@@ -461,8 +461,9 @@ package org.un.flex.graphLayout.layout {
 				/* add to the modifier */
 				_currentDrawing.addToModifier(voutsideleft, (sumiright - sumoleft));
 				/* update the default ancestor */
-				_defaultAncestor = v;
+				defaultAncestor = v;
 			}
+			return defaultAncestor;
 		} // function 
 		
 		
@@ -504,9 +505,8 @@ package org.un.flex.graphLayout.layout {
 		private function moveSubtree(wleft:INode, wright:INode, shift:Number):void {
 			var subtrees:int;
 			
-			/* the number of subtrees between the two nodes */
 			subtrees = _stree.getChildIndex(wright) - _stree.getChildIndex(wleft);
-			
+
 			_currentDrawing.addToChange(wright, -(shift / subtrees));
 			_currentDrawing.addToChange(wleft, (shift / subtrees));
 			_currentDrawing.addToShift(wright, shift);
@@ -545,7 +545,7 @@ package org.un.flex.graphLayout.layout {
 		 * Finds and returns the left one of the greatest
 		 * uncommon ancestors of vileft and its right neighbour.
 		 * */
-		private function leftGrUnAncestor(vileft:INode, v:INode):INode {
+		private function leftGrUnAncestor(vileft:INode, v:INode, da:INode):INode {
 			var avileft:INode;
 			
 			avileft = _currentDrawing.getAncestor(vileft);
@@ -553,7 +553,7 @@ package org.un.flex.graphLayout.layout {
 			if(_stree.areSiblings(avileft,v)) {
 				return avileft;
 			} else {
-				return _defaultAncestor;
+				return da;
 			}
 		}
 		

@@ -194,6 +194,12 @@ package org.un.flex.graphLayout.layout {
 		 * @param p The point object representing the target coordinates.
 		 *  */
 		public function setCartCoordinates(n:INode, p:Point):void {
+			
+			/*
+			if(isNaN(p.x) || isNaN(p.y) || !isFinite(p.x) || !isFinite(p.y)) {
+				throw Error("Target Point:"+p.toString()+" of node:"+n.id+" is not valid");
+			}
+			*/
 	
 			_nodePolarRs[n] = p.length;
 			_nodePolarPhis[n] = Geometry.polarAngleDeg(p);
