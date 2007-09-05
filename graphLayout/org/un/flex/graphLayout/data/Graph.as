@@ -322,14 +322,16 @@ package org.un.flex.graphLayout.data {
 			var myid:int = ++_currentNodeId;
 			var mysid:String = sid;
 			var myNode:Node;
+			var myaltid:int = myid;
 			
 			if(mysid == "") {
 				mysid = myid.toString();
 			}
 			
 			/* avoid using a duplicate string id */
-			if(_nodesByStringId.hasOwnProperty(mysid)) {
-				throw Error("sid: "+mysid+" already in use, node not created");
+			while(_nodesByStringId.hasOwnProperty(mysid)) {
+				trace("sid: "+mysid+" already in use, trying alternative");
+				mysid = (++myaltid).toString();
 			}
 			
 			/* 
@@ -387,6 +389,10 @@ package org.un.flex.graphLayout.data {
 				/* remove node from list */
 				_nodes.splice(myindex,1);
 				--_numberOfNodes;
+				
+				
+				delete _nodesByStringId[n.stringid];
+				delete _nodesById[n.id];
 				
 				/* we need to do something about vnodes */
 				if(n.vnode != null) {
