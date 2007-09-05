@@ -1,5 +1,5 @@
 #summary BirdEye: Adobe AIR Developer Derby.
-#labels AIR,Derby,BirdEye
+#labels AIR,Derby
 
 = Introducing: BirdEye =
 
