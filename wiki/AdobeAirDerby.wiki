@@ -7,4 +7,4 @@
 
 *BirdEye* is a custom developed *Link Analysis* tool.  Link analysis is a method of exploring associations between objects. Link analysis provides visibility of the relationships and associations between objects of different types that are not apparent from isolated pieces of information.
 
-The AIR application download for the *Derby* is available at http://code.google.com/p/flexvizgraphlib/downloads/list.
+The AIR application download for the *Derby* is available at http://flexvizgraphlib.googlecode.com/files/BirdEye.air
