@@ -94,9 +94,18 @@ package org.un.flex.graphLayout.visual {
 			}
 			
 			/* now we actually draw */
+			// NEW CODE IS INDENTED BELOW
 			g.lineStyle(thickness, color, alpha);
 			g.beginFill(0);
 			g.moveTo(fromX, fromY);
+			  g.curveTo(fromX - 2, fromY - 2, midX, midY);
+			  g.moveTo(fromX, fromY);
+			  g.curveTo(fromX + 2, fromY + 2, midX, midY);
+			  g.moveTo(fromX, fromY);
+			  g.curveTo(fromX - 2, fromY + 2, midX, midY);
+			  g.moveTo(fromX, fromY);
+			  g.curveTo(fromX + 2, fromY - 2, midX, midY);
+			  g.moveTo(midX, midY);
 			g.lineTo(toX, toY);
 			g.endFill();
 			
