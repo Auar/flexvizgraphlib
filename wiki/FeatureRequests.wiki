@@ -5,4 +5,5 @@
 === Layouts ===
 
   # Hyperbolic
+  # Circle Layout
   # 3D
