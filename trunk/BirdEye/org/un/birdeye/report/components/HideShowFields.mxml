@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" >
+	
+	<mx:Script>
+		<![CDATA[
+		
+		private function hideShow():void 
+           {
+            
+                if(one.selected == true) {              
+                    parentDocument.labelA.visible = true;
+                }
+                
+                else if (one.selected == false)
+				{
+    				parentDocument.labelA.visible = false;
+				}
+
+           
+                if(two.selected == true) {
+                    parentDocument.dataA.visible = true;
+                }
+            
+                else if(two.selected == false) { 
+                    parentDocument.dataA.visible = false;
+                }
+                
+                if(three.selected == true) {
+                    parentDocument.labelB.visible = true;
+                }
+            
+                else if(three.selected == false) { 
+                    parentDocument.labelB.visible = false;
+                }
+                
+                if(four.selected == true) {
+                    parentDocument.dataB.visible = true;
+                }
+            
+                else if(four.selected == false) { 
+                    parentDocument.dataB.visible = false;
+                }
+                
+                if(five.selected == true) {
+                    parentDocument.axisLabelA.visible = true;
+                }
+            
+                else if(five.selected == false) { 
+                    parentDocument.axisLabelA.visible = false;
+                }
+                
+                if(six.selected == true) {
+                    parentDocument.axisDataA.visible = true;
+                }
+            
+                else if(six.selected == false) { 
+                    parentDocument.axisDataA.visible = false;
+                }
+                
+                if(seven.selected == true) {
+                    parentDocument.axisLabelB.visible = true;
+                }
+            
+                else if(seven.selected == false) { 
+                    parentDocument.axisLabelB.visible = false;
+                }
+                if(eight.selected == true) {
+                    parentDocument.axisDataB.visible = true;
+                }
+            
+                else if(eight.selected == false) { 
+                    parentDocument.axisDataB.visible = false;
+                }
+                if(nine.selected == true) {
+                    parentDocument.date.visible = true;
+                }
+            
+                else if(nine.selected == false) { 
+                    parentDocument.date.visible = false;
+                }
+              }
+		
+			
+		]]>
+	</mx:Script>
+	
+	
+	
+	<mx:VBox width="100%" height="100%" >
+			<mx:CheckBox id="one" label="LabelA" click="hideShow()" />
+			<mx:CheckBox id="two" label="DataA" click="hideShow()" />
+			<mx:CheckBox id="three" label="LabelB" click="hideShow()" />
+			<mx:CheckBox id="four" label="DataB" click="hideShow()" />
+			<mx:CheckBox id="five" label="AxisLabelA" click="hideShow()" />
+			<mx:CheckBox id="six" label="AxisDataA" click="hideShow()" />
+			<mx:CheckBox id="seven" label="AxisLabelB" click="hideShow()" />
+			<mx:CheckBox id="eight" label="AxisDataB" click="hideShow()" />
+			<mx:CheckBox id="nine" label="Date" click="hideShow()" />
+			
+			<mx:Button label="Close" click="parentDocument.currentState = 'hideSideBar';" />
+	</mx:VBox>
+</mx:Canvas>
