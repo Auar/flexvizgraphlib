@@ -1,4 +1,216 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%">
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 
+	xmlns:vg="http://www.adobe.com/2006/fc"
+	xmlns:un="org.un.flex.graphLayout.visual.*"
+	xmlns:ui="org.un.birdeye.ui.*"
+	xmlns:pr="org.un.flex.unComponentToolbox.renderers.*"
+	xmlns:img="org.un.flex.unComponentToolbox.icons.EmbeddedIcons"
+	xmlns:pi="com.flexibleexperiments.primitiveIcons.*"
 	
+	width="100%" height="100%"
+	
+	>
+	
+	<mx:Script >
+		<![CDATA[
+			
+		import org.un.birdeye.images.EmbeddedIcons;
+		import mx.collections.ArrayCollection;
+     	import mx.charts.BarChart;
+     	import mx.charts.series.BarSeries;
+     	import mx.charts.CategoryAxis;
+     	import mx.charts.Legend;
+
+     [Bindable]
+     public var expenses:ArrayCollection = new ArrayCollection([
+        {Month:"Jan", Profit:2000, Expenses:1500},
+        {Month:"Feb", Profit:1000, Expenses:200},
+        {Month:"Mar", Profit:1500, Expenses:500}
+     ]);
+
+     public var myChart:BarChart;
+     public var series1:BarSeries;
+     public var series2:BarSeries;
+     public var legend1:Legend;
+
+			
+			// Configure chart
+			private function configureChart():void {
+				/* create and set the layouter */
+				
+				var type:String = chartType.selectedLabel;
+					 
+				switch(type) {
+					case "Bar":
+						
+						trace("Bar Chart selected");
+						chartProperties.selectedIndex = 0;
+						
+						barChart.includeInLayout = true;
+						barChart.visible = true;
+						
+						// myChart = new BarChart();
+        				barChart.showDataTips = true;
+        				barChart.dataProvider = expenses;
+
+        				// Define the category axis.
+        				var vAxis:CategoryAxis = new CategoryAxis();
+        				vAxis.categoryField = "Month" ;
+        				vAxis.dataProvider =  expenses;
+        				barChart.verticalAxis = vAxis;
+
+        				// Add the series.
+        				var mySeries:Array=new Array();
+        				series1 = new BarSeries();
+        				series1.xField="Profit";
+        				series1.yField="Month";
+        				series1.displayName = "Profit";
+        				mySeries.push(series1);
+
+        				series2 = new BarSeries();
+        				series2.xField="Expenses";
+        				series2.yField="Month";
+        				series2.displayName = "Expenses";
+        				mySeries.push(series2);
+
+        				barChart.series = mySeries;
+
+        				// Create a legend.
+        				legend1 = new Legend();
+        				legend1.dataProvider = barChart;
+        				legend1.direction = "horizontal";
+
+        				// Attach chart and legend to the display list.
+        				// mainBody.addChild(myChart);
+       	 				mainBody.addChild(legend1);
+						
+						break;
+					case "Column":
+						
+						trace("Column Chart selected");
+						chartProperties.selectedIndex = 1;
+						
+						break;
+					case "Plot":
+						
+						trace("Plot Chart selected");
+						chartProperties.selectedIndex = 2;
+						
+						break;
+					case "Line":
+						
+						break;
+					case "Hierarchical":
+						
+						break;
+					default:
+						
+				}
+				
+				
+				
+				
+			}
+			
+			
+		]]>
+	</mx:Script>
+	
+<!-- Effects -->
+	<mx:WipeLeft id="wipeLeft" duration="1000" />
+	<mx:WipeRight id="wipeRight" duration="1000" />
+
+	
+<mx:HBox id="DivNavRB" width="100%" height="100%" paddingBottom="5" horizontalGap="5">
+<mx:HBox id="sideBar" width="300" height="100%" horizontalGap="0" >
+			<ui:Grip id="navGrip" 
+				width="17" height="100%" horizontalAlign="center"
+				gripTip="Show/Hide Control Panel" />	
+			<mx:VBox id="NavContainerRB" horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle" horizontalAlign="center" 
+				verticalGap="1" horizontalGap="0" width="100%" height="100%" hideEffect="{wipeLeft}" showEffect="{wipeRight}">
+				<mx:Accordion id="leftAccordion" paddingBottom="5" paddingRight="5" paddingTop="5" paddingLeft="5" width="100%" height="100%" creationPolicy="all"  >
+					<mx:Canvas id="chartcnvs" label="Configure Chart Layout" height="100%" width="100%" paddingBottom="5" >
+					<mx:VBox width="100%" height="100%" paddingTop="5" paddingRight="5" paddingLeft="5" >
+						
+						  <mx:ComboBox id="chartType" change="configureChart();" width="100%" > 
+      						<mx:ArrayCollection>
+         						<mx:Object label="Select Chart Type:" />
+         						<mx:Object label="Bar" />
+         						<mx:Object label="Column" />
+         						<mx:Object label="Plot" />
+         						<mx:Object label="Line" />
+         						<mx:Object label="Area" />
+         						<mx:Object label="Polar" />
+         						<mx:Object label="Gauge" />
+         						<mx:Object label="Cartesian" />
+         						<mx:Object label="Treemap" />
+         						<mx:Object label="Timeline" />
+         					</mx:ArrayCollection>
+   							</mx:ComboBox>
+						<mx:ViewStack id="chartProperties" width="100%" >
+							<mx:VBox >
+								<mx:Label text="Bar props" />
+							</mx:VBox>
+							<mx:VBox >
+								<mx:Label text="Column props" />
+							</mx:VBox>
+							<mx:VBox >
+								<mx:Label text="Plot props" />
+							</mx:VBox>
+							
+							
+							
+						</mx:ViewStack>
+						
+						
+						
+						
+						
+					</mx:VBox>
+					
+					
+					
+					
+					
+					</mx:Canvas>
+				</mx:Accordion>
+				
+				
+				
+			</mx:VBox>
+</mx:HBox>	
+<mx:VBox id="mainBody" width="100%" height="100%" >
+		
+			
+		
+		<mx:BarChart id="barChart" width="100%" height="100%" includeInLayout="false" visible="false" />
+		<mx:ColumnChart id="columnChart" width="100%" height="100%" includeInLayout="false" visible="false" />
+		<mx:PlotChart id="plotChart" width="100%" height="100%" includeInLayout="false" visible="false" />
+		
+		
+		
+		
+		
+		
+</mx:VBox>	
+</mx:HBox>
+
+	<mx:states>
+       <mx:State name="showCntrlPanel">
+			<mx:SetProperty target="{sideBar}" name="width" value="300"/>
+			<mx:SetStyle target="{DivNavRB}" name="horizontalGap" value="5"/>
+       </mx:State>        
+		<mx:State name="hideCntrlPanel">
+			<mx:SetProperty target="{sideBar}" name="width" value="17"/>
+			<mx:SetStyle target="{DivNavRB}" name="horizontalGap" value="0"/>
+		</mx:State>
+	</mx:states>
+	<mx:transitions>
+		<mx:Transition fromState="*" toState="*">
+			<mx:Resize target="{sideBar}" />
+		</mx:Transition>
+	</mx:transitions>
+
+
+
 </mx:Canvas>

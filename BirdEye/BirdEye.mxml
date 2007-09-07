@@ -2,13 +2,16 @@
 <mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" 
 	xmlns:flexlib="http://code.google.com/p/flexlib/"
 	xmlns:visualize="org.un.birdeye.visualize.*"
+	xmlns:record="org.un.birdeye.record.*"
 	xmlns:modules="org.un.birdeye.record.*"
+	xmlns:report="org.un.birdeye.report.*"
+	xmlns:measure="org.un.birdeye.measure.*"
+	xmlns:help="org.un.birdeye.help.*"
 	xmlns:about="org.un.birdeye.about.*"
 	backgroundGradientColors="[#cccccc, #666666]"
 	layout="absolute" creationComplete="tbMain.removeChild(aboutCnvs);"
 	width="100%" height="100%"
 	  >
-<!--  JB -->
 <mx:Script>
 	<![CDATA[
        	import flexlib.events.TabReorderEvent;
@@ -89,11 +92,11 @@
 			<visualize:Visualize width="100%" height="100%" preinitialize="dbInit()" />		
 		</mx:Canvas>
 			
-		<!-- Don't have time to complete 
+		
 		<mx:Canvas id="dashboardCnvs" label="Measure" icon="@Embed('/org/un/birdeye/images/ui/chart.png')" width="100%" height="100%" >
 			<measure:Measure width="100%" height="100%" />				
 		</mx:Canvas>
-		-->
+		
 		
 		<!-- Node tab -->
 		<mx:Canvas id="nodeCnvs" label="Nodes" icon="@Embed('/org/un/birdeye/images/ui//aLookups.png')" width="100%" height="100%" creationComplete="onInit();"  >
@@ -166,11 +169,14 @@
 			</mx:Accordion>
 		</mx:Canvas>
 		
-		<!-- Don't have time to complete 
+		
 		<mx:Canvas id="reportCnvs" label="Report" icon="@Embed('/org/un/birdeye/images/ui//Report.png')" width="100%" height="100%" >
 			<report:Report width="100%" height="100%" />	
 		</mx:Canvas>
-		-->
+		
+		<mx:Canvas id="helpCnvs" label="Help" icon="@Embed('/org/un/birdeye/images/ui//info.png')" width="100%" height="100%" >
+			<help:Help width="100%" height="100%" />
+		</mx:Canvas>
 		
 		<mx:Canvas id="aboutCnvs" label="About..." icon="@Embed('/org/un/birdeye/images/ui//info.png')" width="100%" height="100%" >
 			<about:About width="100%" height="100%" />
