@@ -4,8 +4,7 @@
 	xmlns:oh="com.roguedevelopment.objecthandles.*"
 	xmlns:component="org.un.birdeye.report.components.*"
 	xmlns:ui="org.un.birdeye.ui.*"
-	currentState="hideCntrlPanel"
-
+	
 	>
 	
 	<mx:Script>
