@@ -230,10 +230,10 @@
 				var result:SQLResult = selectStmt.getResult();
 				dpLinkedNodes = result.data;
 				if (result.complete) {
-					filterEdges.source = dpLinkedNodes;
-					filterEdges.refresh();
-					tbMain.selectedIndex=2;
-					edgeControl.selectedIndex = 0; // Keep focus on first panel of Accordion
+					parentDocument.filterEdges.source = dpLinkedNodes;
+					parentDocument.filterEdges.refresh();
+					tbMain.selectedIndex=1;
+					parentDocument.edgeControl.selectedIndex = 0; // Keep focus on first panel of Accordion
 				}
 			});
 		selectStmt.execute();
