@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 
 	height="100%" width="100%"
-	label="Node Form"
-	xmlns="*"
+	label="Node CRUD Form"
+	xmlns="*" 
+	xmlns:flexlib="http://code.google.com/p/flexlib/"
 	xmlns:modules="modules.*"
 	>
 <mx:Script>
@@ -25,7 +26,7 @@
             }
 
             //Access the Date object from the event object.         
-            selectedNodeDate.text=
+            selectedDate.text=
                 eventObj.currentTarget.selectedDate.getFullYear() +
                 "/" +
                 (eventObj.currentTarget.selectedDate.getMonth()+1) +
@@ -34,10 +35,23 @@
         
         private function nodeTypeLookup():void
         {
-        	selectedNodeType.dataProvider=parentDocument.dpNodes;
+        	NodeType.dataProvider=parentDocument.dpNodes;
         	trace("test");
         }
 
+		// User selects a Model from the combo box drop down; based on the selected item, each label is populated with
+		// the corresponding labels.
+		// Works but need an event listener
+		private function applyModelTemplate():void
+		{
+			NodeNameLabel.text=NodeModel.selectedItem.NMNodeNameLabel;
+			NodeDescLabel.text=NodeModel.selectedItem.NMNodeDescLabel;
+			NodeTypeLabel.text=NodeModel.selectedItem.NMNodeTypeLabel;
+			ValALabel.text=NodeModel.selectedItem.NMValALabel;
+			ValBLabel.text=NodeModel.selectedItem.NMValBLabel;
+			NodeBlobObjectLabel.text=NodeModel.selectedItem.NMNodeBlobObjectLabel;
+			NodeDateLabel.text=NodeModel.selectedItem.NMNodeDateLabel;
+		}
 	
 		
 		
@@ -48,530 +62,126 @@
 	<mx:DateFormatter id="DateDisplay" formatString="YYYY-MM-DD"/>
 
 	<mx:ViewStack id="nodevs" height="100%" width="100%" >
-	<!-- View -->
-	
-	<mx:Canvas id="detailcnvs" height="100%" width="100%">
-	<mx:VBox height="100%" width="100%" horizontalAlign="center">				
-	<mx:Form width="80%" height="80%" >
-		<mx:FormItem >
-			<mx:Grid>
-				<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Node ID"/>
-					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
-					</mx:GridItem>		
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="{parentDocument.dgNodeRequest.selectedItem.NodeID}"/>
-					</mx:GridItem>
-				</mx:GridRow>
-				<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Node Name"/>
-					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="{parentDocument.dgNodeRequest.selectedItem.NodeName}"/>
-					</mx:GridItem>
-				</mx:GridRow>
-				<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Node Description"/>
-					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-			<mx:TextArea editable="false" text="{parentDocument.dgNodeRequest.selectedItem.NodeDescription}" width="300" height="150" />
-					
-					</mx:GridItem>
-				</mx:GridRow>
-				<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Node Type"/>
-					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field used to assign a graphic for visualization."/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="{parentDocument.dgNodeRequest.selectedItem.NodeType}" />
-					
-					</mx:GridItem>
-				</mx:GridRow>
-			
-			
-			<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Meta Label A"/>
-					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Optional"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="{parentDocument.dgNodeRequest.selectedItem.NodeLabelA}" />
-					
-					</mx:GridItem>
-				</mx:GridRow>
-				
-			<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Meta Data A"/>
-					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Optional"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="{parentDocument.dgNodeRequest.selectedItem.NodeDataA}" />
-					
-					</mx:GridItem>
-				</mx:GridRow>
-			
-			<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Meta Label B"/>
-					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Optional"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="{parentDocument.dgNodeRequest.selectedItem.NodeLabelB}" />
-					
-					</mx:GridItem>
-				</mx:GridRow>
-				
-			<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Axis Label A"/>
-					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Optional"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="{parentDocument.dgNodeRequest.selectedItem.NodeAxisLabelA}" />
-					
-					</mx:GridItem>
-				</mx:GridRow>
-			
-			<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Axis Data A"/>
-					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Optional"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="{parentDocument.dgNodeRequest.selectedItem.NodeAxisDataA}" />
-					
-					</mx:GridItem>
-				</mx:GridRow>
-				
-			<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Axis Label B"/>
-					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Optional"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="{parentDocument.dgNodeRequest.selectedItem.NodeAxisLabelB}" />
-					
-					</mx:GridItem>
-				</mx:GridRow>
-			
-			<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Axis Data B"/>
-					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Optional"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="{parentDocument.dgNodeRequest.selectedItem.NodeAxisDataB}" />
-					
-					</mx:GridItem>
-				</mx:GridRow>
-			
-			
-			
-			
-			
-			</mx:Grid>
-		</mx:FormItem>
-		<mx:HBox>
-				
-			<mx:Button toolTip="This will take you to detail view" icon="@Embed('../images/ui/view.gif')" label="Back to View" click="backList(event);"/>
-			<mx:Button toolTip="This will take you to an edit form.  A record must be selected from the list view." icon="@Embed('../images/ui/edit.gif')" label="Edit Mode" click="nodevs.selectedChild=editcnvs"/>
-<!--SDB		<mx:Button toolTip="This will take you to a new record form." icon="@Embed('../images/ui/add.png')" label="Add New Record" click="nodevs.selectedChild=addrecordcnvs"/> -->
-		</mx:HBox>
-	</mx:Form>
-</mx:VBox>	
-</mx:Canvas>
-<!-- Edit/Delete -->
-<mx:Canvas id="editcnvs" height="100%" width="100%">
-	
-
-	<mx:Panel title="Details" height="100%" width="100%">				
+	<mx:Canvas id="nodeCrudCnvs" height="100%" width="100%">
 	<mx:Form width="100%" height="100%">
-		<mx:FormItem >
-			<mx:Grid>
-				<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Node ID"/>
-					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
-					</mx:GridItem>		
-					<mx:GridItem width="100%" height="100%">
-			<mx:TextInput id="selectedNodeID" text="{parentDocument.dgNodeRequest.selectedItem.NodeID}"/>
-					</mx:GridItem>
-				</mx:GridRow>
-				<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Node Name"/>
-					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
-					</mx:GridItem>		
-					<mx:GridItem width="100%" height="100%">
-			<mx:TextInput id="selectedNodeName" text="{parentDocument.dgNodeRequest.selectedItem.NodeName}"/>
-					</mx:GridItem>
-				</mx:GridRow>
-				<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Node Description"/>
-					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
-					</mx:GridItem>		
-					<mx:GridItem width="100%" height="100%">
-			<mx:TextArea id="selectedNodeDesc" text="{parentDocument.dgNodeRequest.selectedItem.NodeDescription}" width="300" height="100" />
-					</mx:GridItem>
-				</mx:GridRow>
+         <mx:Grid>
+			<!-- NodeModel -->
 			<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Node Type"/>
-					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
+				<mx:GridItem width="100%" height="100%">
+					<mx:Label text="Select a Node Model Template:"/>
+				</mx:GridItem>
+				<mx:GridItem width="100%" height="100%">
+					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="The node model template will assign meta data tags"/>
+				</mx:GridItem>
+				<mx:GridItem width="100%" height="100%">
+					<!-- ***** -->
+					
+					<mx:ComboBox id="NodeModel" dataProvider="{parentDocument.dpNodeModels}"
+						labelField="NodeModelName" close="applyModelTemplate();"
+					/>
+					
+					
+				</mx:GridItem>
+			</mx:GridRow>
+			<!-- NodeNameLabel and NodeName -->
+			<mx:GridRow width="100%" height="100%">
+				<mx:GridItem width="100%" height="100%">
+					<mx:TextInput id="NodeNameLabel" text="Label:" editable="false" borderStyle="none" />
+				</mx:GridItem>
+				<mx:GridItem width="100%" height="100%">
 					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
-					</mx:GridItem>		
-					<mx:GridItem width="100%" height="100%">
-			
-			<mx:ComboBox id="selectedNodeType" dataProvider="{parentDocument.dgNodeRequest.selectedItem.NodeType}" click="nodeTypeLookup();" 
-				labelField="NodeType"  
-				/>	
 				</mx:GridItem>
-				</mx:GridRow>
-				
-				
+				<mx:GridItem width="100%" height="100%">
+					<mx:TextInput id="NodeName" text="{parentDocument.dgNodeRequest.selectedItem.NodeName}" />
+				</mx:GridItem>
+			</mx:GridRow>
+			<!-- NodeDescriptionLabel and NodeDescription -->
 			<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Meta Label A"/>
-					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Optional"/>
-					</mx:GridItem>		
-					<mx:GridItem width="100%" height="100%">
-			<mx:TextInput id="selectedNodeLabelA" text="{parentDocument.dgNodeRequest.selectedItem.NodeLabelA}"/>
+				<mx:GridItem width="100%" height="100%">
+					<mx:TextInput id="NodeDescLabel" text="Description" editable="false" borderStyle="none" />
 				</mx:GridItem>
-				</mx:GridRow>
-				
-			<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Meta Data A"/>
-					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Optional"/>
-					</mx:GridItem>		
-					<mx:GridItem width="100%" height="100%">
-			<mx:TextInput id="selectedNodeDataA" text="{parentDocument.dgNodeRequest.selectedItem.NodeDataA}"/>
-				</mx:GridItem>
-				</mx:GridRow>
-				
-						<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Meta Label B"/>
-					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Optional"/>
-					</mx:GridItem>		
-					<mx:GridItem width="100%" height="100%">
-			<mx:TextInput id="selectedNodeLabelB" text="{parentDocument.dgNodeRequest.selectedItem.NodeLabelB}"/>
-				</mx:GridItem>
-				</mx:GridRow>
-				
-			<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Meta Data B"/>
-					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Optional"/>
-					</mx:GridItem>		
-					<mx:GridItem width="100%" height="100%">
-			<mx:TextInput id="selectedNodeDataB" text="{parentDocument.dgNodeRequest.selectedItem.NodeDataB}"/>
-				</mx:GridItem>
-				</mx:GridRow>
-				
-				
-			<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Axis Label A"/>
-					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Optional"/>
-					</mx:GridItem>		
-					<mx:GridItem width="100%" height="100%">
-			<mx:TextInput id="selectedNodeAxisLabelA" text="{parentDocument.dgNodeRequest.selectedItem.NodeAxisLabelA}"/>
-				</mx:GridItem>
-				</mx:GridRow>
-				
-			<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Axis Data A"/>
-					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Optional"/>
-					</mx:GridItem>		
-					<mx:GridItem width="100%" height="100%">
-			<mx:TextInput id="selectedNodeAxisDataA" text="{parentDocument.dgNodeRequest.selectedItem.NodeAxisDataA}"/>
-				</mx:GridItem>
-				</mx:GridRow>
-				
-						<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Axis Label B"/>
-					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Optional"/>
-					</mx:GridItem>		
-					<mx:GridItem width="100%" height="100%">
-			<mx:TextInput id="selectedNodeAxisLabelB" text="{parentDocument.dgNodeRequest.selectedItem.NodeAxisLabelB}"/>
-				</mx:GridItem>
-				</mx:GridRow>
-				
-			<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Axis Data B"/>
-					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Optional"/>
-					</mx:GridItem>		
-					<mx:GridItem width="100%" height="100%">
-			<mx:TextInput id="selectedNodeAxisDataB" text="{parentDocument.dgNodeRequest.selectedItem.NodeAxisDataB}"/>
-				</mx:GridItem>
-				</mx:GridRow>
-				
-				<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Date"/>
-					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Optional"/>
-					</mx:GridItem>		
-					<mx:GridItem width="100%" height="100%">
-			<mx:TextInput id="selectedNodeDate" text="{DateDisplay.format(parentDocument.dgNodeRequest.selectedItem.NodeDate)}"/>
-			<mx:DateChooser id="selectedNodeDatePicker" change="setDateData(event);" /> 	
-				</mx:GridItem>
-				</mx:GridRow>
-				
-				
-				
-			</mx:Grid>
-		</mx:FormItem>
-		<mx:HBox>
-			
-			<mx:Button toolTip="This will take you to detail view" icon="@Embed('../images/ui/view.gif')" label="Back to View" click="backList(event);"/>					
-			<mx:Button toolTip="Submit changes." icon="@Embed('../images/ui/submit.png')" label="Submit" click="parentDocument.editNode()"/>
-			<mx:Button toolTip="Reset record to before changes." icon="@Embed('../images/ui/reset.png')" label="Reset" />				
-			<mx:Button toolTip="Delete the selected record." icon="@Embed('../images/ui/delete.png')" label="Delete" click="parentDocument.delNode()"/>
-<!--SDB		<mx:Button toolTip="This will take you to a new record form" icon="@Embed('../images/ui/add.png')" label="New" click="nodevs.selectedChild=addrecordcnvs"/> -->
-		</mx:HBox>
-	</mx:Form>
-		
-</mx:Panel>	
-</mx:Canvas>
-
-
-<!-- New -->
-<mx:Canvas id="addrecordcnvs">
-<mx:Panel title="Add Node" height="100%" width="100%">
-	   <mx:Form width="100%" height="100%">
-      
-      <mx:Grid>
-				<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Node ID"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
+				<mx:GridItem width="100%" height="100%">
 					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-		<mx:Label id="NodeID" width="159" text="Auto"/>
-					</mx:GridItem>
-				</mx:GridRow>
-				<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Node Name"/>
-					</mx:GridItem>
-		<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-			<mx:TextInput id="NodeName"/>
-					</mx:GridItem>
-				</mx:GridRow>
-				<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Node Description"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-         <mx:TextArea id="NodeDesc" width="100%" height="100"/>
-					</mx:GridItem>
-				</mx:GridRow>
-				<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="NodeType"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-         
-         <mx:ComboBox id="NodeType" dataProvider="{parentDocument.dpNodes}" 
-				labelField="NodeType"
-				/>	
-					</mx:GridItem>
-				</mx:GridRow>
-				
-		
-				<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="NodeLabelA"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Optional"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-         <mx:TextInput id="NodeLabelA" text=""/>
-					</mx:GridItem>
-				</mx:GridRow>		
-				
-					<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="NodeDataA"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Optional"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-         <mx:TextInput id="NodeDataA" text=""/>
-					</mx:GridItem>
-				</mx:GridRow>	
-				
-					<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="NodeLabelB"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Optional"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-         <mx:TextInput id="NodeLabelB" text=""/>
-					</mx:GridItem>
-				</mx:GridRow>	
-				
+				</mx:GridItem>
+				<mx:GridItem width="100%" height="100%">
+         			<mx:TextArea id="NodeDesc" text="{parentDocument.dgNodeRequest.selectedItem.NodeDesc}" width="100%" height="100"/>
+				</mx:GridItem>
+			</mx:GridRow>
+			<!-- NodeTypeLabel and NodeType -->
 			<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="NodeDataB"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
+				<mx:GridItem width="100%" height="100%">
+					<mx:TextInput id="NodeTypeLabel" text="Node Type:" editable="false" borderStyle="none" />
+				</mx:GridItem>
+				<mx:GridItem width="100%" height="100%">
+					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
+				</mx:GridItem>
+				<mx:GridItem width="100%" height="100%">
+					<mx:ComboBox id="NodeType" dataProvider="{parentDocument.dpNodes}" 
+					labelField="NodeType"
+					/>	
+				</mx:GridItem>
+			</mx:GridRow>
+			<!-- ValALabel and ValA -->
+			<mx:GridRow width="100%" height="100%">
+				<mx:GridItem width="100%" height="100%">
+					<mx:TextInput id="ValALabel" text="Value [1]:" editable="false" borderStyle="none" />
+				</mx:GridItem>
+				<mx:GridItem width="100%" height="100%">
 					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Optional"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-         <mx:TextInput id="NodeDataB" text=""/>
-					</mx:GridItem>
-				</mx:GridRow>			
-				
-					<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="NodeAxisLabelA"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
+				</mx:GridItem>
+				<mx:GridItem width="100%" height="100%">
+         			<mx:TextInput id="ValA" text="{parentDocument.dgNodeRequest.selectedItem.ValA}" />
+				</mx:GridItem>
+			</mx:GridRow>
+			<!-- ValBLabel and ValB -->		
+			<mx:GridRow width="100%" height="100%">
+				<mx:GridItem width="100%" height="100%">
+					<mx:TextInput id="ValBLabel" text="Value [2]:" editable="false" borderStyle="none" />
+				</mx:GridItem>
+				<mx:GridItem width="100%" height="100%">
 					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Optional"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-         <mx:TextInput id="NodeAxisLabelA" text=""/>
-					</mx:GridItem>
-				</mx:GridRow>	
-				
-					<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="NodeAxisDataA"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
+				</mx:GridItem>
+				<mx:GridItem width="100%" height="100%">
+         			<mx:TextInput id="ValB" text="{parentDocument.dgNodeRequest.selectedItem.ValB}"/>
+				</mx:GridItem>
+			</mx:GridRow>
+			<!-- NodeBlobObjectLabel and NodeBlobObject -->
+			<mx:GridRow width="100%" height="100%">
+				<mx:GridItem width="100%" height="100%">
+					<mx:TextInput id="NodeBlobObjectLabel" text="Upload object:" editable="false" borderStyle="none" />
+				</mx:GridItem>
+				<mx:GridItem width="100%" height="100%">
 					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Optional"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-         <mx:TextInput id="NodeAxisDataA" text=""/>
-					</mx:GridItem>
-				</mx:GridRow>	
-				
-				<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="NodeAxisLabelB"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
+				</mx:GridItem>
+				<mx:GridItem width="100%" height="100%">
+         			<!-- Idea here is to load image from blob field and render as thumbnail -->
+         			<mx:VBox >
+         			<mx:Image source="{parentDocument.dgNodeRequest.selectedItem.NodeBlobObject}" width="100" height="100" />
+         			<mx:Button label="Upload Image" toolTip="Select image file to upload" />
+         			</mx:VBox>
+				</mx:GridItem>
+			</mx:GridRow>
+			<!-- NodeDateLabel and NodeDate -->	
+			<mx:GridRow width="100%" height="100%">
+				<mx:GridItem width="100%" height="100%">
+					<mx:TextInput id="NodeDateLabel" text="Date:" editable="false" borderStyle="none" />
+				</mx:GridItem>
+				<mx:GridItem width="100%" height="100%">
 					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Optional"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-         <mx:TextInput id="NodeAxisLabelB" text=""/>
-					</mx:GridItem>
-				</mx:GridRow>	
-				
-				<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="NodeAxisDataB"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Optional"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-         <mx:TextInput id="NodeAxisDataB" text=""/>
-					</mx:GridItem>
-				</mx:GridRow>	
-				
-				<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Date"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Optional"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-				<mx:TextInput id="selectedDate" text="{DateDisplay.format(NodeDate.selectedDate)}"/>
-				<mx:DateChooser id="NodeDate" change="setDateData(event);" />
- 					</mx:GridItem>
-				</mx:GridRow>	
-				
-			</mx:Grid>
+				</mx:GridItem>
+				<mx:GridItem width="100%" height="100%">
+         			<mx:TextInput id="selectedDate" text="{DateDisplay.format(NodeDate.selectedDate)}"/>
+					<mx:DateChooser id="NodeDate" change="setDateData(event);" />
+				</mx:GridItem>
+			</mx:GridRow>			
+		</mx:Grid>
       <mx:HBox>
-            <mx:Button toolTip="This will take you to detail view" icon="@Embed('../images/ui/view.gif')" label="Back to View" click="backList(event);"/>
-            <mx:Button toolTip="Submit record to database." icon="@Embed('../images/ui/submit.png')" label="Submit" click="parentDocument.submitNode()"/>
-
+            <mx:Button id="backBtn" toolTip="This will take you to detail view" icon="@Embed('../images/ui/view.gif')" label="Back to View" click="backList(event);"/>					
+			<mx:Button id="submitBtn" toolTip="Submit record to database." icon="@Embed('../images/ui/submit.png')" label="Submit" click="parentDocument.submitNode()"/>
+			<mx:Button id="editBtn" toolTip="Submit changes." icon="@Embed('../images/ui/submit.png')" label="Edit" click="parentDocument.editNode()"/>
+			<mx:Button id="deleteBtn" toolTip="Delete the selected record." icon="@Embed('../images/ui/delete.png')" label="Delete" click="parentDocument.delNode()"/>
    	  </mx:HBox>
    </mx:Form>
-	</mx:Panel>
 </mx:Canvas>
-
 </mx:ViewStack>	
-		
-
-
-
-
 </mx:Canvas>

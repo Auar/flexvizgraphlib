@@ -1,249 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-	<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
-	xmlns:fc="http://www.adobe.com/2006/fc"
-	height="100%" width="100%"
-	label="Edge Form"
-	xmlns="*"
-	xmlns:modules="modules.*"
-	>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+xmlns:fc="http://www.adobe.com/2006/fc"
+height="100%" width="100%"
+label="Edge CRUD Form"
+xmlns="*"
+xmlns:modules="modules.*"
+>
 <mx:Script>
+	
 	<![CDATA[
-	import mx.collections.ArrayCollection;
+		import mx.collections.ArrayCollection;
 	
-	private function backList(e:Event):void
-	{
-		parentDocument.edgeControl.selectedIndex = 0;
-		// parentDocument.detailNav.selectedIndex = 2;
-
-	}
-	
-		
-		
+		private function backList(e:Event):void
+		{
+			parentDocument.edgeControl.selectedIndex = 0;
+			// parentDocument.detailNav.selectedIndex = 2;
+		}
 	]]>
 </mx:Script>
+
 <mx:ViewStack id="edgevs" height="100%" width="100%">
 
 <!-- View -->
-<mx:Canvas id="detailcnvs" height="100%" width="100%">
-	<mx:Panel title="Details/Forms" height="100%" width="100%">				
-	<mx:Form width="100%" height="100%">
-		<mx:FormItem >
+	<mx:Canvas id="detailcnvs" height="100%" width="100%">
+		<mx:Form width="100%" height="100%">
 			<mx:Grid>
+				<!-- EdgeSource -->
 				<mx:GridRow width="100%" height="100%">
 					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Edge Source"/>
+						<mx:Label text="Edge Source"/>
 					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
+					<mx:GridItem width="100%" height="100%">
+						<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
 					</mx:GridItem>		
 					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="{parentDocument.dgEdgeRequest.selectedItem.EdgeSource}"/>
-					</mx:GridItem>
-				</mx:GridRow>
-				<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Edge Target"/>
-					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="{parentDocument.dgEdgeRequest.selectedItem.EdgeTarget}"/>
-					</mx:GridItem>
-				</mx:GridRow>
-				
-				
-				<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="AssociationType"/>
-					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Enter the nature of association, e.g. friend, partner, etc."/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="{parentDocument.dgEdgeRequest.selectedItem.AssociationType}"/>
-					</mx:GridItem>
-				</mx:GridRow>
-				
-			<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="AssociationDescription"/>
-					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Descriptive information about relation/link"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="{parentDocument.dgEdgeRequest.selectedItem.AssociationDescription}"/>
-					</mx:GridItem>
-				</mx:GridRow>
-				
-			</mx:Grid>
-		</mx:FormItem>
-		<mx:HBox>
-
-			<mx:Button toolTip="This will take you to detail view" icon="@Embed('../images/ui/view.gif')" label="Back to View" click="backList(event);"/>				
-			<mx:Button toolTip="This will take you to an edit form.  A record must be selected from the list view." icon="@Embed('../images/ui/edit.gif')" label="Edit Mode" click="edgevs.selectedChild=editcnvs"/>
-<!--			<mx:Button toolTip="This will take you to a new record form." icon="@Embed('../images/ui/add.png')" label="Add New Record" click="edgevs.selectedChild=addrecordcnvs"/> -->
-		</mx:HBox>
-	</mx:Form>
-	</mx:Panel>	
-	</mx:Canvas>
-<!-- Edit/Delete -->
-
-	<mx:Canvas id="editcnvs" height="100%" width="100%">
-	<mx:Panel title="Details" height="100%" width="100%">				
-	<mx:Form width="100%" height="100%">
-		<mx:FormItem >
-			<mx:Grid>
-			
-			<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Edge Source"/>
-					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
-					</mx:GridItem>		
-					<mx:GridItem width="100%" height="100%">
-			<mx:TextInput id="selectedEdgeSource" text="{parentDocument.dgEdgeRequest.selectedItem.EdgeSource}"/>
+						<mx:TextInput id="EdgeSource" text="{parentDocument.dgEdgeRequest.selectedItem.EdgeSource}"/>
 					</mx:GridItem>
 				</mx:GridRow> 
+				<!-- EdgeTarget -->
 				<mx:GridRow width="100%" height="100%">
 					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Edge Target"/>
+						<mx:Label text="Edge Target"/>
 					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
+					<mx:GridItem width="100%" height="100%">
+						<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
 					</mx:GridItem>		
 					<mx:GridItem width="100%" height="100%">
-			<mx:TextInput id="selectedEdgeTarget" text="{parentDocument.dgEdgeRequest.selectedItem.EdgeTarget}"/>
+						<mx:TextInput id="EdgeTarget" text="{parentDocument.dgEdgeRequest.selectedItem.EdgeTarget}"/>
 					</mx:GridItem>
 				</mx:GridRow>
-				
-			<mx:GridRow width="100%" height="100%">
+				<!-- Association Type -->
+				<mx:GridRow width="100%" height="100%">
 					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="AssociationType"/>
+						<mx:Label text="Association Type"/>
 					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Enter the nature of association, e.g. friend, partner, etc."/>
+					<mx:GridItem width="100%" height="100%">
+						<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Enter the nature of association, e.g. friend, partner, etc."/>
 					</mx:GridItem>		
 					<mx:GridItem width="100%" height="100%">
-			<mx:TextInput id="selectedAssociationType" text="{parentDocument.dgEdgeRequest.selectedItem.AssociationType}"/>
+						<mx:TextInput id="AssociationType" text="{parentDocument.dgEdgeRequest.selectedItem.AssociationType}"/>
 					</mx:GridItem>
 				</mx:GridRow>
-				
-			<mx:GridRow width="100%" height="100%">
+				<!-- Association Desc -->
+				<mx:GridRow width="100%" height="100%">
 					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="AssociationDescription"/>
+						<mx:Label text="Association Description"/>
 					</mx:GridItem>
-			<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Descriptive information about nature of relation."/>
+					<mx:GridItem width="100%" height="100%">
+						<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Descriptive information about nature of relation."/>
 					</mx:GridItem>		
 					<mx:GridItem width="100%" height="100%">
-			<mx:TextArea id="selectedAssociationDescription" text="{parentDocument.dgEdgeRequest.selectedItem.AssociationDescription}" width="300" height="300" />
+						<mx:TextArea id="AssociationDesc" text="{parentDocument.dgEdgeRequest.selectedItem.AssociationDescription}" width="300" height="300" />
 					</mx:GridItem>
 				</mx:GridRow>
-				
 			</mx:Grid>
-		</mx:FormItem>
 		<mx:HBox>
-			
-			<!-- Need to add viewstack -->
 			<mx:Button toolTip="This will take you to detail view" icon="@Embed('../images/ui/view.gif')" label="Back to View" click="backList(event);"/>
 			<mx:Button toolTip="Submit changes." icon="@Embed('../images/ui/submit.png')" label="Submit" click="parentDocument.editEdge()"/>
-			<mx:Button toolTip="Reset record to before changes." icon="@Embed('../images/ui/reset.png')" label="Reset" />				
 			<mx:Button toolTip="Delete the selected record." icon="@Embed('../images/ui/delete.png')" label="Delete" click="parentDocument.delEdge()"/>
-<!--			<mx:Button toolTip="This will take you to a new record form" icon="@Embed('../images/ui/add.png')" label="New" click="edgevs.selectedChild=addrecordcnvs"/> -->
 		</mx:HBox>
 	</mx:Form>
-		
-</mx:Panel>	
-</mx:Canvas>
-
-
-<!-- New -->
-<mx:Canvas id="addrecordcnvs">
-<mx:Panel title="Add Edge" height="100%" width="100%">
-	   <mx:Form width="100%" height="100%">
-      
-      <mx:Grid>
-      		
-				<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Edge Source"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-		<mx:HBox width="100%" >
-		<fc:AutoComplete id="EdgeSource" dataProvider="{parentDocument.dpNodes}" labelField="NodeName" />
-		<mx:Label text="NodeName: " />
-		<mx:Label text="{EdgeSource.selectedItem.NodeName}" />
-		<mx:Label text=", NodeID: " />
-		<mx:Label text="{EdgeSource.selectedItem.NodeID}" />
-		</mx:HBox>
-		
-		
-					</mx:GridItem>
-				</mx:GridRow>
-				<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="Edge Target"/>
-					</mx:GridItem>
-		<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-			
-			<mx:HBox width="100%" >
-		<fc:AutoComplete id="EdgeTarget" dataProvider="{parentDocument.dpNodes}" labelField="NodeName"  />
-		<mx:Label text="NodeName: " />
-		<mx:Label id="nameTxt" text="{EdgeTarget.selectedItem.NodeName}" />
-		<mx:Label text=", NodeID: " />
-		<mx:Label id="idTxt" text="{EdgeTarget.selectedItem.NodeID}" />
-		</mx:HBox>
-					</mx:GridItem>
-				</mx:GridRow>
-				
-				
-		<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="AssociationType"/>
-					</mx:GridItem>
-		<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Enter the nature of association, e.g. friend, partner, etc."/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-			<mx:HBox width="100%" >
-			<fc:AutoComplete id="AssociationType" dataProvider="{parentDocument.dpLookupAssociation}" labelField="AssociationType" />
-			<mx:Label text="Type: " />
-		<mx:Label id="typeTxt" text="{AssociationType.selectedItem.AssociationType}" />
-		</mx:HBox>
-					</mx:GridItem>
-				</mx:GridRow>
-				
-		<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-			<mx:Label text="AssociationDescription"/>
-					</mx:GridItem>
-		<mx:GridItem width="100%" height="100%">
-					<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Descriptive information about nature of relation."/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-			<mx:TextArea id="AssociationDescription" width="300" height="300" />
-		
-					</mx:GridItem>
-				</mx:GridRow>
-				
-			</mx:Grid>
-      <mx:HBox>
-			<mx:Button toolTip="This will take you to detail view" icon="@Embed('../images/ui/view.gif')" label="Back to View" click="backList(event);"/>
-            <mx:Button toolTip="Submit record to database." icon="@Embed('../images/ui/submit.png')" label="Submit" click="parentDocument.submitEdge()"/>
-<!--			<mx:Button toolTip="Cancel changes and return to detail view." icon="@Embed('../images/ui/cancel.png')" label="Cancel" click="edgevs.selectedChild=detailcnvs"/> -->
-   	  </mx:HBox>
-   </mx:Form>
-	</mx:Panel>
-</mx:Canvas>
+	</mx:Canvas>
 </mx:ViewStack>	
-	
 </mx:Canvas>
