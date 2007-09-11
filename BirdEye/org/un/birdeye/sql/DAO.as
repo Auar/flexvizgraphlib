@@ -18,14 +18,15 @@
 		// Container for SQL result statements
 		[Bindable]
 		public var myData:ArrayCollection = new ArrayCollection();
-		
 		[Bindable]
 		public var nodesAC:ArrayCollection = new ArrayCollection();
 		[Bindable]
 		public var edgesAC:ArrayCollection = new ArrayCollection();
 		
-		// DPs for Nodes and Edges
+		// DPs for CRUD
   		[Bindable]
+		public var dpNodeModels:Array;
+		[Bindable]
 		public var dpNodes:Array;
 		[Bindable]
 		public var dpEdges:Array;
@@ -33,9 +34,13 @@
 		public var dpEdgeView:Array;
 		[Bindable]
 		public var dpLinkedNodes:Array;
+		
+		
+		// Lookups
 		[Bindable]
 		public var dpLookupAssociation:Array;
-		// DPs for SubDomains and SubDomain Children
+		[Bindable]
+		public var dpLookupNodeTypes:Array;
 		
 		[Bindable]
 		public var rootNode:XML = <Graph />;
@@ -68,8 +73,12 @@
 			CursorManager.removeBusyCursor();
 			trace("Connected to " + _dbFile.name);
 			getXMLNodes();
-			
-	 	}
+			getNodes();
+			getEdges();
+			getEdgeView();
+			getNodeModels(),
+			lookupAssociation();
+		 	}
 		
 		private function openDatabaseError(event:SQLErrorEvent):void
 		{
@@ -86,6 +95,7 @@
 			trace("Details:", event.error.message);
 		}
 		
+		// To create GraphML Format dp
 		public function getXMLNodes():void
 		{
 			// create the SQL statement
@@ -137,6 +147,7 @@
 			selectStmt.addEventListener(SQLErrorEvent.ERROR, selectError);
 			// execute the statement
 			selectStmt.execute();
+			
 		}
 		
 	// Nodes
@@ -166,7 +177,7 @@
 		var selectStmt:SQLStatement = new SQLStatement();
 		selectStmt.sqlConnection = _conn;
 		//Node.NodeDate = formatDate(Node.NodeDate);
-		selectStmt.text = "INSERT INTO xnodes (NodeName, NodeDescription, NodeType, NodeLabelA, NodeDataA, NodeLabelB, NodeDataB, NodeAxisLabelA, NodeAxisDataA, NodeAxisLabelB, NodeAxisDataB, NodeDate)  values('"+Node.NodeName+"','"+Node.NodeDescription+"','"+Node.NodeType+"','"+Node.NodeLabelA+"','"+Node.NodeDataA+"','"+Node.NodeLabelB+"','"+Node.NodeDataB+"','"+Node.NodeAxisLabelA+"','"+Node.NodeAxisDataA+"','"+Node.NodeAxisLabelB+"','"+Node.NodeAxisDataB+"','"+Node.NodeDate+"')";
+		selectStmt.text = "INSERT INTO xnodes (NodeName, NodeDesc, NodeType, NodeLabelA, NodeDataA, NodeLabelB, NodeDataB, NodeAxisLabelA, NodeAxisDataA, NodeAxisLabelB, NodeAxisDataB, NodeDate)  values('"+Node.NodeName+"','"+Node.NodeDescription+"','"+Node.NodeType+"','"+Node.NodeLabelA+"','"+Node.NodeDataA+"','"+Node.NodeLabelB+"','"+Node.NodeDataB+"','"+Node.NodeAxisLabelA+"','"+Node.NodeAxisDataA+"','"+Node.NodeAxisLabelB+"','"+Node.NodeAxisDataB+"','"+Node.NodeDate+"')";
 		selectStmt.addEventListener(SQLEvent.RESULT, 
 			function (event:SQLEvent):void
 			{
@@ -237,8 +248,7 @@
 				}
 			});
 		selectStmt.execute();
-	} 
-	
+	}
 	
 // Edges	
 	public function getEdges():void
@@ -265,7 +275,7 @@
 		// create the SQL statement
 		var selectStmt:SQLStatement = new SQLStatement();
 		selectStmt.sqlConnection = _conn;
-		selectStmt.text = "SELECT xedges.AssociationType, xedges.AssociationDescription, edgeTargetName.NodeName AS TargetName, edgeSourceName.NodeName AS SourceName, xedges.EdgeSource, xedges.EdgeTarget FROM xedges INNER JOIN xnodes edgeSourceName ON (xedges.EdgeSource=edgeSourceName.NodeID) INNER JOIN xnodes edgeTargetName ON (xedges.EdgeTarget=edgeTargetName.NodeID)";
+		selectStmt.text = "SELECT xedges.AssociationType, xedges.AssociationDesc, edgeTargetName.NodeName AS TargetName, edgeSourceName.NodeName AS SourceName, xedges.EdgeSource, xedges.EdgeTarget FROM xedges INNER JOIN xnodes edgeSourceName ON (xedges.EdgeSource=edgeSourceName.NodeID) INNER JOIN xnodes edgeTargetName ON (xedges.EdgeTarget=edgeTargetName.NodeID)";
 		
 		// register listeners for the result and error events
 		selectStmt.addEventListener(SQLEvent.RESULT, 
@@ -285,7 +295,7 @@
 		// create the SQL statement
 		var selectStmt:SQLStatement = new SQLStatement();
 		selectStmt.sqlConnection = _conn;
-		selectStmt.text = "INSERT INTO xedges (EdgeSource, EdgeTarget, AssociationType, AssociationDescription) values ('"+Edge.EdgeSource+"','"+Edge.EdgeTarget+"','"+Edge.AssociationType+"','"+Edge.AssociationDescription+"')";
+		selectStmt.text = "INSERT INTO xedges (EdgeSource, EdgeTarget, AssociationType, AssociationDesc) values ('"+Edge.EdgeSource+"','"+Edge.EdgeTarget+"','"+Edge.AssociationType+"','"+Edge.AssociationDesc+"')";
 		trace(selectStmt.text);
 		selectStmt.addEventListener(SQLEvent.RESULT, 
 			function (event:SQLEvent):void
@@ -304,7 +314,7 @@
 		// create the SQL statement
 		var selectStmt:SQLStatement = new SQLStatement();
 		selectStmt.sqlConnection = _conn;
-		selectStmt.text = "UPDATE xedges SET EdgeSource='"+Edge.EdgeSource+"', EdgeTarget='"+Edge.EdgeTarget+"', AssociationType='"+Edge.AssociationType+"', AssociationDescription='"+Edge.AssociationDescription+"' WHERE EdgeSource='"+Edge.EdgeSource+"'";
+		selectStmt.text = "UPDATE xedges SET EdgeSource='"+Edge.EdgeSource+"', EdgeTarget='"+Edge.EdgeTarget+"', AssociationType='"+Edge.AssociationType+"', AssociationDesc='"+Edge.AssociationDesc+"' WHERE EdgeSource='"+Edge.EdgeSource+"'";
 		trace(selectStmt.text);
 		selectStmt.addEventListener(SQLEvent.RESULT,
 			function (event:SQLEvent):void
@@ -354,6 +364,80 @@
 		// execute the statement
 		selectStmt.execute();
 	}
-
-
+	
+	// NodeModels
+ 	public function getNodeModels():void
+	{
+		// create the SQL statement
+		var selectStmt:SQLStatement = new SQLStatement();
+		selectStmt.sqlConnection = _conn;
+		selectStmt.text = "SELECT * FROM nodemodels";
 		
+		// register listeners for the result and error events
+		selectStmt.addEventListener(SQLEvent.RESULT, 
+			function (event:SQLEvent):void
+			{
+				var result:SQLResult = selectStmt.getResult();
+				dpNodeModels = result.data;
+			});
+		selectStmt.addEventListener(SQLErrorEvent.ERROR, selectError);
+		// execute the statement
+		selectStmt.execute();
+		
+	}
+	
+	public function createNodeModel(NodeModel:Object):void
+	{
+		// create the SQL statement
+		var selectStmt:SQLStatement = new SQLStatement();
+		selectStmt.sqlConnection = _conn;
+		//Node.NodeDate = formatDate(Node.NodeDate);
+		selectStmt.text = "INSERT INTO nodemodels (NodeModelName, NodeNodelDesc, NMNodeNameLabel, NMNodeDescLabel, NMNodeTypeLabel, NMValALabel, NMValBLabel, NMNodeBlobObjectLabel, NMNodeDateLabel)  values('"+NodeModel.NodeModelName+"','"+NodeModel.NodeModelDesc+"','"+NodeModel.NodeType+"','"+NodeModel.NodeLabelA+"','"+NodeModel.NodeDataA+"','"+NodeModel.NodeLabelB+"','"+NodeModel.NodeDataB+"','"+NodeModel.NodeAxisLabelA+"','"+NodeModel.NodeAxisDataA+"','"+NodeModel.NodeAxisLabelB+"','"+NodeModel.NodeAxisDataB+"','"+NodeModel.NodeDate+"')";
+		selectStmt.addEventListener(SQLEvent.RESULT, 
+			function (event:SQLEvent):void
+			{
+				if (_conn.totalChanges >= 1)
+			    {
+			    	getNodeModels();
+			    	
+			    }
+			});
+		selectStmt.execute();
+	}
+	
+	public function updateNodeModel(NodeModel:Object):void
+	{
+		// create the SQL statement
+		var selectStmt:SQLStatement = new SQLStatement();
+		selectStmt.sqlConnection = _conn;
+		selectStmt.text = "UPDATE xnodes SET NodeID='"+NodeModel.NodeID+"', NodeName='"+NodeModel.NodeName+"', NodeDescription='"+NodeModel.NodeDescription+"', NodeType='"+NodeModel.NodeType+"',NodeLabelA='"+NodeModel.NodeLabelA+"', NodeDataA='"+NodeModel.NodeDataA+"', NodeLabelB='"+NodeModel.NodeLabelB+"', NodeDataB='"+NodeModel.NodeDataB+"',NodeAxisLabelA='"+NodeModel.NodeAxisLabelA+"', NodeAxisDataA='"+NodeModel.NodeAxisDataA+"', NodeAxisLabelB='"+NodeModel.NodeAxisLabelB+"', NodeAxisDataB='"+NodeModel.NodeAxisDataB+"', NodeDate='"+NodeModel.NodeDate+"' WHERE NodeID='"+NodeModel.NodeID+"'";
+		selectStmt.addEventListener(SQLEvent.RESULT, 
+			function (event:SQLEvent):void
+			{
+				if (_conn.totalChanges >= 1)
+			    {
+			    	getNodes();
+			    	getXMLNodes();
+			    }
+			});
+		selectStmt.execute();
+	}
+	
+	public function deleteNodeModel(NodeModel:Object):void
+	{
+		// create the SQL statement
+		var selectStmt:SQLStatement = new SQLStatement();
+		selectStmt.sqlConnection = _conn;
+		selectStmt.text = "DELETE FROM nodemodels WHERE NodeModelID='"+NodeModel.NodeModelID+"'";
+		selectStmt.addEventListener(SQLEvent.RESULT, 
+			function (event:SQLEvent):void
+			{
+				if (_conn.totalChanges >= 1)
+			    {
+			    	getNodes();
+			    	getXMLNodes();
+			    }
+			});
+		selectStmt.execute();
+	}
+

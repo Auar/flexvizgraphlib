@@ -21,7 +21,7 @@
 	
 	private function viewChildren(e:Event):void
 	{
-		parentDocument.detailNode(parentDocument.dgNodeRequest.selectedItem);
+		parentDocument.getChildNodes(parentDocument.dgNodeRequest.selectedItem);
 		
 	}
 		
