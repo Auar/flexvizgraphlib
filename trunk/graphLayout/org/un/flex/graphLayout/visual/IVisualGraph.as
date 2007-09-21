@@ -86,6 +86,14 @@ package org.un.flex.graphLayout.visual {
 		function set itemRenderer(ifac:IFactory):void;
 		
 		/**
+		 * Allow the provision of an EdgeRenderer to
+		 * allow drawing of edges in a customised way.
+		 * The edgeRenderer has to implement the IEdgeRenderer interface.
+		 * */
+		function set edgeRenderer(er:IEdgeRenderer):void;
+		
+		
+		/**
 		 * Allow to provide an EdgeLabelRenderer in order to
 		 * display edge labels. The created instances must be
 		 * UIComponents.

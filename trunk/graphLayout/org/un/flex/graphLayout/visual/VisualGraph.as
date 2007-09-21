@@ -470,6 +470,13 @@ package org.un.flex.graphLayout.visual {
 		public function set itemRenderer(ifac:IFactory):void {
 			_itemRendererFactory = ifac;
 		}
+		
+		/**
+		 * @inheritDoc
+		 * */
+		public function set edgeRenderer(er:IEdgeRenderer):void {
+			_edgeRenderer = er;
+		}
 
 		/**
 		 * @inheritDoc
