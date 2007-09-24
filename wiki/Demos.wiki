@@ -3,4 +3,6 @@
 
 === Layout Explorer ===
 
-  * [http://flexvizgraphlib.googlecode.com/files/RelationNavigatorDemo.swf Demo 1]
+  * [http://flexvizgraphlib.googlecode.com/files/VisualGraphDemo-20080924.swf Demo 1]
+  * Updated September 24, 2008
+ 
