@@ -4,5 +4,5 @@
 === Layout Explorer ===
 
   * [http://flexvizgraphlib.googlecode.com/files/VisualGraphDemo-20080924.swf Demo 1]
-  * Updated September 24, 2008
+  * Updated September 24, 2007
  
