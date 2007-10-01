@@ -51,6 +51,10 @@ package org.un.flex.graphLayout.visual {
 		/* the associated label view if set */
 		private var _labelView:UIComponent;
 		
+		/* the line style of the edge */
+		private var _lineStyle:Object;
+		
+		
 		/**
 		 * The constructor initialiazes the edge and must be preset with almost
 		 * all parameters. 
@@ -59,13 +63,16 @@ package org.un.flex.graphLayout.visual {
 		 * @param id The internal id of this VisualEdge.
 		 * @param data The associated data Object.
 		 * @param lview The associated label view.
+		 * @param lStyle The line style of the edge, must be an object as associative mapping containing Graphics.lineStyle() parameters.
+		 * @see flash.display.Graphics.lineStyle()
 		 * */
-		public function VisualEdge(vg:IVisualGraph, edge:IEdge, id:int, data:Object = null, lview:UIComponent = null):void {
+		public function VisualEdge(vg:IVisualGraph, edge:IEdge, id:int, data:Object = null, lview:UIComponent = null, lStyle:Object = null):void {
 			_vgraph = vg;
 			_edge = edge;
 			_id = id;
 			_data = data;
 			_labelView = lview;
+			_lineStyle = lStyle;
 		}
 		
 		/**
@@ -116,6 +123,20 @@ package org.un.flex.graphLayout.visual {
 		 * */
 		public function set labelView(lv:UIComponent):void {
 			_labelView = lv;
+		}
+		
+		/**
+		 * @inheritDoc
+		 * */
+		public function set lineStyle(ls:Object):void {
+			_lineStyle = ls;
+		}
+		
+		/**
+		 * @private
+		 * */
+		public function get lineStyle():Object {
+			return _lineStyle;
 		}
 		
 	}

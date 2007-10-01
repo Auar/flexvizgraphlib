@@ -64,18 +64,18 @@ package org.un.flex.graphLayout.visual {
 		 * which are to be used by an Edge Renderer
 		 * @see org.un.flex.graphLayout.layout.IEdgeRenderer
 		 * */
-		function get globalEdgeSettings():Object;
+		//function get globalEdgeSettings():Object;
 		
 		/**
 		 * @private
 		 * */
-		function set globalEdgeSettings(o:Object):void;
+		//function set globalEdgeSettings(o:Object):void;
 		
 		/**
 		 * Set the line color in the global Edge settings
 		 * object of the Visual Graph. This is for convenience.
 		 * */
-		function set lineColor(color:int):void;
+		//function set lineColor(color:int):void;
 		
 		/**
 		 * Allow the provision of an ItemRenderer (which is
