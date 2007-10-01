@@ -59,6 +59,21 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("RÂ
    and will vanish eventually.</td>
 </tr>
 <tr>
+<td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/visual/class-list.html');" href="org/un/flex/graphLayout/visual/IVisualGraph.html#redrawEdges()">redrawEdges</a>() &mdash; Method in interface org.un.flex.graphLayout.visual.<a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/visual/class-list.html');" href="org/un/flex/graphLayout/visual/IVisualGraph.html">IVisualGraph</a></td>
+</tr>
+<tr>
+<td width="20"></td><td>
+   This forces a redraw of all edges </td>
+</tr>
+<tr>
+<td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/visual/class-list.html');" href="org/un/flex/graphLayout/visual/VisualGraph.html#redrawEdges()">redrawEdges</a>() &mdash; Method in class org.un.flex.graphLayout.visual.<a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/visual/class-list.html');" href="org/un/flex/graphLayout/visual/VisualGraph.html">VisualGraph</a></td>
+</tr>
+<tr>
+<td width="20"></td><td>
+   Redraw all edges, this is called from the updateDisplayList()
+   method.</td>
+</tr>
+<tr>
 <td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/visual/class-list.html');" href="org/un/flex/graphLayout/visual/IVisualGraph.html#refresh()">refresh</a>() &mdash; Method in interface org.un.flex.graphLayout.visual.<a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/visual/class-list.html');" href="org/un/flex/graphLayout/visual/IVisualGraph.html">IVisualGraph</a></td>
 </tr>
 <tr>
@@ -111,6 +126,14 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("RÂ
 <tr>
 <td width="20"></td><td>
    This is a NOP for this layouter.</td>
+</tr>
+<tr>
+<td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/layout/class-list.html');" href="org/un/flex/graphLayout/layout/ForceDirectedLayouter.html#refreshInit()">refreshInit</a>() &mdash; Method in class org.un.flex.graphLayout.layout.<a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/layout/class-list.html');" href="org/un/flex/graphLayout/layout/ForceDirectedLayouter.html">ForceDirectedLayouter</a></td>
+</tr>
+<tr>
+<td width="20"></td><td>
+   In this implementation, this method resets the damper
+   value.</td>
 </tr>
 <tr>
 <td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/layout/class-list.html');" href="org/un/flex/graphLayout/layout/ILayoutAlgorithm.html#refreshInit()">refreshInit</a>() &mdash; Method in interface org.un.flex.graphLayout.layout.<a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/layout/class-list.html');" href="org/un/flex/graphLayout/layout/ILayoutAlgorithm.html">ILayoutAlgorithm</a></td>
@@ -211,6 +234,15 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("RÂ
    of this node.</td>
 </tr>
 <tr>
+<td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/layout/class-list.html');" href="org/un/flex/graphLayout/layout/AnimatedBaseLayouter.html#resetAll()">resetAll</a>() &mdash; Method in class org.un.flex.graphLayout.layout.<a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/layout/class-list.html');" href="org/un/flex/graphLayout/layout/AnimatedBaseLayouter.html">AnimatedBaseLayouter</a></td>
+</tr>
+<tr>
+<td width="20"></td><td>
+   This should reset all parameters of the layouter,
+   which might not be needed for all layouters, and it is
+   up to each layouter to do something with it.</td>
+</tr>
+<tr>
 <td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/layout/class-list.html');" href="org/un/flex/graphLayout/layout/BaseLayouter.html#resetAll()">resetAll</a>() &mdash; Method in class org.un.flex.graphLayout.layout.<a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/layout/class-list.html');" href="org/un/flex/graphLayout/layout/BaseLayouter.html">BaseLayouter</a></td>
 </tr>
 <tr>
@@ -227,6 +259,14 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("RÂ
    This should reset all parameters of the layouter,
    which might not be needed for all layouters, and it is
    up to each layouter to do something with it.</td>
+</tr>
+<tr>
+<td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/layout/class-list.html');" href="org/un/flex/graphLayout/layout/ForceDirectedLayouter.html#resetAll()">resetAll</a>() &mdash; Method in class org.un.flex.graphLayout.layout.<a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/layout/class-list.html');" href="org/un/flex/graphLayout/layout/ForceDirectedLayouter.html">ForceDirectedLayouter</a></td>
+</tr>
+<tr>
+<td width="20"></td><td>
+   Reset all layouting parameters, which may be
+   required during a significant layout change.</td>
 </tr>
 <tr>
 <td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/layout/class-list.html');" href="org/un/flex/graphLayout/layout/HierarchicalLayouter.html#resetAll()">resetAll</a>() &mdash; Method in class org.un.flex.graphLayout.layout.<a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/layout/class-list.html');" href="org/un/flex/graphLayout/layout/HierarchicalLayouter.html">HierarchicalLayouter</a></td>
@@ -292,6 +332,14 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("RÂ
 <tr>
 <td width="20"></td><td>
    Indicating flag if the returned tree is restricted to currently invisible nodes.</td>
+</tr>
+<tr>
+<td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/layout/class-list.html');" href="org/un/flex/graphLayout/layout/ForceDirectedLayouter.html#rigidity">rigidity</a> &mdash; Property in class org.un.flex.graphLayout.layout.<a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/layout/class-list.html');" href="org/un/flex/graphLayout/layout/ForceDirectedLayouter.html">ForceDirectedLayouter</a></td>
+</tr>
+<tr>
+<td width="20"></td><td>
+   This is a local parameter specific to this layouter, that may
+   be accessed from outside, if required.</td>
 </tr>
 <tr>
 <td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/layout/class-list.html');" href="org/un/flex/graphLayout/layout/SpringForceDirectedLayouter.html#rigidity">rigidity</a> &mdash; Property in class org.un.flex.graphLayout.layout.<a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/layout/class-list.html');" href="org/un/flex/graphLayout/layout/SpringForceDirectedLayouter.html">SpringForceDirectedLayouter</a></td>
