@@ -49,5 +49,19 @@ package org.un.flex.graphLayout.visual {
 		 * @private
 		 * */
 		function set labelView(lv:UIComponent):void;
+		
+		/**
+		 * Set the lineStyle of the edge. The parameter
+		 * passed must be an object, containing a mapping.
+		 * The properties (keys) in the mapping must match the
+		 * lineStyle() parameters of Graphics.
+		 * @see flash.display.Graphics.lineStyle()
+		 * */
+		function get lineStyle():Object;
+		
+		/**
+		 * @private
+		 * */
+		function set lineStyle(ls:Object):void;
 	}
 }

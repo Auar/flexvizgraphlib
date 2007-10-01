@@ -70,15 +70,19 @@ package org.un.flex.graphLayout.visual {
 			/* XXX drawing parameters with default values, these could
 			 * be taken from the graph object actually, although this
 			 * should be rather in the VisualGraph */
+			/*
 			var alpha:Number;
 			var thickness:int;
 			var color:int;
+			*/
 			
 			/* check if we have a data object associated with the vedge
 			 * with instructions how to render it */
-			var edgeSettings:Object;
+			//var edgeSettings:Object;
 			
 			/* the name of the settings property should be a constant */
+			
+			/*
 			if(vedge.data != null && vedge.data.hasOwnProperty("settings")) {
 				edgeSettings = vedge.data.settings;
 			} else {
@@ -92,20 +96,39 @@ package org.un.flex.graphLayout.visual {
 			} else {
 				color = edgeSettings.color;
 			}
+			*/
+			
+			
+			/* apply the style to the drawing */
+			if(vedge.lineStyle != null) {
+				g.lineStyle(
+					vedge.lineStyle.thickness,
+					vedge.lineStyle.color,
+					vedge.lineStyle.alpha,
+					vedge.lineStyle.pixelHinting,
+					vedge.lineStyle.scaleMode,
+					vedge.lineStyle.caps,
+					vedge.lineStyle.joints,
+					vedge.lineStyle.miterLimits
+				);
+			}
+			
 			
 			/* now we actually draw */
-			// NEW CODE IS INDENTED BELOW
-			g.lineStyle(thickness, color, alpha);
 			g.beginFill(0);
 			g.moveTo(fromX, fromY);
-			  g.curveTo(fromX - 2, fromY - 2, midX, midY);
-			  g.moveTo(fromX, fromY);
-			  g.curveTo(fromX + 2, fromY + 2, midX, midY);
-			  g.moveTo(fromX, fromY);
-			  g.curveTo(fromX - 2, fromY + 2, midX, midY);
-			  g.moveTo(fromX, fromY);
-			  g.curveTo(fromX + 2, fromY - 2, midX, midY);
-			  g.moveTo(midX, midY);
+			
+			/* some things to make the edges look nicer */
+			
+			g.curveTo(fromX - 2, fromY - 2, midX, midY);
+			g.moveTo(fromX, fromY);
+			g.curveTo(fromX + 2, fromY + 2, midX, midY);
+			g.moveTo(fromX, fromY);
+			g.curveTo(fromX - 2, fromY + 2, midX, midY);
+			g.moveTo(fromX, fromY);
+			g.curveTo(fromX + 2, fromY - 2, midX, midY);
+			g.moveTo(midX, midY);
+			
 			g.lineTo(toX, toY);
 			g.endFill();
 			

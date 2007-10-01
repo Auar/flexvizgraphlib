@@ -53,6 +53,7 @@ package org.un.flex.graphLayout.visual {
 	import flash.geom.Point;
 	import flash.display.Graphics;
 	import mx.controls.Label;
+	import mx.utils.ObjectUtil;
 
 	/**
 	 *  Dispatched when there is any change to the nodes and/or links of this graph.
@@ -203,16 +204,36 @@ package org.un.flex.graphLayout.visual {
          */
 
 		/**
-		 * We currently keep the global default parameters
+		 * We keep the default parameters
 		 * to draw edges (line width, color, alpha channel)
-		 * in this object. The params to be expected are
-		 * "alpha"
-		 * "thickness"
-		 * "color"
-		 * "distcolor" 
-		 * I am not too happy with this, but we keep it for now.
+		 * in this object. The params to be expected are all
+		 * params which can be accepted by the lineStyle()
+		 * method of the Graphics class.
+		 * We keep a separate default set for regular edges and
+		 * for distinguished edges.
 		 * */
-		private var _globalEdgeSettings:Object;
+		private var _defaultEdgeStyle:Object = {
+			thickness:1,
+			alpha:1.0,
+			color:0xcccccc,
+			pixelhinting:false,
+			scaleMode:"normal",
+			caps:null,
+			joints:null,
+			miterLimit:3
+		}
+		/* currently inactive *
+		private var _defaultDistEdgeSettings:Object = {
+			thickness:1,
+			alpha:1.0,
+			color:0xff0000,
+			pixelhinting:false,
+			scaleMode:"normal",
+			caps:null,
+			joints:null,
+			miterLimit:3
+		}
+		*/
 
 		/* The visibility of nodes can be controlled in a few ways.
 		 * The principal limit is to restrict nodes to only be visible if they
@@ -359,13 +380,6 @@ package org.un.flex.graphLayout.visual {
 			/* call super class constructor */
 			super();
 			
-			/* initialise the global edge settings */
-			_globalEdgeSettings = new Object;
-			_globalEdgeSettings.thickness = 1;
-			_globalEdgeSettings.alpha = 1.0;
-			_globalEdgeSettings.color = 0xcccccc; //
-			_globalEdgeSettings.distcolor = 0xff0000; // ?? red maybe
-			
 			/* initialize maps for drag and drop */
 			_drag_x_offsetMap = new Dictionary;
 			_drag_y_offsetMap = new Dictionary;
@@ -452,17 +466,19 @@ package org.un.flex.graphLayout.visual {
 		
 		/**
 		 * @inheritDoc
-		 * */
+		 * *
 		public function get globalEdgeSettings():Object {
 			return _globalEdgeSettings; // shouldn't we rather pass a copy XXX
 		}
+		 * */
 		
 		/**
 		 * @private
-		 * */		
+		 * *	
 		public function set globalEdgeSettings(s:Object):void {
 			_globalEdgeSettings = s;
 		}
+		 * */
 
 		/**
 		 * @inheritDoc
@@ -730,11 +746,12 @@ package org.un.flex.graphLayout.visual {
 
 		/**
 		 * @inheritDoc
-		 * */
+		 * *
 		public function set lineColor(color:int):void {
 			_globalEdgeSettings.color = color;
 			refresh();
 		}
+		 * */
 
 		/**
 		 * This initialises a VGraph from a Graph object.
@@ -1187,8 +1204,38 @@ package org.un.flex.graphLayout.visual {
 			var vedge:IVisualEdge;
 			var n1:INode;
 			var n2:INode;
+			var lStyle:Object;
 			
-			vedge = new VisualEdge(this, e, e.id, e.data);
+			/* create a copy of the default style */
+			lStyle = ObjectUtil.copy(_defaultEdgeStyle);
+			
+			/* extract style data from associated XML data for each parameter */
+			if(e.data.@thickness) {
+				lStyle.thickness = Number(e.data.attribute("thickness"));
+			}
+			if(e.data.@color) {
+				lStyle.color = uint(e.data.@color);
+			}
+			if(e.data.@alpha) {
+				lStyle.alpha = Number(e.data.@alpha);
+			}
+			if(e.data.@pixelHinting) {
+				lStyle.pixelHinting = Boolean(e.data.@pixelHinting);
+			}
+			if(e.data.@scaleMode) {
+				lStyle.scaleMode = String(e.data.@scaleMode);
+			}
+			if(e.data.@caps) {
+				lStyle.caps = String(e.data.@caps);
+			}
+			if(e.data.@joints) {
+				lStyle.joints = String(e.data.@joints);
+			}
+			if(e.data.@miterLimit) {
+				lStyle.miterLimit = Number(e.data.@miterLimit);
+			}
+			
+			vedge = new VisualEdge(this, e, e.id, e.data, null, lStyle);
 			
 			/* set the VisualEdge reference in the graph edge */
 			e.vedge = vedge;
