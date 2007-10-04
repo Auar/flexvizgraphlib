@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+xmlns:fc="http://www.adobe.com/2006/fc"
+height="100%" width="100%"
+label="Edge CRUD Form"
+xmlns="*"
+xmlns:modules="modules.*"
+>
+<mx:Script>
+	
+	<![CDATA[
+		import mx.collections.ArrayCollection;
+	
+		private function backList(e:Event):void
+		{
+			parentDocument.edgeControl.selectedIndex = 0;
+			// parentDocument.detailNav.selectedIndex = 2;
+		}
+	]]>
+</mx:Script>
+
+<mx:ViewStack id="edgevs" height="100%" width="100%">
+
+<!-- View -->
+	<mx:Canvas id="detailcnvs" height="100%" width="100%">
+		<mx:Form width="100%" height="100%">
+			<mx:Grid>
+				<!-- EdgeSource -->
+				<mx:GridRow width="100%" height="100%">
+					<mx:GridItem width="100%" height="100%">
+						<mx:Label text="Edge Source"/>
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%">
+						<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
+					</mx:GridItem>		
+					<mx:GridItem width="100%" height="100%">
+						<mx:TextInput id="EdgeSource" text="{parentDocument.dgEdgeRequest.selectedItem.EdgeSource}"/>
+					</mx:GridItem>
+				</mx:GridRow> 
+				<!-- EdgeTarget -->
+				<mx:GridRow width="100%" height="100%">
+					<mx:GridItem width="100%" height="100%">
+						<mx:Label text="Edge Target"/>
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%">
+						<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
+					</mx:GridItem>		
+					<mx:GridItem width="100%" height="100%">
+						<mx:TextInput id="EdgeTarget" text="{parentDocument.dgEdgeRequest.selectedItem.EdgeTarget}"/>
+					</mx:GridItem>
+				</mx:GridRow>
+				<!-- Edge Type -->
+				<mx:GridRow width="100%" height="100%">
+					<mx:GridItem width="100%" height="100%">
+						<mx:Label text="Edge Type"/>
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%">
+						<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Enter the nature of association, e.g. friend, partner, etc."/>
+					</mx:GridItem>		
+					<mx:GridItem width="100%" height="100%">
+						<mx:TextInput id="EdgeType" text="{parentDocument.dgEdgeRequest.selectedItem.EdgeType}"/>
+					</mx:GridItem>
+				</mx:GridRow>
+				<!-- Edge Desc -->
+				<mx:GridRow width="100%" height="100%">
+					<mx:GridItem width="100%" height="100%">
+						<mx:Label text="Edge Description"/>
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%">
+						<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="Descriptive information about nature of relation."/>
+					</mx:GridItem>		
+					<mx:GridItem width="100%" height="100%">
+						<mx:TextArea id="EdgeDesc" text="{parentDocument.dgEdgeRequest.selectedItem.EdgeDescription}" width="300" height="300" />
+					</mx:GridItem>
+				</mx:GridRow>
+			</mx:Grid>
+		<mx:HBox>
+			<mx:Button toolTip="This will take you to detail view" icon="@Embed('../images/ui/view.gif')" label="Back to View" click="backList(event);"/>
+			<mx:Button toolTip="Submit changes." icon="@Embed('../images/ui/submit.png')" label="Submit" click="parentDocument.editEdge()"/>
+			<mx:Button toolTip="Delete the selected record." icon="@Embed('../images/ui/delete.png')" label="Delete" click="parentDocument.delEdge()"/>
+		</mx:HBox>
+	</mx:Form>
+	</mx:Canvas>
+</mx:ViewStack>	
+</mx:Canvas>

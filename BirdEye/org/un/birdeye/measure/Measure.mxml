@@ -1,0 +1,905 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:ui="org.un.birdeye.ui.*"
+	xmlns:charts="qs.charts.*"
+	xmlns:flexlib="http://code.google.com/p/flexlib/"
+	creationComplete="init();" >    
+	
+	<mx:XML  
+        id="myChart"  
+        source="Chart.xml" 
+        /> 
+  
+	<mx:Script><![CDATA[
+		
+	import mx.graphics.SolidColor;
+	import mx.graphics.Stroke;
+	import mx.controls.Alert;
+	import mx.collections.*;
+	import mx.charts.*;
+	import mx.charts.series.*;
+	import mx.charts.renderers.*;
+	import mx.charts.events.*;
+	import mx.controls.ColorPicker;
+	import mx.events.ColorPickerEvent;
+	
+	import mx.charts.chartClasses.Series;
+    import mx.charts.chartClasses.ChartBase;
+    import mx.charts.events.ChartItemEvent;
+    import mx.charts.ChartItem;
+    
+    // Treemap
+    import com.flextoolbox.controls.*;
+    import com.flextoolbox.events.*;
+    
+    // ILOG
+    import mx.graphics.SolidColor;
+    import ilog.maps.MapBase;
+    import ilog.maps.MapEvent;
+    import ilog.maps.MapFeature;
+    import ilog.maps.WorldCountriesMap;
+    import ilog.maps.MapSymbol;
+    
+    // Symbols lib
+    import com.flexibleexperiments.primitiveIcons.*;
+    
+	public var myData:XML = new XML();		
+	public var xmlData:XML = new XML();
+	public var xmlDataModif:XML = new XML();
+	public var arrAxis:Array = new Array();
+	public var xField:String;
+	public var yField:String;
+	public var labelField:String;
+	public var weightField:String;
+	public var colorField:String;
+	public var CategoryxField:String;
+	public var CategoryyField:String;
+	public var f:SolidColor;
+	public var s:Stroke;
+	public var slicedResults:Array;
+	public var dataList:XMLList;
+	public var dataListCollection:XMLListCollection;
+	public var dataSort:Sort;
+	public var numberOfSeries:int;
+	public var num:int=1;
+	public var DisplayType:String;
+	
+	public function ParseAxis(Axis:XML):void { 
+		var AxisAttributes:XMLList = Axis.children().attributes(); 
+		var i:int = 0;
+		for each (var axisElements:XML in AxisAttributes) { 
+			arrAxis[i]=axisElements.name();
+			i++
+		} 
+		arrAxis.sort();
+		removeDup();		
+	}
+	
+	public function LoadXML():void { 
+		xmlData = myData;
+		
+		dataList=xmlData.children();
+		dataListCollection=new XMLListCollection(dataList);
+		xmlDataModif=new XML(xmlData);
+		//addXMLToArray(xmlData);
+		 ParseAxis(xmlData)
+		 numberItems=xmlData.children().length();
+				
+			cbxAxis1.dataProvider=arrAxis;
+			cbyAxis1.dataProvider=arrAxis;
+			refreshChart();
+			
+			
+	} 
+	
+	//Supprime les doublons dans un tableau
+	public function removeDup():void
+		{
+		for(var y:int=0;y<arrAxis.length;y++)
+			{
+	                for(var z:int=(y+1);z<=arrAxis.length;z++)
+	                {
+	                        if(arrAxis[y]==arrAxis[z])
+	                        		{
+	                                arrAxis.splice(z,1)
+	                                z--;
+	                        		}
+	                }
+	    	}
+		}
+	
+	//Fonction d'initialisation au premier lancement de l'application
+	private function init():void {
+		// This XML data source creates a nested tree structure
+		// This would be needed for drill down capability
+		myData =  parentDocument.gTreeXML;
+		// This data source creates a flat structure
+		// myData = parentDocument.rootNode;
+		cbForm.dataProvider=myChart.chart[0].Properties.Property.Forms.Form;
+		//Alert.show(data.value, 'Alert Box',mx.controls.Alert.OK);
+		cbxAxisType1.dataProvider=myChart.chart[0].Properties.Property.axis;
+		cbyAxisType1.dataProvider=myChart.chart[0].Properties.Property.axis;
+		cbDisplay.dataProvider=myChart.chart[0].Properties.Property.barTypes.barType;
+		//chargement du fichier XML contenant les données  
+		numberOfSeries=1;
+		LoadXML();
+		trace(myData);
+		
+		
+	}
+	
+	private function addSeries():void{
+		numberOfSeries=numberOfSeries+1;
+		cbDisplay.visible=true;
+		lblDisplay.visible=true;
+		
+		var myColor:uint = Math.round( Math.random()*0xFFFFFF );
+		
+		var sep:HRule=new HRule();
+		sep.id="sep"+numberOfSeries;
+		sep.name="sep"+numberOfSeries;
+		sep.y=hrEnd.y;
+		sep.x=13;sep.width=210;
+		piano.addChild(sep);
+		
+		var lblSerieNum:Label=new Label();
+		lblSerieNum.id="lblSerieNum"+numberOfSeries;
+		lblSerieNum.name="lblSerieNum"+numberOfSeries;
+		lblSerieNum.text= "Serie " + numberOfSeries + " :";
+		lblSerieNum.y=hrEnd.y+10;
+		lblSerieNum.x=3;
+		piano.addChild(lblSerieNum);
+		
+		var colPicker:ColorPicker=new ColorPicker();
+		colPicker.id="cp"+numberOfSeries;
+		colPicker.name="cp"+numberOfSeries;
+		colPicker.y=hrEnd.y+10;
+		colPicker.x=60;
+		colPicker.width=17;
+		colPicker.height=17;
+		colPicker.selectedColor=myColor;//0x6699CC;
+		colPicker.addEventListener(Event.CHANGE, refreshChartEvent);
+		piano.addChild(colPicker);
+		
+		var cbyAxis:ComboBox=new ComboBox();
+		cbyAxis.id="cbyAxis"+numberOfSeries;
+		cbyAxis.name="cbyAxis"+numberOfSeries;
+		cbyAxis.addEventListener(Event.CHANGE, refreshChartEvent);
+		cbyAxis.dataProvider=arrAxis;
+		cbyAxis.prompt="Select..."
+		cbyAxis.x=85;
+		cbyAxis.y=hrEnd.y+8;
+		piano.addChild(cbyAxis);
+		
+		var chkRemove:CheckBox=new CheckBox();
+		chkRemove.id="chkRemove"+numberOfSeries;
+		chkRemove.name="chkRemove"+numberOfSeries;
+		chkRemove.x=200;
+		chkRemove.y=hrEnd.y+9;
+		chkRemove.addEventListener(MouseEvent.CLICK, removeSeriesEvent);
+		piano.addChild(chkRemove);
+		
+		btnAddNewSerie.move(btnAddNewSerie.x,btnAddNewSerie.y+38);
+		hrEnd.move(hrEnd.x,hrEnd.y+38);
+	}
+	
+	private function removeSeriesEvent(event:Event):void{
+		num=event.target.name.substr(9);
+		piano.removeChild(piano.getChildByName("sep"+num));
+		piano.removeChild(piano.getChildByName("lblSerieNum"+num));
+		piano.removeChild(piano.getChildByName("cp"+num));
+		piano.removeChild(piano.getChildByName("cbyAxis"+num));
+		piano.removeChild(piano.getChildByName("chkRemove"+num));
+		
+		for (var i:int=1; i<=numberOfSeries; i++) { 
+			if (i>num){
+				HRule(piano.getChildByName("sep"+i)).move(HRule(piano.getChildByName("sep"+i)).x,HRule(piano.getChildByName("sep"+i)).y-38);
+				Label(piano.getChildByName("lblSerieNum"+i)).move(Label(piano.getChildByName("lblSerieNum"+i)).x,Label(piano.getChildByName("lblSerieNum"+i)).y-38);
+				Label(piano.getChildByName("lblSerieNum"+i)).text="Serie " + (i-1) + " :";
+				ColorPicker(piano.getChildByName("cp"+i)).move(ColorPicker(piano.getChildByName("cp"+i)).x,ColorPicker(piano.getChildByName("cp"+i)).y-38);
+				ComboBox(piano.getChildByName("cbyAxis"+i)).move(ComboBox(piano.getChildByName("cbyAxis"+i)).x,ComboBox(piano.getChildByName("cbyAxis"+i)).y-38);
+				CheckBox(piano.getChildByName("chkRemove"+i)).move(CheckBox(piano.getChildByName("chkRemove"+i)).x,CheckBox(piano.getChildByName("chkRemove"+i)).y-38);
+				
+				piano.getChildByName("sep"+i).name="sep"+(i-1);
+				piano.getChildByName("lblSerieNum"+i).name="lblSerieNum"+(i-1);
+				piano.getChildByName("cp"+i).name="cp"+(i-1);
+				piano.getChildByName("cbyAxis"+i).name="cbyAxis"+(i-1);
+				piano.getChildByName("chkRemove"+i).name="chkRemove"+(i-1);
+			}
+		}
+		btnAddNewSerie.move(btnAddNewSerie.x,btnAddNewSerie.y-38);
+		hrEnd.move(hrEnd.x,hrEnd.y-38);
+		
+		numberOfSeries=numberOfSeries-1;
+		
+		if(numberOfSeries==1){
+			lblDisplay.visible=false;
+			cbDisplay.visible=false;
+		}
+		
+		refreshChart();
+	}	
+	
+	//Fonction qui définit les éléments paramétrables en fonction du type de graphique séléctionné
+	private function changeTypeEvt(event:Event):void {
+		var strChartType:String = cbChartType.selectedLabel.toString()
+		//show or hide form combobox
+		if (myChart.chart.(@Type==strChartType).Properties.Property.Forms.length() !=0)
+		{
+			cbForm.visible=true;
+			lblForm.visible=true;
+			cbForm.dataProvider=myChart.chart.(@Type==strChartType).Properties.Property.Forms.Form;
+		}else{
+			cbForm.visible=false;
+			lblForm.visible=false;
+		}
+		//show or hide x/y AxisType combobox
+		if (myChart.chart.(@Type==strChartType).Properties.Property.axis.length() !=0)
+		{
+			cbxAxisType1.visible=true;
+			lblxAxisType1.visible=true;
+			cbyAxisType1.visible=true;
+			lblyAxisType1.visible=true;
+		}else{
+			cbxAxisType1.visible=false;
+			lblxAxisType1.visible=false;
+			cbyAxisType1.visible=false;
+			lblyAxisType1.visible=false;
+		}
+		
+		//show or hide show Grid checkbox
+		if (myChart.chart.(@Type==strChartType).Properties.Property.(@name=="GridLines").length() !=0)
+		{
+			chkGrid.visible=true;
+		}else{
+			chkGrid.visible=false;
+		}
+		
+		//show or hide color picker
+		if (myChart.chart.(@Type==strChartType).Properties.Property.(@name=="Fill").length() !=0)
+		{
+			// lblColor1.visible=true;
+			cp1.visible=true;
+		}else{
+			// lblColor1.visible=false;
+			cp1.visible=false;
+		}
+		
+		//show or hide Display
+		if (myChart.chart.(@Type==strChartType).Properties.Property.(@name=="barTypes").length() !=0)
+		{
+			lblDisplay.visible=true;
+			cbDisplay.visible=true;
+		}else{
+			lblDisplay.visible=false;
+			cbDisplay.visible=false;
+		}
+		
+		
+		drawChart(strChartType);
+    }
+    
+    
+    
+ private function xAxisTypeChange(event:Event):void{
+    	if(event.target.selectedLabel.toString()=="Category"){
+    		lblxMin1.visible=false;
+    		lblxMax1.visible=false;
+    		lblxInterval1.visible=false;
+    		txtxMin1.visible=false;
+    		txtxMax1.visible=false;
+    		txtxInterval1.visible=false;
+    	}else{
+    		lblxMin1.visible=true;
+    		lblxMax1.visible=true;
+    		lblxInterval1.visible=true;
+    		txtxMin1.visible=true;
+    		txtxMax1.visible=true;
+    		txtxInterval1.visible=true;
+    	}
+    	txtxMin1.text="";
+    	txtxMax1.text="";
+    	txtxInterval1.text="";
+    	refreshChart();
+    }
+    
+    private function yAxisTypeChange(event:Event):void{
+    	if(event.target.selectedLabel.toString()=="Category"){
+    		lblyMin1.visible=false;
+    		lblyMax1.visible=false;
+    		lblyInterval1.visible=false;
+    		// txtyMin1.visible=false;
+    		minMaxSlider.visible=false;
+    		txtyInterval1.visible=false;
+    	}else{
+    		lblyMin1.visible=true;
+    		lblyMax1.visible=true;
+    		lblyInterval1.visible=true;
+    		// txtyMin1.visible=true;
+    		minMaxSlider.visible=true;
+    		txtyInterval1.visible=true;
+    	}
+    	txtxMin1.text="";
+    	txtxMax1.text="";
+    	txtxInterval1.text="";
+    	refreshChart();
+    }
+    
+    private function refreshChart():void {
+    	var strChartType:String = cbChartType.selectedLabel.toString()
+		drawChart(strChartType);
+    }
+    
+     private function refreshChartEvent(event:Event):void {
+    	var strChartType:String = cbChartType.selectedLabel.toString()
+		drawChart(strChartType);
+    }
+    
+   
+    //function qui créé le graphique en fonction des paramètres séléctionnés depuis le tableau de bord
+    private function drawChart(strChartType:String):void {
+    	p1.removeAllChildren()
+    	
+    	// X and Y fields
+    	xField="@"+cbxAxis1.selectedLabel.toString();
+    	DisplayType=cbDisplay.selectedLabel.toString();
+		
+		
+    	switch (strChartType) { 
+		    case "Area" : 
+		    	drawAreaChart();
+		    	break; 
+		    case "Bar" : 
+		    	drawBarChart();
+		        break; 
+		    case "Bubble" : 
+		        drawBubbleChart();
+		        break; 
+		    case "Candlestick" : 
+		        drawCandlestickChart();
+		        break; 
+		    case "Column" : 
+		        drawColumnChart();
+		        break; 
+		    case "HighLowOpenClose" : 
+		        drawHLOCChart()
+		        break; 
+		    case "Line" : 
+		    	drawLineChart();
+		        break; 
+		    case "Pie" : 
+		        drawPieChart();
+		        break; 
+		    case "Plot" : 
+		        drawPlotChart();
+		        break;
+		    case "Polar" : 
+		        drawPolarChart();
+		        break;
+		    case "TreeMap" : 
+		        drawTreeMap();
+		        break;
+		    case "GeoMap" : 
+		        drawGeoMap();
+		        break; 
+		}
+		//Alert.show(typeof(myChart), 'Alert Box',mx.controls.Alert.OK);
+		
+    }
+    
+    public function createLegend(Chart:Object):void {
+    	var myLegend:Legend = new Legend();
+		myLegend.dataProvider = Chart;
+		myLegend.direction = "horizontal";
+		if(chkLegend.selected){
+			p1.addChild(myLegend);
+		}
+	}
+	
+	public function addGridLines(Chart:Object):void {
+		var bge:GridLines;
+		bge = new GridLines();
+		bge.setStyle("direction", "both");
+		var s:Stroke
+		if(chkGrid.selected)
+		{
+			s = new Stroke(0x9BC4E2,1);
+			bge.setStyle("horizontalStroke", s);
+			bge.setStyle("verticalStroke",s);
+						
+		}else{
+			s = new Stroke(0xFFFFFF,0);
+			bge.setStyle("horizontalStroke", s);
+			bge.setStyle("verticalStroke",s);
+		}
+		Chart.backgroundElements =[bge];
+	}
+	
+	public function sortLabel(sField:String):void{
+		dataSort=new Sort();
+		dataSort.fields=[new SortField(sField,true)];//"@amount"
+		dataListCollection.sort=dataSort;
+		dataListCollection.refresh();
+	}
+	
+	public function setMinMaxInt(axis:Object,orientation:String):void{
+		if(orientation=="h"){
+			if (txtxMax1.text!=""){
+    			axis.maximum=txtxMax1.text;
+    		}
+    		if (txtxMin1.text!=""){
+    			axis.minimum=txtxMin1.text;
+    		}
+    		if (txtxInterval1.text!=""){
+    			axis.interval=txtxInterval1.text;
+    		}
+		}else{
+			if (minMaxSlider.values[1]!=""){
+    			axis.maximum=minMaxSlider.values[1];
+    		}
+    		if (minMaxSlider.values[0]!=""){
+    			axis.minimum=minMaxSlider.values[0];
+    		}
+    		if (txtyInterval1.value.toString()!=""){
+    			axis.interval=txtyInterval1.value.toString();
+    		}
+		}
+	}
+	
+	
+    public function setTypeAxis(Chart:Object,AxisType:String,axe:String):void { 
+    	switch (AxisType) { 
+		    case "Category" : 
+		    	var AxisCat:CategoryAxis = new CategoryAxis();
+		    	AxisCat.categoryField = xField;
+		    	sortLabel(xField);
+		    	AxisCat.dataProvider = dataListCollection;//xmlDataModif.children()//xmlData.children();
+		    	
+		    	if(axe=="h"){
+		    		//AxisCat.categoryField=xField;//CategoryxField;
+					Chart.horizontalAxis = AxisCat;
+		    	}else{
+		    		//AxisCat.categoryField=yField;//CategoryyField;
+		    		Chart.verticalAxis = AxisCat;
+		    	}
+		        break; 
+		    case "Linear" : 
+		    	var AxisLinear:LinearAxis = new LinearAxis();
+		    	setMinMaxInt(AxisLinear,axe);
+		    	if(axe=="h"){
+					Chart.horizontalAxis = AxisLinear;
+		    	}else{
+		    		Chart.verticalAxis = AxisLinear;
+		    	}
+		    	
+		        break;
+			case "Log" : 
+		    	var AxisLog:LogAxis = new LogAxis();
+		    	setMinMaxInt(AxisLog,axe);
+		    	if(axe=="h"){
+					Chart.horizontalAxis = AxisLog;
+		    	}else{
+		    		Chart.verticalAxis = AxisLog;
+		    	}
+		        break; 
+		    case "DateTime" : 
+		    	var AxisDateTime:DateTimeAxis = new DateTimeAxis();
+		    	setMinMaxInt(AxisDateTime,axe);
+		    	if(axe=="h"){
+					Chart.horizontalAxis = AxisDateTime;
+		    	}else{
+		    		Chart.verticalAxis = AxisDateTime;
+		    	}
+		        break; 
+        }
+	}
+	
+	
+	
+	public function setSerie(serie:Object,chartType:String, syField:String, num:int):void{
+		serie.xField=xField;
+		serie.yField=syField;
+		serie.displayName = syField.substring(1,syField.length);
+		serie.setStyle('form', cbForm.text);
+		f=new SolidColor(ColorPicker(piano.getChildByName("cp"+num)).selectedColor,1);
+		s = new Stroke(ColorPicker(piano.getChildByName("cp"+num)).selectedColor,1);
+		if(chartType=="Area"){
+			serie.setStyle('areaFill',f);
+		}else if(chartType=="Line"){
+			serie.setStyle('fill',f);
+			serie.setStyle('lineStroke',s);
+		}else{
+			serie.setStyle('fill',f);
+		}
+	}
+	
+	public function resizeChart(Chart:Object):void{
+		Chart.percentHeight=(80*p1.height)/100;
+		Chart.percentWidth=(80*p1.width)/100;
+	}
+	
+     public function drawAreaChart():void {
+    	var myAreaSeries:Array=new Array();
+    	var myAreaChart:AreaChart;
+    	var AreaSerie1:AreaSeries;
+	    myAreaChart = new AreaChart();
+        myAreaChart.showDataTips = chkDataType.selected;
+        myAreaChart.dataProvider=dataListCollection;//xmlDataModif.children()//xmlData.children();//slicedResults;////expenses;
+    	
+    	if (numberOfSeries>1){
+    		myAreaChart.type=DisplayType;
+    	}
+    	
+    	for (num=1; num<=numberOfSeries; num++) {
+    		AreaSerie1=new AreaSeries();
+    		yField="@"+  ComboBox(piano.getChildByName("cbyAxis"+num)).selectedLabel.toString();
+			setSerie(AreaSerie1,'Area',yField,num);
+			myAreaSeries.push(AreaSerie1);
+		}	
+		
+		// Define the horizontal axis.
+       setTypeAxis(myAreaChart,cbxAxisType1.text,"h");
+	   // Define the vertical axis.
+	   setTypeAxis(myAreaChart,cbyAxisType1.text,"v");		
+		
+		myAreaChart.series = myAreaSeries;
+		resizeChart(myAreaChart);
+		p1.addChild(myAreaChart);
+		// Create a legend.
+		createLegend(myAreaChart);
+		addGridLines(myAreaChart);
+		}
+    
+    
+    private function drawBarChart():void {
+    	var myBarSeries:Array=new Array();
+	    var myBarChart:BarChart;
+        var barSeries1:BarSeries;
+        
+        myBarChart = new BarChart();
+        myBarChart.showDataTips = chkDataType.selected;
+        myBarChart.dataProvider=dataListCollection;//xmlData.children()//"{data.value}";//expenses//"{myAC}";//"{results.value}";//"{myData.lastResult.value}";//expenses;
+        
+        if (numberOfSeries>1){
+    		myBarChart.type=DisplayType;
+    	}
+    	
+    	for (num=1; num<=numberOfSeries; num++) {
+    		barSeries1=new BarSeries();
+    		yField="@"+  ComboBox(piano.getChildByName("cbyAxis"+num)).selectedLabel.toString();
+			setSerie(barSeries1,'Bar',yField,num);
+			myBarSeries.push(barSeries1);
+		}
+		
+       // Define the horizontal axis.
+       setTypeAxis(myBarChart,cbxAxisType1.text,"h");
+	   // Define the vertical axis.
+	   setTypeAxis(myBarChart,cbyAxisType1.text,"v");	
+		
+		myBarChart.series = myBarSeries;
+		resizeChart(myBarChart);
+		// Attach chart to the display list.
+		p1.addChild(myBarChart);
+		// Create a legend.
+		createLegend(myBarChart);
+		addGridLines(myBarChart);
+    }
+    
+    private function drawBubbleChart():void {
+    	var myBubbleSeries:Array=new Array();
+	    var MyBubbleChart:BubbleChart;
+        var Bubbleseries1:BubbleSeries;
+     
+        MyBubbleChart = new BubbleChart();
+        MyBubbleChart.showDataTips = chkDataType.selected;
+        MyBubbleChart.dataProvider=dataListCollection;//xmlData.children()//expenses;
+		
+		
+    	for (num=1; num<=numberOfSeries; num++) {
+    		Bubbleseries1=new BubbleSeries();
+    		yField="@"+  ComboBox(piano.getChildByName("cbyAxis"+num)).selectedLabel.toString();
+			setSerie(Bubbleseries1,'Bubble',yField,num);
+			Bubbleseries1.radiusField="@amount";
+			myBubbleSeries.push(Bubbleseries1);
+		}
+		
+	   // Define the horizontal axis.
+       setTypeAxis(MyBubbleChart,cbxAxisType1.text,"h");
+	   // Define the vertical axis.
+	   setTypeAxis(MyBubbleChart,cbyAxisType1.text,"v");
+	   
+		
+		MyBubbleChart.series = myBubbleSeries;
+		resizeChart(MyBubbleChart);
+		// Attach chart to the display list.
+		p1.addChild(MyBubbleChart);
+		// Create a legend.
+		createLegend(MyBubbleChart);
+		addGridLines(MyBubbleChart);
+    }
+    
+    
+    private function drawCandlestickChart():void {
+    	var vAxis:CategoryAxis = new CategoryAxis();
+	    var mySeries:Array=new Array();
+	    var MyCandleStickChart:CandlestickChart;
+    }
+    
+    private function drawColumnChart():void {
+		var myColumnSeries:Array=new Array();
+	    var myColumnChart:ColumnChart;
+        var ColumnSeries1:ColumnSeries;
+        
+        myColumnChart = new ColumnChart();
+        myColumnChart.showDataTips = chkDataType.selected;
+        myColumnChart.dataProvider=dataListCollection;//xmlData.children();
+        
+        if (numberOfSeries>1){
+    		myColumnChart.type=DisplayType;
+    	}
+    	
+    	for (num=1; num<=numberOfSeries; num++) {
+    		ColumnSeries1=new ColumnSeries();
+    		yField="@"+  ComboBox(piano.getChildByName("cbyAxis"+num)).selectedLabel.toString();
+			setSerie(ColumnSeries1,'Column',yField,num);
+			myColumnSeries.push(ColumnSeries1);
+		}
+		
+       // Define the horizontal axis.
+       setTypeAxis(myColumnChart,cbxAxisType1.text,"h");
+	   // Define the vertical axis.
+	   setTypeAxis(myColumnChart,cbyAxisType1.text,"v");
+		
+		myColumnChart.series = myColumnSeries;
+		
+		resizeChart(myColumnChart);
+		// Attach chart to the display list.
+		p1.addChild(myColumnChart);    
+		
+		// Create a legend.
+		createLegend(myColumnChart);  
+		addGridLines(myColumnChart);
+    }
+    
+    private function drawHLOCChart():void {
+    	var vAxis:CategoryAxis = new CategoryAxis();
+	    var mySeries:Array=new Array();
+		
+		var MyHLOCChart:HLOCChart;
+		        
+    }
+    
+    private function drawLineChart():void {
+    	var myLineSeries:Array=new Array();
+		var MyLineChart:LineChart;
+		var LineSeries1:LineSeries;
+		
+		MyLineChart = new LineChart();
+        MyLineChart.showDataTips = chkDataType.selected;
+        MyLineChart.dataProvider=dataListCollection;//xmlData.children();//expenses;
+    	
+    	for (num=1; num<=numberOfSeries; num++) {
+    		LineSeries1=new LineSeries();
+    		yField="@"+  ComboBox(piano.getChildByName("cbyAxis"+num)).selectedLabel.toString();
+			setSerie(LineSeries1,'Line',yField,num);
+			myLineSeries.push(LineSeries1);
+		}
+		
+       // Define the horizontal axis.
+       setTypeAxis(MyLineChart,cbxAxisType1.text,"h");
+	   // Define the vertical axis.
+	   setTypeAxis(MyLineChart,cbyAxisType1.text,"v");
+		
+		MyLineChart.series = myLineSeries;
+		
+		resizeChart(MyLineChart);
+		// Attach chart and legend to the display list.
+		p1.addChild(MyLineChart);
+		
+		// Create a legend.
+		createLegend(MyLineChart);
+		addGridLines(MyLineChart);
+    }
+
+    
+    private function drawPieChart():void {
+    	var vAxis:CategoryAxis = new CategoryAxis();
+	    var mySeries:Array=new Array();
+		
+		var MyPieChart:PieSeries;
+    }
+    
+    private function drawPlotChart():void {
+	    var myPlotSeries:Array=new Array();
+		var myPlotChart:PlotChart;
+        var PlotSeries1:PlotSeries;
+        myPlotChart = new PlotChart();
+        myPlotChart.showDataTips = chkDataType.selected;
+        myPlotChart.dataProvider=dataListCollection;//xmlData.children();
+        
+    	for (num=1; num<=numberOfSeries; num++) {
+    		PlotSeries1=new PlotSeries();
+    		yField="@"+  ComboBox(piano.getChildByName("cbyAxis"+num)).selectedLabel.toString();
+			setSerie(PlotSeries1,'Plot',yField,num);
+			myPlotSeries.push(PlotSeries1);
+		}
+		
+       // Define the horizontal axis.
+       setTypeAxis(myPlotChart,cbxAxisType1.text,"h");
+	   // Define the vertical axis.
+	   setTypeAxis(myPlotChart,cbyAxisType1.text,"v");
+	
+		myPlotChart.series = myPlotSeries;
+		
+		resizeChart(myPlotChart);
+		// Attach chart
+		p1.addChild(myPlotChart);   
+		// Create a legend.
+		createLegend(myPlotChart);   
+		addGridLines(myPlotChart); 
+    }
+       
+    
+    private function drawPolarChart():void {
+
+    	    			
+    }
+    
+    private function drawTreeMap():void {
+    	
+    	// Reference for TreeMap may be found at:
+    	
+    	var myTreeMap:TreeMap;
+        myTreeMap = new TreeMap();
+        myTreeMap.dataProvider=xmlData.Node
+        myTreeMap.labelField="@nodeType";
+        myTreeMap.weightField="@id";
+        myTreeMap.colorField="@color";
+        resizeChart(myTreeMap);
+		p1.addChild(myTreeMap);
+		
+    }
+    
+    private function drawGeoMap():void {
+    
+      // Create a map of World Countries.
+      var myGeoMap:WorldCountriesMap = new WorldCountriesMap();
+      
+      myGeoMap.allowNavigation=true;
+  	  myGeoMap.zoomableSymbols=true;
+  	  
+  	  myGeoMap.setStyle('backgroundFill', 0xFFFFFF);
+  	  myGeoMap.setStyle('fill', 0xFFFFFF);
+  	  myGeoMap.setStyle('highlightStroke', 0x000000);
+  	  myGeoMap.setStyle('stroke', 0x000000);
+  	  
+	  resizeChart(myGeoMap);
+      p1.addChild(myGeoMap);   
+    
+      // Test of Map Feature (color France in green.)
+      var mf:MapFeature = myGeoMap.getFeature("FRA");
+      mf.setStyle(MapBase.FILL, new SolidColor(0x00ff00));
+      
+      // Test of Map Symbol
+      var ms:MapSymbol = new MapSymbol();
+      ms.key="ESP";
+      var myCircle:PrimitiveCircle = new PrimitiveCircle();
+      myCircle.width=10;
+      myCircle.height=10;
+      myCircle.setStyle("backgroundColor", "0x0000cc");
+      myCircle.toolTip="Spain"
+      ms.addChild(myCircle);
+	  myGeoMap.addChild(ms);
+
+    }
+
+   
+    
+    
+    
+  /* function getDataTip(obj) {
+            var item=obj.hitData.item;
+            return "<b>"+item.month+"</b><br>Profit: "+item.profit+"<br>Expenses: "+item.expenses+"<br>Amount: "+item.amount;
+        }*/
+
+]]>
+</mx:Script>
+
+	<!-- Effects -->
+	<mx:WipeLeft id="wipeLeft" duration="1000" />
+	<mx:WipeRight id="wipeRight" duration="1000" />
+	
+	<mx:Number id="numberItems"/>
+	<mx:HBox id="DivNavRB" width="100%" height="100%" paddingBottom="5" horizontalGap="5">
+		<mx:HBox id="sideBar" width="300" height="100%" horizontalGap="0" >
+	<ui:Grip id="navGrip" 
+				width="17" height="100%" horizontalAlign="center"
+				gripTip="Show/Hide Control Panel" />
+	<mx:VBox id="NavContainerRB" horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle" horizontalAlign="center" verticalGap="1" horizontalGap="0" width="100%" height="100%" hideEffect="{wipeLeft}" showEffect="{wipeRight}">
+	<mx:Accordion id="leftAccordion" headerRenderer="org.un.birdeye.measure.renderers.HeaderRenderer" paddingBottom="5" paddingRight="5" paddingTop="5" paddingLeft="5" width="100%" height="100%" creationPolicy="all"  >
+					
+	<mx:Canvas id="piano" height="100%" width="100%" label="Chart Builder"  >
+		<mx:Label id="lblChartType" x="2" y="10" text="Chart type :"/>
+		<mx:ComboBox id="cbChartType" dataProvider="{myChart.chart.@Type}" change="changeTypeEvt(event);"   x="73" y="8"  width="160"/>
+		<mx:Label id="lblForm" x="3" y="36" text="Form :"/>
+		<mx:ComboBox id="cbForm" x="73" y="34" change="refreshChartEvent(event);"/>
+		<mx:HRule x="13" y="89" width="210"/>
+		<mx:Label x="3" y="165" text="Serie 1 :" width="139" id="lblSelectData" />
+		
+			<mx:Label x="3" y="188" text="xAxis :" width="55" name="lblxAxis1" id="lblxAxis1"/>
+			<mx:ComboBox x="73" y="186" id="cbxAxis1" name="cbxAxis1" change="refreshChartEvent(event);"/>
+			
+			<mx:Label x="3" y="270" text="yAxis :" name="lblyAxis1" id="lblyAxis1"/>
+			<mx:ComboBox x="73" y="268" name="cbyAxis1" id="cbyAxis1" change="refreshChartEvent(event);"/>
+			<mx:Label x="3" y="214" text="xAxisType :" name="lblxAxisType1" id="lblxAxisType1"/>
+			<mx:ComboBox x="73" y="213" name="cbxAxisType1" id="cbxAxisType1" change="xAxisTypeChange(event);"/><!--change="xAxisTypeChange(event);"-->
+			<mx:Label x="3" y="297" name="lblyAxisType1" id="lblyAxisType1" text="yAxixType :"/>
+			<mx:ComboBox x="73" y="295" name="cbyAxisType1" id="cbyAxisType1" change="yAxisTypeChange(event);"/><!--change="yAxisTypeChange(event);"-->
+		
+		<mx:HRule x="10" y="161" width="210" height="1"/>
+		<mx:CheckBox x="10" y="95" label="Show DataTips" id="chkDataType" enabled="true" selected="true" click="refreshChartEvent(event);" />
+		<mx:CheckBox x="10" y="117" label="Show Legend" id="chkLegend" enabled="true" selected="true" click="refreshChartEvent(event);" />
+		<mx:CheckBox x="10" y="139" label="Show Grid" id="chkGrid" enabled="true" selected="false" click="refreshChartEvent(event);" />
+		<mx:ColorPicker id="cp1" x="57" y="166" selectedColor="0x6699CC" change="refreshChartEvent(event);"  width="17" height="17"/>
+		<mx:Label x="3" y="62" text="Display :" id="lblDisplay" visible="false"/>
+		<mx:ComboBox x="73" y="60" id="cbDisplay" change="refreshChartEvent(event);" visible="false"/>
+		<mx:Label x="4" y="244" text="min" name="lblxMin1" id="lblxMin1" visible="false"/>
+		<mx:TextInput x="29" y="242" name="txtxMin1" id="txtxMin1" width="36" visible="false" change="refreshChartEvent(event);"/>
+		<mx:Label x="74" y="244" text="max" name="lblxMax1" id="lblxMax1" visible="false"/>
+		<mx:Label x="150" y="244" text="Interval" name="lblxInterval1" id="lblxInterval1" visible="false"/>
+		<mx:TextInput x="103" y="242" width="36" name="txtxMax1" id="txtxMax1" visible="false" change="refreshChartEvent(event);"/>
+		<mx:TextInput x="197" y="242" width="36" name="txtxInterval1" id="txtxInterval1" visible="false" change="refreshChartEvent(event);"/>
+		
+		
+		<mx:Label x="150" y="324" text="Interval" name="lblyInterval1" id="lblyInterval1" visible="false"/>
+		<mx:NumericStepper x="197" y="322" width="36" name="txtyInterval1" id="txtyInterval1" visible="false" change="refreshChartEvent(event);" />
+		<!-- This is best to use for setting the min and max values -->
+		<mx:HBox width="100%" x="4" y="350" >
+		<mx:Label text="min" name="lblyMin1" id="lblyMin1" visible="false"/>	
+		
+		<flexlib:HSlider  id="minMaxSlider"
+							trackHighlightSkin="flexlib.skins.SliderThumbHighlightSkin"
+							allowTrackClick="true" allowThumbOverlap="true" 
+							liveDragging="true" 
+							showDataTip="true"  dataTipPlacement="bottom"   dataTipOffset="3"
+							showTrackHighlight="true"
+							thumbCount="2"  width="100%" 
+							snapInterval="1" visible="false" change="refreshChartEvent(event);"
+							values="{[xmlData.length()/4, xmlData.length()]}"
+						/>
+		<mx:Label text="max" name="lblyMax1" id="lblyMax1" visible="false"/>
+		</mx:HBox>
+		<mx:HRule x="10" y="370" width="210" id="hrEnd"/>
+		<mx:Button x="73" y="380" label="Add new Serie" id="btnAddNewSerie" click="addSeries()"/>
+
+	</mx:Canvas>
+	</mx:Accordion>
+	</mx:VBox>
+	</mx:HBox>
+	
+	<mx:Canvas id="p1Cnvs" borderStyle="solid" borderColor="#CCCCCC" width="100%" height="100%"  >
+	<mx:VBox id="p1" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" >
+	 
+    
+	</mx:VBox>
+	</mx:Canvas>	
+	</mx:HBox>
+
+<mx:states>
+       <mx:State name="showCntrlPanel">
+			<mx:SetProperty target="{sideBar}" name="width" value="300"/>
+			<mx:SetStyle target="{DivNavRB}" name="horizontalGap" value="5"/>
+       </mx:State>        
+		<mx:State name="hideCntrlPanel">
+			<mx:SetProperty target="{sideBar}" name="width" value="17"/>
+			<mx:SetStyle target="{DivNavRB}" name="horizontalGap" value="0"/>
+		</mx:State>
+	</mx:states>
+	<mx:transitions>
+		<mx:Transition fromState="*" toState="*">
+			<mx:Resize target="{sideBar}" />
+		</mx:Transition>
+	</mx:transitions>
+
+
+</mx:Canvas>

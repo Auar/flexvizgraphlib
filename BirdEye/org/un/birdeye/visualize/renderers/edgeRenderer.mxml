@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+	verticalAlign="middle" horizontalAlign="center"
+	 >
+	
+	<mx:Script>
+		<![CDATA[
+			private function toogleLabel():void {
+				if (edgeButton.selected == true)
+					{
+    				edgeLabel.visible=true;
+    				
+					}
+				else if (edgeButton.selected == false)
+					{
+ 				   	edgeLabel.visible=false;
+    				
+    				}
+			}
+		]]>
+	</mx:Script>
+	
+	
+	<mx:Spacer height="15" />
+	<mx:Button id="edgeButton" toggle="true" toolTip="{this.data.data.@edgeType}" width="10" height="10" click="toogleLabel();" alpha="0.8" />
+	<mx:Label id="edgeLabel" text="{this.data.data.@edgeType}" toolTip="{this.data.data.@edgeDescription}" height="15" color="#666666" visible="false" textAlign="center"  />
+</mx:VBox>
