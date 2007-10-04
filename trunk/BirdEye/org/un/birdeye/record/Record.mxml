@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:ui="org.un.birdeye.ui.*"
+	xmlns:modules="org.un.birdeye.record.*"
+	width="100%" height="100%" preinitialize="dbInit();" creationComplete="onInit();" >
+
+	<mx:Script source="../sql/Crud.as" />
+	<mx:Script source="../sql/DAO.as" />
+	
+	
+	<mx:ArrayCollection id="filterNodes" source="{dpNodes}" />
+	<mx:ArrayCollection id="filterEdges" source="{dpEdgeView}" />
+	<mx:ArrayCollection id="filterNodeType" source="{dpLookupNodeTypes}" />
+	<mx:ArrayCollection id="filterEdgeType" source="{dpLookupEdgeTypes}" />
+
+		<!-- Work area -->
+		<mx:Canvas id="graphCnvs" width="100%" height="100%"  >		
+			<mx:TabNavigator id="tbMain" width="100%" height="100%" >
+				
+			<mx:Canvas id="nodeCnvs" label="Nodes" icon="@Embed('/org/un/birdeye/images/ui/aLookups.png')" width="100%" height="100%"   >
+			<mx:Accordion width="100%" height="100%" id="nodeControl" creationPolicy="all" >
+					<!-- Index 0 of Accordion, nodeControl -->
+					<mx:VBox width="100%" height="100%" label="Node List" >
+						<mx:ApplicationControlBar width="100%" height="35" >
+						<!-- Search panel -->
+						<mx:HBox icon="@Embed('../images/ui/hint.png')" verticalAlign="middle" paddingLeft="5" paddingRight="5" >
+							<mx:Image source="@Embed(source='/org/un/birdeye/images/ui/search.png')" />
+							<mx:Label text="Title"/>
+							<mx:TextInput 
+      	 						id="NodeNameFilter"
+       	 						width="100%" 
+         						change="filterNodes.refresh()"/>
+							<mx:Label text="Description"/>
+							<mx:TextInput id="NodeDescFilter" change="filterNodes.refresh()"/>
+						</mx:HBox>
+						<mx:Button toolTip="This will take you to a new record form" icon="@Embed('../images/ui/add.png')" label="New" click="addNode(event);"/>
+						</mx:ApplicationControlBar>
+						<mx:DataGrid id="dgNodeRequest" dataProvider="{filterNodes}" wordWrap="true" variableRowHeight="true" width="100%" height="100%" >
+						<mx:columns>
+						<mx:DataGridColumn headerText="ID" width="65" dataField="NodeID" />
+						<mx:DataGridColumn headerText="Title" dataField="NodeName" />
+						<mx:DataGridColumn headerText="Node Description" dataField="NodeDesc" />
+						<mx:DataGridColumn headerText="NodeType" width="125" dataField="NodeType"/>
+						<mx:DataGridColumn minWidth="260" itemRenderer="org.un.birdeye.record.dgNodeControlBtns" width="260" />
+						</mx:columns>
+					</mx:DataGrid>
+				</mx:VBox>
+				<!-- Index 1 of Accordion, viewControl -->
+				<modules:Nodes id="nodeModule" /> 
+			</mx:Accordion>
+	
+	
+		<!-- Edges tab -->	
+		</mx:Canvas>
+		<mx:Canvas id="edgeCnvs" label="Links" icon="@Embed('/org/un/birdeye/images/ui/links.png')" width="100%" height="100%" >
+			<mx:Accordion width="100%" height="100%" id="edgeControl" creationPolicy="all" >
+	 			<!-- Index 0 of Accordion, edgeControl -->
+	 			<mx:VBox label="Edge List" width="100%" height="100%" >
+ 					<mx:ApplicationControlBar width="100%" height="35" >
+ 					<!-- Search panel -->
+ 					<mx:HBox icon="@Embed('../images/ui/hint.png')" paddingLeft="5" paddingRight="5" id="edgeFilterBox" name="edgeFilterBox" verticalAlign="middle">
+						<mx:Image source="@Embed(source='/org/un/birdeye/images/ui/search.png')" />
+						<mx:Label text="FromName:"/>
+						<mx:TextInput  
+      						id="EdgeSourceFilter" 
+       	 					width="100%"
+         					change="filterEdges.refresh()"/>
+						<mx:Label text="ToName:"/>
+						<mx:TextInput id="EdgeTargetFilter" change="filterEdges.refresh()"/>
+					</mx:HBox>
+					<mx:Button toolTip="This will take you to a new record form" icon="@Embed('../images/ui/add.png')" label="New" click="addEdge(event);"/>
+ 					</mx:ApplicationControlBar>
+					<mx:DataGrid dataProvider="{filterEdges}" id="dgEdgeRequest" wordWrap="true" variableRowHeight="true" width="100%" height="100%" >
+						<mx:columns>
+							<mx:DataGridColumn headerText="From" width="55" dataField="EdgeSource" />
+							<mx:DataGridColumn headerText="FromName" dataField="SourceName" />
+							<mx:DataGridColumn headerText="To" width="55" dataField="EdgeTarget"/>
+							<mx:DataGridColumn headerText="ToName" dataField="TargetName" />
+							<mx:DataGridColumn headerText="AssociationType" dataField="AssociationType" />
+							<mx:DataGridColumn headerText="AssociationDesc" dataField="AssociationDesc" />
+							<mx:DataGridColumn minWidth="160" itemRenderer="org.un.birdeye.record.dgEdgeControlBtns" width="160" />
+						</mx:columns>
+					</mx:DataGrid>
+ 				</mx:VBox>
+ 				<!-- Index 1 of Accordion, edgeControl -->
+ 				<modules:Edges id="edgeModule" />
+			</mx:Accordion>
+		</mx:Canvas>
+		
+		<mx:Canvas id="nodeMetaCnvs" label="Node Meta" width="100%" height="100%" >
+			<mx:Accordion width="100%" height="100%" id="nodeMetaControl" creationPolicy="all" >
+	 			<!-- Index 0 of Accordion, edgeControl -->
+	 			<mx:VBox label="Node Meta List" width="100%" height="100%" >
+ 					<mx:ApplicationControlBar width="100%" height="35" >
+ 					<!-- Search panel -->
+ 					<mx:HBox icon="@Embed('../images/ui/hint.png')" paddingLeft="5" paddingRight="5" id="nodeMetaNameFilterBox" name="nodeMetaNameFilterBox" verticalAlign="middle">
+						<mx:Image source="@Embed(source='/org/un/birdeye/images/ui/search.png')" />
+						<mx:Label text="Meta Field:"/>
+						<mx:TextInput 
+      						id="MetaFieldLabelFilter" 
+       	 					width="100%"
+         					change="filterNodeMeta.refresh()"/>
+						<mx:Label text="Meta Data:"/>
+						<mx:TextInput id="MetaFieldDataFilter" change="filterNodeMeta.refresh()"/>
+					</mx:HBox>
+					<mx:Button toolTip="This will take you to a new record form" icon="@Embed('../images/ui/add.png')" label="New" click="addEdge(event);"/>
+ 					</mx:ApplicationControlBar>
+					<mx:DataGrid dataProvider="{filterNodeMeta}" id="dgNodeMeta" wordWrap="true" variableRowHeight="true" width="100%" height="100%" >
+						<mx:columns>
+							<mx:DataGridColumn headerText="NodeMetaID" width="55" dataField="NodeMetaID" />
+							<mx:DataGridColumn headerText="MetaFieldLabel" dataField="MetaFieldLabel" />
+							<mx:DataGridColumn headerText="MetaFieldType" dataField="MetaFieldType" />
+							<mx:DataGridColumn headerText="MetaFieldData" dataField="MetaFieldData"/>
+							<mx:DataGridColumn visible="false" headerText="NodeID" dataField="NodeID" />
+							<mx:DataGridColumn minWidth="160" itemRenderer="org.un.birdeye.record.dgNodeMetaControlBtns" width="160" />
+						</mx:columns>
+					</mx:DataGrid>
+ 				</mx:VBox>
+ 				<!-- Index 1 of Accordion, edgeControl -->
+ 				<modules:NodeMeta id="nodeMetaModule" />
+			</mx:Accordion>
+		</mx:Canvas>
+		
+		<!-- NodeType Lookups -->
+		<mx:Canvas label="Node Types" width="100%" height="100%" >
+
+			<mx:Accordion width="100%" height="100%" id="nodeTypeControl" creationPolicy="all" >
+	 			<!-- Index 0 of Accordion, edgeControl -->
+	 			<mx:VBox label="Node Type List" width="100%" height="100%" >
+ 					<mx:ApplicationControlBar width="100%" height="35" >
+ 					<!-- Search panel -->
+ 					<mx:HBox icon="@Embed('../images/ui/hint.png')" paddingLeft="5" paddingRight="5" id="nodeNodeTypeNameFilterBox" name="nodeNodeTypeNameFilterBox" verticalAlign="middle">
+						<mx:Image source="@Embed(source='/org/un/birdeye/images/ui/search.png')" />
+						<mx:Label text="Node Type Name:"/>
+						<mx:TextInput 
+      						id="NodeTypeNameFilter" 
+       	 					width="100%"
+         					change="filterNodeType.refresh()"/>
+						
+					</mx:HBox>
+					<mx:Button toolTip="This will take you to a new record form" icon="@Embed('../images/ui/add.png')" label="New" click="addEdge(event);"/>
+ 					</mx:ApplicationControlBar>
+					<mx:DataGrid dataProvider="{filterNodeType}" id="dgNodeType" wordWrap="true" variableRowHeight="true" width="100%" height="100%" >
+						<mx:columns>
+							<mx:DataGridColumn headerText="NodeTypeID" width="55" dataField="NodeTypeID" />
+							<mx:DataGridColumn headerText="NodeTypeName" dataField="NodeTypeName" />
+							<mx:DataGridColumn headerText="NodeTypeObject" dataField="NodeTypeObject" />
+							<mx:DataGridColumn headerText="NodeTypeColor" dataField="NodeTypeColor"/>
+							<mx:DataGridColumn minWidth="160" itemRenderer="org.un.birdeye.record.dgNodeTypeControlBtns" width="160" />
+						</mx:columns>
+					</mx:DataGrid>
+ 				</mx:VBox>
+ 				<!-- Index 1 of Accordion, edgeControl -->
+ 				<modules:NodeTypeLookup id="nodeTypeLookupModule" />
+			</mx:Accordion>
+
+		</mx:Canvas>
+		
+		<mx:Canvas label="Edge Types" width="100%" height="100%" >
+			<mx:Accordion width="100%" height="100%" id="edgeTypeControl" creationPolicy="all" >
+	 			<!-- Index 0 of Accordion, edgeControl -->
+	 			<mx:VBox label="Edge Type List" width="100%" height="100%" >
+ 					<mx:ApplicationControlBar width="100%" height="35" >
+ 					<!-- Search panel -->
+ 					<mx:HBox icon="@Embed('../images/ui/hint.png')" paddingLeft="5" paddingRight="5" id="edgeTypeNameFilterBox" name="edgeTypeNameFilterBox" verticalAlign="middle">
+						<mx:Image source="@Embed(source='/org/un/birdeye/images/ui/search.png')" />
+						<mx:Label text="Edge Type Name:"/>
+						<mx:TextInput 
+      						id="EdgeTypeNameFilter" 
+       	 					width="100%"
+         					change="filterEdgeType.refresh()"/>
+						
+					</mx:HBox>
+					<mx:Button toolTip="This will take you to a new record form" icon="@Embed('../images/ui/add.png')" label="New" click="addEdge(event);"/>
+ 					</mx:ApplicationControlBar>
+					<mx:DataGrid dataProvider="{filterEdgeType}" id="dgEdgeType" wordWrap="true" variableRowHeight="true" width="100%" height="100%" >
+						<mx:columns>
+							<mx:DataGridColumn headerText="EdgeTypeID" width="55" dataField="EdgeTypeID" />
+							<mx:DataGridColumn headerText="EdgeTypeName" dataField="EdgeTypeName" />
+							<mx:DataGridColumn minWidth="160" itemRenderer="org.un.birdeye.record.dgEdgeTypeControlBtns" width="160" />
+						</mx:columns>
+					</mx:DataGrid>
+ 				</mx:VBox>
+ 				<!-- Index 1 of Accordion, edgeControl -->
+ 				<modules:NodeTypeLookup id="edgeTypeLookupModule" />
+			</mx:Accordion>
+		</mx:Canvas>
+
+		</mx:TabNavigator>
+			
+		</mx:Canvas>
+
+</mx:Canvas>
+
