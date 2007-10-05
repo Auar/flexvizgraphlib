@@ -326,34 +326,7 @@ TreeMapNodeRenderer
 		}
 		
 	
-		CalloutContainer {
-			backgroundGradientColors: #CAE4FF, #99CCFF;
-			backgroundAlpha: 1;
-			borderStyle: "topRightCallout";
-			calloutPointerWidth: 10;
-			calloutOffsetX: 4;
-			calloutOffsetY: 7;
-			borderSkin: ClassReference("com.adobe.wheelerstreet.fig.callout.CalloutBorder");		
-			cornerRadius: 7;
-			paddingBottom: 5;
-			paddingLeft: 5;
-			paddingRight: 5;
-			paddingTop: 5;
-		}
-		
-		.CalloutCloseButton {		
-			disabledSkin: Embed(source="../../images/assets/skins.swf",symbol="Callout_closeButtonDisabledSkin");
-			downSkin: Embed(source="../../images/assets/skins.swf",symbol="Callout_closeButtonDownSkin");
-			overSkin: Embed(source="../../images/assets/skins.swf",symbol="Callout_closeButtonOverSkin");
-			upSkin: Embed(source="../../images/assets/skins.swf",symbol="Callout_closeButtonUpSkin");	
-		}
-		
-		.CalloutExpandButton {		
-			disabledSkin: Embed(source="../../images/assets/skins.swf",symbol="Callout_expandButtonDisabledSkin");
-			downSkin: Embed(source="../../images/assets/skins.swf",symbol="Callout_expandButtonDownSkin");
-			overSkin: Embed(source="../../images/assets/skins.swf",symbol="Callout_expandButtonOverSkin");
-			upSkin: Embed(source="../../images/assets/skins.swf",symbol="Callout_expandButtonUpSkin");
-		}
+
 
 	
 	
