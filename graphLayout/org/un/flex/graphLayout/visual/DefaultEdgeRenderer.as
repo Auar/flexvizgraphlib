@@ -102,14 +102,14 @@ package org.un.flex.graphLayout.visual {
 			/* apply the style to the drawing */
 			if(vedge.lineStyle != null) {
 				g.lineStyle(
-					vedge.lineStyle.thickness,
-					vedge.lineStyle.color,
-					vedge.lineStyle.alpha,
-					vedge.lineStyle.pixelHinting,
-					vedge.lineStyle.scaleMode,
-					vedge.lineStyle.caps,
-					vedge.lineStyle.joints,
-					vedge.lineStyle.miterLimits
+					Number(vedge.lineStyle.thickness),
+					uint(vedge.lineStyle.color),
+					Number(vedge.lineStyle.alpha),
+					Boolean(vedge.lineStyle.pixelHinting),
+					String(vedge.lineStyle.scaleMode),
+					String(vedge.lineStyle.caps),
+					String(vedge.lineStyle.joints),
+					Number(vedge.lineStyle.miterLimits)
 				);
 			}
 			

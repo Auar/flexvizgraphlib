@@ -24,36 +24,26 @@
  */
 package org.un.flex.graphLayout.visual {
 	
-	import mx.core.UIComponent;
+	import flash.display.DisplayObject;
+	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
+	import flash.utils.Dictionary;
+	
 	import mx.containers.Canvas;
+	import mx.controls.Label;
+	import mx.core.IDataRenderer;
+	import mx.core.IFactory;
+	import mx.core.UIComponent;
+	import mx.effects.Effect;
+	import mx.events.EffectEvent;
+	import mx.utils.ObjectUtil;
 	
-	import flash.utils.Timer;
-	
+	import org.un.flex.graphLayout.data.IEdge;
 	import org.un.flex.graphLayout.data.IGraph;
 	import org.un.flex.graphLayout.data.INode;
 	import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
-	import org.un.flex.graphLayout.visual.IEdgeRenderer;
-	
-	import org.un.flex.graphLayout.visual.DefaultEdgeRenderer;
-	import org.un.flex.utils.events.VGraphEvent;
-	
-	import flash.events.MouseEvent;
-	import mx.events.FlexEvent;
-	import org.un.flex.graphLayout.data.IEdge;
-	import mx.effects.Effect;
-	import mx.events.EffectEvent;
-	import flash.events.Event;
-	import flash.utils.Dictionary;
-	import flash.events.TimerEvent;
-	import flash.geom.Rectangle;
-	import mx.events.IndexChangedEvent;
-	import mx.core.IFactory;
-	import mx.core.IDataRenderer;
-	import flash.display.DisplayObject;
-	import flash.geom.Point;
-	import flash.display.Graphics;
-	import mx.controls.Label;
-	import mx.utils.ObjectUtil;
 
 	/**
 	 *  Dispatched when there is any change to the nodes and/or links of this graph.
@@ -216,7 +206,7 @@ package org.un.flex.graphLayout.visual {
 			thickness:1,
 			alpha:1.0,
 			color:0xcccccc,
-			pixelhinting:false,
+			pixelHinting:false,
 			scaleMode:"normal",
 			caps:null,
 			joints:null,
@@ -888,17 +878,12 @@ package org.un.flex.graphLayout.visual {
 		public function removeNode(vn:IVisualNode):void {
 			
 			var n:INode;
-			var iedges:Array;
-			var oedges:Array;
 			var e:IEdge;
 			var ve:IVisualEdge;
 			var i:int;
 			
 			n = vn.node;
-			iedges = n.inEdges;
-			oedges = n.outEdges;
-			
-			
+					
 			/* if the current root node is the
 			 * node to be removed it must be
 			 * changed.
@@ -913,16 +898,16 @@ package org.un.flex.graphLayout.visual {
 			}
 			
 			/* remove all incoming edges */
-			for(i=0; i < iedges.length; ++i) {
-				e = iedges[i] as IEdge;
+			while(n.inEdges.length > 0) {
+				e = n.inEdges[0] as IEdge;
 				ve = e.vedge;
 				removeVEdge(ve);
 				_graph.removeEdge(e);
 			}
 			
 			/* remove all outgoing edges */
-			for(i=0; i < oedges.length; ++i) {
-				e = oedges[i] as IEdge;
+			while(n.outEdges.length > 0) {
+				e = n.outEdges[0] as IEdge;
 				ve = e.vedge;
 				removeVEdge(ve);
 				_graph.removeEdge(e);
@@ -1205,16 +1190,27 @@ package org.un.flex.graphLayout.visual {
 			var n1:INode;
 			var n2:INode;
 			var lStyle:Object;
+			var edgeAttrs:XMLList;
+			var attr:XML;
+			var attname:String;
 			
 			/* create a copy of the default style */
 			lStyle = ObjectUtil.copy(_defaultEdgeStyle);
 			
 			/* extract style data from associated XML data for each parameter */
+			edgeAttrs = e.data.@*;
+			for each(attr in edgeAttrs) {
+				attname = (attr.name as QName).localName;
+				lStyle[attname] = e.data.@[attname];
+			}
+			
+			/*
 			if(e.data.@thickness) {
 				lStyle.thickness = Number(e.data.attribute("thickness"));
 			}
 			if(e.data.@color) {
-				lStyle.color = uint(e.data.@color);
+				//lStyle.color = uint(e.data.@color);
+				lStyle.color = uint(e.data.attribute("color"));
 			}
 			if(e.data.@alpha) {
 				lStyle.alpha = Number(e.data.@alpha);
@@ -1234,6 +1230,7 @@ package org.un.flex.graphLayout.visual {
 			if(e.data.@miterLimit) {
 				lStyle.miterLimit = Number(e.data.@miterLimit);
 			}
+			*/
 			
 			vedge = new VisualEdge(this, e, e.id, e.data, null, lStyle);
 			
