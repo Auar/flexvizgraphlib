@@ -318,6 +318,8 @@
 				
 			}
 			
+		
+			
 			private function setEdgeRenderer():void {
 				var selectedEdgeRenderer:IEdgeRenderer;
 				
@@ -334,8 +336,11 @@
 						selectedEdgeRenderer = new DefaultEdgeRenderer;;
 						// vgraph.edgeRenderer = selectedEdgeRenderer;
 			
+				}
 			}
-			}
+			
+		
+			
 			/**
 			 * this function is called on any vgraphChanged event
 			 * so that some UI elements like lables could be
