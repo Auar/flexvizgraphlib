@@ -8,9 +8,10 @@
 <libraryPathEntry kind="3" linkType="1" path="libs/AutoComplete.swc" useDefaultLinkType="false"/>
 <libraryPathEntry kind="3" linkType="1" path="libs/PrimitiveIcons.swc" useDefaultLinkType="false"/>
 <libraryPathEntry kind="3" linkType="1" path="libs/graphLayout.swc" useDefaultLinkType="false"/>
-<libraryPathEntry kind="3" linkType="1" path="libs/treemap.swc" useDefaultLinkType="false"/>
 <libraryPathEntry kind="3" linkType="1" path="libs/ilog-elixir.swc" useDefaultLinkType="false"/>
 <libraryPathEntry kind="3" linkType="1" path="libs/ilog-elixir_rb.swc" useDefaultLinkType="false"/>
+<libraryPathEntry kind="3" linkType="1" path="libs/VAComboBox.swc" useDefaultLinkType="false"/>
+<libraryPathEntry kind="3" linkType="1" path="libs/treemap.swc" useDefaultLinkType="false"/>
 </libraryPath>
 <sourceAttachmentPath/>
 </compiler>

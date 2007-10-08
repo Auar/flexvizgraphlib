@@ -12,7 +12,7 @@
 
 				// Initialize the PrintAdvancedDataGrid control.
 				var printADG:PrintAdvancedDataGrid = new PrintAdvancedDataGrid();
-				printADG.source = gapAnalysisReport;
+				printADG.source = adgReport;
 
 				// Start the print job.
 				if (printJob.start() != true) return;

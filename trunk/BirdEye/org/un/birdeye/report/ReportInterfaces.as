@@ -22,7 +22,7 @@
             // Method to instantiate and display a TitleWindow container.
             // This is the initial Button control's click event handler.
             public function openQueryBuilderWindow(event:MouseEvent):void {
-                parentDocument.currentState = 'showSideBar';
+                parentDocument.currentState = 'showCntrlPanel';
                 parentDocument.sideBarVS.selectedIndex = 0;
                 
                     }
@@ -32,7 +32,7 @@
             // This is the initial Button control's click event handler.
             public function openHeaderFormatWindow(event:MouseEvent):void {
                 // Set the TitleWindow container properties.
-				parentDocument.currentState = 'showSideBar';
+				parentDocument.currentState = 'showCntrlPanel';
 				parentDocument.sideBarVS.selectedIndex = 1;
             }
             
@@ -45,7 +45,7 @@
             // This is the initial Button control's click event handler.
             public function openHideShowWindow(event:MouseEvent):void {
                 // Set the TitleWindow container properties.
-               parentDocument.currentState = 'showSideBar';
+               parentDocument.currentState = 'showCntrlPanel';
                parentDocument.sideBarVS.selectedIndex = 3;
             }
             
@@ -60,7 +60,7 @@
             {
                
                 if (parentDocument.printPreviewBtn.selected == true) {
-                parentDocument.currentState = 'showSideBar';
+                parentDocument.currentState = 'showCntrlPanel';
                 parentDocument.sideBarVS.selectedIndex = 5;
                 parentDocument.mainBody.selectedIndex = 1;
                 }
@@ -68,7 +68,7 @@
                 else if (parentDocument.printPreviewBtn.selected == false) {
                 
                 parentDocument.mainBody.selectedIndex = 0;
-                parentDocument.currentState = 'hideSideBar';
+                parentDocument.currentState = 'hideCntrlPanel';
                 }
             }
             
@@ -118,12 +118,12 @@
 			private function expandTree():void 
 			{
 				if(expandAllChkbx.selected == true) {
-					gapAnalysisReport.displayItemsExpanded = true;		
+					adgReport.displayItemsExpanded = true;		
 				}	
             	
             	else if(expandAllChkbx.selected == false) {
-            		gapAnalysisReport.displayItemsExpanded = false;
-            		gapAnalysisReport.collapseAll();
+            		adgReport.displayItemsExpanded = false;
+            		adgReport.collapseAll();
             	}
             
         	}	

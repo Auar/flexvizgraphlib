@@ -12,6 +12,5 @@
 			<mx:Label text=" = "/>
 			<mx:TextInput id="txtVal" />
 			<mx:Button label="Execute" click="parentDocument.selectWhere(txtTbl.text, txtFld.text, txtVal.text)"/>
-			<mx:Button label="Close" click="parentDocument.currentState = 'hideSideBar';" />
-		</mx:VBox>
+	</mx:VBox>
 </mx:Canvas>

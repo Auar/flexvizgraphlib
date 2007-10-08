@@ -2,8 +2,67 @@
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
 	xmlns:ui="org.un.birdeye.ui.*"
 	width="100%" height="100%">
-	
-	
+
+<mx:Script>
+        <![CDATA[
+            import mx.collections.HierarchicalData;
+            import mx.collections.XMLListCollection;
+        ]]>
+    </mx:Script>
+
+
+<mx:XMLList id="tocData" >
+<contents title="Table of Contents" >
+	<topic title="Introduction" url="app-resource:/org/un/birdeye/help/html/help.html" >
+		<topic title="What is BirdEye?" url="1" />
+		<topic title="Why use BirdEye?" url="1" />
+		<topic title="Getting Started" url="1" />
+	</topic>
+	<topic title="Concepts" url="app-resource:/org/un/birdeye/about/help/credits.html" >
+		<topic title="Visual Analytics" url="1" />
+		<topic title="Graph Theory" url="1" />
+		<topic title="Data Graphics" url="1" />
+		<topic title="Visual Design" url="1" />
+	</topic>
+	<topic title="Visualization" url="app-resource:/org/un/birdeye/help/html/developers.html" >
+		<topic title="Using the Visualize Component" url="" />
+		<topic title="Introduction" url="1" />
+		<topic title="Introduction" url="1" />
+	</topic>
+	<topic title="Measure and Quantitative Analysis" url="1" >
+		<topic title="Using the Measure Component" url="1" />
+		<topic title="Introduction" url="1" />
+		<topic title="Introduction" url="1" />
+	</topic>
+	<topic title="Recording and Data Entry" url="1" >
+		<topic title="Using the Record Component" url="1" />
+		<topic title="Introduction" url="1" />
+		<topic title="Introduction" url="1" />
+	</topic>
+	<topic title="Report Making" url="1" >
+		<topic title="Using the Report Component" url="1" />
+		<topic title="Introduction" url="1" />
+		<topic title="Introduction" url="1" />
+	</topic>
+	<topic title="Case Studies" url="1" >
+		<topic title="Visualization" url="1" />
+		<topic title="Measure" url="1" />
+		<topic title="Record" url="1" />
+		<topic title="Report" url="1" />
+	</topic>
+	<topic title="Technicals" url="1" >
+		<topic title="Installation" url="1" />
+		<topic title="Working with the Database" url="1" />
+		<topic title="Introduction" url="1" />
+	</topic>
+	<topic title="Further Info and Support" url="1" >
+		<topic title="Learn about Visual Analytics" url="1" />
+		<topic title="Feature Requests" url="1" />
+		<topic title="Customization" url="1" />
+	</topic>
+	<topic title="Print version of User Manual" url="" />
+</contents>
+</mx:XMLList>	
 	<!-- Effects -->
 	<mx:WipeLeft id="wipeLeft" duration="1000" />
 	<mx:WipeRight id="wipeRight" duration="1000" />
@@ -15,21 +74,29 @@
 				gripTip="Show/Hide Control Panel" />
 	<mx:VBox id="NavContainerRB" horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle" horizontalAlign="center" verticalGap="1" horizontalGap="0" width="100%" height="100%" hideEffect="{wipeLeft}" showEffect="{wipeRight}">
 	
-	<mx:Accordion id="leftAccordion" paddingBottom="5" paddingRight="5" paddingTop="5" paddingLeft="5" width="100%" height="100%" creationPolicy="all"  >
 	<mx:Canvas label="Contents" borderStyle="solid" borderColor="#CCCCCC" height="100%" width="100%" >
-		
-		
-		
+	
+	<mx:AdvancedDataGrid width="100%" height="100%" id="adgToc" displayDisclosureIcon="true"  
+        dataProvider="{new HierarchicalData(tocData)}"  
+        itemClick="html.location=adgToc.selectedItem.@url" 
+        >
+        <mx:columns>
+            <mx:AdvancedDataGridColumn dataField="@title" 
+                headerText="Contents" />
+        </mx:columns>
+    </mx:AdvancedDataGrid> 	
 		
 	</mx:Canvas>
-	</mx:Accordion>
+	
 	
 	</mx:VBox>
 	</mx:HBox>
 	
 	<mx:Canvas id="p1Cnvs" borderStyle="solid" borderColor="#CCCCCC" width="100%" height="100%"  >
 	<mx:VBox id="p1" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" >
-	 
+	
+	<mx:HTML id="html" location="app-resource:/org/un/birdeye/about/html/about.html" width="100%" height="100%" backgroundAlpha="0.6" alpha="0.6"  />
+ 
     
 	</mx:VBox>
 	</mx:Canvas>	

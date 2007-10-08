@@ -96,7 +96,5 @@
 			<mx:CheckBox id="seven" label="AxisLabelB" click="hideShow()" />
 			<mx:CheckBox id="eight" label="AxisDataB" click="hideShow()" />
 			<mx:CheckBox id="nine" label="Date" click="hideShow()" />
-			
-			<mx:Button label="Close" click="parentDocument.currentState = 'hideSideBar';" />
 	</mx:VBox>
 </mx:Canvas>

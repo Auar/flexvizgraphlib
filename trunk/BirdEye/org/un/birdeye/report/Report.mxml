@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%"
 	xmlns="org.un.graphics.*"
-	xmlns:oh="com.roguedevelopment.objecthandles.*"
 	xmlns:component="org.un.birdeye.report.components.*"
-	xmlns:ui="org.un.birdeye.ui.*"
+	xmlns:ui="org.un.birdeye.ui.*" currentState="showCntrlPanel"
 	
 	>
 	
@@ -102,7 +101,7 @@
 	
 	
 	<mx:AdvancedDataGrid
-            id="gapAnalysisReport"             
+            id="adgReport"             
             width="100%"
             height="100%"
             variableRowHeight="true"
