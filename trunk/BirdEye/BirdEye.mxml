@@ -21,7 +21,7 @@
         
         // A nested XML collection for Measure and Report dataProviding
         public var gTreeXML:XML;
-        
+        public var gDataXML:XML;
         private function onInit():void
         {
         	tbMain.removeChild(aboutCnvs);

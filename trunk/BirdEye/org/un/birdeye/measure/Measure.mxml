@@ -67,52 +67,55 @@
 	public function ParseAxis(Axis:XML):void { 
 		var AxisAttributes:XMLList = Axis.children().attributes(); 
 		var i:int = 0;
+		var n:String = "";
 		for each (var axisElements:XML in AxisAttributes) { 
-			arrAxis[i]=axisElements.name();
-			i++
+		n = axisElements.name();	
+  		if (n.substr(0,4) != "node") {
+  			arrAxis[i]=n;
+  			i++
+			}
 		} 
 		arrAxis.sort();
-		removeDup();		
+		removeDup(arrAxis);		
 	}
 	
 	public function LoadXML():void { 
-		xmlData = myData;
+		//xmlData = myData;
 		
 		dataList=xmlData.children();
 		dataListCollection=new XMLListCollection(dataList);
-		xmlDataModif=new XML(xmlData);
-		//addXMLToArray(xmlData);
-		 ParseAxis(xmlData)
+		//xmlDataModif=new XML(xmlData);
+		ParseAxis(xmlData)
+		
 		 numberItems=xmlData.children().length();
 				
-			cbxAxis1.dataProvider=arrAxis;
-			cbyAxis1.dataProvider=arrAxis;
-			refreshChart();
+		cbxAxis1.dataProvider=arrAxis;
+		cbyAxis1.dataProvider=arrAxis;
+		refreshChart();
 			
 			
 	} 
 	
-	//Supprime les doublons dans un tableau
-	public function removeDup():void
-		{
-		for(var y:int=0;y<arrAxis.length;y++)
-			{
-	                for(var z:int=(y+1);z<=arrAxis.length;z++)
-	                {
-	                        if(arrAxis[y]==arrAxis[z])
-	                        		{
-	                                arrAxis.splice(z,1)
-	                                z--;
-	                        		}
+
+	private function removeDup(a:Array):void
+	{
+	        for(var y:int=0;y<a.length;y++){
+	                for(var z:int=(y+1);z<=a.length;z++){
+	                        if(a[y]==a[z]){
+	                                a.splice(z,1)
+	                                z--
+	                        }
 	                }
-	    	}
-		}
+	        }
+	}
 	
 	//Fonction d'initialisation au premier lancement de l'application
 	private function init():void {
 		// This XML data source creates a nested tree structure
 		// This would be needed for drill down capability
 		myData =  parentDocument.gTreeXML;
+		//JR
+		xmlData = parentDocument.gDataXML;  
 		// This data source creates a flat structure
 		// myData = parentDocument.rootNode;
 		cbForm.dataProvider=myChart.chart[0].Properties.Property.Forms.Form;
@@ -120,12 +123,10 @@
 		cbxAxisType1.dataProvider=myChart.chart[0].Properties.Property.axis;
 		cbyAxisType1.dataProvider=myChart.chart[0].Properties.Property.axis;
 		cbDisplay.dataProvider=myChart.chart[0].Properties.Property.barTypes.barType;
-		//chargement du fichier XML contenant les données  
 		numberOfSeries=1;
+		//chargement du fichier XML contenant les données  
 		LoadXML();
 		trace(myData);
-		
-		
 	}
 	
 	private function addSeries():void{

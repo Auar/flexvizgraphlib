@@ -1,22 +1,21 @@
 // ActionScript file
 
-		import mx.collections.ArrayCollection;
-		import mx.controls.Alert;
 		import flash.data.SQLConnection;
 		import flash.data.SQLResult;
 		import flash.data.SQLStatement;
-		import flash.filesystem.File;
-		import mx.events.FlexEvent;
-		import mx.managers.CursorManager;
 		import flash.events.SQLEvent;
-		import mx.formatters.DateFormatter;
+		import flash.filesystem.File;
+		
+		import mx.collections.ArrayCollection;
+		import mx.controls.Alert;
+		import mx.managers.CursorManager;
 		
 		private var _dbFile:File;
 		private var _conn:SQLConnection;
 		
 		// Container for SQL result statements
 		[Bindable]
-		public var myData:ArrayCollection = new ArrayCollection();
+		/*public var myData:ArrayCollection = new ArrayCollection(); JR*/ 
 		[Bindable]
 		public var nodesAC:ArrayCollection = new ArrayCollection();
 		[Bindable]
@@ -46,7 +45,9 @@
 		
 		[Bindable]
 		public var rootNode:XML = <Graph />;
-		
+		//JR
+				public var rootData:XML = <Data />;
+		//		
 		public function dbInit():void
 		{
 			
@@ -71,6 +72,9 @@
 			
 			CursorManager.removeBusyCursor();
 			trace("Connected to " + _dbFile.name);
+			//JR
+			getXMLData();
+			//
 			getXMLNodes();
 			getNodes();
 			getEdges();
@@ -96,6 +100,67 @@
 		}
 		
 		// To create GraphML Format dp
+	//JR
+		public function getXMLData():void
+		{
+			// create the SQL statement
+			var selectStmt:SQLStatement = new SQLStatement();
+			selectStmt.sqlConnection = _conn;
+			//JR
+			//selectStmt.text = "SELECT * FROM xnodes";
+		 	/*SelectStmt.text = "SELECT xnodes.NodeID, nodemetas.NodeMetaID, nodemetas.MetaFieldLabel,nodemetas.MetaFieldData, nodemetas.MetaFieldType, nodemetas.NodeMetaLink, " +   
+					"nodemetas1.NodeMetaID, nodemetas1.MetaFieldLabel,nodemetas1.MetaFieldData, nodemetas1.MetaFieldType" + 
+					"FROM xnodes JOIN nodemetas ON (xnodes.NodeID=nodemetas.NodeID)" +
+					"INNER JOIN nodemetas nodemetas1 ON (nodemetas.NodeMetaLink=nodemetas1.NodeMetaID)"+
+					"AND (nodemetas.NodeID=nodemetas1.NodeID)";*/
+			selectStmt.text = "SELECT xnodes.NodeID, nodemetas.NodeMetaID, nodemetas.MetaFieldLabel,nodemetas.MetaFieldData, nodemetas.MetaFieldType, nodemetas.NodeMetaLink, " +   
+					"nodemetas1.MetaFieldLabel as MetaFieldLabel_1,nodemetas1.MetaFieldData as MetaFieldData_1, nodemetas1.MetaFieldType as MetaFieldType_1 " + 
+					"FROM xnodes JOIN nodemetas ON (xnodes.NodeID=nodemetas.NodeID) " +
+					"INNER JOIN nodemetas nodemetas1 ON (nodemetas.NodeMetaLink=nodemetas1.NodeMetaID) AND (nodemetas.NodeID=nodemetas1.NodeID) ";
+					
+			//trace(selectStmt.text);
+			
+  
+			// register listeners for the result and error events
+			selectStmt.addEventListener(SQLEvent.RESULT, 
+				function (event:SQLEvent):void
+				{
+					var result:SQLResult = selectStmt.getResult();		
+					nodesAC.source = result.data;
+					
+					
+					var nodesACLength:int=nodesAC.length;
+					var i:int = 0;
+					while (i < nodesACLength)
+					{
+						var s:XML = <value />;
+						s.@nodeId = nodesAC.getItemAt(i).NodeID; 
+						var NodeMetaLink:int = nodesAC.getItemAt(i).NodeMetaLink;
+						while (i < nodesACLength  && NodeMetaLink == nodesAC.getItemAt(i).NodeMetaLink )
+						{ 
+							s.@[nodesAC.getItemAt(i).MetaFieldLabel] = nodesAC.getItemAt(i).MetaFieldData ;
+							trace(s);
+							i++;
+						}
+						//s = s + " />"
+						rootData.appendChild(s);
+						trace(rootData)
+					}
+					
+					/*for each (var item:* in nodesAC)
+					{
+						rootData.appendChild(<value nodeId={item.NodeID} nodeMetaId={item.NodeMetaID} {item.MetaFieldLabel}={item.MetaFieldData} 
+						/>);
+						trace(rootData);
+					}*/ 
+				});
+				
+			selectStmt.addEventListener(SQLErrorEvent.ERROR, selectError);
+			// execute the statement
+			selectStmt.execute();
+			parentDocument.gDataXML = rootData;
+		}
+//
 		public function getXMLNodes():void
 		{
 			// create the SQL statement
@@ -107,13 +172,14 @@
 			selectStmt.addEventListener(SQLEvent.RESULT, 
 				function (event:SQLEvent):void
 				{
-					var result:SQLResult = selectStmt.getResult();
+					var result:SQLResult = selectStmt.getResult();		
 					nodesAC.source = result.data;
 					
-					for each (var item in nodesAC)
+					for each (var item:* in nodesAC)
 					{
 						rootNode.appendChild(<Node id={item.NodeID} name={item.NodeName} description={item.NodeDesc}
 								nodeType={item.NodeType} />);
+						//trace(rootNode);
 					} 
 				});
 			selectStmt.addEventListener(SQLErrorEvent.ERROR, selectError);
@@ -136,17 +202,16 @@
 					var result:SQLResult = selectStmt.getResult();
 					edgesAC.source = result.data;
 					
-					for each (var item in edgesAC)
+					for each (var item:* in edgesAC)
 					{
 						rootNode.appendChild(<Edge fromID={item.EdgeSource} toID={item.EdgeTarget} edgeType={item.EdgeType} edgeDesc={item.EdgeDesc} />);
-						// trace(rootNode);
+						//trace(rootNode);					
 					}
 				});
 			selectStmt.addEventListener(SQLErrorEvent.ERROR, selectError);
 			// execute the statement
 			selectStmt.execute();
-			
-		}
+			}
 		
 	// Nodes
  	public function getNodes():void
