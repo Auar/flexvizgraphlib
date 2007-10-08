@@ -1193,44 +1193,20 @@ package org.un.flex.graphLayout.visual {
 			var edgeAttrs:XMLList;
 			var attr:XML;
 			var attname:String;
+			var attrs:Array;
 			
+		
 			/* create a copy of the default style */
 			lStyle = ObjectUtil.copy(_defaultEdgeStyle);
 			
 			/* extract style data from associated XML data for each parameter */
-			edgeAttrs = e.data.@*;
-			for each(attr in edgeAttrs) {
-				attname = (attr.name as QName).localName;
-				lStyle[attname] = e.data.@[attname];
-			}
+			attrs = ObjectUtil.getClassInfo(lStyle).properties;
 			
-			/*
-			if(e.data.@thickness) {
-				lStyle.thickness = Number(e.data.attribute("thickness"));
+			for each(attname in attrs) {
+				if((e.data as XML).attribute(attname).length() > 0) {
+					lStyle[attname] = e.data.@[attname];
+				}
 			}
-			if(e.data.@color) {
-				//lStyle.color = uint(e.data.@color);
-				lStyle.color = uint(e.data.attribute("color"));
-			}
-			if(e.data.@alpha) {
-				lStyle.alpha = Number(e.data.@alpha);
-			}
-			if(e.data.@pixelHinting) {
-				lStyle.pixelHinting = Boolean(e.data.@pixelHinting);
-			}
-			if(e.data.@scaleMode) {
-				lStyle.scaleMode = String(e.data.@scaleMode);
-			}
-			if(e.data.@caps) {
-				lStyle.caps = String(e.data.@caps);
-			}
-			if(e.data.@joints) {
-				lStyle.joints = String(e.data.@joints);
-			}
-			if(e.data.@miterLimit) {
-				lStyle.miterLimit = Number(e.data.@miterLimit);
-			}
-			*/
 			
 			vedge = new VisualEdge(this, e, e.id, e.data, null, lStyle);
 			
