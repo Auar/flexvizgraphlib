@@ -6,7 +6,6 @@
 	xmlns:report="org.un.birdeye.report.*"
 	xmlns:measure="org.un.birdeye.measure.*"
 	xmlns:help="org.un.birdeye.help.*"
-	xmlns:about="org.un.birdeye.about.*"
 	backgroundGradientColors="[#cccccc, #666666]"
 	layout="absolute" preinitialize="dbInit()" creationComplete="onInit();"
 	width="100%" height="100%"
@@ -24,7 +23,6 @@
         public var gDataXML:XML;
         private function onInit():void
         {
-        	tbMain.removeChild(aboutCnvs);
         	tbMain.removeChild(helpCnvs);
         }
         
@@ -34,13 +32,6 @@
 			var selected:Boolean = event.target.selected;
 			
 			switch (buttonID) {
-				case "btnAbout":
-					if (selected) {
-						tbMain.addChild(aboutCnvs);
-						tbMain.selectedChild = aboutCnvs;
-					} else
-						tbMain.removeChild(aboutCnvs);
-					break;
 				case "btnHelp":
 					if (selected) {
 						tbMain.addChild(helpCnvs);
@@ -88,16 +79,11 @@
   			/>
 	-->
 	<mx:VBox height="100%" width="30" paddingRight="3" paddingBottom="3" verticalGap="1" verticalAlign="middle" horizontalAlign="right" horizontalScrollPolicy="off" verticalScrollPolicy="off" >
-	<mx:Button 
-			toolTip="About..."
-			icon="@Embed(source='/org/un/birdeye/images/ui/about.png')" 
-  			id="btnAbout" selected="false" width="19" height="19"
-  			toggle="true" click="clickMenuButtonHandler(event);"
-  			/>
+	
   	<mx:Button 
 			toolTip="Help..."
 			icon="@Embed(source='/org/un/birdeye/images/ui/help.png')" 
-  			id="btnHelp" selected="false" width="19" height="19"
+  			id="btnHelp" selected="false" width="30" height="30"
   			toggle="true" click="clickMenuButtonHandler(event);"
   			/>
   			
@@ -121,7 +107,7 @@
 			<record:Record width="100%" height="100%" />	
 		</mx:Canvas>
 		
-		<mx:Canvas id="reportCnvs" label="Report" icon="@Embed('/org/un/birdeye/images/ui/Report.png')" width="100%" height="100%" >
+		<mx:Canvas id="reportCnvs" label="Report" icon="@Embed('/org/un/birdeye/images/ui/report.png')" width="100%" height="100%" >
 			<report:Report width="100%" height="100%" />	
 		</mx:Canvas>
 		
@@ -129,9 +115,7 @@
 			<help:Help width="100%" height="100%" />
 		</mx:Canvas>
 		
-		<mx:Canvas id="aboutCnvs" label="About..." icon="@Embed('/org/un/birdeye/images/ui/about.png')" width="100%" height="100%" >
-			<about:About width="100%" height="100%" />
-		</mx:Canvas>
+		
 
 	</flexlib:SuperTabNavigator>
 	

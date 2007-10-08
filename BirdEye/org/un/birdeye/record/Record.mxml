@@ -17,7 +17,7 @@
 		<mx:Canvas id="graphCnvs" width="100%" height="100%"  >		
 			<mx:TabNavigator id="tbMain" width="100%" height="100%" >
 				
-			<mx:Canvas id="nodeCnvs" label="Nodes" icon="@Embed('/org/un/birdeye/images/ui/aLookups.png')" width="100%" height="100%"   >
+			<mx:Canvas id="nodeCnvs" label="Nodes" width="100%" height="100%"   >
 			<mx:Accordion width="100%" height="100%" id="nodeControl" creationPolicy="all" >
 					<!-- Index 0 of Accordion, nodeControl -->
 					<mx:VBox width="100%" height="100%" label="Node List" >
@@ -52,7 +52,7 @@
 	
 		<!-- Edges tab -->	
 		</mx:Canvas>
-		<mx:Canvas id="edgeCnvs" label="Links" icon="@Embed('/org/un/birdeye/images/ui/links.png')" width="100%" height="100%" >
+		<mx:Canvas id="edgeCnvs" label="Links" width="100%" height="100%" >
 			<mx:Accordion width="100%" height="100%" id="edgeControl" creationPolicy="all" >
 	 			<!-- Index 0 of Accordion, edgeControl -->
 	 			<mx:VBox label="Edge List" width="100%" height="100%" >
