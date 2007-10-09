@@ -102,15 +102,21 @@
 			 * request. All further initalisation is done
 			 * in the event handler for the HTTP Service */
 			private function init():void {
-				//SixDegreesExternalData.send();
-				initData(['Node','Edge','fromID','toID']);
+				SixDegreesExternalData.send();
+				//initData(['Node','Edge','fromID','toID']);
 				leftAccordion.selectedIndex = 0;
+			}
+			
+			private function handleHTTPResult(xmlNames:Array, event:ResultEvent):void {
+				var xmldata:XML;
+				xmldata = (event.result as XML);
+				initData(xmlNames, xmldata);
 			}
 			
 			/**
 			 * event handler for HTTPService, does all the remaining required
 			 * initialisation */
-			private function initData(xmlNames:Array):void {
+			private function initData(xmlNames:Array, xmldata:XML = null):void {
 				
 				/*
 				var xmldata:XML;
@@ -164,9 +170,9 @@
 				initDone = true;
 				
 				/* debug new XML feature */
-				var testtree:IGTree = graph.getTree(startRoot.node,false,true);
-				var testxml:XML = testtree.XMLtree;
-				trace(testxml.toXMLString());
+				//var testtree:IGTree = graph.getTree(startRoot.node,false,true);
+				//var testxml:XML = testtree.XMLtree;
+				//trace(testxml.toXMLString());
 			}
 			
 			/* re-enable the refresh button in all cases */
@@ -602,12 +608,12 @@
 		]]>
 	</mx:Script>					
 
-	<!--
 	<mx:HTTPService id="SixDegreesExternalData" url="data/asdocs.xml" showBusyCursor="true" resultFormat="e4x"
-			result="gotHTTPServiceData(['Node','Edge','fromID','toID'], event)"/>
-	-->
+			result="handleHTTPResult(['Node','Edge','fromID','toID'], event)"/>
+
 	
 	<!-- hardcode the data here -->
+	<!--
 	<mx:XML id="xmldata" xmlns="">
 		<Graph>
 			<Node id="vizgraph" name="Visual Graph" nodeType="SixDegrees" description="Flex Visual Graph Library"   />
@@ -716,6 +722,7 @@
 			<Edge fromID="geometry" toID="polarRadius" association="method" />
 		</Graph>
 	</mx:XML>
+	-->
 	
 	<!-- Effects -->
 	<mx:WipeLeft id="wipeLeft" duration="1000" />
@@ -870,7 +877,6 @@
 		<mx:Canvas borderStyle="solid" borderColor="#CCCCCC" width="100%" height="100%">		
 			<un:VisualGraph id="vgraph" width="100%" height="100%"
 				paddingBottom="5" left="0" right="0" top="0" bottom="0" backgroundColor="#FFFFFF" alpha="0.8"
-				lineColor="#6666ff"
 				itemRenderer="org.un.flex.unComponentToolbox.renderers.PrimitiveIconRenderer"
 				edgeLabelRenderer="simpleEdgeRenderer"
 				vgraphChanged="refreshUI()"
