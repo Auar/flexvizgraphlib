@@ -4,17 +4,17 @@
 	
 	<Node id="graphlayout_data" name="org.un.flex.graphLayout.data" nodeType="PrimitiveStar" description="Package for data classes"   />
 	<Node id="idataitem" name="IDataItem" nodeType="PrimitiveCircle" description=""   />
-		<Node id="data" name="Data" nodeType="PrimitiveReverseBurst" description="Object: Access to the data object associated with any item." />
-		<Node id="id" name="Id" nodeType="PrimitiveReverseBurst" description="Int: [read-only] Access to the id property of any item." />
+	<Node id="data" name="Data" nodeType="PrimitiveReverseBurst" description="Object: Access to the data object associated with any item." />
+	<Node id="id" name="Id" nodeType="PrimitiveReverseBurst" description="Int: [read-only] Access to the id property of any item." />
 	
 	<Node id="iedge" name="IEdge" nodeType="PrimitiveCircle" description=""   />
-		<Node id="fromnode" name="fromNode" nodeType="PrimitiveReverseBurst" description="INode:[read-only] returns the source node (fromNode) of the edge." />
-    	<Node id="isdirectional" name="isDirectional" nodeType="PrimitiveReverseBurst" description="Boolean: [read-only] Indicates if the graph that contains this edge is directional." />
-    	<Node id="node1" name="node1" nodeType="PrimitiveReverseBurst" description="INode: [read-only] The first node associated with this edge." />
-    	<Node id="node2" name="node2" nodeType="PrimitiveReverseBurst" description="INode: [read-only] The second node associated with this edge." /> 
-    	<Node id="tonode" name="toNode" nodeType="PrimitiveReverseBurst" description="INode: [read-only] returns the target node (toNode) of the edge." /> 
-    	<Node id="vedge" name="vedge" nodeType="PrimitiveReverseBurst" description="IVisualEdge: Access to the associated VisualEdge of this Edge." />
-		<Node id="othernode" name="othernode" nodeType="PrimitiveTriangle" description="(node:INode):INode - This method returns the other node than the node given as parameter, so it can be used to follow along the edge." />
+	<Node id="fromnode" name="fromNode" nodeType="PrimitiveReverseBurst" description="INode:[read-only] returns the source node (fromNode) of the edge." />
+    <Node id="isdirectional" name="isDirectional" nodeType="PrimitiveReverseBurst" description="Boolean: [read-only] Indicates if the graph that contains this edge is directional." />
+    <Node id="node1" name="node1" nodeType="PrimitiveReverseBurst" description="INode: [read-only] The first node associated with this edge." />
+    <Node id="node2" name="node2" nodeType="PrimitiveReverseBurst" description="INode: [read-only] The second node associated with this edge." /> 
+    <Node id="tonode" name="toNode" nodeType="PrimitiveReverseBurst" description="INode: [read-only] returns the target node (toNode) of the edge." /> 
+    <Node id="vedge" name="vedge" nodeType="PrimitiveReverseBurst" description="IVisualEdge: Access to the associated VisualEdge of this Edge." />
+	<Node id="othernode" name="othernode" nodeType="PrimitiveTriangle" description="(node:INode):INode - This method returns the other node than the node given as parameter, so it can be used to follow along the edge." />
 	
 	<Node id="igraph" name="IGraph" nodeType="PrimitiveCircle" description=""   />
 	<Node id="igtree" name="IGTree" nodeType="PrimitiveCircle" description=""   />
@@ -53,57 +53,57 @@
     <Node id="polarAngle" name="polarAngle" nodeType="PrimitiveReverseBurst" description="Calculate the polar Angle of a Point." />
     <Node id="polarRadius" name="polarRadius" nodeType="PrimitiveReverseBurst" description="Calculate the polar radius for a given point." />
 
-	<Edge fromID="vizgraph" toID="graphlayout_data" />
-	<Edge fromID="vizgraph" toID="graphlayout_layout" />
-	<Edge fromID="vizgraph" toID="graphlayout_visual" />
-	<Edge fromID="vizgraph" toID="flex_utils" />
+	<Edge fromID="vizgraph" toID="graphlayout_data" color="0xff6666" />
+	<Edge fromID="vizgraph" toID="graphlayout_layout" color="0xff6666" />
+	<Edge fromID="vizgraph" toID="graphlayout_visual" color="0xff6666" />
+	<Edge fromID="vizgraph" toID="flex_utils" color="0xff6666" />
 	
-	<Edge fromID="graphlayout_data" toID="idataitem" />
-		<Edge fromID="idataitem" toID="data" />
-		<Edge fromID="idataitem" toID="id" />
+	<Edge fromID="graphlayout_data" toID="idataitem" color="0xff6666" />
+	<Edge fromID="idataitem" toID="data" color="0xff6666" />
+	<Edge fromID="idataitem" toID="id" color="0xff6666" />
 	
-	<Edge fromID="graphlayout_data" toID="iedge" />
-		<Edge fromID="iedge" toID="fromnode" />
-		<Edge fromID="iedge" toID="isdirectional" />
-		<Edge fromID="iedge" toID="node1" />
-		<Edge fromID="iedge" toID="node2" />
-		<Edge fromID="iedge" toID="tonode" />
-		<Edge fromID="iedge" toID="vedge" />
-		<Edge fromID="iedge" toID="othernode" />
+	<Edge fromID="graphlayout_data" toID="iedge" color="0x666666" />
+	<Edge fromID="iedge" toID="fromnode" color="0x666666" />
+	<Edge fromID="iedge" toID="isdirectional" color="0x666666" />
+	<Edge fromID="iedge" toID="node1" color="0x666666" />
+	<Edge fromID="iedge" toID="node2" color="0x666666" />
+	<Edge fromID="iedge" toID="tonode" color="0x666666" />
+	<Edge fromID="iedge" toID="vedge" color="0x666666" />
+	<Edge fromID="iedge" toID="othernode" color="0x666666" />
 	
-	<Edge fromID="graphlayout_data" toID="igraph" />
-	<Edge fromID="graphlayout_data" toID="igtree" />
-	<Edge fromID="graphlayout_data" toID="edge" />
-	<Edge fromID="graphlayout_data" toID="graph" />
-	<Edge fromID="graphlayout_data" toID="gtree" />
-	<Edge fromID="graphlayout_data" toID="node" />
+	<Edge fromID="graphlayout_data" toID="igraph" color="0x666666" />
+	<Edge fromID="graphlayout_data" toID="igtree" color="0x666666" />
+	<Edge fromID="graphlayout_data" toID="edge" color="0x666666" />
+	<Edge fromID="graphlayout_data" toID="graph" color="0x666666" />
+	<Edge fromID="graphlayout_data" toID="gtree" color="0x666666" />
+	<Edge fromID="graphlayout_data" toID="node" color="0x666666" />
 	
-	<Edge fromID="graphlayout_layout" toID="iedgerenderer" />
-	<Edge fromID="graphlayout_layout" toID="ilayoutalgorithm" />
-	<Edge fromID="graphlayout_layout" toID="baselayoutdrawing" />
-	<Edge fromID="graphlayout_layout" toID="baselayouter" />
-	<Edge fromID="graphlayout_layout" toID="concentricradiallayoutdrawing" />
-	<Edge fromID="graphlayout_layout" toID="concentricradiallayouter" />
-	<Edge fromID="graphlayout_layout" toID="defaultedgerenderer" />
-	<Edge fromID="graphlayout_layout" toID="parentcentereddrawingmodel" />
-	<Edge fromID="graphlayout_layout" toID="parentcenteredradiallayouter" />
-	<Edge fromID="graphlayout_layout" toID="phyllotreedrawingmodel" />
-	<Edge fromID="graphlayout_layout" toID="phyllotreelayouter" />
-	<Edge fromID="graphlayout_layout" toID="springforcedirectedlayouter" />	
+	<Edge fromID="graphlayout_layout" toID="iedgerenderer" color="0x666666" />
+	<Edge fromID="graphlayout_layout" toID="ilayoutalgorithm" color="0x666666" />
+	<Edge fromID="graphlayout_layout" toID="baselayoutdrawing" color="0x666666" />
+	<Edge fromID="graphlayout_layout" toID="baselayouter" color="0x666666" />
+	<Edge fromID="graphlayout_layout" toID="concentricradiallayoutdrawing" color="0x666666" />
+	<Edge fromID="graphlayout_layout" toID="concentricradiallayouter" color="0x666666" />
+	<Edge fromID="graphlayout_layout" toID="defaultedgerenderer" color="0x666666" />
+	<Edge fromID="graphlayout_layout" toID="parentcentereddrawingmodel" color="0x666666" />
+	<Edge fromID="graphlayout_layout" toID="parentcenteredradiallayouter" color="0x666666" />
+	<Edge fromID="graphlayout_layout" toID="phyllotreedrawingmodel" color="0x666666" />
+	<Edge fromID="graphlayout_layout" toID="phyllotreelayouter" color="0x666666" />
+	<Edge fromID="graphlayout_layout" toID="springforcedirectedlayouter" color="0x666666" />	
 	
-	<Edge fromID="graphlayout_visual" toID="ivisualedge" />
-	<Edge fromID="graphlayout_visual" toID="ivisualgraph" />
-	<Edge fromID="graphlayout_visual" toID="ivisualitem" />
-	<Edge fromID="graphlayout_visual" toID="ivisualnode" />
-	<Edge fromID="graphlayout_visual" toID="visualedge" />
-	<Edge fromID="graphlayout_visual" toID="visualgraph" />
-	<Edge fromID="graphlayout_visual" toID="visualnode" />
+	<Edge fromID="graphlayout_visual" toID="ivisualedge" color="0x666666" />
+	<Edge fromID="graphlayout_visual" toID="ivisualgraph" color="0x666666" />
+	<Edge fromID="graphlayout_visual" toID="ivisualitem" color="0x666666" />
+	<Edge fromID="graphlayout_visual" toID="ivisualnode" color="0x666666" />
+	<Edge fromID="graphlayout_visual" toID="visualedge" color="0x666666" />
+	<Edge fromID="graphlayout_visual" toID="visualgraph" color="0x666666" />
+	<Edge fromID="graphlayout_visual" toID="visualnode" color="0x666666" />
 	
-	<Edge fromID="flex_utils" toID="geometry" />
-	<Edge fromID="geometry" toID="cartFromPolar" />
-	<Edge fromID="geometry" toID="normaliseAngle" />
-	<Edge fromID="geometry" toID="polarAngle" />
-	<Edge fromID="geometry" toID="polarRadius" />
+	<Edge fromID="flex_utils" toID="geometry" color="0x666666" />
+	<Edge fromID="geometry" toID="cartFromPolar" color="0x666666" />
+	<Edge fromID="geometry" toID="normaliseAngle" color="0x666666" />
+	<Edge fromID="geometry" toID="polarAngle" color="0x666666" />
+	<Edge fromID="geometry" toID="polarRadius" color="0x666666" />
 
 
 </Graph>
