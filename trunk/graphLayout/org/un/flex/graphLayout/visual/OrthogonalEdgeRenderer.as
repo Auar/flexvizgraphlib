@@ -76,32 +76,21 @@ package org.un.flex.graphLayout.visual {
 			var midX:Number = fromX + ((toX - fromX) / 2.0);
 			var midY:Number = fromY + ((toY - fromY) / 2.0);
 			
-			/* XXX drawing parameters with default values, these could
-			 * be taken from the graph object actually, although this
-			 * should be rather in the VisualGraph */
-
-			
-			/* check if we have a data object associated with the vedge
-			 * with instructions how to render it */
-			var edgeSettings:Object;
-			
-			/* the name of the settings property should be a constant */
-			if(vedge.data != null && vedge.data.hasOwnProperty("settings")) {
-				edgeSettings = vedge.data.settings;
-			} else {
-				edgeSettings = vedge.vgraph.globalEdgeSettings;
-			}
-			alpha = edgeSettings.alpha;
-			thickness = edgeSettings.thickness;
-
-			if(disting) {
-				color = edgeSettings.distcolor;
-			} else {
-				color = edgeSettings.color;
-			}
-			
 			/* now we actually draw */
-			g.lineStyle(thickness, color, alpha);
+			/* apply the style to the drawing */
+			if(vedge.lineStyle != null) {
+				g.lineStyle(
+					Number(vedge.lineStyle.thickness),
+					uint(vedge.lineStyle.color),
+					Number(vedge.lineStyle.alpha),
+					Boolean(vedge.lineStyle.pixelHinting),
+					String(vedge.lineStyle.scaleMode),
+					String(vedge.lineStyle.caps),
+					String(vedge.lineStyle.joints),
+					Number(vedge.lineStyle.miterLimits)
+				);
+			}
+			
 			if(isFullyLeftOf(fromNode, toNode)){
 				if(isFullyAbove(fromNode, toNode)){
 					bottomToTop(fromNode, toNode);					
