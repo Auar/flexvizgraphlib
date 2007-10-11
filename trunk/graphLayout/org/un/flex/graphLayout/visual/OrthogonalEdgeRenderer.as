@@ -24,19 +24,18 @@
  */
 package org.un.flex.graphLayout.visual {
 	
-	import org.un.flex.graphLayout.data.IGraph;
-	import org.un.flex.graphLayout.data.IEdge;
-	import org.un.flex.graphLayout.visual.IVisualEdge;
-	import org.un.flex.graphLayout.visual.IVisualNode;
 	import flash.display.Graphics;
-	import mx.core.UIComponent;
+	
 	import mx.controls.Label;
 	import mx.core.Application;
+	
+	import org.un.flex.graphLayout.data.IEdge;
 
 
 	/**
-	 * This is the default edge renderer, which draws the edges
-	 * as straight lines from one node to another.
+	 * This edge renderer draws rectangular edge arrows.
+	 * Please note that for undirected graphs, the actual direction
+	 * of the arrow might be arbitrary.
 	 * */
 	public class OrthogonalEdgeRenderer implements IEdgeRenderer {
 		
@@ -46,9 +45,8 @@ package org.un.flex.graphLayout.visual {
 		private var _type:String = 'orthogonal';
 		private var _g:Graphics;
 		
-		private	var alpha:Number = 1.0;
-		private	var thickness:int = 2.0;
-		private	var color:int = 0x000000;
+		/* temporary fix */
+		private var color:uint;
 		
 		
 		/**
@@ -60,12 +58,16 @@ package org.un.flex.graphLayout.visual {
 		 * @inheritDoc
 		 * */
 		public function draw(g:Graphics, edge:IEdge, disting:Boolean, displayLabel:Boolean = false):void {
+			
+			/* this is not interface conform !!!! */
 			arrowLength = 10*Application.application.scaleSlider.value
+			
 			/* first get the corresponding visual object */
 			var vedge:IVisualEdge = edge.vedge;
 			var fromNode:IVisualNode = edge.node1.vnode;
 			var toNode:IVisualNode = edge.node2.vnode;
 			_g = g;
+			
 			/* now get some current data and calculate their middle */
 			var fromX:Number = fromNode.view.x + (fromNode.view.width / 2.0);
 			var fromY:Number = fromNode.view.y + (fromNode.view.height / 2.0);
@@ -79,7 +81,7 @@ package org.un.flex.graphLayout.visual {
 			/* now we actually draw */
 			/* apply the style to the drawing */
 			if(vedge.lineStyle != null) {
-				g.lineStyle(
+				_g.lineStyle(
 					Number(vedge.lineStyle.thickness),
 					uint(vedge.lineStyle.color),
 					Number(vedge.lineStyle.alpha),
@@ -89,6 +91,7 @@ package org.un.flex.graphLayout.visual {
 					String(vedge.lineStyle.joints),
 					Number(vedge.lineStyle.miterLimits)
 				);
+				color = uint(vedge.lineStyle.color);
 			}
 			
 			if(isFullyLeftOf(fromNode, toNode)){
@@ -122,10 +125,7 @@ package org.un.flex.graphLayout.visual {
 			else{
 				centerToCenter(fromNode, toNode);
 			}				
-			/*g.beginFill(0);
-			g.moveTo(fromX, fromY);
-			g.lineTo(toX, toY);
-			g.endFill();*/
+	
 			
 			if(displayLabel) {
 				vedge.labelView.x = midX - (vedge.labelView.width / 2.0);
@@ -159,8 +159,8 @@ package org.un.flex.graphLayout.visual {
 	            arrowOS = 25;
 	        }	        
 	        var arrowLine1:Object = this.calculatePoint(toX, toY, arrowLength, 180 - Math.atan(dXY) * 5.729578E+001 - arrowOS);
-	        var arrowLine2:Object = this.calculatePoint(toX, toY, arrowLength, 180 - Math.atan(dXY) * 5.729578E+001 + arrowOS);
-    		_g.lineStyle(1,color,alpha);    		
+	        var arrowLine2:Object = this.calculatePoint(toX, toY, arrowLength, 180 - Math.atan(dXY) * 5.729578E+001 + arrowOS);   		
+     		
      		_g.moveTo(toX, toY);
      		_g.beginFill(color,1);
             _g.lineTo(arrowLine1.x, arrowLine1.y);            

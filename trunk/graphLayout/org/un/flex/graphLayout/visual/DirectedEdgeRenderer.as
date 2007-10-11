@@ -34,8 +34,10 @@ package org.un.flex.graphLayout.visual {
 
 
 	/**
-	 * This is the default edge renderer, which draws the edges
-	 * as straight lines from one node to another.
+	 * This is a directed edge renderer, which draws the edges
+	 * with slim ballon like curves that indicate a source.
+	 * Please note that for undirected graphs, the actual direction
+	 * of the edge might be arbitrary.
 	 * */
 	public class DirectedEdgeRenderer implements IEdgeRenderer {
 		
