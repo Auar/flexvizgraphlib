@@ -4,7 +4,7 @@
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="../../../../../style.css" type="text/css" media="screen">
 <link rel="stylesheet" href="../../../../../print.css" type="text/css" media="print">
-<meta content="Node,org.un.flex.graphLayout.data.Node,successors,outEdges,inEdges,predecessors,data,vnode,id,stringid,addInEdge,addOutEdge,removeInEdge,removeOutEdge" name="keywords">
+<meta content="Node,org.un.flex.graphLayout.data.Node,data,id,inEdges,outEdges,predecessors,stringid,successors,vnode,addInEdge,addOutEdge,removeInEdge,removeOutEdge" name="keywords">
 <title>org.un.flex.graphLayout.data.Node</title>
 </head>
 <body>
@@ -59,41 +59,47 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#data">data</a> : Object<div class="summaryTableDescription">
-   Access to the data object associated with
-   any item.</div>
+   
+   </div>
 </td><td class="summaryTableOwnerCol">Node</td>
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#id">id</a> : int<div class="summaryTableDescription">[read-only]
+   
    Access to the id property of any item.</div>
 </td><td class="summaryTableOwnerCol">Node</td>
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#inEdges">inEdges</a> : Array<div class="summaryTableDescription">[read-only]
+   
    The Array containing all incoming edges
    of this node.</div>
 </td><td class="summaryTableOwnerCol">Node</td>
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#outEdges">outEdges</a> : Array<div class="summaryTableDescription">[read-only]
+   
    The Array containing all outgoing edges
    of this node.</div>
 </td><td class="summaryTableOwnerCol">Node</td>
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#predecessors">predecessors</a> : Array<div class="summaryTableDescription">[read-only]
+   
    The Array containing all preceding nodes,
    i.e.</div>
 </td><td class="summaryTableOwnerCol">Node</td>
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#stringid">stringid</a> : String<div class="summaryTableDescription">[read-only]
+   
    Access to the string id of a node
    </div>
 </td><td class="summaryTableOwnerCol">Node</td>
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#successors">successors</a> : Array<div class="summaryTableDescription">[read-only]
+   
    The Array containing all succeeding nodes,
    i.e.</div>
 </td><td class="summaryTableOwnerCol">Node</td>
@@ -101,6 +107,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#vnode">vnode</a> : <a href="../visual/IVisualNode.html">IVisualNode</a>
 <div class="summaryTableDescription">
+   
    Access to the associated VisualNode object
    of this data node
    </div>
@@ -129,6 +136,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <div class="summarySignature">
 <a class="signatureLink" href="#addInEdge()">addInEdge</a>(e:<a href="IEdge.html">IEdge</a>):void</div>
 <div class="summaryTableDescription">
+   
    Registers an incoming edge with this node.</div>
 </td><td class="summaryTableOwnerCol">Node</td>
 </tr>
@@ -137,6 +145,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <div class="summarySignature">
 <a class="signatureLink" href="#addOutEdge()">addOutEdge</a>(e:<a href="IEdge.html">IEdge</a>):void</div>
 <div class="summaryTableDescription">
+   
    Registers an outgoing edge with this node.</div>
 </td><td class="summaryTableOwnerCol">Node</td>
 </tr>
@@ -145,6 +154,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <div class="summarySignature">
 <a class="signatureLink" href="#removeInEdge()">removeInEdge</a>(e:<a href="IEdge.html">IEdge</a>):void</div>
 <div class="summaryTableDescription">
+   
    Removes an edge from the list of incoming edges
    of this node.</div>
 </td><td class="summaryTableOwnerCol">Node</td>
@@ -154,6 +164,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <div class="summarySignature">
 <a class="signatureLink" href="#removeOutEdge()">removeOutEdge</a>(e:<a href="IEdge.html">IEdge</a>):void</div>
 <div class="summaryTableDescription">
+   
    Removes an edge from the list of outgiong edges
    of this node.</div>
 </td><td class="summaryTableOwnerCol">Node</td>
@@ -175,8 +186,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>data:Object</code>&nbsp;&nbsp;[read-write]<p>
-   Access to the data object associated with
-   any item.
+   
    </p><span class="label">Implementation</span>
 <br>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;public function get data():Object</code>
@@ -192,6 +202,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>id:int</code>&nbsp;&nbsp;[read-only]<p>
+   
    Access to the id property of any item.
    </p><span class="label">Implementation</span>
 <br>
@@ -206,6 +217,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>inEdges:Array</code>&nbsp;&nbsp;[read-only]<p>
+   
    The Array containing all incoming edges
    of this node. (In a non-directional graph, this is
    the same as the outgoing edges.)
@@ -222,6 +234,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>outEdges:Array</code>&nbsp;&nbsp;[read-only]<p>
+   
    The Array containing all outgoing edges
    of this node. (In a non-directional graph, this is
    the same as the incoming edges.)
@@ -238,6 +251,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>predecessors:Array</code>&nbsp;&nbsp;[read-only]<p>
+   
    The Array containing all preceding nodes,
    i.e. nodes that are at the other end of an 
    outgoing edge. (In a non-directional graph
@@ -255,6 +269,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>stringid:String</code>&nbsp;&nbsp;[read-only]<p>
+   
    Access to the string id of a node
    </p><span class="label">Implementation</span>
 <br>
@@ -269,6 +284,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>successors:Array</code>&nbsp;&nbsp;[read-only]<p>
+   
    The Array containing all succeeding nodes,
    i.e. nodes that are at the other end of an 
    incoming edge. (In a non-directional graph
@@ -286,6 +302,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>vnode:<a href="../visual/IVisualNode.html">IVisualNode</a></code>&nbsp;&nbsp;[read-write]<p>
+   
    Access to the associated VisualNode object
    of this data node
    </p><span class="label">Implementation</span>
@@ -346,6 +363,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>public function addInEdge(e:<a href="IEdge.html">IEdge</a>):void</code><p>
+   
    Registers an incoming edge with this node.
    This method does nothing else, and should normally
    not be used directly, but is typically used by
@@ -366,6 +384,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>public function addOutEdge(e:<a href="IEdge.html">IEdge</a>):void</code><p>
+   
    Registers an outgoing edge with this node.
    This method does nothing else, and should normally
    not be used directly, but is typically used by
@@ -386,6 +405,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>public function removeInEdge(e:<a href="IEdge.html">IEdge</a>):void</code><p>
+   
    Removes an edge from the list of incoming edges
    of this node. Removes also the predecessor node
    from the list.
@@ -407,6 +427,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>public function removeOutEdge(e:<a href="IEdge.html">IEdge</a>):void</code><p>
+   
    Removes an edge from the list of outgiong edges
    of this node. Removes also the successor node
    from the list.

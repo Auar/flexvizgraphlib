@@ -4,7 +4,7 @@
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="../../../../../style.css" type="text/css" media="screen">
 <link rel="stylesheet" href="../../../../../print.css" type="text/css" media="print">
-<meta content="VisualGraph,org.un.flex.graphLayout.visual.VisualGraph,newNodesDefaultVisible,dragLockCenter,addItemEffect,removeItemEffect,graph,globalEdgeSettings,itemRenderer,edgeRenderer,edgeLabelRenderer,displayEdgeLabels,layouter,origin,center,visibleVNodes,noVisibleVNodes,visibleEdges,visibilityLimitActive,maxVisibleDistance,currentRootSID,currentRootVNode,showHistory,lineColor,initFromGraph,clearHistory,calcNodesBoundingBox,createNode,removeNode,linkNodes,unlinkNodes,scroll,refresh,draw,updateDisplayList,redrawEdges" name="keywords">
+<meta content="VisualGraph,org.un.flex.graphLayout.visual.VisualGraph,addItemEffect,dragLockCenter,newNodesDefaultVisible,removeItemEffect,center,currentRootSID,currentRootVNode,layouter,maxVisibleDistance,noVisibleVNodes,origin,showHistory,visibilityLimitActive,visibleEdges,visibleVNodes,displayEdgeLabels,edgeLabelRenderer,edgeRenderer,graph,itemRenderer,calcNodesBoundingBox,clearHistory,createNode,draw,initFromGraph,linkNodes,redrawEdges,refresh,removeNode,scroll,unlinkNodes,updateDisplayList" name="keywords">
 <title>org.un.flex.graphLayout.visual.VisualGraph</title>
 </head>
 <body>
@@ -75,6 +75,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#center">center</a> : Point<div class="summaryTableDescription">[read-only]
+   
    Provide access to the center point of the VGraph's
    drawing surface, used by layouters to properly center
    their layout.</div>
@@ -88,11 +89,13 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#currentRootVNode">currentRootVNode</a> : <a href="../visual/IVisualNode.html">IVisualNode</a>
 <div class="summaryTableDescription">
+   
    Set or get the current root node (or focused node).</div>
 </td><td class="summaryTableOwnerCol">VisualGraph</td>
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#displayEdgeLabels">displayEdgeLabels</a> : Boolean<div class="summaryTableDescription">
+   
    Specify whether to display edge labels or not.</div>
 </td><td class="summaryTableOwnerCol">VisualGraph</td>
 </tr>
@@ -104,6 +107,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#edgeLabelRenderer">edgeLabelRenderer</a> : IFactory<div class="summaryTableDescription">[write-only]
+   
    Allow to provide an EdgeLabelRenderer in order to
    display edge labels.</div>
 </td><td class="summaryTableOwnerCol">VisualGraph</td>
@@ -111,14 +115,9 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#edgeRenderer">edgeRenderer</a> : <a href="../visual/IEdgeRenderer.html">IEdgeRenderer</a>
 <div class="summaryTableDescription">[write-only]
+   
    Allow the provision of an EdgeRenderer to
    allow drawing of edges in a customised way.</div>
-</td><td class="summaryTableOwnerCol">VisualGraph</td>
-</tr>
-<tr class="">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#globalEdgeSettings">globalEdgeSettings</a> : Object<div class="summaryTableDescription">
-   Access to a parameter Object to preset various
-   settings for the drawing of Edges.</div>
 </td><td class="summaryTableOwnerCol">VisualGraph</td>
 </tr>
 <tr class="">
@@ -130,25 +129,22 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#itemRenderer">itemRenderer</a> : IFactory<div class="summaryTableDescription">[write-only]
-   Allow the provision of an ItemRenderer (which is
-   more precisely an IFactory).</div>
+   
+   Access to a parameter Object to preset various
+   settings for the drawing of Edges.</div>
 </td><td class="summaryTableOwnerCol">VisualGraph</td>
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#layouter">layouter</a> : <a href="../layout/ILayoutAlgorithm.html">ILayoutAlgorithm</a>
 <div class="summaryTableDescription">
+   
    Access to the layouter to be used for the
    layout of the graph.</div>
 </td><td class="summaryTableOwnerCol">VisualGraph</td>
 </tr>
 <tr class="">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#lineColor">lineColor</a> : int<div class="summaryTableDescription">[write-only]
-   Set the line color in the global Edge settings
-   object of the Visual Graph.</div>
-</td><td class="summaryTableOwnerCol">VisualGraph</td>
-</tr>
-<tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#maxVisibleDistance">maxVisibleDistance</a> : int<div class="summaryTableDescription">
+   
    Limit the currently visible nodes to those in a limited
    distance (in terms of degrees of separation) from the current
    root node.</div>
@@ -161,11 +157,13 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#noVisibleVNodes">noVisibleVNodes</a> : uint<div class="summaryTableDescription">[read-only]
+   
    Returns the number of currently visible nodes.</div>
 </td><td class="summaryTableOwnerCol">VisualGraph</td>
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#origin">origin</a> : Point<div class="summaryTableDescription">[read-only]
+   
    Provide access to the current origin of the of the Visual Graph
    which is required for proper drawing.</div>
 </td><td class="summaryTableOwnerCol">VisualGraph</td>
@@ -178,24 +176,28 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#showHistory">showHistory</a> : Boolean<div class="summaryTableDescription">
+   
    This property controls whether to show the history of
    root nodes (or focused nodes) or not.</div>
 </td><td class="summaryTableOwnerCol">VisualGraph</td>
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#visibilityLimitActive">visibilityLimitActive</a> : Boolean<div class="summaryTableDescription">
+   
    Specifies if any visibility limits should be active
    or not.</div>
 </td><td class="summaryTableOwnerCol">VisualGraph</td>
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#visibleEdges">visibleEdges</a> : Dictionary<div class="summaryTableDescription">[read-only]
+   
    Provide access to a list of currently visible edges,
    i.e.</div>
 </td><td class="summaryTableOwnerCol">VisualGraph</td>
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#visibleVNodes">visibleVNodes</a> : Dictionary<div class="summaryTableDescription">[read-only]
+   
    Provide access to a list of currently visible VNodes.</div>
 </td><td class="summaryTableOwnerCol">VisualGraph</td>
 </tr>
@@ -222,6 +224,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <div class="summarySignature">
 <a class="signatureLink" href="#calcNodesBoundingBox()">calcNodesBoundingBox</a>():Rectangle</div>
 <div class="summaryTableDescription">
+   
    Calculate and return the current bounding box of all visible nodes.</div>
 </td><td class="summaryTableOwnerCol">VisualGraph</td>
 </tr>
@@ -230,15 +233,17 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <div class="summarySignature">
 <a class="signatureLink" href="#clearHistory()">clearHistory</a>():void</div>
 <div class="summaryTableDescription">
+   
    Clears the current history of root nodes.</div>
 </td><td class="summaryTableOwnerCol">VisualGraph</td>
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
-<a class="signatureLink" href="#createNode()">createNode</a>(sid:<a href="">String</a> = "", o:<a href="">Object</a> = null):<a href="IVisualNode.html">IVisualNode</a>
+<a class="signatureLink" href="#createNode()">createNode</a>(sid:String = "", o:Object = null):<a href="../visual/IVisualNode.html">IVisualNode</a>
 </div>
-<div class="summaryTableDescription">
+<div class="summaryTableDescription"> 
+   
    Create a new Node in this VisualGraph, this automatically
    creates an underlying Node in the Graph object.</div>
 </td><td class="summaryTableOwnerCol">VisualGraph</td>
@@ -248,6 +253,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <div class="summarySignature">
 <a class="signatureLink" href="#draw()">draw</a>():void</div>
 <div class="summaryTableDescription">
+   
    Calling this forces a full calculation and redraw of the layout
    including all edges.</div>
 </td><td class="summaryTableOwnerCol">VisualGraph</td>
@@ -257,15 +263,20 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <div class="summarySignature">
 <a class="signatureLink" href="#initFromGraph()">initFromGraph</a>():void</div>
 <div class="summaryTableDescription">
-   This initialises a VGraph from a Graph object.</div>
+   
+   Initializes the VisualGraph from its currently set Graph object,
+   basically removing all existing VNodes and VEdges and
+   recreating them based on the information found in the associated
+   Graph object.</div>
 </td><td class="summaryTableOwnerCol">VisualGraph</td>
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
-<a class="signatureLink" href="#linkNodes()">linkNodes</a>(v1:<a href="IVisualNode.html">IVisualNode</a>, v2:<a href="IVisualNode.html">IVisualNode</a>):<a href="IVisualEdge.html">IVisualEdge</a>
+<a class="signatureLink" href="#linkNodes()">linkNodes</a>(v1:<a href="IVisualNode.html">IVisualNode</a>, v2:<a href="IVisualNode.html">IVisualNode</a>):<a href="../visual/IVisualEdge.html">IVisualEdge</a>
 </div>
-<div class="summaryTableDescription">
+<div class="summaryTableDescription"> 
+   
    Links two nodes, thus creating an edge.</div>
 </td><td class="summaryTableOwnerCol">VisualGraph</td>
 </tr>
@@ -283,6 +294,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <div class="summarySignature">
 <a class="signatureLink" href="#refresh()">refresh</a>():void</div>
 <div class="summaryTableDescription">
+   
    </div>
 </td><td class="summaryTableOwnerCol">VisualGraph</td>
 </tr>
@@ -291,14 +303,16 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <div class="summarySignature">
 <a class="signatureLink" href="#removeNode()">removeNode</a>(vn:<a href="IVisualNode.html">IVisualNode</a>):void</div>
 <div class="summaryTableDescription">
+   
    Removes a node from this VisualGraph.</div>
 </td><td class="summaryTableOwnerCol">VisualGraph</td>
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
-<a class="signatureLink" href="#scroll()">scroll</a>(sx:<a href="">Number</a>, sy:<a href="">Number</a>):void</div>
+<a class="signatureLink" href="#scroll()">scroll</a>(deltaX:Number, deltaY:Number):void</div>
 <div class="summaryTableDescription">
+   
    Scrolls all objects according to the specified coordinates
    (used as an offset).</div>
 </td><td class="summaryTableOwnerCol">VisualGraph</td>
@@ -307,7 +321,8 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
 <a class="signatureLink" href="#unlinkNodes()">unlinkNodes</a>(v1:<a href="IVisualNode.html">IVisualNode</a>, v2:<a href="IVisualNode.html">IVisualNode</a>):void</div>
-<div class="summaryTableDescription">
+<div class="summaryTableDescription"> 
+   
    Unlinks two nodes, thus removing the edge between them, if it
    exists.</div>
 </td><td class="summaryTableOwnerCol">VisualGraph</td>
@@ -377,6 +392,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>center:Point</code>&nbsp;&nbsp;[read-only]<p>
+   
    Provide access to the center point of the VGraph's
    drawing surface, used by layouters to properly center
    their layout.
@@ -407,11 +423,18 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public var currentRootVNode:<a href="../visual/IVisualNode.html">IVisualNode</a></code><p>
+<code>currentRootVNode:<a href="../visual/IVisualNode.html">IVisualNode</a></code>&nbsp;&nbsp;[read-write]<p>
+   
    Set or get the current root node (or focused node). Setting
    this property will result in a redraw of the graph to reflect
    the change (if it was actually a change).
    </p><p>This property can be used as the source for data binding.</p>
+<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get currentRootVNode():<a href="../visual/IVisualNode.html">IVisualNode</a></code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set currentRootVNode(value:<a href="../visual/IVisualNode.html">IVisualNode</a>):void</code>
+<br>
 </div>
 <a name="displayEdgeLabels"></a>
 <table cellspacing="0" cellpadding="0" class="detailHeader">
@@ -421,6 +444,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>displayEdgeLabels:Boolean</code>&nbsp;&nbsp;[read-write]<p>
+   
    Specify whether to display edge labels or not.
    If no edge label renderer is present a default
    will be used.
@@ -450,6 +474,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>edgeLabelRenderer:IFactory</code>&nbsp;&nbsp;[write-only]<p>
+   
    Allow to provide an EdgeLabelRenderer in order to
    display edge labels. The created instances must be
    UIComponents.
@@ -466,35 +491,13 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>edgeRenderer:<a href="../visual/IEdgeRenderer.html">IEdgeRenderer</a></code>&nbsp;&nbsp;[write-only]<p>
+   
    Allow the provision of an EdgeRenderer to
    allow drawing of edges in a customised way.
    The edgeRenderer has to implement the IEdgeRenderer interface.
    </p><span class="label">Implementation</span>
 <br>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;public function set edgeRenderer(value:<a href="../visual/IEdgeRenderer.html">IEdgeRenderer</a>):void</code>
-<br>
-</div>
-<a name="globalEdgeSettings"></a>
-<table cellspacing="0" cellpadding="0" class="detailHeader">
-<tr>
-<td class="detailHeaderName">globalEdgeSettings</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
-</tr>
-</table>
-<div class="detailBody">
-<code>globalEdgeSettings:Object</code>&nbsp;&nbsp;[read-write]<p>
-   Access to a parameter Object to preset various
-   settings for the drawing of Edges.
-   The Object is a hash with the following properties:
-   "alpha"
-   "thickness"
-   "color"
-   "distcolor"
-   which are to be used by an Edge Renderer
-   </p><span class="label">Implementation</span>
-<br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get globalEdgeSettings():Object</code>
-<br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set globalEdgeSettings(value:Object):void</code>
 <br>
 </div>
 <a name="graph"></a>
@@ -529,10 +532,15 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>itemRenderer:IFactory</code>&nbsp;&nbsp;[write-only]<p>
-   Allow the provision of an ItemRenderer (which is
-   more precisely an IFactory). This is important to allow
-   the Drawing of the items in a customised way.
-   Note that any ItemRenderer will have to be a UIComponent.
+   
+   Access to a parameter Object to preset various
+   settings for the drawing of Edges.
+   The Object is a hash with the following properties:
+   "alpha"
+   "thickness"
+   "color"
+   "distcolor"
+   which are to be used by an Edge Renderer
    </p><span class="label">Implementation</span>
 <br>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;public function set itemRenderer(value:IFactory):void</code>
@@ -546,6 +554,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>layouter:<a href="../layout/ILayoutAlgorithm.html">ILayoutAlgorithm</a></code>&nbsp;&nbsp;[read-write]<p>
+   
    Access to the layouter to be used for the
    layout of the graph.
    </p><span class="label">Implementation</span>
@@ -555,21 +564,6 @@ showHideInherited();
 <code>&nbsp;&nbsp;&nbsp;&nbsp;public function set layouter(value:<a href="../layout/ILayoutAlgorithm.html">ILayoutAlgorithm</a>):void</code>
 <br>
 </div>
-<a name="lineColor"></a>
-<table cellspacing="0" cellpadding="0" class="detailHeader">
-<tr>
-<td class="detailHeaderName">lineColor</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
-</tr>
-</table>
-<div class="detailBody">
-<code>lineColor:int</code>&nbsp;&nbsp;[write-only]<p>
-   Set the line color in the global Edge settings
-   object of the Visual Graph. This is for convenience.
-   </p><span class="label">Implementation</span>
-<br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set lineColor(value:int):void</code>
-<br>
-</div>
 <a name="maxVisibleDistance"></a>
 <table cellspacing="0" cellpadding="0" class="detailHeader">
 <tr>
@@ -577,12 +571,19 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public var maxVisibleDistance:int</code><p>
+<code>maxVisibleDistance:int</code>&nbsp;&nbsp;[read-write]<p>
+   
    Limit the currently visible nodes to those in a limited
    distance (in terms of degrees of separation) from the current
    root node. If showHistory is enabled, the previous root nodes
    will be shown regardless of this limit. 
    </p><p>This property can be used as the source for data binding.</p>
+<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get maxVisibleDistance():int</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set maxVisibleDistance(value:int):void</code>
+<br>
 </div>
 <a name="newNodesDefaultVisible"></a>
 <table cellspacing="0" cellpadding="0" class="detailHeader">
@@ -605,6 +606,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>noVisibleVNodes:uint</code>&nbsp;&nbsp;[read-only]<p>
+   
    Returns the number of currently visible nodes.
    </p><span class="label">Implementation</span>
 <br>
@@ -619,6 +621,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>origin:Point</code>&nbsp;&nbsp;[read-only]<p>
+   
    Provide access to the current origin of the of the Visual Graph
    which is required for proper drawing.
    </p><span class="label">Implementation</span>
@@ -646,6 +649,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>showHistory:Boolean</code>&nbsp;&nbsp;[read-write]<p>
+   
    This property controls whether to show the history of
    root nodes (or focused nodes) or not. If enabled, these
    previous root nodes will be shown even though they are
@@ -667,12 +671,19 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public var visibilityLimitActive:Boolean</code><p>
+<code>visibilityLimitActive:Boolean</code>&nbsp;&nbsp;[read-write]<p>
+   
    Specifies if any visibility limits should be active
    or not. If not active, always all nodes are visible.
    If you have many nodes, this could have a severe
    impact on your performance so handle with care.
    </p><p>This property can be used as the source for data binding.</p>
+<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get visibilityLimitActive():Boolean</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set visibilityLimitActive(value:Boolean):void</code>
+<br>
 </div>
 <a name="visibleEdges"></a>
 <table cellspacing="0" cellpadding="0" class="detailHeader">
@@ -682,6 +693,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>visibleEdges:Dictionary</code>&nbsp;&nbsp;[read-only]<p>
+   
    Provide access to a list of currently visible edges,
    i.e. edges whose both nodes are visible and thus need
    to be drawn. Likewise this can save a lot of CPU if
@@ -700,6 +712,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>visibleVNodes:Dictionary</code>&nbsp;&nbsp;[read-only]<p>
+   
    Provide access to a list of currently visible VNodes.
    This is very important for layouters, if we have many many
    nodes, but only a few of them are visible at a time. Layouters
@@ -733,6 +746,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>public function calcNodesBoundingBox():Rectangle</code><p>
+   
    Calculate and return the current bounding box of all visible nodes.
    This is required by some layouters.
    </p><p></p>
@@ -752,6 +766,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>public function clearHistory():void</code><p>
+   
    Clears the current history of root nodes.
    </p></div>
 <a name="createNode()"></a>
@@ -761,7 +776,8 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public function createNode(sid:<a href="">String</a> = "", o:<a href="">Object</a> = null):<a href="IVisualNode.html">IVisualNode</a></code><p>
+<code>public function createNode(sid:String = "", o:Object = null):<a href="../visual/IVisualNode.html">IVisualNode</a></code><p> 
+   
    Create a new Node in this VisualGraph, this automatically
    creates an underlying Node in the Graph object. It does not
    link the node to any other node, yet and it does not trigger
@@ -771,14 +787,14 @@ showHideInherited();
    </p><span class="label">Parameters</span>
 <table border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td width="20px"></td><td><code><span class="label">sid</span>:<a href="">String</a></code> (default = "<code></code>")<code></code> &mdash; The string id of the new node.
+<td width="20px"></td><td><code><span class="label">sid</span>:String</code> (default = "<code></code>")<code></code> &mdash; The string id of the new node.
    </td>
 </tr>
 <tr>
 <td class="paramSpacer">&nbsp;</td>
 </tr>
 <tr>
-<td width="20px"></td><td><code><span class="label">o</span>:<a href="">Object</a></code> (default = <code>null</code>)<code></code> &mdash; The data object of this new node.
+<td width="20px"></td><td><code><span class="label">o</span>:Object</code> (default = <code>null</code>)<code></code> &mdash; The data object of this new node.
    </td>
 </tr>
 </table>
@@ -786,7 +802,7 @@ showHideInherited();
 <span class="label">Returns</span>
 <table border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td width="20"></td><td><code><a href="IVisualNode.html">IVisualNode</a></code> &mdash; 
+<td width="20"></td><td><code><a href="../visual/IVisualNode.html">IVisualNode</a></code> &mdash; 
                         The created VisualNode object.
    
                         
@@ -802,6 +818,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>public function draw():void</code><p>
+   
    Calling this forces a full calculation and redraw of the layout
    including all edges.
    </p></div>
@@ -813,12 +830,11 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>public function initFromGraph():void</code><p>
-   This initialises a VGraph from a Graph object.
-   I.e. it crates a VNode for every Node found in
-   the Graph and a VEdge for every Edge in the Graph.
-   Careful, this currently does not check if the VGraph
-   was already initialised and it does not purge anything.
-   Things could break of used on an already initialized VGraph.
+   
+   Initializes the VisualGraph from its currently set Graph object,
+   basically removing all existing VNodes and VEdges and
+   recreating them based on the information found in the associated
+   Graph object.
    </p></div>
 <a name="linkNodes()"></a>
 <table cellspacing="0" cellpadding="0" class="detailHeader">
@@ -827,7 +843,8 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public function linkNodes(v1:<a href="IVisualNode.html">IVisualNode</a>, v2:<a href="IVisualNode.html">IVisualNode</a>):<a href="IVisualEdge.html">IVisualEdge</a></code><p>
+<code>public function linkNodes(v1:<a href="IVisualNode.html">IVisualNode</a>, v2:<a href="IVisualNode.html">IVisualNode</a>):<a href="../visual/IVisualEdge.html">IVisualEdge</a></code><p> 
+   
    Links two nodes, thus creating an edge. If the underlying Graph
    is directional, the order matters, not otherwise. If the nodes are
    already linked, simply returns the existing edge between them.
@@ -849,7 +866,7 @@ showHideInherited();
 <span class="label">Returns</span>
 <table border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td width="20"></td><td><code><a href="IVisualEdge.html">IVisualEdge</a></code> &mdash; 
+<td width="20"></td><td><code><a href="../visual/IVisualEdge.html">IVisualEdge</a></code> &mdash; 
                         The created VisualEdge.
    
                         
@@ -867,7 +884,7 @@ showHideInherited();
 <code>public function redrawEdges():void</code><p>
    Redraw all edges, this is called from the updateDisplayList()
    method.
-   </p><p>
+   
    This forces a redraw of all edges </p></div>
 <a name="refresh()"></a>
 <table cellspacing="0" cellpadding="0" class="detailHeader">
@@ -877,6 +894,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>public function refresh():void</code><p>
+   
    </p></div>
 <a name="removeNode()"></a>
 <table cellspacing="0" cellpadding="0" class="detailHeader">
@@ -886,6 +904,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>public function removeNode(vn:<a href="IVisualNode.html">IVisualNode</a>):void</code><p>
+   
    Removes a node from this VisualGraph. This removes any associated
    VEdges and Edges with the node and of course the underlying Node from
    the Graph datastructure.
@@ -904,19 +923,20 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public function scroll(sx:<a href="">Number</a>, sy:<a href="">Number</a>):void</code><p>
+<code>public function scroll(deltaX:Number, deltaY:Number):void</code><p>
+   
    Scrolls all objects according to the specified coordinates
    (used as an offset).
    </p><span class="label">Parameters</span>
 <table border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td width="20px"></td><td><code><span class="label">sx</span>:<a href="">Number</a></code></td>
+<td width="20px"></td><td><code><span class="label">deltaX</span>:Number</code></td>
 </tr>
 <tr>
 <td class="paramSpacer">&nbsp;</td>
 </tr>
 <tr>
-<td width="20px"></td><td><code><span class="label">sy</span>:<a href="">Number</a></code></td>
+<td width="20px"></td><td><code><span class="label">deltaY</span>:Number</code></td>
 </tr>
 </table>
 </div>
@@ -927,7 +947,8 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public function unlinkNodes(v1:<a href="IVisualNode.html">IVisualNode</a>, v2:<a href="IVisualNode.html">IVisualNode</a>):void</code><p>
+<code>public function unlinkNodes(v1:<a href="IVisualNode.html">IVisualNode</a>, v2:<a href="IVisualNode.html">IVisualNode</a>):void</code><p> 
+   
    Unlinks two nodes, thus removing the edge between them, if it
    exists. Does nothing if the nodes were not linked.
    Again, order matters of the graph is directional.

@@ -46,6 +46,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("IÂ
 </tr>
 <tr>
 <td width="20"></td><td>
+   
    The id (or name) of the graph
    </td>
 </tr>
@@ -69,6 +70,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("IÂ
 </tr>
 <tr>
 <td width="20"></td><td>
+   
    Access to the id property of any item.</td>
 </tr>
 <tr>
@@ -159,6 +161,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("IÂ
 </tr>
 <tr>
 <td width="20"></td><td>
+   
    The Array containing all incoming edges
    of this node.</td>
 </tr>
@@ -177,13 +180,18 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("IÂ
 </tr>
 <tr>
 <td width="20"></td><td>
-   This initialises a VGraph from a Graph object.</td>
+   
+   Initializes the VisualGraph from its currently set Graph object,
+   basically removing all existing VNodes and VEdges and
+   recreating them based on the information found in the associated
+   Graph object.</td>
 </tr>
 <tr>
 <td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/data/class-list.html');" href="org/un/flex/graphLayout/data/Graph.html#initFromXML()">initFromXML</a>(xml, xmlnames) &mdash; Method in class org.un.flex.graphLayout.data.<a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/data/class-list.html');" href="org/un/flex/graphLayout/data/Graph.html">Graph</a></td>
 </tr>
 <tr>
 <td width="20"></td><td>
+   
       Creates a graph from XML.</td>
 </tr>
 <tr>
@@ -198,6 +206,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("IÂ
 </tr>
 <tr>
 <td width="20"></td><td>
+   
    This initialiases the (spanning) tree
    using BFS (Breadth first search).</td>
 </tr>
@@ -245,13 +254,15 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("IÂ
 </tr>
 <tr>
 <td width="20"></td><td>
+   
    Indicates if the graph that contains this edge is directional.</td>
 </tr>
 <tr>
 <td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/data/class-list.html');" href="org/un/flex/graphLayout/data/Graph.html#isDirectional">isDirectional</a> &mdash; Property in class org.un.flex.graphLayout.data.<a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/data/class-list.html');" href="org/un/flex/graphLayout/data/Graph.html">Graph</a></td>
 </tr>
 <tr>
-<td width="20"></td><td> 
+<td width="20"></td><td>
+    
    Indicator if the graph is directional or not.</td>
 </tr>
 <tr>
@@ -289,16 +300,17 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("IÂ
 </tr>
 <tr>
 <td width="20"></td><td>
-   Allow the provision of an ItemRenderer (which is
-   more precisely an IFactory).</td>
+   Access to a parameter Object to preset various
+   settings for the drawing of Edges.</td>
 </tr>
 <tr>
 <td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/visual/class-list.html');" href="org/un/flex/graphLayout/visual/VisualGraph.html#itemRenderer">itemRenderer</a> &mdash; Property in class org.un.flex.graphLayout.visual.<a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/visual/class-list.html');" href="org/un/flex/graphLayout/visual/VisualGraph.html">VisualGraph</a></td>
 </tr>
 <tr>
 <td width="20"></td><td>
-   Allow the provision of an ItemRenderer (which is
-   more precisely an IFactory).</td>
+   
+   Access to a parameter Object to preset various
+   settings for the drawing of Edges.</td>
 </tr>
 <tr>
 <td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/visual/class-list.html');" href="org/un/flex/graphLayout/visual/IVisualEdge.html"><i>IVisualEdge</i></a> &mdash; Interface in package <a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/visual/class-list.html');" href="org/un/flex/graphLayout/visual/package-detail.html">org.un.flex.graphLayout.visual</a></td>

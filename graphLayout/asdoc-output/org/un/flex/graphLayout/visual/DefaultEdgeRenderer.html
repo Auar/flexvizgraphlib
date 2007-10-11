@@ -58,7 +58,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
-<a class="signatureLink" href="#draw()">draw</a>(g:<a href="">Graphics</a>, edge:<a href="../data/IEdge.html">IEdge</a>, disting:<a href="">Boolean</a>, displayLabel:<a href="">Boolean</a> = false):void</div>
+<a class="signatureLink" href="#draw()">draw</a>(g:Graphics, edge:<a href="../data/IEdge.html">IEdge</a>, disting:Boolean, displayLabel:Boolean = false):void</div>
 <div class="summaryTableDescription">
    The draw function, i.e.</div>
 </td><td class="summaryTableOwnerCol">DefaultEdgeRenderer</td>
@@ -79,13 +79,13 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public function draw(g:<a href="">Graphics</a>, edge:<a href="../data/IEdge.html">IEdge</a>, disting:<a href="">Boolean</a>, displayLabel:<a href="">Boolean</a> = false):void</code><p>
+<code>public function draw(g:Graphics, edge:<a href="../data/IEdge.html">IEdge</a>, disting:Boolean, displayLabel:Boolean = false):void</code><p>
    The draw function, i.e. the main function to be used.
    Draws a straight line from one node of the edge to the other.
    The colour is determined by the "disting" parameter and
    a set of edge parameters, which are stored in an edge object.
    
-   </p><p>
+   
    Draws an edge.
    The way how the colouring is currently handled, with the distinguished
    parameter is not appropriate, this may need to change to something more
@@ -94,7 +94,7 @@ showHideInherited();
    </p><span class="label">Parameters</span>
 <table border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td width="20px"></td><td><code><span class="label">g</span>:<a href="">Graphics</a></code> &mdash; Reference to the Graphics object of the Drawing surface.
+<td width="20px"></td><td><code><span class="label">g</span>:Graphics</code> &mdash; Reference to the Graphics object of the Drawing surface.
    </td>
 </tr>
 <tr>
@@ -108,14 +108,14 @@ showHideInherited();
 <td class="paramSpacer">&nbsp;</td>
 </tr>
 <tr>
-<td width="20px"></td><td><code><span class="label">disting</span>:<a href="">Boolean</a></code> &mdash; This is in indicator if this edge is distinguished in a certain way.
+<td width="20px"></td><td><code><span class="label">disting</span>:Boolean</code> &mdash; This is in indicator if this edge is distinguished in a certain way.
    </td>
 </tr>
 <tr>
 <td class="paramSpacer">&nbsp;</td>
 </tr>
 <tr>
-<td width="20px"></td><td><code><span class="label">displayLabel</span>:<a href="">Boolean</a></code> (default = <code>false</code>)<code></code> &mdash; If set, it displays a label in the middle of the egde, provided the edge
+<td width="20px"></td><td><code><span class="label">displayLabel</span>:Boolean</code> (default = <code>false</code>)<code></code> &mdash; If set, it displays a label in the middle of the egde, provided the edge
     has an edge renderer (UIComponent) associated with it.
       </td>
 </tr>

@@ -4,7 +4,7 @@
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="../../../../../style.css" type="text/css" media="screen">
 <link rel="stylesheet" href="../../../../../print.css" type="text/css" media="print">
-<meta content="BaseLayoutDrawing,org.un.flex.graphLayout.layout.BaseLayoutDrawing,originOffset,centerOffset,centeredLayout,nodeDataValid,invalidateNodeData,setPolarCoordinates,setCartCoordinates,getPolarR,getPolarPhi,getRelCartCoordinates,getAbsCartCoordinates" name="keywords">
+<meta content="BaseLayoutDrawing,org.un.flex.graphLayout.layout.BaseLayoutDrawing,centerOffset,centeredLayout,originOffset,getAbsCartCoordinates,getPolarPhi,getPolarR,getRelCartCoordinates,invalidateNodeData,nodeDataValid,setCartCoordinates,setPolarCoordinates" name="keywords">
 <title>org.un.flex.graphLayout.layout.BaseLayoutDrawing</title>
 </head>
 <body>
@@ -176,10 +176,16 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public var centeredLayout:Boolean</code><p>
+<code>centeredLayout:Boolean</code>&nbsp;&nbsp;[read-write]<p>
    Specifies if the center offset should be applied 
    or not.
    </p><p>This property can be used as the source for data binding.</p>
+<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get centeredLayout():Boolean</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set centeredLayout(value:Boolean):void</code>
+<br>
 </div>
 <a name="centerOffset"></a>
 <table cellspacing="0" cellpadding="0" class="detailHeader">
@@ -188,7 +194,7 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public var centerOffset:Point</code><p>
+<code>centerOffset:Point</code>&nbsp;&nbsp;[read-write]<p>
    Access to the offset of the center of the layout.
    The actual origin is the upper left corner of the
    canvas. But the calculation of this layout is done around
@@ -196,6 +202,12 @@ showHideInherited();
    origin into the center of the canvas, This is what the
    center offset actually does.
    </p><p>This property can be used as the source for data binding.</p>
+<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get centerOffset():Point</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set centerOffset(value:Point):void</code>
+<br>
 </div>
 <a name="originOffset"></a>
 <table cellspacing="0" cellpadding="0" class="detailHeader">
@@ -204,12 +216,18 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public var originOffset:Point</code><p>
+<code>originOffset:Point</code>&nbsp;&nbsp;[read-write]<p>
    Access to the offset of the origin of the layout.
    The actual origin is the upper left corner of the
    canvas. But that changes if we scroll the canvas
    around, so we have to keep track of this offset.
    </p><p>This property can be used as the source for data binding.</p>
+<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get originOffset():Point</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set originOffset(value:Point):void</code>
+<br>
 </div>
 <a name="constructorDetail"></a>
 <div class="detailSectionHeader">Constructor detail</div>
