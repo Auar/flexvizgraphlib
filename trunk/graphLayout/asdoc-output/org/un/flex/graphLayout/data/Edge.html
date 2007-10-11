@@ -4,7 +4,7 @@
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="../../../../../style.css" type="text/css" media="screen">
 <link rel="stylesheet" href="../../../../../print.css" type="text/css" media="print">
-<meta content="Edge,org.un.flex.graphLayout.data.Edge,toNode,fromNode,node1,node2,data,vedge,isDirectional,id,othernode" name="keywords">
+<meta content="Edge,org.un.flex.graphLayout.data.Edge,fromNode,id,isDirectional,node1,node2,toNode,vedge,data,othernode" name="keywords">
 <title>org.un.flex.graphLayout.data.Edge</title>
 </head>
 <body>
@@ -75,6 +75,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#fromNode">fromNode</a> : <a href="../data/INode.html">INode</a>
 <div class="summaryTableDescription">[read-only]
+   
    returns the source node (fromNode) of the edge.</div>
 </td><td class="summaryTableOwnerCol">Edge</td>
 </tr>
@@ -85,30 +86,35 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#isDirectional">isDirectional</a> : Boolean<div class="summaryTableDescription">[read-only]
+   
    Indicates if the graph that contains this edge is directional.</div>
 </td><td class="summaryTableOwnerCol">Edge</td>
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#node1">node1</a> : <a href="../data/INode.html">INode</a>
 <div class="summaryTableDescription">[read-only]
+   
    The first node associated with this edge.</div>
 </td><td class="summaryTableOwnerCol">Edge</td>
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#node2">node2</a> : <a href="../data/INode.html">INode</a>
 <div class="summaryTableDescription">[read-only]
+   
    The second node associated with this edge.</div>
 </td><td class="summaryTableOwnerCol">Edge</td>
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#toNode">toNode</a> : <a href="../data/INode.html">INode</a>
 <div class="summaryTableDescription">[read-only]
+   
    returns the target node (toNode) of the edge.</div>
 </td><td class="summaryTableOwnerCol">Edge</td>
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#vedge">vedge</a> : <a href="../visual/IVisualEdge.html">IVisualEdge</a>
 <div class="summaryTableDescription">
+   
    Access to the associated VisualEdge
    of this Edge.</div>
 </td><td class="summaryTableOwnerCol">Edge</td>
@@ -134,9 +140,10 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
-<a class="signatureLink" href="#othernode()">othernode</a>(node:<a href="INode.html">INode</a>):<a href="INode.html">INode</a>
+<a class="signatureLink" href="#othernode()">othernode</a>(node:<a href="INode.html">INode</a>):<a href="../data/INode.html">INode</a>
 </div>
 <div class="summaryTableDescription">
+   
    This method returns the other node than the node
    given as parameter, so it can be used to follow along
    the edge.</div>
@@ -180,6 +187,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>fromNode:<a href="../data/INode.html">INode</a></code>&nbsp;&nbsp;[read-only]<p>
+   
    returns the source node (fromNode) of the edge.
    Only available if the graph is directional as otherwise
    there is no designated source node.
@@ -210,6 +218,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>isDirectional:Boolean</code>&nbsp;&nbsp;[read-only]<p>
+   
    Indicates if the graph that contains this edge is directional.
    </p><span class="label">Implementation</span>
 <br>
@@ -224,6 +233,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>node1:<a href="../data/INode.html">INode</a></code>&nbsp;&nbsp;[read-only]<p>
+   
    The first node associated with this edge.
    </p><span class="label">Implementation</span>
 <br>
@@ -238,6 +248,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>node2:<a href="../data/INode.html">INode</a></code>&nbsp;&nbsp;[read-only]<p>
+   
    The second node associated with this edge.
    </p><span class="label">Implementation</span>
 <br>
@@ -252,6 +263,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>toNode:<a href="../data/INode.html">INode</a></code>&nbsp;&nbsp;[read-only]<p>
+   
    returns the target node (toNode) of the edge.
    Only available if the graph is directional as otherwise
    there is no designated target node.
@@ -268,6 +280,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>vedge:<a href="../visual/IVisualEdge.html">IVisualEdge</a></code>&nbsp;&nbsp;[read-write]<p>
+   
    Access to the associated VisualEdge
    of this Edge.
    </p><span class="label">Implementation</span>
@@ -340,7 +353,8 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public function othernode(node:<a href="INode.html">INode</a>):<a href="INode.html">INode</a></code><p>
+<code>public function othernode(node:<a href="INode.html">INode</a>):<a href="../data/INode.html">INode</a></code><p>
+   
    This method returns the other node than the node
    given as parameter, so it can be used to follow along
    the edge.
@@ -355,7 +369,7 @@ showHideInherited();
 <span class="label">Returns</span>
 <table border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td width="20"></td><td><code><a href="INode.html">INode</a></code> &mdash; 
+<td width="20"></td><td><code><a href="../data/INode.html">INode</a></code> &mdash; 
                         The node that is unknown (implicit target node)
    
                         

@@ -4,7 +4,7 @@
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="../../../../../style.css" type="text/css" media="screen">
 <link rel="stylesheet" href="../../../../../print.css" type="text/css" media="print">
-<meta content="PhylloTreeDrawingModel,org.un.flex.graphLayout.layout.PhylloTreeDrawingModel,rootR,phi,setNodeCoordinates,getOrigin,getAngleOffset,getLocalPolarR,getLocalPolarPhi" name="keywords">
+<meta content="PhylloTreeDrawingModel,org.un.flex.graphLayout.layout.PhylloTreeDrawingModel,phi,rootR,getAngleOffset,getLocalPolarPhi,getLocalPolarR,getOrigin,setNodeCoordinates" name="keywords">
 <title>org.un.flex.graphLayout.layout.PhylloTreeDrawingModel</title>
 </head>
 <body>
@@ -251,9 +251,15 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public var phi:Number</code><p>
+<code>phi:Number</code>&nbsp;&nbsp;[read-write]<p>
    Access to the starting polar angle of the layout in radians.
    </p><p>This property can be used as the source for data binding.</p>
+<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get phi():Number</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set phi(value:Number):void</code>
+<br>
 </div>
 <a name="rootR"></a>
 <table cellspacing="0" cellpadding="0" class="detailHeader">
@@ -262,9 +268,15 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public var rootR:Number</code><p>
+<code>rootR:Number</code>&nbsp;&nbsp;[read-write]<p>
    Access to the starting polar radius of the layout.
    </p><p>This property can be used as the source for data binding.</p>
+<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get rootR():Number</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set rootR(value:Number):void</code>
+<br>
 </div>
 <a name="constructorDetail"></a>
 <div class="detailSectionHeader">Constructor detail</div>

@@ -4,7 +4,7 @@
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="../../../../../style.css" type="text/css" media="screen">
 <link rel="stylesheet" href="../../../../../print.css" type="text/css" media="print">
-<meta content="IVisualEdge,org.un.flex.graphLayout.visual.IVisualEdge,edge,labelView" name="keywords">
+<meta content="IVisualEdge,org.un.flex.graphLayout.visual.IVisualEdge,edge,labelView,lineStyle" name="keywords">
 <title>org.un.flex.graphLayout.visual.IVisualEdge</title>
 </head>
 <body>
@@ -87,6 +87,11 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("In
    display a label.</div>
 </td><td class="summaryTableOwnerCol">IVisualEdge</td>
 </tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#lineStyle">lineStyle</a> : Object<div class="summaryTableDescription">
+   Set the lineStyle of the edge.</div>
+</td><td class="summaryTableOwnerCol">IVisualEdge</td>
+</tr>
 <tr class="hideInheritedProperty">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="IVisualItem.html#vgraph">vgraph</a> : <a href="../visual/IVisualGraph.html">IVisualGraph</a>
 <div class="summaryTableDescription">
@@ -132,6 +137,29 @@ showHideInherited();
 <br>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;public function set labelView(value:UIComponent):void</code>
 <br>
+</div>
+<a name="lineStyle"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">lineStyle</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>lineStyle:Object</code>&nbsp;&nbsp;[read-write]<p>
+   Set the lineStyle of the edge. The parameter
+   passed must be an object, containing a mapping.
+   The properties (keys) in the mapping must match the
+   lineStyle() parameters of Graphics.
+   </p><span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get lineStyle():Object</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set lineStyle(value:Object):void</code>
+<br>
+<p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">flash.display.Graphics.lineStyle()</div>
 </div>
 <br>
 <br>

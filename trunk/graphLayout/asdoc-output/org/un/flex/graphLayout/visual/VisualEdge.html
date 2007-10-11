@@ -4,7 +4,7 @@
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="../../../../../style.css" type="text/css" media="screen">
 <link rel="stylesheet" href="../../../../../print.css" type="text/css" media="print">
-<meta content="VisualEdge,org.un.flex.graphLayout.visual.VisualEdge,edge,vgraph,data,id,labelView" name="keywords">
+<meta content="VisualEdge,org.un.flex.graphLayout.visual.VisualEdge,data,edge,id,labelView,vgraph,lineStyle" name="keywords">
 <title>org.un.flex.graphLayout.visual.VisualEdge</title>
 </head>
 <body>
@@ -77,8 +77,15 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#labelView">labelView</a> : UIComponent<div class="summaryTableDescription">
+   
    Access to an associated UIComponent to
    display a label.</div>
+</td><td class="summaryTableOwnerCol">VisualEdge</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#lineStyle">lineStyle</a> : Object<div class="summaryTableDescription">
+   
+   </div>
 </td><td class="summaryTableOwnerCol">VisualEdge</td>
 </tr>
 <tr class="">
@@ -99,7 +106,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
-<a class="signatureLink" href="#VisualEdge()">VisualEdge</a>(vg:<a href="IVisualGraph.html">IVisualGraph</a>, edge:<a href="../data/IEdge.html">IEdge</a>, id:int, data:Object = null, lview:UIComponent = null)</div>
+<a class="signatureLink" href="#VisualEdge()">VisualEdge</a>(vg:<a href="IVisualGraph.html">IVisualGraph</a>, edge:<a href="../data/IEdge.html">IEdge</a>, id:int, data:Object = null, lview:UIComponent = null, lStyle:Object = null)</div>
 <div class="summaryTableDescription">
    The constructor initialiazes the edge and must be preset with almost
    all parameters.</div>
@@ -121,9 +128,15 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public var data:Object</code><p>
+<code>data:Object</code>&nbsp;&nbsp;[read-write]<p>
    Access to the data object.
    </p><p>This property can be used as the source for data binding.</p>
+<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get data():Object</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set data(value:Object):void</code>
+<br>
 </div>
 <a name="edge"></a>
 <table cellspacing="0" cellpadding="0" class="detailHeader">
@@ -161,6 +174,7 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>labelView:UIComponent</code>&nbsp;&nbsp;[read-write]<p>
+   
    Access to an associated UIComponent to
    display a label.
    </p><span class="label">Implementation</span>
@@ -168,6 +182,22 @@ showHideInherited();
 <code>&nbsp;&nbsp;&nbsp;&nbsp;public function get labelView():UIComponent</code>
 <br>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;public function set labelView(value:UIComponent):void</code>
+<br>
+</div>
+<a name="lineStyle"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">lineStyle</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>lineStyle:Object</code>&nbsp;&nbsp;[read-write]<p>
+   
+   </p><span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get lineStyle():Object</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set lineStyle(value:Object):void</code>
 <br>
 </div>
 <a name="vgraph"></a>
@@ -193,7 +223,7 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public function VisualEdge(vg:<a href="IVisualGraph.html">IVisualGraph</a>, edge:<a href="../data/IEdge.html">IEdge</a>, id:int, data:Object = null, lview:UIComponent = null)</code><p>
+<code>public function VisualEdge(vg:<a href="IVisualGraph.html">IVisualGraph</a>, edge:<a href="../data/IEdge.html">IEdge</a>, id:int, data:Object = null, lview:UIComponent = null, lStyle:Object = null)</code><p>
    The constructor initialiazes the edge and must be preset with almost
    all parameters. 
    </p><span class="label">Parameters</span>
@@ -230,7 +260,18 @@ showHideInherited();
 <td width="20px"></td><td><code><span class="label">lview</span>:UIComponent</code> (default = <code>null</code>)<code></code> &mdash; The associated label view.
    </td>
 </tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">lStyle</span>:Object</code> (default = <code>null</code>)<code></code> &mdash; The line style of the edge, must be an object as associative mapping containing Graphics.lineStyle() parameters.
+   </td>
+</tr>
 </table>
+<p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">flash.display.Graphics.lineStyle()</div>
 </div>
 <br>
 <br>

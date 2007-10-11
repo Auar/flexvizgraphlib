@@ -4,7 +4,7 @@
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="../../../../../style.css" type="text/css" media="screen">
 <link rel="stylesheet" href="../../../../../print.css" type="text/css" media="print">
-<meta content="HierarchicalLayouter,org.un.flex.graphLayout.layout.HierarchicalLayouter,ORIENT_LEFT_RIGHT,ORIENT_RIGHT_LEFT,ORIENT_TOP_DOWN,ORIENT_BOTTOM_UP,linkLength,breadth,enableSiblingSpread,orientation,resetAll,layoutPass" name="keywords">
+<meta content="HierarchicalLayouter,org.un.flex.graphLayout.layout.HierarchicalLayouter,ORIENT_BOTTOM_UP,ORIENT_LEFT_RIGHT,ORIENT_RIGHT_LEFT,ORIENT_TOP_DOWN,linkLength,breadth,enableSiblingSpread,orientation,layoutPass,resetAll" name="keywords">
 <title>org.un.flex.graphLayout.layout.HierarchicalLayouter</title>
 </head>
 <body>
@@ -71,14 +71,15 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 </tr>
 <tr class="hideInheritedProperty">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="AnimatedBaseLayouter.html#animInProgress">animInProgress</a> : Boolean<div class="summaryTableDescription">
+   
    Indicator if currently an animation sequence is still
    in progress.</div>
 </td><td class="summaryTableOwnerCol"><a href="AnimatedBaseLayouter.html">AnimatedBaseLayouter</a></td>
 </tr>
 <tr class="hideInheritedProperty">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="BaseLayouter.html#autoFitEnabled">autoFitEnabled</a> : Boolean<div class="summaryTableDescription">
-   Flag to indicate whether the Layouter should attempt
-   to automatically fit the layout to the screen.</div>
+   
+   </div>
 </td><td class="summaryTableOwnerCol"><a href="BaseLayouter.html">BaseLayouter</a></td>
 </tr>
 <tr class="">
@@ -95,6 +96,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <tr class="hideInheritedProperty">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="BaseLayouter.html#graph">graph</a> : <a href="../data/IGraph.html">IGraph</a>
 <div class="summaryTableDescription">
+   
    Assign a Graph datastructure object to the
    layouter, every layouter will need one to work
    and some may allow to set it in their constructor
@@ -103,13 +105,14 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 </tr>
 <tr class="hideInheritedProperty">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="BaseLayouter.html#layoutChanged">layoutChanged</a> : Boolean<div class="summaryTableDescription">
-   Indicator if the layout has changed or not.</div>
+   
+   </div>
 </td><td class="summaryTableOwnerCol"><a href="BaseLayouter.html">BaseLayouter</a></td>
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#linkLength">linkLength</a> : Number<div class="summaryTableDescription">
-   Access to a value that controls the length
-   of links (or rather edges).</div>
+   
+   </div>
 </td><td class="summaryTableOwnerCol">HierarchicalLayouter</td>
 </tr>
 <tr class="">
@@ -119,6 +122,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <tr class="hideInheritedProperty">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="BaseLayouter.html#vgraph">vgraph</a> : <a href="../visual/IVisualGraph.html">IVisualGraph</a>
 <div class="summaryTableDescription">
+   
    Assign a VisualGraph object to the layouter,
    every layouter will need one to work, some may
    also offer to set it in their constructor.</div>
@@ -162,6 +166,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <tr class="hideInheritedProtectedProperty">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="AnimatedBaseLayouter.html#currentDrawing">currentDrawing</a> : <a href="../layout/BaseLayoutDrawing.html">BaseLayoutDrawing</a>
 <div class="summaryTableDescription">
+   
    Allow to set the reference to the drawing object from
    derived classes.</div>
 </td><td class="summaryTableOwnerCol"><a href="AnimatedBaseLayouter.html">AnimatedBaseLayouter</a></td>
@@ -259,6 +264,8 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <div class="summarySignature">
 <a class="signatureLink" href="#resetAll()">resetAll</a>():void</div>
 <div class="summaryTableDescription">
+   
+   
    This should reset all parameters of the layouter,
    which might not be needed for all layouters, and it is
    up to each layouter to do something with it.</div>
@@ -466,13 +473,15 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public var linkLength:Number</code><p>
-   Access to a value that controls the length
-   of links (or rather edges). It is up to the
-   layouter what to do with it, and some may ignore
-   this value under certain circumstances (like autoFit).
-   The interface requires the value to be between 0 and 100;
+<code>linkLength:Number</code>&nbsp;&nbsp;[read-write]<p>
+   
    </p><p>This property can be used as the source for data binding.</p>
+<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get linkLength():Number</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set linkLength(value:Number):void</code>
+<br>
 </div>
 <a name="orientation"></a>
 <table cellspacing="0" cellpadding="0" class="detailHeader">
@@ -533,6 +542,8 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>public override function resetAll():void</code><p>
+   
+   
    This should reset all parameters of the layouter,
    which might not be needed for all layouters, and it is
    up to each layouter to do something with it.
