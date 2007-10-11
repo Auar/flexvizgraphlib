@@ -11,7 +11,8 @@
         /> 
   
 	<mx:Script><![CDATA[
-		
+	
+	import mx.charts.chartClasses.CartesianChart;	
 	import mx.graphics.SolidColor;
 	import mx.graphics.Stroke;
 	import mx.controls.Alert;
@@ -63,6 +64,8 @@
 	public var numberOfSeries:int;
 	public var num:int=1;
 	public var DisplayType:String;
+	public var minValue:int;
+	public var maxValue:int;
 	
 	public function ParseAxis(Axis:XML):void { 
 		var AxisAttributes:XMLList = Axis.children().attributes(); 
@@ -84,6 +87,8 @@
 		
 		dataList=xmlData.children();
 		dataListCollection=new XMLListCollection(dataList);
+		
+		//Alert.show(dataList.length().toString(), 'Alert Box',mx.controls.Alert.OK);
 		//xmlDataModif=new XML(xmlData);
 		ParseAxis(xmlData)
 		
@@ -123,6 +128,8 @@
 		cbxAxisType1.dataProvider=myChart.chart[0].Properties.Property.axis;
 		cbyAxisType1.dataProvider=myChart.chart[0].Properties.Property.axis;
 		cbDisplay.dataProvider=myChart.chart[0].Properties.Property.barTypes.barType;
+		cbCartSerie1.dataProvider=myChart.chart.(@Type=="Cartesian").Properties.Property.Series.Serie; 
+		cbCartForm1.dataProvider=myChart.chart.(@Type=="Cartesian").Properties.Property.cartForms.cartForm; 
 		numberOfSeries=1;
 		//chargement du fichier XML contenant les données  
 		LoadXML();
@@ -172,6 +179,48 @@
 		cbyAxis.y=hrEnd.y+8;
 		piano.addChild(cbyAxis);
 		
+		
+		var cbCartSerie:ComboBox=new ComboBox();
+		cbCartSerie.id="cbCartSerie"+numberOfSeries;
+		cbCartSerie.name="cbCartSerie"+numberOfSeries;
+		cbCartSerie.addEventListener(Event.CHANGE, refreshCartChartEvent);
+		cbCartSerie.dataProvider=myChart.chart.(@Type=="Cartesian").Properties.Property.Series.Serie;
+		cbCartSerie.prompt="Select..."
+		if (cbChartType.selectedLabel.toString()=="Cartesian")
+		{
+			cbCartSerie.visible=true;
+		}else{
+			cbCartSerie.visible=false;
+		}
+		cbCartSerie.x=3;
+		cbCartSerie.y=hrEnd.y+38;
+		piano.addChild(cbCartSerie);
+		
+		
+		/*var lblCartForm:Label=new Label();
+		lblCartForm.id="lblCartForm"+numberOfSeries;
+		lblCartForm.name="lblCartForm"+numberOfSeries;
+		lblCartForm.text= "Form :";
+		lblCartForm.y=hrEnd.y+10;
+		lblCartForm.x=3;
+		piano.addChild(lblCartForm);*/
+		
+		var cbCartForm:ComboBox=new ComboBox();
+		cbCartForm.id="cbCartForm"+numberOfSeries;
+		cbCartForm.name="cbCartForm"+numberOfSeries;
+		cbCartForm.addEventListener(Event.CHANGE, refreshChartEvent);
+		cbCartForm.dataProvider=myChart.chart.(@Type=="Cartesian").Properties.Property.cartForms.cartForm;
+		cbCartForm.prompt="Select..."
+		if (cbChartType.selectedLabel.toString()=="Cartesian")
+		{
+			cbCartForm.visible=true;
+		}else{
+			cbCartForm.visible=false;
+		}
+		cbCartForm.x=120;
+		cbCartForm.y=hrEnd.y+38;
+		piano.addChild(cbCartForm);
+		
 		var chkRemove:CheckBox=new CheckBox();
 		chkRemove.id="chkRemove"+numberOfSeries;
 		chkRemove.name="chkRemove"+numberOfSeries;
@@ -180,8 +229,8 @@
 		chkRemove.addEventListener(MouseEvent.CLICK, removeSeriesEvent);
 		piano.addChild(chkRemove);
 		
-		btnAddNewSerie.move(btnAddNewSerie.x,btnAddNewSerie.y+38);
-		hrEnd.move(hrEnd.x,hrEnd.y+38);
+		btnAddNewSerie.move(btnAddNewSerie.x,btnAddNewSerie.y+68);
+		hrEnd.move(hrEnd.x,hrEnd.y+68);
 	}
 	
 	private function removeSeriesEvent(event:Event):void{
@@ -191,25 +240,31 @@
 		piano.removeChild(piano.getChildByName("cp"+num));
 		piano.removeChild(piano.getChildByName("cbyAxis"+num));
 		piano.removeChild(piano.getChildByName("chkRemove"+num));
+		piano.removeChild(piano.getChildByName("cbCartSerie"+num));
+		piano.removeChild(piano.getChildByName("cbCartForm"+num));
 		
 		for (var i:int=1; i<=numberOfSeries; i++) { 
 			if (i>num){
-				HRule(piano.getChildByName("sep"+i)).move(HRule(piano.getChildByName("sep"+i)).x,HRule(piano.getChildByName("sep"+i)).y-38);
-				Label(piano.getChildByName("lblSerieNum"+i)).move(Label(piano.getChildByName("lblSerieNum"+i)).x,Label(piano.getChildByName("lblSerieNum"+i)).y-38);
+				HRule(piano.getChildByName("sep"+i)).move(HRule(piano.getChildByName("sep"+i)).x,HRule(piano.getChildByName("sep"+i)).y-68);
+				Label(piano.getChildByName("lblSerieNum"+i)).move(Label(piano.getChildByName("lblSerieNum"+i)).x,Label(piano.getChildByName("lblSerieNum"+i)).y-68);
 				Label(piano.getChildByName("lblSerieNum"+i)).text="Serie " + (i-1) + " :";
-				ColorPicker(piano.getChildByName("cp"+i)).move(ColorPicker(piano.getChildByName("cp"+i)).x,ColorPicker(piano.getChildByName("cp"+i)).y-38);
-				ComboBox(piano.getChildByName("cbyAxis"+i)).move(ComboBox(piano.getChildByName("cbyAxis"+i)).x,ComboBox(piano.getChildByName("cbyAxis"+i)).y-38);
-				CheckBox(piano.getChildByName("chkRemove"+i)).move(CheckBox(piano.getChildByName("chkRemove"+i)).x,CheckBox(piano.getChildByName("chkRemove"+i)).y-38);
+				ColorPicker(piano.getChildByName("cp"+i)).move(ColorPicker(piano.getChildByName("cp"+i)).x,ColorPicker(piano.getChildByName("cp"+i)).y-68);
+				ComboBox(piano.getChildByName("cbyAxis"+i)).move(ComboBox(piano.getChildByName("cbyAxis"+i)).x,ComboBox(piano.getChildByName("cbyAxis"+i)).y-68);
+				CheckBox(piano.getChildByName("chkRemove"+i)).move(CheckBox(piano.getChildByName("chkRemove"+i)).x,CheckBox(piano.getChildByName("chkRemove"+i)).y-68);
+				ComboBox(piano.getChildByName("cbCartSerie"+i)).move(ComboBox(piano.getChildByName("cbCartSerie"+i)).x,ComboBox(piano.getChildByName("cbCartSerie"+i)).y-68);
+				ComboBox(piano.getChildByName("cbCartForm"+i)).move(ComboBox(piano.getChildByName("cbCartForm"+i)).x,ComboBox(piano.getChildByName("cbCartForm"+i)).y-68);
 				
 				piano.getChildByName("sep"+i).name="sep"+(i-1);
 				piano.getChildByName("lblSerieNum"+i).name="lblSerieNum"+(i-1);
 				piano.getChildByName("cp"+i).name="cp"+(i-1);
 				piano.getChildByName("cbyAxis"+i).name="cbyAxis"+(i-1);
 				piano.getChildByName("chkRemove"+i).name="chkRemove"+(i-1);
+				piano.getChildByName("cbCartSerie"+i).name="cbCartSerie"+(i-1);
+				piano.getChildByName("cbCartForm"+i).name="cbCartForm"+(i-1);
 			}
 		}
-		btnAddNewSerie.move(btnAddNewSerie.x,btnAddNewSerie.y-38);
-		hrEnd.move(hrEnd.x,hrEnd.y-38);
+		btnAddNewSerie.move(btnAddNewSerie.x,btnAddNewSerie.y-68);
+		hrEnd.move(hrEnd.x,hrEnd.y-68);
 		
 		numberOfSeries=numberOfSeries-1;
 		
@@ -256,14 +311,17 @@
 			chkGrid.visible=false;
 		}
 		
+		
 		//show or hide color picker
 		if (myChart.chart.(@Type==strChartType).Properties.Property.(@name=="Fill").length() !=0)
 		{
-			// lblColor1.visible=true;
-			cp1.visible=true;
+			for (var i:int=1; i<=numberOfSeries; i++) { 
+				piano.getChildByName("cp"+i).visible=true;
+			}
 		}else{
-			// lblColor1.visible=false;
-			cp1.visible=false;
+			for (var i:int=1; i<=numberOfSeries; i++) { 
+				piano.getChildByName("cp"+i).visible=false;
+			}
 		}
 		
 		//show or hide Display
@@ -275,7 +333,6 @@
 			lblDisplay.visible=false;
 			cbDisplay.visible=false;
 		}
-		
 		
 		drawChart(strChartType);
     }
@@ -304,6 +361,57 @@
     	refreshChart();
     }
     
+    /*public function FindMinMax():void { 
+		var AxisAttributes:XMLList = xmlData.children().attributes()
+		var arrValues:Array = new Array();
+		//Alert.show(AxisAttributes.toXMLString(), 'Alert Box',mx.controls.Alert.OK);
+		var i:int = 0;
+		var n:String = "";
+		for each (var axisElements:XML in AxisAttributes) { 
+			//Alert.show(axisElements.toXMLString(), 'Alert Box',mx.controls.Alert.OK);
+		n = axisElements.name();	
+  		if (n == cbyAxis1.selectedLabel.toString()) {
+  			arrValues[i]=int(axisElements.toXMLString());
+  			i++
+			}
+		} 
+		arrValues.sort(Array.NUMERIC);
+		minValue=arrValues[0];
+		maxValue=arrValues[arrValues.length-1];
+		maxSlideValue=arrValues[arrValues.length-1];
+		//Alert.show(minValue.toString(), 'Alert Box',mx.controls.Alert.OK);
+		//Alert.show(maxValue.toString(), 'Alert Box',mx.controls.Alert.OK);	
+	}*/
+	
+	public function FindMinMax():void { 
+		var AxisAttributes:XMLList = xmlData.children().attributes()
+		var arrValues:Array = new Array();
+		//Alert.show(AxisAttributes.toXMLString(), 'Alert Box',mx.controls.Alert.OK);
+		var i:int = 0;
+		var n:String = "";
+		var serieyField:String
+		for (num=1; num<=numberOfSeries; num++) {
+    		serieyField=ComboBox(piano.getChildByName("cbyAxis"+num)).selectedLabel.toString();
+			for each (var axisElements:XML in AxisAttributes) { 
+			//Alert.show(axisElements.toXMLString(), 'Alert Box',mx.controls.Alert.OK);
+				n = axisElements.name();	
+		  		if (n == serieyField) {
+		  			arrValues[i]=int(axisElements.toXMLString());
+		  			i++
+				}
+			} 
+		}
+		
+		arrValues.sort(Array.NUMERIC);
+		minValue=arrValues[0];
+		maxValue=arrValues[arrValues.length-1];
+		maxSlideValue=int(arrValues[arrValues.length-1])*2//*numberOfSeries;
+		maxSlideDefault=int(arrValues[arrValues.length-1]);
+		//Alert.show(minValue.toString(), 'Alert Box',mx.controls.Alert.OK);
+		//Alert.show(maxValue.toString(), 'Alert Box',mx.controls.Alert.OK);	
+	}
+	
+	
     private function yAxisTypeChange(event:Event):void{
     	if(event.target.selectedLabel.toString()=="Category"){
     		lblyMin1.visible=false;
@@ -319,6 +427,11 @@
     		// txtyMin1.visible=true;
     		minMaxSlider.visible=true;
     		txtyInterval1.visible=true;
+    		FindMinMax();
+    		//Alert.show(maxValue.toString(), 'Alert Box',mx.controls.Alert.OK);
+    		//Alert.show(minValue.toString(), 'Alert Box',mx.controls.Alert.OK);
+    		//minMaxSlider.maximum=maxValue;
+    		//minMaxSlider.minimum=minValue;
     	}
     	txtxMin1.text="";
     	txtxMax1.text="";
@@ -328,19 +441,60 @@
     
     private function refreshChart():void {
     	var strChartType:String = cbChartType.selectedLabel.toString()
-		drawChart(strChartType);
+    	drawChart(strChartType);
     }
     
      private function refreshChartEvent(event:Event):void {
     	var strChartType:String = cbChartType.selectedLabel.toString()
-		drawChart(strChartType);
+    	drawChart(strChartType);
+    }
+  
+    private function refreshCartChartEvent(event:Event):void {
+    	num=event.target.name.substr(11);
+    	if(event.target.selectedLabel.toString()=="Area" || event.target.selectedLabel.toString()=="Line")
+    	{
+    		if (num==1)
+				{
+					Label(piano.getChildByName("lblCatForm"+num)).visible=true;
+				}
+				
+    		ComboBox(piano.getChildByName("cbCartForm"+num)).visible=true;
+    	}else{
+    		if (num==1)
+				{
+					Label(piano.getChildByName("lblCatForm"+num)).visible=false;
+				}
+				
+    		ComboBox(piano.getChildByName("cbCartForm"+num)).visible=false
+    	}
+    	refreshChart();
     }
     
+   private function showhideCartesianSerie(chartType:String):void{
+   		for (num=1; num<=numberOfSeries; num++) {
+    		if (cbChartType.selectedLabel.toString()=="Cartesian")
+			{
+				ComboBox(piano.getChildByName("cbCartSerie"+num)).visible=true;
+			}else{
+				ComboBox(piano.getChildByName("cbCartSerie"+num)).visible=false;
+				ComboBox(piano.getChildByName("cbCartForm"+num)).visible=false
+				if (num==1)
+				{
+					Label(piano.getChildByName("lblCatForm"+num)).visible=false;
+				}
+				
+			}
+		}
+   }
+   
+   
    
     //function qui créé le graphique en fonction des paramètres séléctionnés depuis le tableau de bord
     private function drawChart(strChartType:String):void {
-    	p1.removeAllChildren()
-    	
+    	FindMinMax();
+    	p1.removeAllChildren();
+    	showhideCartesianSerie(strChartType);
+		//showhideCartesianForm(strChartType)
     	// X and Y fields
     	xField="@"+cbxAxis1.selectedLabel.toString();
     	DisplayType=cbDisplay.selectedLabel.toString();
@@ -382,6 +536,9 @@
 		        break;
 		    case "GeoMap" : 
 		        drawGeoMap();
+		        break; 
+		   case "Cartesian" : 
+		        drawCartesianChart();
 		        break; 
 		}
 		//Alert.show(typeof(myChart), 'Alert Box',mx.controls.Alert.OK);
@@ -461,7 +618,7 @@
 					Chart.horizontalAxis = AxisCat;
 		    	}else{
 		    		//AxisCat.categoryField=yField;//CategoryyField;
-		    		Chart.verticalAxis = AxisCat;
+		    		//Chart.verticalAxis = AxisCat;
 		    	}
 		        break; 
 		    case "Linear" : 
@@ -501,7 +658,15 @@
 		serie.xField=xField;
 		serie.yField=syField;
 		serie.displayName = syField.substring(1,syField.length);
-		serie.setStyle('form', cbForm.text);
+		
+		if(cbChartType.selectedLabel.toString()=="Cartesian")
+		{
+			serie.setStyle('form', ComboBox(piano.getChildByName("cbCartForm"+num)).text)
+		}else{
+			serie.setStyle('form', cbForm.text);
+		}
+		
+		
 		f=new SolidColor(ColorPicker(piano.getChildByName("cp"+num)).selectedColor,1);
 		s = new Stroke(ColorPicker(piano.getChildByName("cp"+num)).selectedColor,1);
 		if(chartType=="Area"){
@@ -791,17 +956,117 @@
       myCircle.toolTip="Spain"
       ms.addChild(myCircle);
 	  myGeoMap.addChild(ms);
-
     }
 
-   
+   	private function drawCartesianChart():void{
+   		var myCartesianSeries:Array=new Array();
+    	var myCartesianChart:CartesianChart;
+    	
+    	myCartesianChart = new CartesianChart();
+        myCartesianChart.showDataTips = chkDataType.selected;
+        myCartesianChart.dataProvider=dataListCollection;//xmlDataModif.children()//xmlData.children();//slicedResults;////expenses;
+    	
+		for (num=1; num<=numberOfSeries; num++) {
+			yField="@"+  ComboBox(piano.getChildByName("cbyAxis"+num)).selectedLabel.toString();
+				
+			switch (ComboBox(piano.getChildByName("cbCartSerie"+num)).selectedLabel.toString()) { 
+		    case "Area" : 
+		    	var cartAreaSerie:AreaSeries;
+		    	cartAreaSerie=new AreaSeries();
+		    	setSerie(cartAreaSerie,'Area',yField,num);
+				myCartesianSeries.push(cartAreaSerie);
+		    	break; 
+		    case "Bar" : 
+		    	var cartBarSerie:BarSeries;
+		    	cartBarSerie=new BarSeries();
+		    	setSerie(cartBarSerie,'Bar',yField,num);
+				myCartesianSeries.push(cartBarSerie);
+		        break; 
+		    case "Bubble" : 
+		        var cartBubbleSerie:BubbleSeries;
+		    	cartBubbleSerie=new BubbleSeries();
+		    	setSerie(cartBubbleSerie,'Bubble',yField,num);
+				myCartesianSeries.push(cartBubbleSerie);
+		        break; 
+		    case "Candlestick" : 
+		        var cartCandlestickSerie:CandlestickSeries;
+		    	cartCandlestickSerie=new CandlestickSeries();
+		    	setSerie(cartCandlestickSerie,'Candlestick',yField,num);
+				myCartesianSeries.push(cartCandlestickSerie);
+		        break; 
+		    case "Column" : 
+		        var cartColumnSerie:ColumnSeries;
+		    	cartColumnSerie=new ColumnSeries();
+		    	setSerie(cartColumnSerie,'Column',yField,num);
+				myCartesianSeries.push(cartColumnSerie);
+		        break; 
+		    case "HLOC" : 
+		        var cartHLOCSerie:HLOCSeries;
+		    	cartHLOCSerie=new HLOCSeries();
+		    	setSerie(cartHLOCSerie,'HLOC',yField,num);
+				myCartesianSeries.push(cartHLOCSerie);
+		        break; 
+		    case "Line" : 
+		    	var cartLineSerie:LineSeries;
+		    	cartLineSerie=new LineSeries();
+		    	setSerie(cartLineSerie,'Line',yField,num);
+				myCartesianSeries.push(cartLineSerie);
+		        break; 
+		    case "Plot" : 
+		        var cartPlotSerie:PlotSeries;
+		    	cartPlotSerie=new PlotSeries();
+		    	setSerie(cartPlotSerie,'Plot',yField,num);
+				myCartesianSeries.push(cartPlotSerie);
+		        break;
+		}
+	    		
+			}
+		
+		// Define the horizontal axis.
+       setTypeAxis(myCartesianChart,cbxAxisType1.text,"h");
+	   // Define the vertical axis.
+	   setTypeAxis(myCartesianChart,cbyAxisType1.text,"v");
+	   
+	   
+		myCartesianChart.series = myCartesianSeries;
+		
+		resizeChart(myCartesianChart);
+		p1.addChild(myCartesianChart);
+		
+		createLegend(myCartesianChart);   
+		addGridLines(myCartesianChart);
+   	}
     
     
+    public function sliceResults(): void {
+		
+		/*var minSlider:int=int(minMaxSlider.values[0])
+		var maxSlider:int=int(minMaxSlider.values[1])
+		var newRootXml:XML = <root/>;
+		
+		for (var i:int = 0; i < dataList.length(); i++) 
+		{ 
+			var eachProduct:XML = dataList[i];
+			
+			if((i>minSlider) && (i<maxSlider)){
+				Alert.show(eachProduct.toXMLString(), 'Alert Box',mx.controls.Alert.OK);
+				newRootXml.appendChild(eachProduct);
+			}
+		} 
+		dataList=newRootXml.children();
+		dataListCollection=new XMLListCollection(dataList);
+		dataListCollection.refresh();
+		//Alert.show(dataList.toString(), 'Alert Box',mx.controls.Alert.OK);
+		*/
+		refreshChart();
+    }
     
   /* function getDataTip(obj) {
             var item=obj.hitData.item;
             return "<b>"+item.month+"</b><br>Profit: "+item.profit+"<br>Expenses: "+item.expenses+"<br>Amount: "+item.amount;
         }*/
+        
+        
 
 ]]>
 </mx:Script>
@@ -811,7 +1076,9 @@
 	<mx:WipeRight id="wipeRight" duration="1000" />
 	
 	<mx:Number id="numberItems"/>
-	<mx:HBox id="DivNavRB" width="100%" height="100%" paddingBottom="5" horizontalGap="5">
+	<mx:Number id="maxSlideValue"/>
+	<mx:Number id="maxSlideDefault"/>
+	<mx:HBox id="DivNavRB" width="100%" height="100%" paddingBottom="5" horizontalGap="5" y="1" x="0">
 		<mx:HBox id="sideBar" width="300" height="100%" horizontalGap="0" >
 	<ui:Grip id="navGrip" 
 				width="17" height="100%" horizontalAlign="center"
@@ -841,7 +1108,11 @@
 		<mx:CheckBox x="10" y="95" label="Show DataTips" id="chkDataType" enabled="true" selected="true" click="refreshChartEvent(event);" />
 		<mx:CheckBox x="10" y="117" label="Show Legend" id="chkLegend" enabled="true" selected="true" click="refreshChartEvent(event);" />
 		<mx:CheckBox x="10" y="139" label="Show Grid" id="chkGrid" enabled="true" selected="false" click="refreshChartEvent(event);" />
-		<mx:ColorPicker id="cp1" x="57" y="166" selectedColor="0x6699CC" change="refreshChartEvent(event);"  width="17" height="17"/>
+		<mx:ColorPicker id="cp1" x="53" y="166" selectedColor="0x6699CC" change="refreshChartEvent(event);"  width="17" height="17"/>
+		<mx:ComboBox id="cbCartSerie1" change="refreshCartChartEvent(event);" prompt="Select..." x="73" y="163"/>
+		<mx:Label id="lblCatForm1" x="3" y="370" text="Form :" visible="false"/>
+		<mx:ComboBox id="cbCartForm1"  change="refreshChartEvent(event);" visible="false" x="73" y="368"/>
+		
 		<mx:Label x="3" y="62" text="Display :" id="lblDisplay" visible="false"/>
 		<mx:ComboBox x="73" y="60" id="cbDisplay" change="refreshChartEvent(event);" visible="false"/>
 		<mx:Label x="4" y="244" text="min" name="lblxMin1" id="lblxMin1" visible="false"/>
@@ -855,23 +1126,34 @@
 		<mx:Label x="150" y="324" text="Interval" name="lblyInterval1" id="lblyInterval1" visible="false"/>
 		<mx:NumericStepper x="197" y="322" width="36" name="txtyInterval1" id="txtyInterval1" visible="false" change="refreshChartEvent(event);" />
 		<!-- This is best to use for setting the min and max values -->
-		<mx:HBox width="100%" x="4" y="350" >
+		<mx:HBox width="100%" x="4" y="345" >
 		<mx:Label text="min" name="lblyMin1" id="lblyMin1" visible="false"/>	
 		
-		<flexlib:HSlider  id="minMaxSlider"
+		<!--<flexlib:HSlider  id="minMaxSlider"
 							trackHighlightSkin="flexlib.skins.SliderThumbHighlightSkin"
 							allowTrackClick="true" allowThumbOverlap="true" 
 							liveDragging="true" 
 							showDataTip="true"  dataTipPlacement="bottom"   dataTipOffset="3"
 							showTrackHighlight="true"
-							thumbCount="2"  width="100%" 
-							snapInterval="1" visible="false" change="refreshChartEvent(event);"
+							thumbCount="2"  width="100%" change="sliceResults();"
+							snapInterval="1" visible="false" 
 							values="{[xmlData.length()/4, xmlData.length()]}"
-						/>
+						/>--><!--change="refreshChartEvent(event);"-->
+		<flexlib:HSlider  id="minMaxSlider"
+							trackHighlightSkin="flexlib.skins.SliderThumbHighlightSkin"
+							allowTrackClick="true" allowThumbOverlap="true" 
+							liveDragging="true" 
+							showDataTip="true"  dataTipPlacement="bottom" dataTipOffset="3"
+							showTrackHighlight="true"
+							thumbCount="2"  width="100%" change="refreshChartEvent(event);"
+							snapInterval="1" visible="false" minimum="0" maximum="{maxSlideValue}" 
+							values="{[0, maxSlideDefault]}"
+							
+						/><!--xmlData.length()-1-->
 		<mx:Label text="max" name="lblyMax1" id="lblyMax1" visible="false"/>
 		</mx:HBox>
-		<mx:HRule x="10" y="370" width="210" id="hrEnd"/>
-		<mx:Button x="73" y="380" label="Add new Serie" id="btnAddNewSerie" click="addSeries()"/>
+		<mx:HRule x="10" y="397" width="210" id="hrEnd"/>
+		<mx:Button x="73" y="407" label="Add new Serie" id="btnAddNewSerie" click="addSeries()"/>
 
 	</mx:Canvas>
 	</mx:Accordion>
