@@ -114,18 +114,32 @@
 			}
 			
 			/**
-			 * event handler for HTTPService, does all the remaining required
-			 * initialisation */
+			 * event handler for HTTPService,
+			 * reads the data and inits the Graph object.
+			 * calls initVGraph for the rest of the initialisation.
+			 * */
 			private function initData(xmlNames:Array, xmldata:XML = null):void {
 				
 				/* first load the data into our array collection */
 				initLocalData(xmldata.elements());
 				
-				/* set the default edge renderer */
-				changeEdgeRenderer();
+			
 				
 				/* init a graph object with the XML data */
 				graph = new org.un.flex.graphLayout.data.Graph("XMLAsDocsGraph",false,xmldata,xmlNames);
+				
+				initVGraph();
+			}
+				
+			/**
+			 * initialise the vgraph freshly. This relys on other
+			 * globally available variables and does a reinit of the
+			 * VGraph 
+			 */
+			private function initVGraph():void {
+				
+				/* set the default edge renderer */
+				changeEdgeRenderer();
 				
 				/* set the graph in the VGraph object, this automatically
 				 * initializes the VGraph items */
