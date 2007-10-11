@@ -64,8 +64,10 @@
 	public var numberOfSeries:int;
 	public var num:int=1;
 	public var DisplayType:String;
-	public var minValue:int;
-	public var maxValue:int;
+	public var minxValue:int;
+	public var maxxValue:int;
+	public var minyValue:int;
+	public var maxyValue:int;
 	
 	public function ParseAxis(Axis:XML):void { 
 		var AxisAttributes:XMLList = Axis.children().attributes(); 
@@ -338,26 +340,67 @@
     }
     
     
+	
+	public function FindMinMax(axe:String):void { 
+		var AxisAttributes:XMLList = xmlData.children().attributes()
+		var arrValues:Array = new Array();
+		//Alert.show(AxisAttributes.toXMLString(), 'Alert Box',mx.controls.Alert.OK);
+		var i:int = 0;
+		var n:String = "";
+		var serieField:String
+		for (num=1; num<=numberOfSeries; num++) {
+			if(axe=="x"){
+				serieField=ComboBox(piano.getChildByName("cbxAxis1")).selectedLabel.toString();
+			}else{
+    			serieField=ComboBox(piano.getChildByName("cbyAxis"+num)).selectedLabel.toString();
+			}
+			for each (var axisElements:XML in AxisAttributes) { 
+			//Alert.show(axisElements.toXMLString(), 'Alert Box',mx.controls.Alert.OK);
+				n = axisElements.name();	
+		  		if (n == serieField) {
+		  			arrValues[i]=int(axisElements.toXMLString());
+		  			i++
+				}
+			} 
+		}
+		
+		arrValues.sort(Array.NUMERIC);
+		if(axe=="x"){
+			minxValue=arrValues[0];
+			maxxValue=arrValues[arrValues.length-1];
+			maxxSlideValue=int(arrValues[arrValues.length-1])//*numberOfSeries;
+			maxxSlideDefault=int(arrValues[arrValues.length-1]);	
+			minMaxxSlider.minimum=minxValue;
+		}else{
+			minyValue=arrValues[0];
+			maxyValue=arrValues[arrValues.length-1];
+			maxySlideValue=int(arrValues[arrValues.length-1])*2//*numberOfSeries;
+			maxySlideDefault=int(arrValues[arrValues.length-1]);
+		}
+	}
     
  private function xAxisTypeChange(event:Event):void{
     	if(event.target.selectedLabel.toString()=="Category"){
     		lblxMin1.visible=false;
     		lblxMax1.visible=false;
     		lblxInterval1.visible=false;
-    		txtxMin1.visible=false;
-    		txtxMax1.visible=false;
+    		//txtxMin1.visible=false;
+    		//txtxMax1.visible=false;
+    		minMaxxSlider.visible=false;
     		txtxInterval1.visible=false;
     	}else{
     		lblxMin1.visible=true;
     		lblxMax1.visible=true;
     		lblxInterval1.visible=true;
-    		txtxMin1.visible=true;
-    		txtxMax1.visible=true;
+    		//txtxMin1.visible=true;
+    		//txtxMax1.visible=true;
+    		minMaxxSlider.visible=true;
     		txtxInterval1.visible=true;
+    		FindMinMax("x");
     	}
-    	txtxMin1.text="";
-    	txtxMax1.text="";
-    	txtxInterval1.text="";
+    	//txtxMin1.text="";
+    	//txtxMax1.text="";
+    	//txtxInterval1.text="";
     	refreshChart();
     }
     
@@ -383,33 +426,7 @@
 		//Alert.show(maxValue.toString(), 'Alert Box',mx.controls.Alert.OK);	
 	}*/
 	
-	public function FindMinMax():void { 
-		var AxisAttributes:XMLList = xmlData.children().attributes()
-		var arrValues:Array = new Array();
-		//Alert.show(AxisAttributes.toXMLString(), 'Alert Box',mx.controls.Alert.OK);
-		var i:int = 0;
-		var n:String = "";
-		var serieyField:String
-		for (num=1; num<=numberOfSeries; num++) {
-    		serieyField=ComboBox(piano.getChildByName("cbyAxis"+num)).selectedLabel.toString();
-			for each (var axisElements:XML in AxisAttributes) { 
-			//Alert.show(axisElements.toXMLString(), 'Alert Box',mx.controls.Alert.OK);
-				n = axisElements.name();	
-		  		if (n == serieyField) {
-		  			arrValues[i]=int(axisElements.toXMLString());
-		  			i++
-				}
-			} 
-		}
-		
-		arrValues.sort(Array.NUMERIC);
-		minValue=arrValues[0];
-		maxValue=arrValues[arrValues.length-1];
-		maxSlideValue=int(arrValues[arrValues.length-1])*2//*numberOfSeries;
-		maxSlideDefault=int(arrValues[arrValues.length-1]);
-		//Alert.show(minValue.toString(), 'Alert Box',mx.controls.Alert.OK);
-		//Alert.show(maxValue.toString(), 'Alert Box',mx.controls.Alert.OK);	
-	}
+	
 	
 	
     private function yAxisTypeChange(event:Event):void{
@@ -418,24 +435,24 @@
     		lblyMax1.visible=false;
     		lblyInterval1.visible=false;
     		// txtyMin1.visible=false;
-    		minMaxSlider.visible=false;
+    		minMaxySlider.visible=false;
     		txtyInterval1.visible=false;
     	}else{
     		lblyMin1.visible=true;
     		lblyMax1.visible=true;
     		lblyInterval1.visible=true;
     		// txtyMin1.visible=true;
-    		minMaxSlider.visible=true;
+    		minMaxySlider.visible=true;
     		txtyInterval1.visible=true;
-    		FindMinMax();
+    		FindMinMax("y");
     		//Alert.show(maxValue.toString(), 'Alert Box',mx.controls.Alert.OK);
     		//Alert.show(minValue.toString(), 'Alert Box',mx.controls.Alert.OK);
-    		//minMaxSlider.maximum=maxValue;
-    		//minMaxSlider.minimum=minValue;
+    		//minMaxySlider.maximum=maxValue;
+    		//minMaxySlider.minimum=minValue;
     	}
-    	txtxMin1.text="";
-    	txtxMax1.text="";
-    	txtxInterval1.text="";
+    	//txtxMin1.text="";
+    	//txtxMax1.text="";
+    	//txtxInterval1.text="";
     	refreshChart();
     }
     
@@ -491,7 +508,8 @@
    
     //function qui créé le graphique en fonction des paramètres séléctionnés depuis le tableau de bord
     private function drawChart(strChartType:String):void {
-    	FindMinMax();
+    	FindMinMax("x");
+    	FindMinMax("y");
     	p1.removeAllChildren();
     	showhideCartesianSerie(strChartType);
 		//showhideCartesianForm(strChartType)
@@ -582,21 +600,21 @@
 	
 	public function setMinMaxInt(axis:Object,orientation:String):void{
 		if(orientation=="h"){
-			if (txtxMax1.text!=""){
-    			axis.maximum=txtxMax1.text;
+			if (minMaxxSlider.values[1]!=""){
+    			axis.maximum=minMaxxSlider.values[1];
     		}
-    		if (txtxMin1.text!=""){
-    			axis.minimum=txtxMin1.text;
+    		if (minMaxxSlider.values[0]!=""){
+    			axis.minimum=minMaxxSlider.values[0];
     		}
-    		if (txtxInterval1.text!=""){
-    			axis.interval=txtxInterval1.text;
+    		if (txtxInterval1.value.toString()!=""){
+    			axis.interval=txtxInterval1.value.toString();
     		}
 		}else{
-			if (minMaxSlider.values[1]!=""){
-    			axis.maximum=minMaxSlider.values[1];
+			if (minMaxySlider.values[1]!=""){
+    			axis.maximum=minMaxySlider.values[1];
     		}
-    		if (minMaxSlider.values[0]!=""){
-    			axis.minimum=minMaxSlider.values[0];
+    		if (minMaxySlider.values[0]!=""){
+    			axis.minimum=minMaxySlider.values[0];
     		}
     		if (txtyInterval1.value.toString()!=""){
     			axis.interval=txtyInterval1.value.toString();
@@ -1040,8 +1058,8 @@
     
     public function sliceResults(): void {
 		
-		/*var minSlider:int=int(minMaxSlider.values[0])
-		var maxSlider:int=int(minMaxSlider.values[1])
+		/*var minSlider:int=int(minMaxySlider.values[0])
+		var maxSlider:int=int(minMaxySlider.values[1])
 		var newRootXml:XML = <root/>;
 		
 		for (var i:int = 0; i < dataList.length(); i++) 
@@ -1076,8 +1094,10 @@
 	<mx:WipeRight id="wipeRight" duration="1000" />
 	
 	<mx:Number id="numberItems"/>
-	<mx:Number id="maxSlideValue"/>
-	<mx:Number id="maxSlideDefault"/>
+	<mx:Number id="maxxSlideValue"/>
+	<mx:Number id="maxxSlideDefault"/>
+	<mx:Number id="maxySlideValue"/>
+	<mx:Number id="maxySlideDefault"/>
 	<mx:HBox id="DivNavRB" width="100%" height="100%" paddingBottom="5" horizontalGap="5" y="1" x="0">
 		<mx:HBox id="sideBar" width="300" height="100%" horizontalGap="0" >
 	<ui:Grip id="navGrip" 
@@ -1115,12 +1135,32 @@
 		
 		<mx:Label x="3" y="62" text="Display :" id="lblDisplay" visible="false"/>
 		<mx:ComboBox x="73" y="60" id="cbDisplay" change="refreshChartEvent(event);" visible="false"/>
-		<mx:Label x="4" y="244" text="min" name="lblxMin1" id="lblxMin1" visible="false"/>
+		<!--<mx:Label x="4" y="244" text="min" name="lblxMin1" id="lblxMin1" visible="false"/>
 		<mx:TextInput x="29" y="242" name="txtxMin1" id="txtxMin1" width="36" visible="false" change="refreshChartEvent(event);"/>
 		<mx:Label x="74" y="244" text="max" name="lblxMax1" id="lblxMax1" visible="false"/>
 		<mx:Label x="150" y="244" text="Interval" name="lblxInterval1" id="lblxInterval1" visible="false"/>
 		<mx:TextInput x="103" y="242" width="36" name="txtxMax1" id="txtxMax1" visible="false" change="refreshChartEvent(event);"/>
-		<mx:TextInput x="197" y="242" width="36" name="txtxInterval1" id="txtxInterval1" visible="false" change="refreshChartEvent(event);"/>
+		<mx:TextInput x="197" y="242" width="36" name="txtxInterval1" id="txtxInterval1" visible="false" change="refreshChartEvent(event);"/>-->
+		
+		<mx:Label x="150" y="232" text="Interval" name="lblxInterval1" id="lblxInterval1" visible="false"/>
+		<mx:NumericStepper x="197" y="230" width="36" name="txtxInterval1" id="txtxInterval1" visible="false" change="refreshChartEvent(event);" />
+		<mx:HBox width="100%" x="4" y="248" >
+		<mx:Label text="min" name="lblxMin1" id="lblxMin1" visible="false"/>	
+		
+		
+		<flexlib:HSlider  id="minMaxxSlider"
+							trackHighlightSkin="flexlib.skins.SliderThumbHighlightSkin"
+							allowTrackClick="true" allowThumbOverlap="true" 
+							liveDragging="true" 
+							showDataTip="true"  dataTipPlacement="bottom" dataTipOffset="3"
+							showTrackHighlight="true"
+							thumbCount="2"  width="100%" change="refreshChartEvent(event);"
+							snapInterval="1" visible="false"  maximum="{maxxSlideValue}" 
+							values="{[0, maxxSlideDefault]}"
+							
+						/><!--xmlData.length()-1-->
+		<mx:Label text="max" name="lblxMax1" id="lblxMax1" visible="false"/>
+		</mx:HBox>
 		
 		
 		<mx:Label x="150" y="324" text="Interval" name="lblyInterval1" id="lblyInterval1" visible="false"/>
@@ -1129,7 +1169,7 @@
 		<mx:HBox width="100%" x="4" y="345" >
 		<mx:Label text="min" name="lblyMin1" id="lblyMin1" visible="false"/>	
 		
-		<!--<flexlib:HSlider  id="minMaxSlider"
+		<!--<flexlib:HSlider  id="minMaxySlider"
 							trackHighlightSkin="flexlib.skins.SliderThumbHighlightSkin"
 							allowTrackClick="true" allowThumbOverlap="true" 
 							liveDragging="true" 
@@ -1139,15 +1179,15 @@
 							snapInterval="1" visible="false" 
 							values="{[xmlData.length()/4, xmlData.length()]}"
 						/>--><!--change="refreshChartEvent(event);"-->
-		<flexlib:HSlider  id="minMaxSlider"
+		<flexlib:HSlider  id="minMaxySlider"
 							trackHighlightSkin="flexlib.skins.SliderThumbHighlightSkin"
 							allowTrackClick="true" allowThumbOverlap="true" 
 							liveDragging="true" 
 							showDataTip="true"  dataTipPlacement="bottom" dataTipOffset="3"
 							showTrackHighlight="true"
 							thumbCount="2"  width="100%" change="refreshChartEvent(event);"
-							snapInterval="1" visible="false" minimum="0" maximum="{maxSlideValue}" 
-							values="{[0, maxSlideDefault]}"
+							snapInterval="1" visible="false" minimum="0" maximum="{maxySlideValue}" 
+							values="{[0, maxySlideDefault]}"
 							
 						/><!--xmlData.length()-1-->
 		<mx:Label text="max" name="lblyMax1" id="lblyMax1" visible="false"/>
