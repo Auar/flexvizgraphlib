@@ -87,7 +87,40 @@
 						<Property name="Fill" />
 			</Properties>
 		</chart>
-		<chart Type="Cartesian" Class="CartesianChart" Series="AreaSeries" />
+		<chart Type="Cartesian" Class="CartesianChart">
+			<Properties>
+						<Property name="Series">
+							<Series>
+								<Serie>Area</Serie>
+								<Serie>Bar</Serie>
+								<Serie>Bubble</Serie>
+								<Serie>Candlestick</Serie>
+								<Serie>Column</Serie>
+								<Serie>HLOC</Serie>
+								<Serie>Line</Serie>
+								<Serie>Plot</Serie>
+							</Series>
+						</Property>
+						<Property name="Axis">
+								<axis>Category</axis>
+								<axis>Linear</axis>
+								<axis>Log</axis>
+								<axis>DateTime</axis>
+						</Property>
+						<Property name="cartForm">
+								<cartForms>
+			            			<cartForm>segment</cartForm>
+			            			<cartForm>step</cartForm>
+			            			<cartForm>reverseStep</cartForm>
+			            			<cartForm>vertical</cartForm>
+			            			<cartForm>horizontal</cartForm>
+			            			<cartForm>curve</cartForm>
+								</cartForms>
+						</Property>
+						<Property name="Fill" />
+						<Property name="GridLines" />
+			</Properties>
+		</chart>
 		<chart Type="Column" Class="ColumnChart" Series="ColumnSeries">
 			<Properties>
 						<Property name="yField" />
