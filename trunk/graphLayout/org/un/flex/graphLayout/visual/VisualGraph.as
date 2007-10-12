@@ -423,12 +423,11 @@ package org.un.flex.graphLayout.visual {
 		 * */
 		public function set graph(g:IGraph):void {
 			
-			
-			
 			if(_graph != null) {
 				trace("WARNING: _graph in VisualGraph was not null when new graph was assigned."+
 					" Some cleanup done, but this may leak memory");
 				/* this cleanes the VGraph so we are pristine */
+				clearHistory();
 				purgeVGraph();
 				_graph.purgeGraph();
 			}
@@ -439,11 +438,16 @@ package org.un.flex.graphLayout.visual {
 			/* better safe than sorry even if it is an empty one */
 			initFromGraph();
 			
-			/* we also need a new root node */
+			/* invalidate old root node */
 			_currentRootVNode = null;
 			
+			/* now use the first node as the new default root node */
+			if(_graph.nodes.length > 0) {
+				_currentRootVNode = (_graph.nodes[0] as INode).vnode;
+			}
+			
 			trace("WARNING: setting a new graph object invalidates the root node,"+
-				" you need to set it afterwards to avoid crashes");
+				" a new default root node was set, but it may not be what you want");
 		}
 
 		/**
@@ -452,23 +456,6 @@ package org.un.flex.graphLayout.visual {
 		public function get graph():IGraph {
 			return _graph;
 		}
-			
-		
-		/**
-		 * @inheritDoc
-		 * *
-		public function get globalEdgeSettings():Object {
-			return _globalEdgeSettings; // shouldn't we rather pass a copy XXX
-		}
-		 * */
-		
-		/**
-		 * @private
-		 * *	
-		public function set globalEdgeSettings(s:Object):void {
-			_globalEdgeSettings = s;
-		}
-		 * */
 
 		/**
 		 * @inheritDoc
@@ -735,15 +722,6 @@ package org.un.flex.graphLayout.visual {
 		}
 
 		/**
-		 * @inheritDoc
-		 * *
-		public function set lineColor(color:int):void {
-			_globalEdgeSettings.color = color;
-			refresh();
-		}
-		 * */
-
-		/**
 		 * This initialises a VGraph from a Graph object.
 		 * I.e. it crates a VNode for every Node found in
 		 * the Graph and a VEdge for every Edge in the Graph.
@@ -973,7 +951,9 @@ package org.un.flex.graphLayout.visual {
 			//trace("linkNodes, created edge "+(e as Object).toString()+" from nodes: "+n1.id+", "+n2.id);
 
 			/* this changes the layout, so we have to do a full redraw */
-			draw();
+			// if we link nodes we may not necesarily want to draw();
+			/* just refresh the edges */
+			refresh();
 			return ve;
 		}
 
@@ -1016,7 +996,9 @@ package org.un.flex.graphLayout.visual {
 			//trace("removed edge: "+e.id+" : "+n1.id+" and "+n2.id);			
 			
 			/* again a full redraw is required */
-			draw();
+			//draw();
+			/* no just refresh the edges */
+			refresh();
 		}
 
 
@@ -1072,7 +1054,7 @@ package org.un.flex.graphLayout.visual {
 			refresh();
 			
 			/* then force a layout pass in the layouter */
-			if(_layouter) {
+			if(_layouter && _currentRootVNode && (_graph.noNodes > 0)) {
 				_layouter.layoutPass();
 			}
 			
@@ -1310,7 +1292,7 @@ package org.un.flex.graphLayout.visual {
 					throw Error("One of the nodes of the checked edge is not visible, but should be!");
 				}
 				
-				/* XXX
+				/* XXX THIS DOES CURRENTLY NO LONGER WORK
 				 * The following controls the colouring but this should
 				 * be optimised and handled more flexible */
 				if(vn1 == _distinguishedNode || vn2 == _distinguishedNode) {
@@ -1348,11 +1330,6 @@ package org.un.flex.graphLayout.visual {
 		 * 
 		 * */
 		private function drawEdge(edge:IEdge, distinguished:Boolean):void {
-			
-			/* another idea would be to let the edge implement the
-			 * edge renderer interface and draw itself, but that would
-			 * make this less modular and interchangeable
-			 * we stick to the separate edge renderer */
 			_edgeRenderer.draw(_drawingSurface.graphics, edge, distinguished, _displayEdgeLabels);
 		}
 		
@@ -2109,6 +2086,7 @@ package org.un.flex.graphLayout.visual {
 			}
 			
 			/* this restarts any layouting */
+			/* maybe not a good idea?? */
 			draw();
 		}
 
@@ -2139,6 +2117,8 @@ package org.un.flex.graphLayout.visual {
 			for each(e in _graph.edges) {
 				_visibleEdges[e] = e;
 			}
+			
+			/* maybe not XXX */
 			draw();
 		}
 	
