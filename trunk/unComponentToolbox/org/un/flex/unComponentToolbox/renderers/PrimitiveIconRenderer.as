@@ -94,8 +94,8 @@ package org.un.flex.unComponentToolbox.renderers {
 			lb = new LinkButton();
 			lb.id = "viewDetails";
 			lb.label = this.data.data.@name;
-			lb.scaleX = parentDocument.scaleFactor;
-			lb.scaleY = parentDocument.scaleFactor;
+			lb.scaleX = parentApplication.scaleFactor;
+			lb.scaleY = parentApplication.scaleFactor;
 			lb.toolTip = "Click to View Details";
 			lb.setStyle("fontWeight","normal");
 			lb.setStyle("rollOverColor",0xcccccc);
@@ -198,8 +198,8 @@ package org.un.flex.unComponentToolbox.renderers {
 			}
 				
 			/* for any _imageObject */
-			_imageObject.scaleX = parentDocument.scaleFactor;
-			_imageObject.scaleY = parentDocument.scaleFactor;
+			_imageObject.scaleX = parentApplication.scaleFactor;
+			_imageObject.scaleY = parentApplication.scaleFactor;
 		}
 		
 		/**
