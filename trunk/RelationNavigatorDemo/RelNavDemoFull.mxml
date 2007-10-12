@@ -145,15 +145,6 @@
 				 * initializes the VGraph items */
 				vgraph.graph = graph;
 
-				
-				/* set the visibility limit options, default 2 */
-				maxDistanceFromCurrent.value = 2;
-				vgraph.maxVisibleDistance = maxDistanceFromCurrent.value;
-				
-				/* enable the history */
-				// showHistory.selected = true;
-				vgraph.showHistory = showHistory.selected;
-
 				/* set the default layouter type */
 				currentLayouterType = "ConcentricRadial";
 
@@ -162,6 +153,14 @@
 
 				/* select a root node, most layouters requires a root node */
 				startRoot = graph.nodeByStringId("vizgraph").vnode;
+				
+				/* set the visibility limit options, default 2 */
+				maxDistanceFromCurrent.value = 2;
+				vgraph.maxVisibleDistance = maxDistanceFromCurrent.value;
+				
+				/* enable the history */
+				// showHistory.selected = true;
+				vgraph.showHistory = showHistory.selected;
 
 				/* init the root history array */
 				rootNodeHistory = new Array;
@@ -180,6 +179,8 @@
 				refreshUI();
 
 				initDone = true;
+		
+				vgraph.draw();
 				
 				/* debug new XML feature */
 				//var testtree:IGTree = graph.getTree(startRoot.node,false,true);
