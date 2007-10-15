@@ -29,10 +29,6 @@
     import mx.charts.events.ChartItemEvent;
     import mx.charts.ChartItem;
     
-    // Treemap
-    import com.flextoolbox.controls.*;
-    import com.flextoolbox.events.*;
-    
     // ILOG
     import mx.graphics.SolidColor;
     import ilog.maps.MapBase;
@@ -75,7 +71,7 @@
 		var n:String = "";
 		for each (var axisElements:XML in AxisAttributes) { 
 		n = axisElements.name();	
-  		if (n.substr(0,4) != "node") {
+  		if (n.substr(0,4) != "nodeName") {
   			arrAxis[i]=n;
   			i++
 			}
@@ -120,9 +116,9 @@
 	private function init():void {
 		// This XML data source creates a nested tree structure
 		// This would be needed for drill down capability
-		myData =  parentDocument.gTreeXML;
+		// myData =  parentDocument.gTreeXML;
 		//JR
-		xmlData = parentDocument.gDataXML;  
+		xmlData = parentDocument.gDataXML;
 		// This data source creates a flat structure
 		// myData = parentDocument.rootNode;
 		cbForm.dataProvider=myChart.chart[0].Properties.Property.Forms.Form;
@@ -923,28 +919,22 @@
 		addGridLines(myPlotChart); 
     }
        
-    
+	// The following are ILOG Chart Components
+	    
     private function drawPolarChart():void {
-
+	// ILOG component
     	    			
     }
     
     private function drawTreeMap():void {
+    // ILOG component	
     	
-    	// Reference for TreeMap may be found at:
-    	
-    	var myTreeMap:TreeMap;
-        myTreeMap = new TreeMap();
-        myTreeMap.dataProvider=xmlData.Node
-        myTreeMap.labelField="@nodeType";
-        myTreeMap.weightField="@id";
-        myTreeMap.colorField="@color";
-        resizeChart(myTreeMap);
-		p1.addChild(myTreeMap);
 		
     }
     
     private function drawGeoMap():void {
+    // ILOG component
+    
     
       // Create a map of World Countries.
       var myGeoMap:WorldCountriesMap = new WorldCountriesMap();
@@ -975,7 +965,9 @@
       ms.addChild(myCircle);
 	  myGeoMap.addChild(ms);
     }
-
+	
+	// End ILOG Chart Components
+	
    	private function drawCartesianChart():void{
    		var myCartesianSeries:Array=new Array();
     	var myCartesianChart:CartesianChart;

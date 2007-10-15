@@ -113,7 +113,7 @@
 					"FROM xnodes JOIN nodemetas ON (xnodes.NodeID=nodemetas.NodeID)" +
 					"INNER JOIN nodemetas nodemetas1 ON (nodemetas.NodeMetaLink=nodemetas1.NodeMetaID)"+
 					"AND (nodemetas.NodeID=nodemetas1.NodeID)";*/
-			selectStmt.text = "SELECT xnodes.NodeID, nodemetas.NodeMetaID, nodemetas.MetaFieldLabel,nodemetas.MetaFieldData, nodemetas.MetaFieldType, nodemetas.NodeMetaLink, " +   
+			selectStmt.text = "SELECT xnodes.NodeID, xnodes.NodeName, xnodes.NodeType, nodemetas.NodeMetaID, nodemetas.MetaFieldLabel,nodemetas.MetaFieldData, nodemetas.MetaFieldType, nodemetas.NodeMetaLink, " +   
 					"nodemetas1.MetaFieldLabel as MetaFieldLabel_1,nodemetas1.MetaFieldData as MetaFieldData_1, nodemetas1.MetaFieldType as MetaFieldType_1 " + 
 					"FROM xnodes JOIN nodemetas ON (xnodes.NodeID=nodemetas.NodeID) " +
 					"INNER JOIN nodemetas nodemetas1 ON (nodemetas.NodeMetaLink=nodemetas1.NodeMetaID) AND (nodemetas.NodeID=nodemetas1.NodeID) ";
@@ -134,7 +134,10 @@
 					while (i < nodesACLength)
 					{
 						var s:XML = <value />;
-						s.@nodeId = nodesAC.getItemAt(i).NodeID; 
+						s.@nodeId = nodesAC.getItemAt(i).NodeID;
+						// JB - we need NodeName and NodeType
+							s.@nodeName = nodesAC.getItemAt(i).NodeName;
+							s.@nodeType = nodesAC.getItemAt(i).NodeType; 
 						var NodeMetaLink:int = nodesAC.getItemAt(i).NodeMetaLink;
 						while (i < nodesACLength  && NodeMetaLink == nodesAC.getItemAt(i).NodeMetaLink )
 						{ 
