@@ -46,6 +46,7 @@
 	public var arrAxis:Array = new Array();
 	public var xField:String;
 	public var yField:String;
+	public var rField:String;
 	public var labelField:String;
 	public var weightField:String;
 	public var colorField:String;
@@ -94,6 +95,7 @@
 				
 		cbxAxis1.dataProvider=arrAxis;
 		cbyAxis1.dataProvider=arrAxis;
+		cbRadius1.dataProvider=arrAxis;
 		refreshChart();
 			
 			
@@ -128,6 +130,7 @@
 		cbDisplay.dataProvider=myChart.chart[0].Properties.Property.barTypes.barType;
 		cbCartSerie1.dataProvider=myChart.chart.(@Type=="Cartesian").Properties.Property.Series.Serie; 
 		cbCartForm1.dataProvider=myChart.chart.(@Type=="Cartesian").Properties.Property.cartForms.cartForm; 
+		cbLabelPosition.dataProvider=myChart.chart.(@Type=="Pie").Properties.Property.labelPosition.value;
 		numberOfSeries=1;
 		//chargement du fichier XML contenant les données  
 		LoadXML();
@@ -165,6 +168,12 @@
 		colPicker.height=17;
 		colPicker.selectedColor=myColor;//0x6699CC;
 		colPicker.addEventListener(Event.CHANGE, refreshChartEvent);
+		if (myChart.chart.(@Type==cbChartType.selectedLabel.toString()).Properties.Property.(@name=="Fill").length() !=0)
+		{
+			colPicker.visible=true;
+		}else{
+			colPicker.visible=false;
+		}
 		piano.addChild(colPicker);
 		
 		var cbyAxis:ComboBox=new ComboBox();
@@ -219,6 +228,22 @@
 		cbCartForm.y=hrEnd.y+38;
 		piano.addChild(cbCartForm);
 		
+		var cbRadius:ComboBox=new ComboBox();
+		cbRadius.id="cbRadius"+numberOfSeries;
+		cbRadius.name="cbRadius"+numberOfSeries;
+		cbRadius.addEventListener(Event.CHANGE, refreshChartEvent);
+		cbRadius.dataProvider=arrAxis;
+		cbRadius.prompt="Radius..."
+		if (cbChartType.selectedLabel.toString()=="Bubble")
+		{
+			cbRadius.visible=true;
+		}else{
+			cbRadius.visible=false;
+		}
+		cbRadius.x=120;
+		cbRadius.y=hrEnd.y+38;
+		piano.addChild(cbRadius);
+		
 		var chkRemove:CheckBox=new CheckBox();
 		chkRemove.id="chkRemove"+numberOfSeries;
 		chkRemove.name="chkRemove"+numberOfSeries;
@@ -240,7 +265,7 @@
 		piano.removeChild(piano.getChildByName("chkRemove"+num));
 		piano.removeChild(piano.getChildByName("cbCartSerie"+num));
 		piano.removeChild(piano.getChildByName("cbCartForm"+num));
-		
+		piano.removeChild(piano.getChildByName("cbRadius"+num));
 		for (var i:int=1; i<=numberOfSeries; i++) { 
 			if (i>num){
 				HRule(piano.getChildByName("sep"+i)).move(HRule(piano.getChildByName("sep"+i)).x,HRule(piano.getChildByName("sep"+i)).y-68);
@@ -251,6 +276,7 @@
 				CheckBox(piano.getChildByName("chkRemove"+i)).move(CheckBox(piano.getChildByName("chkRemove"+i)).x,CheckBox(piano.getChildByName("chkRemove"+i)).y-68);
 				ComboBox(piano.getChildByName("cbCartSerie"+i)).move(ComboBox(piano.getChildByName("cbCartSerie"+i)).x,ComboBox(piano.getChildByName("cbCartSerie"+i)).y-68);
 				ComboBox(piano.getChildByName("cbCartForm"+i)).move(ComboBox(piano.getChildByName("cbCartForm"+i)).x,ComboBox(piano.getChildByName("cbCartForm"+i)).y-68);
+				ComboBox(piano.getChildByName("cbRadius"+i)).move(ComboBox(piano.getChildByName("cbRadius"+i)).x,ComboBox(piano.getChildByName("cbRadius"+i)).y-68);
 				
 				piano.getChildByName("sep"+i).name="sep"+(i-1);
 				piano.getChildByName("lblSerieNum"+i).name="lblSerieNum"+(i-1);
@@ -259,6 +285,7 @@
 				piano.getChildByName("chkRemove"+i).name="chkRemove"+(i-1);
 				piano.getChildByName("cbCartSerie"+i).name="cbCartSerie"+(i-1);
 				piano.getChildByName("cbCartForm"+i).name="cbCartForm"+(i-1);
+				piano.getChildByName("cbRadius"+i).name="cbRadius"+(i-1);
 			}
 		}
 		btnAddNewSerie.move(btnAddNewSerie.x,btnAddNewSerie.y-68);
@@ -332,6 +359,67 @@
 			cbDisplay.visible=false;
 		}
 		
+		//show hide radius field
+		for (num=1; num<=numberOfSeries; num++) {
+			if (strChartType=="Cartesian")
+			{
+				if(ComboBox(piano.getChildByName("cbCartSerie"+num)).selectedLabel.toString()=="Bubble"){
+					if(num==1){
+						piano.getChildByName("lblRadius"+num).visible=true;
+					}
+					piano.getChildByName("cbRadius"+num).visible=true;
+				}else{
+					if(num==1){
+						piano.getChildByName("lblRadius"+num).visible=false;
+					}
+					piano.getChildByName("cbRadius"+num).visible=false;
+				}
+			}else if (myChart.chart.(@Type==strChartType).Properties.Property.(@name=="radiusField").length() !=0){
+				if(num==1){
+					piano.getChildByName("lblRadius"+num).visible=true;
+				}
+				piano.getChildByName("cbRadius"+num).visible=true;
+			}else{
+				if(num==1){
+					piano.getChildByName("lblRadius"+num).visible=false;
+				}
+				piano.getChildByName("cbRadius"+num).visible=false;
+			}
+		}
+		
+		//Show hide field for pie chart
+		for (num=1; num<=numberOfSeries; num++) {
+    		if (strChartType=="Pie")
+			{
+				if(num==1){
+					Label(piano.getChildByName("lblyAxis"+num)).text="Field :";
+					piano.getChildByName("lblxAxis"+num).visible=false;
+					piano.getChildByName("cbxAxis"+num).visible=false;
+					piano.getChildByName("lblLabelPosition").visible=true;
+					piano.getChildByName("cbLabelPosition").visible=true;
+					piano.getChildByName("PieExplode").visible=true;
+					piano.getChildByName("PieAngle").visible=true;
+					piano.getChildByName("lblExplode").visible=true;
+					piano.getChildByName("lblAngle").visible=true;
+					piano.getChildByName("lblDonuts").visible=true;
+					piano.getChildByName("PieDonuts").visible=true;
+				}	
+			}else{
+				if(num==1){
+					Label(piano.getChildByName("lblyAxis"+num)).text="yAxis :"
+					piano.getChildByName("lblxAxis"+num).visible=true;
+					piano.getChildByName("cbxAxis"+num).visible=true;
+					piano.getChildByName("lblLabelPosition").visible=false;
+					piano.getChildByName("cbLabelPosition").visible=false;
+					piano.getChildByName("PieExplode").visible=false;
+					piano.getChildByName("PieAngle").visible=false;
+					piano.getChildByName("lblExplode").visible=false;
+					piano.getChildByName("lblAngle").visible=false;
+					piano.getChildByName("lblDonuts").visible=false;
+					piano.getChildByName("PieDonuts").visible=false;
+				}
+			}
+		}
 		drawChart(strChartType);
     }
     
@@ -468,17 +556,30 @@
     	{
     		if (num==1)
 				{
+					Label(piano.getChildByName("lblRadius"+num)).visible=false;
 					Label(piano.getChildByName("lblCatForm"+num)).visible=true;
 				}
-				
+			ComboBox(piano.getChildByName("cbRadius"+num)).visible=false;	
     		ComboBox(piano.getChildByName("cbCartForm"+num)).visible=true;
+    	}else if (event.target.selectedLabel.toString()=="Bubble"){
+    		if (num==1)
+			{
+					Label(piano.getChildByName("lblCatForm"+num)).visible=false;
+    				Label(piano.getChildByName("lblRadius"+num)).visible=true;
+    		}
+    		ComboBox(piano.getChildByName("cbCartForm"+num)).visible=false;
+    		ComboBox(piano.getChildByName("cbRadius"+num)).visible=true;
     	}else{
     		if (num==1)
 				{
 					Label(piano.getChildByName("lblCatForm"+num)).visible=false;
+					Label(piano.getChildByName("lblRadius"+num)).visible=false;
+					Label(piano.getChildByName("lblCatForm"+num)).visible=false;
 				}
 				
-    		ComboBox(piano.getChildByName("cbCartForm"+num)).visible=false
+    		ComboBox(piano.getChildByName("cbCartForm"+num)).visible=false;
+    		ComboBox(piano.getChildByName("cbRadius"+num)).visible=false;
+    		ComboBox(piano.getChildByName("cbCartForm"+num)).visible=false;
     	}
     	refreshChart();
     }
@@ -669,27 +770,40 @@
 	
 	
 	public function setSerie(serie:Object,chartType:String, syField:String, num:int):void{
-		serie.xField=xField;
-		serie.yField=syField;
-		serie.displayName = syField.substring(1,syField.length);
-		
-		if(cbChartType.selectedLabel.toString()=="Cartesian")
+		if(cbChartType.selectedLabel.toString()=="Pie")
 		{
-			serie.setStyle('form', ComboBox(piano.getChildByName("cbCartForm"+num)).text)
+			serie.field=syField;
+			serie.nameField=syField;
+			serie.setStyle("labelPosition", cbLabelPosition.selectedLabel.toString()); 
+			
+			serie.explodeRadius=PieExplode.value//.12
+			serie.startAngle=PieAngle.value;
+			//serie.nameField=syField;
+			//serie.labelPosition = "callout";
 		}else{
-			serie.setStyle('form', cbForm.text);
-		}
+			serie.xField=xField;
+			serie.yField=syField;
+			serie.displayName = syField.substring(1,syField.length);
 		
 		
-		f=new SolidColor(ColorPicker(piano.getChildByName("cp"+num)).selectedColor,1);
-		s = new Stroke(ColorPicker(piano.getChildByName("cp"+num)).selectedColor,1);
-		if(chartType=="Area"){
-			serie.setStyle('areaFill',f);
-		}else if(chartType=="Line"){
-			serie.setStyle('fill',f);
-			serie.setStyle('lineStroke',s);
-		}else{
-			serie.setStyle('fill',f);
+			if(cbChartType.selectedLabel.toString()=="Cartesian")
+			{
+				serie.setStyle('form', ComboBox(piano.getChildByName("cbCartForm"+num)).text)
+			}else{
+				serie.setStyle('form', cbForm.text);
+			}
+			
+			
+			f=new SolidColor(ColorPicker(piano.getChildByName("cp"+num)).selectedColor,1);
+			s = new Stroke(ColorPicker(piano.getChildByName("cp"+num)).selectedColor,1);
+			if(chartType=="Area"){
+				serie.setStyle('areaFill',f);
+			}else if(chartType=="Line"){
+				serie.setStyle('fill',f);
+				serie.setStyle('lineStroke',s);
+			}else{
+				serie.setStyle('fill',f);
+			}
 		}
 	}
 	
@@ -778,8 +892,9 @@
     	for (num=1; num<=numberOfSeries; num++) {
     		Bubbleseries1=new BubbleSeries();
     		yField="@"+  ComboBox(piano.getChildByName("cbyAxis"+num)).selectedLabel.toString();
+			rField="@"+  ComboBox(piano.getChildByName("cbRadius"+num)).selectedLabel.toString();
 			setSerie(Bubbleseries1,'Bubble',yField,num);
-			Bubbleseries1.radiusField="@amount";
+			Bubbleseries1.radiusField=rField;//"@amount";
 			myBubbleSeries.push(Bubbleseries1);
 		}
 		
@@ -883,10 +998,29 @@
 
     
     private function drawPieChart():void {
-    	var vAxis:CategoryAxis = new CategoryAxis();
-	    var mySeries:Array=new Array();
+    	var myPieSeries:Array=new Array();
+		var MyPieChart:PieChart;
+		var PieSeries1:PieSeries;
 		
-		var MyPieChart:PieSeries;
+		MyPieChart = new PieChart();
+        MyPieChart.showDataTips = chkDataType.selected;
+        MyPieChart.dataProvider=dataListCollection;//xmlData.children();//expenses;
+    	
+    	for (num=1; num<=numberOfSeries; num++) {
+    		PieSeries1=new PieSeries();
+    		yField="@"+  ComboBox(piano.getChildByName("cbyAxis"+num)).selectedLabel.toString();
+			setSerie(PieSeries1,'Line',yField,num);
+			//PieSeries1.startAngle=PieAngleSlider.value;
+			myPieSeries.push(PieSeries1);
+		}
+		MyPieChart.setStyle("innerRadius", PieDonuts.value.toString()); 
+       	MyPieChart.series = myPieSeries;
+		resizeChart(MyPieChart);
+		// Attach chart and legend to the display list.
+		p1.addChild(MyPieChart);
+		
+		// Create a legend.
+		createLegend(MyPieChart);
     }
     
     private function drawPlotChart():void {
@@ -995,8 +1129,10 @@
 		    case "Bubble" : 
 		        var cartBubbleSerie:BubbleSeries;
 		    	cartBubbleSerie=new BubbleSeries();
+		    	rField="@"+  ComboBox(piano.getChildByName("cbRadius"+num)).selectedLabel.toString();
 		    	setSerie(cartBubbleSerie,'Bubble',yField,num);
-				myCartesianSeries.push(cartBubbleSerie);
+					cartBubbleSerie.radiusField=rField;
+					myCartesianSeries.push(cartBubbleSerie);
 		        break; 
 		    case "Candlestick" : 
 		        var cartCandlestickSerie:CandlestickSeries;
@@ -1076,7 +1212,9 @@
             return "<b>"+item.month+"</b><br>Profit: "+item.profit+"<br>Expenses: "+item.expenses+"<br>Amount: "+item.amount;
         }*/
         
-        
+        private function degrees_func(item:Number):String {
+                return item + String.fromCharCode(176);
+            }
 
 ]]>
 </mx:Script>
@@ -1124,6 +1262,8 @@
 		<mx:ComboBox id="cbCartSerie1" change="refreshCartChartEvent(event);" prompt="Select..." x="73" y="163"/>
 		<mx:Label id="lblCatForm1" x="3" y="370" text="Form :" visible="false"/>
 		<mx:ComboBox id="cbCartForm1"  change="refreshChartEvent(event);" visible="false" x="73" y="368"/>
+		<mx:Label id="lblRadius1" x="3" y="370" text="Radius :" visible="false"/>
+		<mx:ComboBox id="cbRadius1"  change="refreshChartEvent(event);" visible="false" x="73" y="368"/>
 		
 		<mx:Label x="3" y="62" text="Display :" id="lblDisplay" visible="false"/>
 		<mx:ComboBox x="73" y="60" id="cbDisplay" change="refreshChartEvent(event);" visible="false"/>
@@ -1186,7 +1326,46 @@
 		</mx:HBox>
 		<mx:HRule x="10" y="397" width="210" id="hrEnd"/>
 		<mx:Button x="73" y="407" label="Add new Serie" id="btnAddNewSerie" click="addSeries()"/>
-
+		<mx:Label text="Distance of Separation" id="lblExplode" name="lblExplode" fontSize="9" textAlign="center" x="3" y="317" width="100%" visible="false" />
+	   <flexlib:HSlider  id="PieExplode"
+							trackHighlightSkin="flexlib.skins.SliderThumbHighlightSkin"
+							allowTrackClick="true" allowThumbOverlap="false" 
+							liveDragging="true" 
+							showDataTip="true"  dataTipPlacement="bottom" dataTipOffset="3"
+							showTrackHighlight="true"
+							thumbCount="1"  width="100%" change="refreshChartEvent(event);"
+							snapInterval=".01" visible="false" minimum="0" maximum="1" 
+							values="0" x="3" y="324" 
+							
+						/>
+		<mx:Label text="Angle of rotation" id="lblAngle" name="lblAngle" fontSize="9" textAlign="center" x="3" y="339" width="100%" visible="false" />
+		<flexlib:HSlider  id="PieAngle"
+							trackHighlightSkin="flexlib.skins.SliderThumbHighlightSkin"
+							allowTrackClick="true" allowThumbOverlap="false" 
+							liveDragging="true" 
+							showDataTip="true"  dataTipPlacement="bottom" dataTipOffset="3"
+							showTrackHighlight="true"
+							thumbCount="1"  width="100%" change="refreshChartEvent(event);"
+							snapInterval="1" visible="false" minimum="0" maximum="360" 
+							values="0" x="3" y="345" dataTipFormatFunction="degrees_func"
+						/>   
+	
+		<mx:Label text="Donuts" id="lblDonuts" name="lblDonuts" fontSize="9" textAlign="center" x="3" y="361" width="100%" visible="false" />
+		<flexlib:HSlider  id="PieDonuts"
+							trackHighlightSkin="flexlib.skins.SliderThumbHighlightSkin"
+							allowTrackClick="true" allowThumbOverlap="false" 
+							liveDragging="true" 
+							showDataTip="true"  dataTipPlacement="bottom" dataTipOffset="3"
+							showTrackHighlight="true"
+							thumbCount="1"  width="100%" change="refreshChartEvent(event);"
+							snapInterval="0.01" visible="false" minimum="0" maximum="1" 
+							values="0" x="3" y="368" 
+						/>  
+						        
+    <mx:Label x="3" y="297" name="lblLabelPosition" id="lblLabelPosition" text="Label position :" visible="false"/>
+	<mx:ComboBox x="95" y="295" name="cbLabelPosition" id="cbLabelPosition" change="refreshChartEvent(event);" visible="false"/>
+		
+   
 	</mx:Canvas>
 	</mx:Accordion>
 	</mx:VBox>
