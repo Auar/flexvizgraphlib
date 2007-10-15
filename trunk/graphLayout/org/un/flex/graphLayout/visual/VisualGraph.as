@@ -96,6 +96,13 @@ package org.un.flex.graphLayout.visual {
 		private var _drawingSurface:UIComponent; 
 
 		/**
+		 * for cleanup we also need a reference source for
+		 * vnodes and vedges
+		 * */
+		private var _vnodes:Dictionary;
+		private var _vedges:Dictionary;
+
+		/**
 		 * Every visual node is associated with an UIComponent that 
 		 * will be the actual visual representation of the node in the
 		 * Flashplayer. This UIComponent (which is typically an ItemRenderer)
@@ -381,6 +388,8 @@ package org.un.flex.graphLayout.visual {
 			_edgeRenderer = new DefaultEdgeRenderer();
 			
 			/* initialise view/ItemRenderer and visibility mapping */
+			_vnodes = new Dictionary;
+			_vedges = new Dictionary;
 			_viewToVNodeMap = new Dictionary;
 			_viewToVEdgeMap = new Dictionary;
 			_visibleVNodes = new Dictionary;
@@ -422,6 +431,7 @@ package org.un.flex.graphLayout.visual {
 		 * @param g The Graph object to be assigned.
 		 * */
 		public function set graph(g:IGraph):void {
+
 			
 			if(_graph != null) {
 				trace("WARNING: _graph in VisualGraph was not null when new graph was assigned."+
@@ -430,6 +440,10 @@ package org.un.flex.graphLayout.visual {
 				clearHistory();
 				purgeVGraph();
 				_graph.purgeGraph();
+				_layouter.resetAll();
+				_nodeIDsWithinDistanceLimit = null;
+				_prevNodeIDsWithinDistanceLimit = null;
+				_noNodesWithinDistance = 0;
 			}
 			
 			/* assign defaults */
@@ -1122,6 +1136,10 @@ package org.un.flex.graphLayout.visual {
 			/* now set the vnode in the node */
 			n.vnode = vnode;
 			
+			/* add the node to the hash to keep track */
+			_vnodes[vnode] = vnode;
+			
+			
 			return vnode;
 		}
 
@@ -1155,6 +1173,9 @@ package org.un.flex.graphLayout.visual {
 				delete _visibleVNodes[vn];
 				--_noVisibleVNodes;
 			}
+			
+			/* remove from tracking hash */
+			delete _vnodes[vn];
 			
 			/* this should clean up all references to this VNode
 			 * thus freeing it for garbage collection */
@@ -1203,6 +1224,9 @@ package org.un.flex.graphLayout.visual {
 				_visibleEdges[e] = e;
 			}
 			
+			/* add to tracking hash */
+			_vedges[vedge] = vedge;
+			
 			return vedge;
 		}
 
@@ -1211,6 +1235,11 @@ package org.un.flex.graphLayout.visual {
 		 * @param ve The VisualEdge to be removed.
 		 * */
 		private function removeVEdge(ve:IVisualEdge):void {
+			
+			/* just in case */
+			if(ve == null) {
+				return;
+			}
 			
 			/* see if the edge has a view and remove that */
 			if(ve.labelView != null) {
@@ -1223,6 +1252,9 @@ package org.un.flex.graphLayout.visual {
 			/* remove the visible edge if present */
 			delete _visibleEdges[ve.edge];
 			
+			/* remove from tracking hash */
+			delete _vedges[ve];
+			
 			/* that should actually do */
 		}
 	
@@ -1234,22 +1266,30 @@ package org.un.flex.graphLayout.visual {
 		 * */
 		private function purgeVGraph():void {
 			
-			var edges:Array;
-			var nodes:Array;
-			var edge:IEdge;
-			var node:INode;
+			var ves:Array = new Array;
+			var vns:Array = new Array;
+			var ve:IVisualEdge;
+			var vn:IVisualNode;
+			
+			/* this appears rather inefficient, however
+			 * ObjectUtil.copy does not work on dictionaries
+			 * currently I have no other solution
+			 */
+			for each(ve in _vedges) {
+				ves.unshift(ve);
+			}
+			for each(vn in _vnodes) {
+				vns.unshift(vn);
+			}
 			
 			trace("purgeVGraph called");
 			
 			if(_graph != null) {
-				edges = _graph.edges;
-				nodes = _graph.nodes;
-			
-				for each(edge in edges) {
-					removeVEdge(edge.vedge);
+				for each(ve in ves) {
+					removeVEdge(ve);
 				}
-				for each(node in nodes) {
-					removeVNode(node.vnode);
+				for each(vn in vns) {
+					removeVNode(vn);
 				}
 			} else {
 				trace("we had no graph to purge from, so nothing was done");

@@ -545,23 +545,15 @@ package org.un.flex.graphLayout.data {
 		 * @inheritDoc
 		 * */
 		public function purgeGraph():void {
-			var edges:Array;
-			var nodes:Array;
 			
-			var edge:IEdge;
-			var node:INode;
-			
-			edges = _edges.concat();
-			nodes = _nodes.concat();
-			
-			
-			for each(edge in edges) {
-				removeEdge(edge);
+			while(_edges.length > 0) {
+				removeEdge(_edges[0]);
 			}
 			
-			for each(node in nodes) {
-				removeNode(node);
+			while(_nodes.length > 0) {
+				removeNode(_nodes[0]);
 			}
+			purgeTrees();
 		}						
 	}
 }
