@@ -189,7 +189,7 @@
 		<chart Type="Pie" Class="PieChart" Series="PieSeries">
 			<Properties>
 						<Property name="field" />
-						<Property name="labalPosition">
+						<Property name="labelPosition">
 									<labelPosition>
 		        						 <value>callout</value>
 		        						 <value>inside</value>
@@ -199,7 +199,6 @@
 									</labelPosition>
 						</Property>
 						<Property name="nameField" />
-						<Property name="Fill" />
 			</Properties>
 			<PieSeries>
 						<PSProperty>calloutGap</PSProperty>
