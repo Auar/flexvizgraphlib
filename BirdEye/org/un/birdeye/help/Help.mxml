@@ -13,54 +13,71 @@
 
 <mx:XMLList id="tocData" >
 <contents title="Table of Contents" >
-	<topic title="Introduction" url="app-resource:/org/un/birdeye/help/html/help.html" >
-		<topic title="What is BirdEye?" url="1" />
-		<topic title="Why use BirdEye?" url="1" />
-		<topic title="Getting Started" url="1" />
+	<topic title="About" url="app-resource:/org/un/birdeye/help/html/about.html" >
+		<topic title="UNOG Center for Visual Analytics" url="app-resource:/org/un/birdeye/help/html/unog-cva.html" />
+		<topic title="Technology Transfer" url="app-resource:/org/un/birdeye/help/html/techtrnsfr.html" />
+		<topic title="Credits" url="app-resource:/org/un/birdeye/help/html/credits.html" />
+		<topic title="Contacts" url="app-resource:/org/un/birdeye/help/html/contacts.html" />
 	</topic>
-	<topic title="Concepts" url="app-resource:/org/un/birdeye/about/help/credits.html" >
-		<topic title="Visual Analytics" url="1" />
-		<topic title="Graph Theory" url="1" />
-		<topic title="Data Graphics" url="1" />
-		<topic title="Visual Design" url="1" />
+	<topic title="Introduction" url="app-resource:/org/un/birdeye/help/html/introduction.html" >
+		<topic title="What is BirdEye?" url="app-resource:/org/un/birdeye/help/html/whatisbe.html" />
+		<topic title="Why use BirdEye?" url="app-resource:/org/un/birdeye/help/html/whyusebe.html" />
+		<topic title="Getting Started" url="app-resource:/org/un/birdeye/help/html/gettingstarted.html" />
 	</topic>
-	<topic title="Visualization" url="app-resource:/org/un/birdeye/help/html/developers.html" >
-		<topic title="Using the Visualize Component" url="" />
-		<topic title="Introduction" url="1" />
-		<topic title="Introduction" url="1" />
+	<topic title="Concepts" url="app-resource:/org/un/birdeye/help/html/concepts.html" >
+		<topic title="Visual Analytics" url="app-resource:/org/un/birdeye/help/html/va.html" />
+		<topic title="Graph Theory" url="app-resource:/org/un/birdeye/help/html/gt.html" />
+		<topic title="Data Graphics" url="app-resource:/org/un/birdeye/help/html/dg.html" />
+		<topic title="Visual Design" url="app-resource:/org/un/birdeye/help/html/vd.html" />
 	</topic>
-	<topic title="Measure and Quantitative Analysis" url="1" >
-		<topic title="Using the Measure Component" url="1" />
-		<topic title="Introduction" url="1" />
-		<topic title="Introduction" url="1" />
+	<topic title="Visualization" url="app-resource:/org/un/birdeye/help/html/visualization.html" >
+		<topic title="Using the Visualize Component" url="app-resource:/org/un/birdeye/help/html/usingvc.html" />
+		<topic title="Control Panel" url="app-resource:/org/un/birdeye/help/html/vizcntrlpnl.html" />
+		<topic title="Search Panel" url="app-resource:/org/un/birdeye/help/html/vizsrchpnl.html" />
+		<topic title="Detail Panel" url="app-resource:/org/un/birdeye/help/html/vizdtlpnl.html" />
+		<topic title="Saving Graphs" url="app-resource:/org/un/birdeye/help/html/vizsvnggrphs.html" />
+		<topic title="User Interactivity" url="app-resource:/org/un/birdeye/help/html/vizui.html" />
 	</topic>
-	<topic title="Recording and Data Entry" url="1" >
-		<topic title="Using the Record Component" url="1" />
-		<topic title="Introduction" url="1" />
-		<topic title="Introduction" url="1" />
+	<topic title="Measure and Quantitative Analysis" url="app-resource:/org/un/birdeye/help/html/measure.html" >
+		<topic title="Using the Measure Component" url="app-resource:/org/un/birdeye/help/html/usingmc.html" />
+		<topic title="Creating a Chart" url="app-resource:/org/un/birdeye/help/html/crtngchrts.html" />
+		<topic title="User Interactivity" url="app-resource:/org/un/birdeye/help/html/measui.html" />
 	</topic>
-	<topic title="Report Making" url="1" >
-		<topic title="Using the Report Component" url="1" />
-		<topic title="Introduction" url="1" />
-		<topic title="Introduction" url="1" />
+	<topic title="Recording and Data Entry" url="app-resource:/org/un/birdeye/help/html/record.html" >
+		<topic title="Using the Record Component" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Data Structure" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Creating a Node" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Adding Meta Data to a Node" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Creating a Link (Edge)" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Node Types" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Edge Types" url="app-resource:/org/un/birdeye/help/html/help.html" />
 	</topic>
-	<topic title="Case Studies" url="1" >
-		<topic title="Visualization" url="1" />
-		<topic title="Measure" url="1" />
-		<topic title="Record" url="1" />
-		<topic title="Report" url="1" />
+	<topic title="Report Making" url="app-resource:/org/un/birdeye/help/html/help.html" >
+		<topic title="Using the Report Component" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Filtering Data" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Adding a Header" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Adding a Footer" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Visibility of Fields" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Printing" url="app-resource:/org/un/birdeye/help/html/help.html" />
 	</topic>
-	<topic title="Technicals" url="1" >
-		<topic title="Installation" url="1" />
-		<topic title="Working with the Database" url="1" />
-		<topic title="Introduction" url="1" />
+	<topic title="Case Studies" url="app-resource:/org/un/birdeye/help/html/help.html" >
+		<topic title="Visualization" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Measure" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Record" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Report" url="app-resource:/org/un/birdeye/help/html/help.html" />
 	</topic>
-	<topic title="Further Info and Support" url="1" >
-		<topic title="Learn about Visual Analytics" url="1" />
-		<topic title="Feature Requests" url="1" />
-		<topic title="Customization" url="1" />
+	<topic title="Technicals" url="app-resource:/org/un/birdeye/help/html/help.html" >
+		<topic title="Installation" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Working with the Database" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Deployment" url="app-resource:/org/un/birdeye/help/html/help.html" />
 	</topic>
-	<topic title="Print version of User Manual" url="" />
+	<topic title="Further Info and Support" url="app-resource:/org/un/birdeye/help/html/help.html" >
+		<topic title="Learn about Visual Analytics" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Feature Requests" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Customization" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Contributing" url="app-resource:/org/un/birdeye/help/html/help.html" />
+	</topic>
+	<topic title="Print version of User Manual" url="app-resource:/org/un/birdeye/help/pdf/birdeyemanual.pdf" />
 </contents>
 </mx:XMLList>	
 	<!-- Effects -->

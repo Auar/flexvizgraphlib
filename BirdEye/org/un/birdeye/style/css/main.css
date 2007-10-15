@@ -1,4 +1,9 @@
 /* CSS file */
+Application {
+   			backgroundColor: #ffffff;
+   			themeColor: #333333;
+		}
+
 
 ApplicationControlBar {
    			shadowDirection: right;
@@ -8,18 +13,6 @@ ApplicationControlBar {
    			backgroundAlpha: 0.66;
 		 	borderColor: #cccccc;
 		}
-
-MenuBar {
-   backgroundAlpha: 0;
-   borderColor: #cccccc;
-   rollOverColor: #333333;
-   selectionColor: #333333;
-   color: #000000;
-   textRollOverColor: #ffffff;
-   textSelectedColor: #ffffff;
-   themeColor: #cccccc;
-   fontFamily: Tahoma;
-}
 
 Panel { 
 	headerHeight: 17;
@@ -42,7 +35,7 @@ Panel {
    		
 }
 
-	SuperTabNavigator {
+SuperTabNavigator {
 		popupButtonStyleName: "popupButton";
 		tabStyleName: "firefoxLikeTabs";
 		leftButtonStyleName: "leftButton";
@@ -52,33 +45,33 @@ Panel {
 		
 	}
 	
-	.leftButton {
+.leftButton {
 		icon: Embed("../../images/assets/tab_assets.swf#left_arrow");
 		fillAlphas: 1, 1, 1, 1;
 		cornerRadius:0;
 	}
 	
-	.rightButton {
+.rightButton {
 		icon: Embed("../../images/assets/tab_assets.swf#right_arrow");
 		fillAlphas: 1, 1, 1, 1;
 		cornerRadius:0;
 	}
 	
-	.closeButton2 {
+.closeButton2 {
 		upSkin: Embed("../../images/assets/tab_assets.swf#firefox_close_up");
 		downSkin: Embed("../../images/assets/tab_assets.swf#firefox_close_down");	
 		overSkin: Embed("../../images/assets/tab_assets.swf#firefox_close_over");
 		disabledSkin: Embed("../../images/assets/tab_assets.swf#firefox_close_disabled");		
 	}
 	
-	.popupButton {
+.popupButton {
 		upSkin: ClassReference("flexlib.skins.TabPopUpButtonSkin");
 		popUpDownSkin: ClassReference("flexlib.skins.TabPopUpButtonSkin");	
 		popUpOverSkin: ClassReference("flexlib.skins.TabPopUpButtonSkin");	
 		disabledSkin: ClassReference("flexlib.skins.TabPopUpButtonSkin");		
 	}
 	
-	.firefoxLikeTabs {
+.firefoxLikeTabs {
 		
 	   	borderColor: #999999;
 	   	color: #000000;
@@ -95,7 +88,7 @@ Panel {
 	   	   		
 	}
 	
-	.mySelectedTabs {
+.mySelectedTabs {
    		color: #000000;
    		textRollOverColor: #000000;
    		fontFamily: Tahoma;
@@ -107,7 +100,7 @@ Panel {
 	   	
 	}
 	
-	TabNavigator {
+TabNavigator {
    borderStyle: solid;
    tabStyleName: "myTabs";
    selectedTabTextStyleName: "mySelectedTabs2";
@@ -128,144 +121,30 @@ Panel {
    fontFamily: Tahoma;
    fontWeight: normal;
 }
-	
-	/*
-
-	Copyright (C) 2006 Josh Tynjala
-	Flex 2 TreeMap Component
- 
-	This program is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License (version 2) as
-	published by the Free Software Foundation. 
-
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-	GNU General Public License (version 2) for more details.
-	
-	You should have received a copy of the GNU General Public License
-	along with this program. If not, write to the Free Software
-	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-*/
-
-TreeMap
-{
-	fillColors: #FFFFFF, #CCCCCC, #FFFFFF, #EEEEEE;
-	fillAlphas: 0.6, 0.4, 0.75, 0.65; /* last pair are for OVER state */
-	
-	backgroundColor: #ffffff;
-	backgroundAlpha: 1.0;
-	
-	paddingLeft: 0;
-	paddingRight: 0;
-	paddingTop: 0;
-	paddingBottom: 0;
-	
-	borderSkin: ClassReference("mx.skins.halo.HaloBorder");
-	borderStyle: "solid";
-	borderColor: #aaaaaa;
-	borderThickness: 1;
-	
-	fontFamily: Tahoma;
-	fontSize: "10";
-	fontWeight: "normal";
-	textAlign: "left";
-	
-	nodeStyleName: null;
-}
-
-TreeMapHeader
-{
-	paddingLeft: 5;
-	paddingRight: 5;
-	upSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapHeaderSkin");
-	downSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapHeaderSkin");
-	overSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapHeaderSkin");
-	disabledSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapHeaderSkin");
-	selectedUpSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapHeaderSkin");
-	selectedDownSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapHeaderSkin");
-	selectedOverSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapHeaderSkin");
-	selectedDisabledSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapHeaderSkin");
-}
-
-TreeMapNodeRenderer
-{
-	autoFitText: "none";
-	color: #ffffff;
-	fillAlphas: 1.0, 1.0;
-	highlightAlphas: 0.3, 0;
-	cornerRadius: 0;
-	borderColor: #676A6C;
-	paddingLeft: 0;
-	paddingRight: 0;
-	paddingTop: 0;
-	paddingBottom: 0;
-	upSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapNodeSkin");
-	downSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapNodeSkin");
-	overSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapNodeSkin");
-	disabledSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapNodeSkin");
-	selectedUpSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapNodeSkin");
-	selectedDownSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapNodeSkin");
-	selectedOverSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapNodeSkin");
-	selectedDisabledSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapNodeSkin");
-}
-
-.flatTreeMapNode
-{
-	fillAlphas: 1.0, 1.0;
-	highlightAlphas: 0, 0;
-	cornerRadius: 0;
-	borderColor: #000000;
-	paddingLeft: 0;
-	paddingRight: 0;
-	paddingTop: 0;
-	paddingBottom: 0;
-}
-
-
-
-	LinkBar {
-   			fontFamily: Tahoma;
-   			fontWeight: normal;
-   			separatorColor: #000000;
-   			rollOverColor: #666666;
-   			selectionColor: #666666;
-   			textRollOverColor: #ffffff;
-   			textSelectedColor: #ffffff;
-   			color: #000000;
-   			
-		}
 		
-		Application {
-   			backgroundColor: #ffffff;
-   			themeColor: #333333;
-		}
-		
-		Accordion {
+Accordion {
    			headerStyleName: "myaccordionHeader";
 		}
 
-		.myaccordionHeader {
+.myaccordionHeader {
    			fontFamily: Tahoma;
    			fontWeight: bold;
 		}
 		
-		DataGrid {
+DataGrid {
    			fontFamily: Tahoma;
    			fontSize: 10;
    			headerStyleName: "mydataGridHeaderStyle";
 		}
 
-		.mydataGridHeaderStyle {
+.mydataGridHeaderStyle {
    			fontFamily: Tahoma;
    			fontWeight: bold;
    			fontStyle: normal;
    			textDecoration: none;
 		}
 		
-		
-		.datagridStyle
+.datagridStyle
 		{
 		   alternatingItemColors: #ffffff, #ffffff;
 		   rollOverColor: #cccccc;
@@ -275,19 +154,20 @@ TreeMapNodeRenderer
 		   textSelectedColor: #ffffff;
 		}
 		
-		.dataGridHeader
+.dataGridHeader
 		{
 			color: #000000;
 		}
 		
-		ToolTip {
+ToolTip {
    			backgroundAlpha: 0.85;
    			backgroundColor: #111111;
    			color: #ffffff;
    			fontFamily: Tahoma;
    			borderSkin: ClassReference("org.un.birdeye.skins.FXCToolTip");
 }
-		.mySkin {
+
+.mySkin {
 			leftButtonStyleName: "leftButton2";
 			rightButtonStyleName: "rightButton2";
 			upButtonStyleName: "upButton2";
@@ -295,31 +175,31 @@ TreeMapNodeRenderer
 			buttonWidth:20px;	
 		}
 		
-		.leftButton2 {
+.leftButton2 {
 			icon: Embed("../../images/assets/assets.swf#left_arrow");
 			fillAlphas: 0,0,0,0;
 			cornerRadius:0;
 		}
 		
-		.rightButton2 {
+.rightButton2 {
 			icon: Embed("../../images/assets/assets.swf#right_arrow");
 			fillAlphas: 0,0,0,0;
 			cornerRadius:0;
 		}
 		
-		.upButton2 {
+.upButton2 {
 			icon: Embed("../../images/assets/assets.swf#up_arrow");
 			fillAlphas: 0,0,0,0;
 			cornerRadius:0;
 		}
 		
-		.downButton2 {
+.downButton2 {
 			icon: Embed("../../images/assets/assets.swf#down_arrow");
 			fillAlphas: 0,0,0,0;
 			cornerRadius:0;
 		}
 		
-		.posterBorder {
+.posterBorder {
 			borderColor: #000000;
 			borderStyle: solid;
 			borderThickness: 3;
