@@ -69,8 +69,6 @@ package org.un.flex.graphLayout.visual {
 			var midX:Number = fromX + ((toX - fromX) / 2.0);
 			var midY:Number = fromY + ((toY - fromY) / 2.0);
 						
-			/* now we actually draw */
-			// NEW CODE IS INDENTED BELOW
 			/* apply the style to the drawing */
 			if(vedge.lineStyle != null) {
 				g.lineStyle(
@@ -84,16 +82,20 @@ package org.un.flex.graphLayout.visual {
 					Number(vedge.lineStyle.miterLimits)
 				);
 			}
+			/* now we actually draw */
 			g.beginFill(0);
 			g.moveTo(fromX, fromY);
-			  g.curveTo(fromX - 2, fromY - 2, midX, midY);
-			  g.moveTo(fromX, fromY);
-			  g.curveTo(fromX + 2, fromY + 2, midX, midY);
-			  g.moveTo(fromX, fromY);
-			  g.curveTo(fromX - 2, fromY + 2, midX, midY);
-			  g.moveTo(fromX, fromY);
-			  g.curveTo(fromX + 2, fromY - 2, midX, midY);
-			  g.moveTo(midX, midY);
+			
+			/* bezier curve style */
+			g.curveTo(fromX - 2, fromY - 2, midX, midY);
+			g.moveTo(fromX, fromY);
+			g.curveTo(fromX + 2, fromY + 2, midX, midY);
+			g.moveTo(fromX, fromY);
+			g.curveTo(fromX - 2, fromY + 2, midX, midY);
+			g.moveTo(fromX, fromY);
+			g.curveTo(fromX + 2, fromY - 2, midX, midY);
+			g.moveTo(midX, midY);
+			
 			g.lineTo(toX, toY);
 			g.endFill();
 			
