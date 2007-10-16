@@ -50,7 +50,7 @@ package org.un.flex.graphLayout.visual {
 		 * 
 		 * @inheritDoc
 		 * */
-		public function draw(g:Graphics, edge:IEdge, disting:Boolean, displayLabel:Boolean = false):void {
+		public function draw(g:Graphics, edge:IEdge, displayLabel:Boolean = false):void {
 			
 			/* first get the corresponding visual object */
 			var vedge:IVisualEdge = edge.vedge;

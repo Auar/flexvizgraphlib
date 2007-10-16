@@ -1307,8 +1307,6 @@ package org.un.flex.graphLayout.visual {
 			var color:int;
 			var edge:IEdge;
 			
-			var distinguished:Boolean;
-			
 			/* make sure we have a graph */
 			if(_graph == null) {
 				throw Error("_graph object in VisualGraph is null");
@@ -1334,11 +1332,13 @@ package org.un.flex.graphLayout.visual {
 				/* XXX THIS DOES CURRENTLY NO LONGER WORK
 				 * The following controls the colouring but this should
 				 * be optimised and handled more flexible */
+				/*
 				if(vn1 == _distinguishedNode || vn2 == _distinguishedNode) {
 					distinguished = true;
 				} else {
 					distinguished = false;
 				}
+				*/
 
 				/* now check if we should display edge labels, and if so
 				 * create an edge view to display the label, if it is not
@@ -1356,7 +1356,7 @@ package org.un.flex.graphLayout.visual {
 				 * assigned with it that affect the drawing. Right now we 
 				 * pass the fact if this is a 'distinguished' edge and leave
 				 * the color choice up to the edgerenderer */
-				drawEdge(edge,distinguished);
+				drawEdge(edge);
 			}
 			// we are done, so we reset the indicator
 			_layouter.layoutChanged = false;
@@ -1368,8 +1368,8 @@ package org.un.flex.graphLayout.visual {
 		 * into redrawEdges(). For now we leave it like this
 		 * 
 		 * */
-		private function drawEdge(edge:IEdge, distinguished:Boolean):void {
-			_edgeRenderer.draw(_drawingSurface.graphics, edge, distinguished, _displayEdgeLabels);
+		private function drawEdge(edge:IEdge):void {
+			_edgeRenderer.draw(_drawingSurface.graphics, edge, _displayEdgeLabels);
 		}
 		
 
