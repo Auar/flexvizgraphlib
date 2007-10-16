@@ -51,8 +51,10 @@ package org.un.flex.graphLayout.layout {
 		private var _relativeOrigin:Point;
 		
 		/**
-		 * defines if the vgraph's center offset should be applied
-		 * @default true
+		 * defines if the vgraph's center offset should be applied.
+		 * Set it to true if your coordinates assume a centered origin
+		 * and you place them all around the center.
+		 * @default false
 		 * */
 		public var centeredLayout:Boolean;
 		
@@ -66,7 +68,7 @@ package org.un.flex.graphLayout.layout {
 			_relativeHeight = 1000;
 			_relativeWidth = 1000;
 			_relativeOrigin = new Point(0,0);
-			centeredLayout = true;
+			centeredLayout = false;
 		}
 
 		/**
@@ -179,6 +181,8 @@ package org.un.flex.graphLayout.layout {
 			var smallest_y:Number = Infinity;
 			var max_x_dist:Number = 0;
 			var max_y_dist:Number = 0;
+			var max_label_width:Number = -Infinity;
+			var max_label_height:Number = -Infinity;
 			
 			visVNodes = _vgraph.visibleVNodes;
 			
@@ -223,6 +227,12 @@ package org.un.flex.graphLayout.layout {
 					if(largest_y < target.y) {
 						largest_y = target.y;
 					}
+					if(vn.view.width > max_label_width) {
+						max_label_width = vn.view.width;
+					}
+					if(vn.view.height > max_label_height) {
+						max_label_height = vn.view.height;
+					}
 				}
 			}
 			
@@ -234,8 +244,8 @@ package org.un.flex.graphLayout.layout {
 
 				/* adjust nodes */
 				for each(vn in visVNodes) {
-					vn.x = vn.x * (_vgraph.width / max_x_dist);
-					vn.y = vn.y * (_vgraph.height / max_y_dist);
+					vn.x = vn.x * ((_vgraph.width - (2 * DEFAULT_MARGIN) - max_label_width) / max_x_dist);
+					vn.y = vn.y * ((_vgraph.height - (2 * DEFAULT_MARGIN) - max_label_height) / max_y_dist);
 				}
 			}
 			
