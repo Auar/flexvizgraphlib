@@ -173,10 +173,10 @@ package org.un.flex.graphLayout.layout {
 			var target:Point;
 			
 			/* those are needed for autofit */
-			var smallest_x:Number = undefined;
-			var largest_x:Number = undefined;
-			var largest_y:Number = undefined;
-			var smallest_y:Number = undefined;
+			var smallest_x:Number = Infinity;
+			var largest_x:Number = -Infinity;
+			var largest_y:Number = -Infinity;
+			var smallest_y:Number = Infinity;
 			var max_x_dist:Number = 0;
 			var max_y_dist:Number = 0;
 			
@@ -211,21 +211,17 @@ package org.un.flex.graphLayout.layout {
 				/* if autofit is enabled, we need to track
 				 * the largest distances */
 				if(_autoFitEnabled) {
-					if(smallest_x == undefined ||
-						smallest_x > target.x) {
-							smallest_x = target.x;
+					if(smallest_x > target.x) {
+						smallest_x = target.x;
 					}
-					if(smallest_y == undefined ||
-						smallest_y > target.y) {
-							smallest_y = target.y;
+					if(smallest_y > target.y) {
+						smallest_y = target.y;
 					}
-					if(largest_x == undefined ||
-						largest_x < target.x) {
-							largest_x = target.x;
+					if(largest_x < target.x) {
+						largest_x = target.x;
 					}
-					if(largest_y == undefined ||
-						largest_y < target.y) {
-							largest_y = target.y;
+					if(largest_y < target.y) {
+						largest_y = target.y;
 					}
 				}
 			}
