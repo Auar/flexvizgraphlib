@@ -139,6 +139,13 @@
 				 * initializes the VGraph items */
 				vgraph.graph = graph;
 
+				/* set the default layouter type */
+				currentLayouterType = "ConcentricRadial";
+				currentEdgeRendererType = "Default";
+
+				/* set the layouter */
+				setLayouter();
+				setEdgeRenderer();
 				
 				/* set the visibility limit options, default 2 */
 				maxDistanceFromCurrent.value = 2;
@@ -147,13 +154,7 @@
 				// showHistory.selected = true;
 				vgraph.showHistory = showHistory.selected;
 
-				/* set the default layouter type */
-				currentLayouterType = "ConcentricRadial";
-				currentEdgeRendererType = "Default";
 
-				/* set the layouter */
-				setLayouter();
-				setEdgeRenderer();
 
 				/* select a root node, most layouters requires a root node */
 				startRoot = graph.nodeByStringId("1").vnode;
