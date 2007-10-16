@@ -43,11 +43,10 @@ package org.un.flex.graphLayout.visual {
 		 * 
 		 * @param g Reference to the Graphics object of the Drawing surface.
 		 * @param edge The edge to draw, it needs to provide all the information required, i.e. locations.
-		 * @param disting This is in indicator if this edge is distinguished in a certain way.
 		 * @param displayLabel If set, it displays a label in the middle of the egde, provided the edge
 		 * 	has an edge renderer (UIComponent) associated with it.
 		 *
 		 * */
-		function draw(g:Graphics,edge:IEdge,disting:Boolean,displayLabel:Boolean = false):void;
+		function draw(g:Graphics,edge:IEdge,displayLabel:Boolean = false):void;
 	}
 }
