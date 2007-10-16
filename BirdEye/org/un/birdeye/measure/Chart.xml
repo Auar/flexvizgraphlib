@@ -159,6 +159,7 @@
 								<axis>DateTime</axis>
 						</Property>
 						<Property name="GridLines" />
+						<Property name="Fill" />
 			</Properties>
 		</chart>
 		<chart Type="Line" Class="LineChart" Series="LineSeries">
