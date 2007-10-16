@@ -92,7 +92,7 @@ package org.un.flex.graphLayout.visual {
 			var source:Point;
 			var target:Point;
 			var base1:Point;
-			var base2:Point;
+			var base2:Point;	
 			var mid:Point;
 			
 			var flow:Number;

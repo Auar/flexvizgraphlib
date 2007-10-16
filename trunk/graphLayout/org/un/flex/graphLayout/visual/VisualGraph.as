@@ -2014,7 +2014,9 @@ package org.un.flex.graphLayout.visual {
 			 * might find itself on a changing node set, we need
 			 * to stop/reset anything before altering the node
 			 * visibility */
-			_layouter.resetAll();
+			if(_layouter != null) {
+				_layouter.resetAll();
+			}
 			
 			
 			//trace("update node visibility");
@@ -2141,7 +2143,9 @@ package org.un.flex.graphLayout.visual {
 			 * might find itself on a changing node set, we need
 			 * to stop/reset anything before altering the node
 			 * visibility */
-			_layouter.resetAll();
+			if(_layouter != null) {
+				_layouter.resetAll();
+			}
 			
 			/* recreate those, this is cheaper probably */
 			_visibleVNodes = new Dictionary;
