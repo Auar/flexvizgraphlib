@@ -1197,7 +1197,6 @@ package org.un.flex.graphLayout.visual {
 			var attr:XML;
 			var attname:String;
 			var attrs:Array;
-			
 		
 			/* create a copy of the default style */
 			lStyle = ObjectUtil.copy(_defaultEdgeStyle);
