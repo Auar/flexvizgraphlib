@@ -24,9 +24,9 @@
  */
 package org.un.flex.graphLayout.layout {
 
+	import flash.geom.Point;
 	import flash.utils.Dictionary;
 	
-	import org.un.flex.graphLayout.data.INode;
 	import org.un.flex.graphLayout.visual.IVisualGraph;
 	import org.un.flex.graphLayout.visual.IVisualNode;
 	
@@ -47,6 +47,15 @@ package org.un.flex.graphLayout.layout {
 		private var _relativeHeight:Number;
 		private var _relativeWidth:Number;
 		
+		/* a specified relative origin, defaults to (0,0); */
+		private var _relativeOrigin:Point;
+		
+		/**
+		 * defines if the vgraph's center offset should be applied
+		 * @default true
+		 * */
+		public var centeredLayout:Boolean;
+		
 		/**
 		 * The constructor only initialises some data structures.
 		 * @inheritDoc
@@ -56,6 +65,8 @@ package org.un.flex.graphLayout.layout {
 			
 			_relativeHeight = 1000;
 			_relativeWidth = 1000;
+			_relativeOrigin = new Point(0,0);
+			centeredLayout = true;
 		}
 
 		/**
@@ -76,15 +87,6 @@ package org.un.flex.graphLayout.layout {
 		 * @return Currently the return value is not set or used.
 		 * */
 		override public function layoutPass():Boolean {
-
-			var i:int;
-			var n:INode;
-			var visVNodes:Dictionary;
-			var vn:IVisualNode;
-			var cindex:int;
-			var nsiblings:int;
-			var rv:Boolean;
-			var children:Array;
 			
 			//trace("layoutPass called");
 			
@@ -100,29 +102,12 @@ package org.un.flex.graphLayout.layout {
 			if(_graph.noNodes < 1) {
 				return false;
 			}
-			
-					
-			/* establish the spanning tree */
-			//_graph.purgeTrees();
-			_stree = _graph.getTree(_root,true);
-
-			/* check if the root is visible, if not
-			 * this is an issue */
-			if(!_root.vnode.isVisible) {
-				throw Error("Invisible root node, this is probably due to wrong initialisation of nodes or wrong defaults");
-			}
-
-			/* this is complicated. */
-			if(_autoFitEnabled) {
-				/* now we calculate the best spacing */
-				calculateAutoFit();
-			}
 
 			/* now place the nodes according to their specified coordinates */
 			placeNodes();
 		
 			_layoutChanged = true;
-			return rv;
+			return true;
 		}
 	
 		/**
@@ -136,7 +121,7 @@ package org.un.flex.graphLayout.layout {
 		/**
 		 * @private
 		 * */
-		public function get relativeHeight():void {
+		public function get relativeHeight():Number {
 			return _relativeHeight;
 		}
 		
@@ -151,9 +136,25 @@ package org.un.flex.graphLayout.layout {
 		/**
 		 * @private
 		 * */
-		public function get relativeWidth():void {
+		public function get relativeWidth():Number {
 			return _relativeWidth;
 		}
+		
+		/**
+		 * Access the relative origin, which will result in an offset for
+		 * each coordinate, default is (0,0);
+		 * */
+		public function set relativeOrigin(ro:Point):void {
+				_relativeOrigin = ro;
+		}
+		
+		/**
+		 * @private
+		 * */
+		public function get relativeOrigin():Point {
+			return _relativeOrigin;
+		}
+		
 		
 		/**
 		 * @internal
@@ -161,24 +162,98 @@ package org.un.flex.graphLayout.layout {
 		 * in the XML data of each node. Interprets the coordinates
 		 * relative to the Height and Width specified (default 1000).
 		 * If autoFit is enabled, it will in addition take that
-		 * into account.
+		 * into account. The internal reference grid is always 1000x1000.
 		 * */
-		private placeNodes():void {
-			var visVNodes:Array;
+		private function placeNodes():void {
 			
+			var visVNodes:Dictionary;
+			var vn:IVisualNode;
+			var node_x:Number;
+			var node_y:Number;
+			var target:Point;
 			
+			/* those are needed for autofit */
+			var smallest_x:Number = undefined;
+			var largest_x:Number = undefined;
+			var largest_y:Number = undefined;
+			var smallest_y:Number = undefined;
+			var max_x_dist:Number = 0;
+			var max_y_dist:Number = 0;
 			
+			visVNodes = _vgraph.visibleVNodes;
 			
+			/* place visible nodes */
+			for each(vn in visVNodes) {
+				
+				/* check for x and y attributes */
+				if((vn.data as XML).attribute("x").length() > 0) {
+					node_x = Number(vn.data.@x);
+				} else {
+					throw Error("Node:"+vn.id+" associated XML object does not have x attribute");
+				}
+				
+				if((vn.data as XML).attribute("y").length() > 0) {
+					node_y = Number(vn.data.@y);
+				} else {
+					throw Error("Node:"+vn.id+" associated XML object does not have y attribute");
+				}
+				
+				target = new Point(node_x * 1000 / _relativeWidth, node_y * 1000 / _relativeHeight);
+				
+				/* apply the relative origin */
+				target.add(_relativeOrigin);
+				
+				/* set the coordinates in the VNode, this won't be
+				 * applied until commit() is called */
+				vn.x = target.x;
+				vn.y = target.y;
+				
+				/* if autofit is enabled, we need to track
+				 * the largest distances */
+				if(_autoFitEnabled) {
+					if(smallest_x == undefined ||
+						smallest_x > target.x) {
+							smallest_x = target.x;
+					}
+					if(smallest_y == undefined ||
+						smallest_y > target.y) {
+							smallest_y = target.y;
+					}
+					if(largest_x == undefined ||
+						largest_x < target.x) {
+							largest_x = target.x;
+					}
+					if(largest_y == undefined ||
+						largest_y < target.y) {
+							largest_y = target.y;
+					}
+				}
+			}
 			
-		}
-		
-		/**
-		 * @internal
-		 * do autofitting the layer distance. The node distance cannot
-		 * be pre-computed, so we leave it alone.
-		 * */
-		private function calculateAutoFit():void {
+			/* if autofitted, scale to the current canvas */
+			if(_autoFitEnabled) {
+				/* find greatest distance in each dimension */
+				max_x_dist = largest_x - smallest_x;
+				max_y_dist = largest_y - smallest_y;
+
+				/* adjust nodes */
+				for each(vn in visVNodes) {
+					vn.x = vn.x * (_vgraph.width / max_x_dist);
+					vn.y = vn.y * (_vgraph.height / max_y_dist);
+				}
+			}
 			
+			/* final round, to apply the vgraph origin and to call commit */
+			for each(vn in visVNodes) {
+				vn.x = vn.x + _vgraph.origin.x;
+				vn.y = vn.y + _vgraph.origin.y;
+				
+				if(centeredLayout) {
+					vn.x = vn.x + _vgraph.center.x;
+					vn.y = vn.y + _vgraph.center.y;	
+				}
+				vn.commit();
+			}
 		}
 	}
 }
