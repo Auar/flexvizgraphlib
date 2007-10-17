@@ -67,6 +67,7 @@
 			import org.un.flex.graphLayout.visual.DefaultEdgeRenderer;
 			import org.un.flex.graphLayout.visual.DirectedEdgeRenderer;
 			import org.un.flex.graphLayout.visual.OrthogonalEdgeRenderer;
+			import org.un.flex.graphLayout.visual.FlowEdgeRenderer;
 			import org.un.flex.graphLayout.visual.VisualGraph;
 			import org.un.birdeye.visualize.renderers.PrimitiveIconRenderer;
 			import org.un.birdeye.images.EmbeddedIcons;
@@ -120,6 +121,7 @@
 				
 				initData(['Node','Edge','fromID','toID']);
 				leftAccordion.selectedIndex = 0;
+				
 			}
 			
 			/**
@@ -355,6 +357,10 @@
 						break;
 					case "Orthogonal":
 						selectedEdgeRenderer = new OrthogonalEdgeRenderer;
+						vgraph.edgeRenderer = selectedEdgeRenderer;
+						break;
+					case "Flow":
+						selectedEdgeRenderer = new FlowEdgeRenderer;
 						vgraph.edgeRenderer = selectedEdgeRenderer;
 						break;
 					default:
@@ -729,6 +735,7 @@
 										<mx:String>Default</mx:String>
 										<mx:String>Directed</mx:String>
 										<mx:String>Orthogonal</mx:String>
+										<mx:String>Flow</mx:String>
 										<mx:String>Belzier Curve</mx:String>
 									</mx:ArrayCollection>
 							</mx:ComboBox>
