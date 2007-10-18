@@ -130,21 +130,26 @@ package org.un.flex.graphLayout.visual {
 			
 			/* calculate the angle of the direction of the target */
 			tdirectionAngle = Geometry.polarAngle(target.subtract(source));
+			trace("target direction:"+Geometry.rad2deg(tdirectionAngle)+" degrees");
 			
 			/* calculate the angle of the direction of the base, which is
 			 * always 90 degrees (PI/2) of tdirection */
-			basedirectionAngle = tdirectionAngle + (Math.PI / 2);
+			basedirectionAngle = Geometry.normaliseAngle(tdirectionAngle + (Math.PI / 2));
+			trace("base direction:"+Geometry.rad2deg(basedirectionAngle)+" degrees");
 			
 			/* now calculate the width of the base in relation to the flow */
 			baseWidth = (flow * (maxBaseWidth / relativeEdgeMagnitude));
+			trace("flow:"+flow+" base width:"+baseWidth);
 			
 			/* now calculate the first base point, which is half the width in
 			 * positive base direction */
 			base1 = source.add(Point.polar((baseWidth / 2), basedirectionAngle));
+			trace("base1:"+base1.toString());
 			
 			/* the second is the same but in negative direction (or negative angle,
 			 * that should not make a difference */
-			base2 = source.add(Point.polar((baseWidth / 2), -basedirectionAngle));
+			base2 = source.add(Point.polar(-(baseWidth / 2), basedirectionAngle));
+			trace("base1:"+base1.toString());
 
 			/* apply the style to the drawing */
 			if(vedge.lineStyle != null) {
