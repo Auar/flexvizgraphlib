@@ -39,6 +39,7 @@
 
 	<mx:Script>
 		<![CDATA[
+			import org.un.birdeye.GlobalParams;
 			import org.un.flex.graphLayout.visual.IEdgeRenderer;
 			import mx.core.IDataRenderer;
 			import mx.core.UIComponent;
@@ -98,8 +99,6 @@
 			private var xmlNames:Array;
 
 			/* public attributes */
-			[Bindable]
-			public var scaleFactor:Number = 1;
 			
 			/* array collection to hold the XML data in order
 			 * to allow searching and filtering */
@@ -121,6 +120,11 @@
 				
 				initData(['Node','Edge','fromID','toID']);
 				leftAccordion.selectedIndex = 0;
+	
+				/* register some components with the global param static class */
+				org.un.birdeye.GlobalParams.visualLeftAccordion = leftAccordion;
+				org.un.birdeye.GlobalParams.visualDetailTitle = detailTitle;
+				org.un.birdeye.GlobalParams.visualDetailDesc = detailDesc;
 				
 			}
 			
@@ -182,10 +186,10 @@
 				/* debug new XML feature */
 				tree = graph.getTree(startRoot.node,false,true);
 				parentDocument.gTreeXML = tree.XMLtree;
-				}
+			}
 			
-				/* re-enable the refresh button in all cases */
-				private function refresh():void {
+			/* re-enable the refresh button in all cases */
+			private function refresh():void {
 				
 				var oldroot:IVisualNode;
 				var oldsid:String;
@@ -402,6 +406,9 @@
 			private function updateScale():void {
 				var children:Array;
 				var child:UIComponent;
+			
+				/* update the global parameter */
+				org.un.birdeye.GlobalParams.scaleFactor = scaleSlider.value;
 				
 				children = vgraph.getChildren();
 				for each(child in children) {
@@ -535,7 +542,6 @@
  				}
  			}
  	
- 	 
  			/**
  			 * handle a resize event, but only do anything if the init was
  			 * done
@@ -667,7 +673,7 @@
 				width="17" height="100%" horizontalAlign="center"
 				gripTip="Show/Hide Control Panel" />
 			<mx:VBox id="NavContainerRB" horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle" horizontalAlign="center" verticalGap="1" horizontalGap="0" width="100%" height="100%" hideEffect="{wipeLeft}" showEffect="{wipeRight}">
-				<mx:Accordion id="leftAccordion" paddingBottom="5" paddingRight="5" paddingTop="5" paddingLeft="5" width="100%" height="100%" creationPolicy="all"  >
+				<mx:Accordion id="leftAccordion" paddingBottom="5" paddingRight="5" paddingTop="5" paddingLeft="5" width="100%" height="100%" creationPolicy="all" >
 					<mx:Canvas id="visibilitycnvs" label="Visibility/Layout" height="100%" width="100%" paddingBottom="5" >
 						<mx:VBox width="100%" horizontalAlign="center">
 							<mx:Spacer height="3"/>

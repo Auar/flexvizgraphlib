@@ -1,14 +1,18 @@
 package org.un.birdeye.visualize.renderers {
 	
-	import mx.containers.VBox;
-	import mx.core.UIComponent;
 	import com.flexibleexperiments.primitiveIcons.*;
-	import mx.controls.Image;
-	import mx.events.FlexEvent;
-	import flash.events.MouseEvent;
-	import mx.controls.Spacer;
-	import mx.controls.LinkButton;
+	
 	import flash.events.Event;
+	import flash.events.MouseEvent;
+	
+	import mx.containers.VBox;
+	import mx.controls.Image;
+	import mx.controls.LinkButton;
+	import mx.controls.Spacer;
+	import mx.core.UIComponent;
+	import mx.events.FlexEvent;
+	
+	import org.un.birdeye.GlobalParams;
 	import org.un.birdeye.images.EmbeddedIcons;
 	
 	/**
@@ -30,12 +34,16 @@ package org.un.birdeye.visualize.renderers {
 		
 		private function getDetails(e:Event):void {
 			// trace("Show Details");
-			parentDocument.leftAccordion.selectedIndex = 2;
-			parentDocument.detailTitle.text = this.data.data.@name;
-			parentDocument.detailDesc.text = this.data.data.@description;
 			
-			
-			
+			if(org.un.birdeye.GlobalParams.visualLeftAccordion != null) {
+				org.un.birdeye.GlobalParams.visualLeftAccordion.selectedIndex = 2;
+			}
+			if(org.un.birdeye.GlobalParams.visualDetailTitle != null) {
+				org.un.birdeye.GlobalParams.visualDetailTitle.text = this.data.data.@name;
+			}
+			if(org.un.birdeye.GlobalParams.visualDetailDesc != null) {
+				org.un.birdeye.GlobalParams.visualDetailDesc.text = this.data.data.@description;
+			}
 		}
 		
 		private function initComponent(e:Event):void {
@@ -69,8 +77,8 @@ package org.un.birdeye.visualize.renderers {
 			lb.id = "viewDetails";
 			lb.label = this.data.data.@name;
 			lb.width = 100;
-			lb.scaleX = parentDocument.scaleFactor;
-			lb.scaleY = parentDocument.scaleFactor;
+			lb.scaleX = org.un.birdeye.GlobalParams.scaleFactor;
+			lb.scaleY = org.un.birdeye.GlobalParams.scaleFactor;
 			lb.toolTip = "Click to View Details";
 			lb.setStyle("fontWeight","normal");
 			lb.setStyle("rollOverColor",0xcccccc);
@@ -169,8 +177,8 @@ package org.un.birdeye.visualize.renderers {
 			}
 				
 			/* for any _imageObject */
-			_imageObject.scaleX = parentDocument.scaleFactor;
-			_imageObject.scaleY = parentDocument.scaleFactor;
+			_imageObject.scaleX = org.un.birdeye.GlobalParams.scaleFactor;
+			_imageObject.scaleY = org.un.birdeye.GlobalParams.scaleFactor;
 		}
 		
 		private function setImageNode(type:String):void {
