@@ -17,6 +17,7 @@
     <sourceAttachmentPath/>
   </compiler>
   <applications>
+    <application path="DirectPlacementDemo.mxml"/>
     <application path="RelNavDemoFull.mxml"/>
     <application path="RelationNavigatorDemo.mxml"/>
   </applications>
