@@ -11,6 +11,8 @@
         /> 
   
 	<mx:Script><![CDATA[
+		import flexlib.skins.SliderThumbHighlightSkin;
+		import mx.controls.sliderClasses.Slider;
 	
 	import mx.charts.chartClasses.CartesianChart;	
 	import mx.graphics.SolidColor;
@@ -62,13 +64,18 @@
 	public var dataList:XMLList;
 	public var dataListCollection:XMLListCollection;
 	public var dataSort:Sort;
-	public var numberOfSeries:int;
+	//public var numberOfSeries:int;
+	public var numberOfSerie:Array=new Array();
 	public var num:int=1;
 	public var DisplayType:String;
 	public var minxValue:int;
 	public var maxxValue:int;
 	public var minyValue:int;
 	public var maxyValue:int;
+	public var cnvs:Canvas;
+	public var accordionIndex:int;
+	public var HBoxMinMaxx:HBox;
+	public var HBoxMinMaxy:HBox;
 	
 	public function ParseAxis(Axis:XML):void { 
 		var AxisAttributes:XMLList = Axis.children().attributes(); 
@@ -90,18 +97,17 @@
 		
 		dataList=xmlData.children();
 		dataListCollection=new XMLListCollection(dataList);
-		
 		//Alert.show(dataList.length().toString(), 'Alert Box',mx.controls.Alert.OK);
 		//xmlDataModif=new XML(xmlData);
 		ParseAxis(xmlData)
 		
 		 numberItems=xmlData.children().length();
 				
-		cbxAxis1.dataProvider=arrAxis;
-		cbyAxis1.dataProvider=arrAxis;
-		cbRadius1.dataProvider=arrAxis;
-		cbOpenField1.dataProvider=arrAxis;
-		cbCloseField1.dataProvider=arrAxis;
+		cnvs1_cbxAxis1.dataProvider=arrAxis;
+		cnvs1_cbyAxis1.dataProvider=arrAxis;
+		cnvs1_cbRadius1.dataProvider=arrAxis;
+		cnvs1_cbOpenField1.dataProvider=arrAxis;
+		cnvs1_cbCloseField1.dataProvider=arrAxis;
 		refreshChart();
 	} 
 	
@@ -127,34 +133,38 @@
 		xmlData = parentDocument.gDataXML;
 		// This data source creates a flat structure
 		// myData = parentDocument.rootNode;
-		cbForm.dataProvider=myChart.chart[0].Properties.Property.Forms.Form;
+		cnvs1_cbForm.dataProvider=myChart.chart[0].Properties.Property.Forms.Form;
 		//Alert.show(data.value, 'Alert Box',mx.controls.Alert.OK);
-		cbxAxisType1.dataProvider=myChart.chart[0].Properties.Property.axis;
-		cbyAxisType1.dataProvider=myChart.chart[0].Properties.Property.axis;
-		cbDisplay.dataProvider=myChart.chart[0].Properties.Property.barTypes.barType;
-		cbCartSerie1.dataProvider=myChart.chart.(@Type=="Cartesian").Properties.Property.Series.Serie; 
-		cbCartForm1.dataProvider=myChart.chart.(@Type=="Cartesian").Properties.Property.cartForms.cartForm; 
-		cbLabelPosition.dataProvider=myChart.chart.(@Type=="Pie").Properties.Property.labelPosition.value;
-		numberOfSeries=1;
+		cnvs1_cbxAxisType1.dataProvider=myChart.chart[0].Properties.Property.axis;
+		cnvs1_cbyAxisType1.dataProvider=myChart.chart[0].Properties.Property.axis;
+		cnvs1_cbDisplay.dataProvider=myChart.chart[0].Properties.Property.barTypes.barType;
+		cnvs1_cbCartSerie1.dataProvider=myChart.chart.(@Type=="Cartesian").Properties.Property.Series.Serie; 
+		cnvs1_cbCartForm1.dataProvider=myChart.chart.(@Type=="Cartesian").Properties.Property.cartForms.cartForm; 
+		cnvs1_cbLabelPosition.dataProvider=myChart.chart.(@Type=="Pie").Properties.Property.labelPosition.value;
+		//numberOfSeries=1;
+		numberOfSerie[1]=1;
 		//chargement du fichier XML contenant les données  
+		
 		LoadXML();
 		trace(myData);
 	}
 	
 	public function addDefaultChildToCnvs(pianoCnvs:Object,canvasNum:int):void{
+		//this["numberOfSeries"+canvasNum]=1;
+				numberOfSerie[canvasNum]=1;
+				
+    	
 				var lblChartType:Label=new Label();
-				lblChartType.id="lblChartType"+canvasNum;
-				lblChartType.name="lblChartType"+canvasNum;
+				lblChartType.id="cnvs"+canvasNum+"_lblChartType";
+				lblChartType.name="cnvs"+canvasNum+"_lblChartType";
 				lblChartType.x=2;
 				lblChartType.y=10;
 				lblChartType.text="Chart type :"
 				pianoCnvs.addChild(lblChartType);
 		
-				
-		
 				var cbChartType:ComboBox=new ComboBox();
-				cbChartType.id="cbChartType"+canvasNum;
-				cbChartType.name="cbChartType"+canvasNum;
+				cbChartType.id="cnvs"+canvasNum+"_cbChartType";
+				cbChartType.name="cnvs"+canvasNum+"_cbChartType";
 				cbChartType.dataProvider=myChart.chart.@Type;
 				cbChartType.addEventListener(Event.CHANGE, changeTypeEvt); 
 				cbChartType.x=73;
@@ -165,248 +175,767 @@
 				//Alert.show(cbChartType.name.toString(), 'Alert Box',mx.controls.Alert.OK);
 				
 				var lblForm:Label=new Label();
-				lblForm.id="lblChartType"+canvasNum;
-				lblForm.name="lblChartType"+canvasNum;
+				lblForm.id="cnvs"+canvasNum+"_lblForm";
+				lblForm.name="cnvs"+canvasNum+"_lblForm";
 				lblForm.x=3;
 				lblForm.y=36;
 				lblForm.text="Form :"
 				pianoCnvs.addChild(lblForm);
 				
 				var cbForm:ComboBox=new ComboBox();
-				cbForm.id="cbForm"+canvasNum;
-				cbForm.name="cbForm"+canvasNum;
-				//cbForm.dataProvider=parentDocument.myChart.chart.@Type;
+				cbForm.id="cnvs"+canvasNum+"_cbForm";
+				cbForm.name="cnvs"+canvasNum+"_cbForm";
+				cbForm.dataProvider=myChart.chart[0].Properties.Property.Forms.Form;
 				cbForm.addEventListener(Event.CHANGE, refreshChartEvent); //parentDocument.
 				cbForm.x=73;
 				cbForm.y=34;
 				cbForm.width=160;
 				pianoCnvs.addChild(cbForm);
-		
+				
+				var hrChartType:HRule=new HRule();
+				hrChartType.x=13;
+				hrChartType.y=89;
+				hrChartType.width=210;
+				pianoCnvs.addChild(hrChartType);
+				
+				var lblSerie:Label=new Label();
+				lblSerie.id="cnvs"+canvasNum+"_lblSelectData";
+				lblSerie.name="cnvs"+canvasNum+"_lblSelectData";
+				lblSerie.x=3;
+				lblSerie.y=165;
+				lblSerie.width=139;
+				lblSerie.text="Serie 1 :";
+				pianoCnvs.addChild(lblSerie);
+				
+				var lblxAxis:Label=new Label();
+				lblxAxis.id="cnvs"+canvasNum+"_lblxAxis1";
+				lblxAxis.name="cnvs"+canvasNum+"_lblxAxis1";
+				lblxAxis.x=3;
+				lblxAxis.y=188;
+				lblxAxis.text="xAxis :";
+				pianoCnvs.addChild(lblxAxis);
+				
+				var cbxAxis:ComboBox=new ComboBox();
+				cbxAxis.id="cnvs"+canvasNum+"_cbxAxis1";
+				cbxAxis.name="cnvs"+canvasNum+"_cbxAxis1";
+				cbxAxis.dataProvider=arrAxis;
+				cbxAxis.addEventListener(Event.CHANGE, refreshChartEvent); //parentDocument.
+				cbxAxis.x=73;
+				cbxAxis.y=186;
+				pianoCnvs.addChild(cbxAxis);
+				
+				var lblyAxis:Label=new Label();
+				lblyAxis.id="cnvs"+canvasNum+"_lblyAxis1";
+				lblyAxis.name="cnvs"+canvasNum+"_lblyAxis1";
+				lblyAxis.x=3;
+				lblyAxis.y=270;
+				lblyAxis.text="yAxis :";
+				pianoCnvs.addChild(lblyAxis);
+				
+				var cbyAxis:ComboBox=new ComboBox();
+				cbyAxis.id="cnvs"+canvasNum+"_cbyAxis1";
+				cbyAxis.name="cnvs"+canvasNum+"_cbyAxis1";
+				cbyAxis.dataProvider=arrAxis;
+				cbyAxis.addEventListener(Event.CHANGE, refreshChartEvent); //parentDocument.
+				cbyAxis.x=73;
+				cbyAxis.y=268;
+				pianoCnvs.addChild(cbyAxis);
+				
+				var lblxAxisType:Label=new Label();
+				lblxAxisType.id="cnvs"+canvasNum+"_lblxAxisType1";
+				lblxAxisType.name="cnvs"+canvasNum+"_lblxAxisType1";
+				lblxAxisType.x=3;
+				lblxAxisType.y=214;
+				lblxAxisType.text="xAxisType :";
+				pianoCnvs.addChild(lblxAxisType);
+				
+				var cbxAxisType:ComboBox=new ComboBox();
+				cbxAxisType.id="cnvs"+canvasNum+"_cbxAxisType1";
+				cbxAxisType.name="cnvs"+canvasNum+"_cbxAxisType1";
+				cbxAxisType.dataProvider=myChart.chart[0].Properties.Property.axis;
+				cbxAxisType.addEventListener(Event.CHANGE, xAxisTypeChange); //parentDocument.
+				cbxAxisType.x=73;
+				cbxAxisType.y=213;
+				pianoCnvs.addChild(cbxAxisType);
+				
+				var lblyAxisType:Label=new Label();
+				lblyAxisType.id="cnvs"+canvasNum+"_lblyAxisType1";
+				lblyAxisType.name="cnvs"+canvasNum+"_lblyAxisType1";
+				lblyAxisType.x=3;
+				lblyAxisType.y=297;
+				lblyAxisType.text="yAxisType :";
+				pianoCnvs.addChild(lblyAxisType);
+				
+				var cbyAxisType:ComboBox=new ComboBox();
+				cbyAxisType.id="cnvs"+canvasNum+"_cbyAxisType1";
+				cbyAxisType.name="cnvs"+canvasNum+"_cbyAxisType1";
+				cbyAxisType.dataProvider=myChart.chart[0].Properties.Property.axis;
+				cbyAxisType.addEventListener(Event.CHANGE, yAxisTypeChange); //parentDocument.
+				cbyAxisType.x=73;
+				cbyAxisType.y=295;
+				pianoCnvs.addChild(cbyAxisType);
+				
+				var hrSel:HRule=new HRule();
+				hrSel.x=13;
+				hrSel.y=161;
+				hrSel.width=210;
+				hrSel.height=1;
+				pianoCnvs.addChild(hrSel);
+				
+				var chkDataType:CheckBox=new CheckBox();
+				chkDataType.x=10;
+				chkDataType.y=95;
+				chkDataType.label="Show DataTips";
+				chkDataType.id="cnvs"+canvasNum+"_chkDataType";
+				chkDataType.name="cnvs"+canvasNum+"_chkDataType";
+				chkDataType.enabled=true;
+				chkDataType.selected=true;
+				chkDataType.addEventListener(MouseEvent.CLICK, refreshChartEvent);
+				pianoCnvs.addChild(chkDataType);
+				
+				var chkLegend:CheckBox=new CheckBox();
+				chkLegend.x=10;
+				chkLegend.y=117;
+				chkLegend.label="Show Legend";
+				chkLegend.id="cnvs"+canvasNum+"_chkLegend";
+				chkLegend.name="cnvs"+canvasNum+"_chkLegend";
+				chkLegend.enabled=true;
+				chkLegend.selected=true;
+				chkLegend.addEventListener(MouseEvent.CLICK, refreshChartEvent);
+				pianoCnvs.addChild(chkLegend);
+				
+				var chkGrid:CheckBox=new CheckBox();
+				chkGrid.x=10;
+				chkGrid.y=139;
+				chkGrid.label="Show Grid";
+				chkGrid.id="cnvs"+canvasNum+"_chkGrid";
+				chkGrid.name="cnvs"+canvasNum+"_chkGrid";
+				chkGrid.enabled=true;
+				chkGrid.selected=false;
+				chkGrid.addEventListener(MouseEvent.CLICK, refreshChartEvent);
+				pianoCnvs.addChild(chkGrid);
+				
+				var cp:ColorPicker=new ColorPicker();
+				cp.id="cnvs"+canvasNum+"_cp1";
+				cp.name="cnvs"+canvasNum+"_cp1";
+				cp.y=166;
+				cp.x=53;
+				cp.width=17;
+				cp.height=17;
+				cp.selectedColor=0x6699CC;
+				cp.addEventListener(Event.CHANGE, refreshChartEvent);
+				pianoCnvs.addChild(cp);
+				
+				
+				var cbCartSerie:ComboBox=new ComboBox();
+				cbCartSerie.id="cnvs"+canvasNum+"_cbCartSerie1";
+				cbCartSerie.name="cnvs"+canvasNum+"_cbCartSerie1";
+				cbCartSerie.addEventListener(Event.CHANGE, refreshCartChartEvent);
+				cbCartSerie.dataProvider=myChart.chart.(@Type=="Cartesian").Properties.Property.Series.Serie;
+				cbCartSerie.prompt="Select...";
+				cbCartSerie.visible=false;
+				cbCartSerie.x=73;
+				cbCartSerie.y=163;
+				pianoCnvs.addChild(cbCartSerie);
+				
+				var lblCartForm:Label=new Label();
+				lblCartForm.id="cnvs"+canvasNum+"_lblCatForm1";
+				lblCartForm.name="cnvs"+canvasNum+"_lblCatForm1";
+				lblCartForm.text= "Form :";
+				lblCartForm.y=370;
+				lblCartForm.x=3;
+				lblCartForm.visible=false;
+				pianoCnvs.addChild(lblCartForm);
+				
+				var cbCartForm:ComboBox=new ComboBox();
+				cbCartForm.id="cnvs"+canvasNum+"_cbCartForm1";
+				cbCartForm.name="cnvs"+canvasNum+"_cbCartForm1";
+				cbCartForm.addEventListener(Event.CHANGE, refreshChartEvent);
+				cbCartForm.dataProvider=myChart.chart.(@Type=="Cartesian").Properties.Property.cartForms.cartForm;
+				cbCartForm.x=73;
+				cbCartForm.y=368;
+				cbCartForm.visible=false;
+				pianoCnvs.addChild(cbCartForm);
+				
+				var lblRadius:Label=new Label();
+				lblRadius.id="cnvs"+canvasNum+"_lblRadius1";
+				lblRadius.name="cnvs"+canvasNum+"_lblRadius1";
+				lblRadius.text= "Radius :";
+				lblRadius.y=370;
+				lblRadius.x=3;
+				lblRadius.visible=false;
+				pianoCnvs.addChild(lblRadius);
+				
+				var cbRadius:ComboBox=new ComboBox();
+				cbRadius.id="cnvs"+canvasNum+"_cbRadius1";
+				cbRadius.name="cnvs"+canvasNum+"_cbRadius1";
+				cbRadius.addEventListener(Event.CHANGE, refreshChartEvent);
+				cbRadius.dataProvider=arrAxis;
+				cbRadius.x=73;
+				cbRadius.y=368;
+				cbRadius.visible=false;
+				pianoCnvs.addChild(cbRadius);
+				
+				var lblDisplay:Label=new Label();
+				lblDisplay.id="cnvs"+canvasNum+"_lblDisplay";
+				lblDisplay.name="cnvs"+canvasNum+"_lblDisplay";
+				lblDisplay.text= "Display :";
+				lblDisplay.y=62;
+				lblDisplay.x=3;
+				lblDisplay.visible=false;
+				pianoCnvs.addChild(lblDisplay);
+				
+				var cbDisplay:ComboBox=new ComboBox();
+				cbDisplay.id="cnvs"+canvasNum+"_cbDisplay";
+				cbDisplay.name="cnvs"+canvasNum+"_cbDisplay";
+				cbDisplay.addEventListener(Event.CHANGE, refreshChartEvent);
+				cbDisplay.dataProvider=myChart.chart[0].Properties.Property.barTypes.barType;
+				cbDisplay.x=73;
+				cbDisplay.y=60;
+				cbDisplay.visible=false;
+				pianoCnvs.addChild(cbDisplay);
+				
+				var lblxInterval1:Label=new Label();
+				lblxInterval1.id="cnvs"+canvasNum+"_lblxInterval1";
+				lblxInterval1.name="cnvs"+canvasNum+"_lblxInterval1";
+				lblxInterval1.text= "Interval :";
+				lblxInterval1.y=232;
+				lblxInterval1.x=150;
+				lblxInterval1.visible=false;
+				pianoCnvs.addChild(lblxInterval1);
+				
+				var txtxInterval:NumericStepper=new NumericStepper();
+				txtxInterval.id="cnvs"+canvasNum+"_txtxInterval1";
+				txtxInterval.name="cnvs"+canvasNum+"_txtxInterval1";
+				txtxInterval.x=197;
+				txtxInterval.y=230;
+				txtxInterval.width=36;
+				txtxInterval.visible=false;
+				txtxInterval.addEventListener(Event.CHANGE, refreshChartEvent);
+				pianoCnvs.addChild(txtxInterval);
+				
+				var HBoxMinMaxx:HBox=new HBox();
+				HBoxMinMaxx.id="cnvs"+canvasNum+"_HBoxMinMaxx";
+				HBoxMinMaxx.name="cnvs"+canvasNum+"_HBoxMinMaxx";
+				HBoxMinMaxx.x=4;
+				HBoxMinMaxx.y=248;
+				HBoxMinMaxx.percentWidth=100
+				pianoCnvs.addChild(HBoxMinMaxx);
+				
+				var lblxMin:Label=new Label();
+				lblxMin.id="cnvs"+canvasNum+"_lblxMin1";
+				lblxMin.name="cnvs"+canvasNum+"_lblxMin1";
+				lblxMin.text= "min";
+				lblxMin.visible=false;
+				HBoxMinMaxx.addChild(lblxMin);
+				
+				var minMaxxSlider:flexlib.controls.HSlider=new flexlib.controls.HSlider();
+				minMaxxSlider.id="cnvs"+canvasNum+"_minMaxxSlider";
+				minMaxxSlider.name="cnvs"+canvasNum+"_minMaxxSlider";
+				minMaxxSlider.setStyle("trackHighlightSkin",flexlib.skins.SliderThumbHighlightSkin);
+				minMaxxSlider.allowTrackClick=true;
+				minMaxxSlider.allowThumbOverlap=true;
+				minMaxxSlider.liveDragging=true;
+				minMaxxSlider.showDataTip=true;
+				minMaxxSlider.setStyle("dataTipPlacement","bottom");
+				minMaxxSlider.setStyle("dataTipOffset",3);
+				minMaxxSlider.setStyle("showTrackHighlight",true);
+				minMaxxSlider.thumbCount=2;
+				minMaxxSlider.percentWidth=100;
+				minMaxxSlider.addEventListener(Event.CHANGE, refreshChartEvent);
+				minMaxxSlider.snapInterval=0.1;
+				minMaxxSlider.visible=false;
+				minMaxxSlider.maximum=maxxSlideValue;
+				minMaxxSlider.values=[0, maxxSlideDefault];
+				HBoxMinMaxx.addChild(minMaxxSlider);
+				
+				var lblxMax:Label=new Label();
+				lblxMax.id="cnvs"+canvasNum+"_lblxMax1";
+				lblxMax.name="cnvs"+canvasNum+"_lblxMax1";
+				lblxMax.text= "max";
+				lblxMax.visible=false;
+				HBoxMinMaxx.addChild(lblxMax);
+				
+				var lblyInterval1:Label=new Label();
+				lblyInterval1.id="cnvs"+canvasNum+"_lblyInterval1";
+				lblyInterval1.name="cnvs"+canvasNum+"_lblyInterval1";
+				lblyInterval1.text= "Interval :";
+				lblyInterval1.y=324;
+				lblyInterval1.x=150;
+				lblyInterval1.visible=false;
+				pianoCnvs.addChild(lblyInterval1);
+				
+				var txtyInterval:NumericStepper=new NumericStepper();
+				txtyInterval.id="cnvs"+canvasNum+"_txtyInterval1";
+				txtyInterval.name="cnvs"+canvasNum+"_txtyInterval1";
+				txtyInterval.x=197;
+				txtyInterval.y=322;
+				txtyInterval.width=36;
+				txtyInterval.visible=false;
+				txtyInterval.addEventListener(Event.CHANGE, refreshChartEvent);
+				pianoCnvs.addChild(txtyInterval);
+				
+				var HBoxMinMaxy:HBox=new HBox();
+				HBoxMinMaxy.id="cnvs"+canvasNum+"_HBoxMinMaxy";
+				HBoxMinMaxy.name="cnvs"+canvasNum+"_HBoxMinMaxy";
+				HBoxMinMaxy.x=4;
+				HBoxMinMaxy.y=345;
+				HBoxMinMaxy.percentWidth=100
+				pianoCnvs.addChild(HBoxMinMaxy);
+				
+				var lblyMin:Label=new Label();
+				lblyMin.id="cnvs"+canvasNum+"_lblyMin1";
+				lblyMin.name="cnvs"+canvasNum+"_lblyMin1";
+				lblyMin.text= "min";
+				lblyMin.visible=false;
+				HBoxMinMaxy.addChild(lblyMin);
+				
+				var minMaxySlider:flexlib.controls.HSlider=new flexlib.controls.HSlider();
+				minMaxySlider.id="cnvs"+canvasNum+"_minMaxySlider";
+				minMaxySlider.name="cnvs"+canvasNum+"_minMaxySlider";
+				minMaxySlider.setStyle("trackHighlightSkin",flexlib.skins.SliderThumbHighlightSkin);
+				minMaxySlider.allowTrackClick=true;
+				minMaxySlider.allowThumbOverlap=true;
+				minMaxySlider.liveDragging=true;
+				minMaxySlider.showDataTip=true;
+				minMaxySlider.setStyle("dataTipPlacement","bottom");
+				minMaxySlider.setStyle("dataTipOffset",3);
+				minMaxySlider.setStyle("showTrackHighlight",true);
+				minMaxySlider.thumbCount=2;
+				minMaxySlider.percentWidth=100;
+				minMaxySlider.addEventListener(Event.CHANGE, refreshChartEvent);
+				minMaxySlider.snapInterval=0.1;
+				minMaxySlider.visible=false;
+				minMaxySlider.minimum=0;
+				minMaxySlider.maximum=maxySlideValue;
+				minMaxySlider.values=[0, maxySlideDefault];
+				HBoxMinMaxy.addChild(minMaxySlider);
+				
+				var lblyMax:Label=new Label();
+				lblyMax.id="cnvs"+canvasNum+"_lblyMax1";
+				lblyMax.name="cnvs"+canvasNum+"_lblyMax1";
+				lblyMax.text= "max";
+				lblyMax.visible=false;
+				HBoxMinMaxy.addChild(lblyMax);
+				
+				var hrEnd:HRule=new HRule();
+				hrEnd.name="cnvs"+canvasNum+"_hrEnd";
+				hrEnd.id="cnvs"+canvasNum+"_hrEnd";
+				hrEnd.x=10;
+				hrEnd.y=430;
+				hrEnd.width=210;
+				pianoCnvs.addChild(hrEnd);
+				
+				var btnAddSerie:Button=new Button();
+				btnAddSerie.id="cnvs"+canvasNum+"_btnAddNewSerie";
+				btnAddSerie.name="cnvs"+canvasNum+"_btnAddNewSerie";
+				btnAddSerie.x=73;
+				btnAddSerie.y=440;
+				btnAddSerie.label="Add new serie";
+				btnAddSerie.addEventListener(MouseEvent.CLICK, addSeries);
+				pianoCnvs.addChild(btnAddSerie);
+				
+				var lblExplode:Label=new Label();
+				lblExplode.id="cnvs"+canvasNum+"_lblExplode";
+				lblExplode.name="cnvs"+canvasNum+"_lblExplode";
+				lblExplode.text= "Distance of Separation";
+				lblExplode.visible=false;
+				lblExplode.x=3;
+				lblExplode.y=317;
+				lblExplode.setStyle("fontSize",9);
+				lblExplode.setStyle("textAlign","center");
+				lblExplode.percentWidth=100;
+				pianoCnvs.addChild(lblExplode);
+				
+				var PieExplode:flexlib.controls.HSlider=new flexlib.controls.HSlider();
+				PieExplode.id="cnvs"+canvasNum+"_PieExplode";
+				PieExplode.name="cnvs"+canvasNum+"_PieExplode";
+				PieExplode.setStyle("trackHighlightSkin",flexlib.skins.SliderThumbHighlightSkin);
+				PieExplode.allowTrackClick=true;
+				PieExplode.allowThumbOverlap=true;
+				PieExplode.liveDragging=true;
+				PieExplode.showDataTip=true;
+				PieExplode.setStyle("dataTipPlacement","bottom");
+				PieExplode.setStyle("dataTipOffset",3);
+				PieExplode.setStyle("showTrackHighlight",true);
+				PieExplode.thumbCount=1;
+				PieExplode.percentWidth=100;
+				PieExplode.addEventListener(Event.CHANGE, refreshChartEvent);
+				PieExplode.snapInterval=.01;
+				PieExplode.visible=false;
+				PieExplode.minimum=0;
+				PieExplode.maximum=1;
+				PieExplode.values=[0];
+				PieExplode.x=3;
+				PieExplode.y=324;
+				pianoCnvs.addChild(PieExplode);
+				
+				var lblAngle:Label=new Label();
+				lblAngle.id="cnvs"+canvasNum+"_lblAngle";
+				lblAngle.name="cnvs"+canvasNum+"_lblAngle";
+				lblAngle.text= "Angle of rotation";
+				lblAngle.visible=false;
+				lblAngle.x=3;
+				lblAngle.y=339;
+				lblAngle.setStyle("fontSize",9);
+				lblAngle.setStyle("textAlign","center");
+				lblAngle.percentWidth=100;
+				pianoCnvs.addChild(lblAngle);
+				
+				var PieAngle:flexlib.controls.HSlider=new flexlib.controls.HSlider();
+				PieAngle.id="cnvs"+canvasNum+"_PieAngle";
+				PieAngle.name="cnvs"+canvasNum+"_PieAngle";
+				PieAngle.setStyle("trackHighlightSkin",flexlib.skins.SliderThumbHighlightSkin);
+				PieAngle.allowTrackClick=true;
+				PieAngle.allowThumbOverlap=true;
+				PieAngle.liveDragging=true;
+				PieAngle.showDataTip=true;
+				PieAngle.setStyle("dataTipPlacement","bottom");
+				PieAngle.setStyle("dataTipOffset",3);
+				PieAngle.setStyle("showTrackHighlight",true);
+				PieAngle.thumbCount=1;
+				PieAngle.percentWidth=100;
+				PieAngle.addEventListener(Event.CHANGE, refreshChartEvent);
+				PieAngle.snapInterval=1;
+				PieAngle.visible=false;
+				PieAngle.minimum=0;
+				PieAngle.maximum=360;
+				PieAngle.values=[0];
+				PieAngle.x=3;
+				PieAngle.y=345;
+				PieAngle.dataTipFormatFunction=degrees_func
+				pianoCnvs.addChild(PieAngle);
+				
+				var lblDonuts:Label=new Label();
+				lblDonuts.id="cnvs"+canvasNum+"_lblDonuts";
+				lblDonuts.name="cnvs"+canvasNum+"_lblDonuts";
+				lblDonuts.text= "Donuts";
+				lblDonuts.visible=false;
+				lblDonuts.x=3;
+				lblDonuts.y=361;
+				lblDonuts.setStyle("fontSize",9);
+				lblDonuts.setStyle("textAlign","center");
+				lblDonuts.percentWidth=100;
+				pianoCnvs.addChild(lblDonuts);
+				
+				var PieDonuts:flexlib.controls.HSlider=new flexlib.controls.HSlider();
+				PieDonuts.id="cnvs"+canvasNum+"_PieDonuts";
+				PieDonuts.name="cnvs"+canvasNum+"_PieDonuts";
+				PieDonuts.setStyle("trackHighlightSkin",flexlib.skins.SliderThumbHighlightSkin);
+				PieDonuts.allowTrackClick=true;
+				PieDonuts.allowThumbOverlap=true;
+				PieDonuts.liveDragging=true;
+				PieDonuts.showDataTip=true;
+				PieDonuts.setStyle("dataTipPlacement","bottom");
+				PieDonuts.setStyle("dataTipOffset",3);
+				PieDonuts.setStyle("showTrackHighlight",true);
+				PieDonuts.thumbCount=1;
+				PieDonuts.percentWidth=100;
+				PieDonuts.addEventListener(Event.CHANGE, refreshChartEvent);
+				PieDonuts.snapInterval=0.01;
+				PieDonuts.visible=false;
+				PieDonuts.minimum=0;
+				PieDonuts.maximum=1;
+				PieDonuts.values=[0];
+				PieDonuts.x=3;
+				PieDonuts.y=368;
+				pianoCnvs.addChild(PieDonuts);
+				
+				var lblLabelPosition:Label=new Label();
+				lblLabelPosition.id="cnvs"+canvasNum+"_lblLabelPosition";
+				lblLabelPosition.name="cnvs"+canvasNum+"_lblLabelPosition";
+				lblLabelPosition.text= "Label Position :";
+				lblLabelPosition.y=297;
+				lblLabelPosition.x=3;
+				lblLabelPosition.visible=false;
+				pianoCnvs.addChild(lblLabelPosition);
+				
+				var cbLabelPosition:ComboBox=new ComboBox();
+				cbLabelPosition.id="cnvs"+canvasNum+"_cbLabelPosition";
+				cbLabelPosition.name="cnvs"+canvasNum+"_cbLabelPosition";
+				cbLabelPosition.addEventListener(Event.CHANGE, refreshChartEvent);
+				cbLabelPosition.dataProvider=myChart.chart.(@Type=="Pie").Properties.Property.labelPosition.value;
+				cbLabelPosition.x=95;
+				cbLabelPosition.y=295;
+				cbLabelPosition.visible=false;
+				pianoCnvs.addChild(cbLabelPosition);
+				
+				var lblOpenField:Label=new Label();
+				lblOpenField.id="cnvs"+canvasNum+"_lblOpenField1";
+				lblOpenField.name="cnvs"+canvasNum+"_lblOpenField1";
+				lblOpenField.text= "Open :";
+				lblOpenField.y=375;
+				lblOpenField.x=3;
+				lblOpenField.width=55;
+				lblOpenField.visible=false;
+				pianoCnvs.addChild(lblOpenField);
+				
+				var cbOpenField:ComboBox=new ComboBox();
+				cbOpenField.id="cnvs"+canvasNum+"_cbOpenField1";
+				cbOpenField.name="cnvs"+canvasNum+"_cbOpenField1";
+				cbOpenField.addEventListener(Event.CHANGE, refreshChartEvent);
+				cbOpenField.dataProvider=arrAxis;
+				cbOpenField.x=73;
+				cbOpenField.y=373;
+				cbOpenField.visible=false;
+				pianoCnvs.addChild(cbOpenField);
+				
+				var lblCloseField:Label=new Label();
+				lblCloseField.id="cnvs"+canvasNum+"_lblCloseField1";
+				lblCloseField.name="cnvs"+canvasNum+"_lblCloseField1";
+				lblCloseField.text= "Close :";
+				lblCloseField.y=398;
+				lblCloseField.x=3;
+				lblCloseField.width=55;
+				lblCloseField.visible=false;
+				pianoCnvs.addChild(lblCloseField);
+				
+				var cbCloseField:ComboBox=new ComboBox();
+				cbCloseField.id="cnvs"+canvasNum+"_cbCloseField1";
+				cbCloseField.name="cnvs"+canvasNum+"_cbCloseField1";
+				cbCloseField.addEventListener(Event.CHANGE, refreshChartEvent);
+				cbCloseField.dataProvider=arrAxis;
+				cbCloseField.x=73;
+				cbCloseField.y=396;
+				cbCloseField.visible=false;
+				pianoCnvs.addChild(cbCloseField)
+				//Alert.show("cnvs"+canvasNum+"_HBoxMinMaxx"+"/ cnvs"+accordionIndex+"_minMaxxSlider", 'Alert Box',mx.controls.Alert.OK);
+				//Alert.show("cnvs"+accordionIndex+"_minMaxxSlider" + " / cnvs"+accordionIndex+"_HBoxMinMaxx", 'Alert Box',mx.controls.Alert.OK);
+			refreshChart();
 			}
 			
-	private function addSeries():void{
-		numberOfSeries=numberOfSeries+1;
-		cbDisplay.visible=true;
-		lblDisplay.visible=true;
+	private function addSeries(event:Event):void{
+		//numberOfSeries=numberOfSeries+1;
+		accordionIndex=leftAccordion.selectedIndex+1
+		numberOfSerie[accordionIndex]=numberOfSerie[accordionIndex]+1;
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
+		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbDisplay")).visible=true;
+		Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblDisplay")).visible=true;
 		
 		var myColor:uint = Math.round( Math.random()*0xFFFFFF );
 		
 		var sep:HRule=new HRule();
-		sep.id="sep"+numberOfSeries;
-		sep.name="sep"+numberOfSeries;
-		sep.y=hrEnd.y;
+		sep.id="cnvs"+accordionIndex+"_sep"+numberOfSerie[accordionIndex];
+		sep.name="cnvs"+accordionIndex+"_sep"+numberOfSerie[accordionIndex];
+		sep.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y;
 		sep.x=13;sep.width=210;
-		piano.addChild(sep);
+		cnvs.addChild(sep);
 		
 		var lblSerieNum:Label=new Label();
-		lblSerieNum.id="lblSerieNum"+numberOfSeries;
-		lblSerieNum.name="lblSerieNum"+numberOfSeries;
-		lblSerieNum.text= "Serie " + numberOfSeries + " :";
-		lblSerieNum.y=hrEnd.y+10;
+		lblSerieNum.id="cnvs"+accordionIndex+"_lblSerieNum"+numberOfSerie[accordionIndex];
+		lblSerieNum.name="cnvs"+accordionIndex+"_lblSerieNum"+numberOfSerie[accordionIndex];
+		lblSerieNum.text= "Serie " + numberOfSerie[accordionIndex] + " :";
+		lblSerieNum.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+10;
 		lblSerieNum.x=3;
-		piano.addChild(lblSerieNum);
+		cnvs.addChild(lblSerieNum);
 		
 		var colPicker:ColorPicker=new ColorPicker();
-		colPicker.id="cp"+numberOfSeries;
-		colPicker.name="cp"+numberOfSeries;
-		colPicker.y=hrEnd.y+10;
+		colPicker.id="cnvs"+accordionIndex+"_cp"+numberOfSerie[accordionIndex];
+		colPicker.name="cnvs"+accordionIndex+"_cp"+numberOfSerie[accordionIndex];
+		colPicker.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+10;
 		colPicker.x=60;
 		colPicker.width=17;
 		colPicker.height=17;
 		colPicker.selectedColor=myColor;//0x6699CC;
 		colPicker.addEventListener(Event.CHANGE, refreshChartEvent);
-		if (myChart.chart.(@Type==cbChartType.selectedLabel.toString()).Properties.Property.(@name=="Fill").length() !=0)
+		if (myChart.chart.(@Type==ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()).Properties.Property.(@name=="Fill").length() !=0)
 		{
 			colPicker.visible=true;
 		}else{
 			colPicker.visible=false;
 		}
-		piano.addChild(colPicker);
+		cnvs.addChild(colPicker);
 		
 		var cbxAxis:ComboBox=new ComboBox();
-		cbxAxis.id="cbxAxis"+numberOfSeries;
-		cbxAxis.name="cbxAxis"+numberOfSeries;
+		cbxAxis.id="cnvs"+accordionIndex+"_cbxAxis"+numberOfSerie[accordionIndex];
+		cbxAxis.name="cnvs"+accordionIndex+"_cbxAxis"+numberOfSerie[accordionIndex];
 		cbxAxis.addEventListener(Event.CHANGE, refreshChartEvent);
 		cbxAxis.dataProvider=arrAxis;
 		cbxAxis.prompt="High Field...";
 		cbxAxis.x=85;
-		cbxAxis.y=hrEnd.y+8;
-		if (cbChartType.selectedLabel.toString()=="Candlestick" || cbChartType.selectedLabel.toString()=="HighLowOpenClose")
+		cbxAxis.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+8;
+		if (ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="Candlestick" || ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="HighLowOpenClose")
 		{
 			cbxAxis.visible=true;
 		}else{
 			cbxAxis.visible=false;
 		}
-		piano.addChild(cbxAxis);
+		cnvs.addChild(cbxAxis);
 		
 		var cbyAxis:ComboBox=new ComboBox();
-		cbyAxis.id="cbyAxis"+numberOfSeries;
-		cbyAxis.name="cbyAxis"+numberOfSeries;
+		cbyAxis.id="cnvs"+accordionIndex+"_cbyAxis"+numberOfSerie[accordionIndex];
+		cbyAxis.name="cnvs"+accordionIndex+"_cbyAxis"+numberOfSerie[accordionIndex];
 		cbyAxis.addEventListener(Event.CHANGE, refreshChartEvent);
 		cbyAxis.dataProvider=arrAxis;
-		if (cbChartType.selectedLabel.toString()=="Candlestick" || cbChartType.selectedLabel.toString()=="HighLowOpenClose")
+		if (ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="Candlestick" || ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="HighLowOpenClose")
 		{
 			cbyAxis.prompt="Low Field...";
 			cbyAxis.x=85;
-			cbyAxis.y=hrEnd.y+38;
+			cbyAxis.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+38;
 		}else{
 			cbyAxis.prompt="Select...";
 			cbyAxis.x=85;
-			cbyAxis.y=hrEnd.y+8;
+			cbyAxis.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+8;
 		}
-		piano.addChild(cbyAxis);
+		cnvs.addChild(cbyAxis);
 		
 		
 		var cbCartSerie:ComboBox=new ComboBox();
-		cbCartSerie.id="cbCartSerie"+numberOfSeries;
-		cbCartSerie.name="cbCartSerie"+numberOfSeries;
+		cbCartSerie.id="cnvs"+accordionIndex+"_cbCartSerie"+numberOfSerie[accordionIndex];
+		cbCartSerie.name="cnvs"+accordionIndex+"_cbCartSerie"+numberOfSerie[accordionIndex];
 		cbCartSerie.addEventListener(Event.CHANGE, refreshCartChartEvent);
 		cbCartSerie.dataProvider=myChart.chart.(@Type=="Cartesian").Properties.Property.Series.Serie;
 		cbCartSerie.prompt="Select...";
-		if (cbChartType.selectedLabel.toString()=="Cartesian")
+		if (ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="Cartesian")
 		{
 			cbCartSerie.visible=true;
 		}else{
 			cbCartSerie.visible=false;
 		}
 		cbCartSerie.x=3;
-		cbCartSerie.y=hrEnd.y+38;
-		piano.addChild(cbCartSerie);
+		cbCartSerie.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+38;
+		cnvs.addChild(cbCartSerie);
 		
 		
 		/*var lblCartForm:Label=new Label();
-		lblCartForm.id="lblCartForm"+numberOfSeries;
-		lblCartForm.name="lblCartForm"+numberOfSeries;
+		lblCartForm.id="lblCartForm"+numberOfSerie[accordionIndex];
+		lblCartForm.name="lblCartForm"+numberOfSerie[accordionIndex];
 		lblCartForm.text= "Form :";
 		lblCartForm.y=hrEnd.y+10;
 		lblCartForm.x=3;
-		piano.addChild(lblCartForm);*/
+		cnvs.addChild(lblCartForm);*/
 		
 		var cbCartForm:ComboBox=new ComboBox();
-		cbCartForm.id="cbCartForm"+numberOfSeries;
-		cbCartForm.name="cbCartForm"+numberOfSeries;
+		cbCartForm.id="cnvs"+accordionIndex+"_cbCartForm"+numberOfSerie[accordionIndex];
+		cbCartForm.name="cnvs"+accordionIndex+"_cbCartForm"+numberOfSerie[accordionIndex];
 		cbCartForm.addEventListener(Event.CHANGE, refreshChartEvent);
 		cbCartForm.dataProvider=myChart.chart.(@Type=="Cartesian").Properties.Property.cartForms.cartForm;
 		cbCartForm.prompt="Select...";
-		if (cbChartType.selectedLabel.toString()=="Cartesian")
+		if (ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="Cartesian")
 		{
 			cbCartForm.visible=true;
 		}else{
 			cbCartForm.visible=false;
 		}
 		cbCartForm.x=120;
-		cbCartForm.y=hrEnd.y+38;
-		piano.addChild(cbCartForm);
+		cbCartForm.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+38;
+		cnvs.addChild(cbCartForm);
 		
 		var cbRadius:ComboBox=new ComboBox();
-		cbRadius.id="cbRadius"+numberOfSeries;
-		cbRadius.name="cbRadius"+numberOfSeries;
+		cbRadius.id="cnvs"+accordionIndex+"_cbRadius"+numberOfSerie[accordionIndex];
+		cbRadius.name="cnvs"+accordionIndex+"_cbRadius"+numberOfSerie[accordionIndex];
 		cbRadius.addEventListener(Event.CHANGE, refreshChartEvent);
 		cbRadius.dataProvider=arrAxis;
 		cbRadius.prompt="Radius...";
-		if (cbChartType.selectedLabel.toString()=="Bubble")
+		if (ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="Bubble")
 		{
 			cbRadius.visible=true;
 		}else{
 			cbRadius.visible=false;
 		}
 		cbRadius.x=120;
-		cbRadius.y=hrEnd.y+38;
-		piano.addChild(cbRadius);
+		cbRadius.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+38;
+		cnvs.addChild(cbRadius);
 		
 		var cbOpen:ComboBox=new ComboBox();
-		cbOpen.id="cbOpenField"+numberOfSeries;
-		cbOpen.name="cbOpenField"+numberOfSeries;
+		cbOpen.id="cnvs"+accordionIndex+"_cbOpenField"+numberOfSerie[accordionIndex];
+		cbOpen.name="cnvs"+accordionIndex+"_cbOpenField"+numberOfSerie[accordionIndex];
 		cbOpen.addEventListener(Event.CHANGE, refreshChartEvent);
 		cbOpen.dataProvider=arrAxis;
 		cbOpen.prompt="Open Field...";
 		cbOpen.x=85;
-		cbOpen.y=hrEnd.y+68;
-		if (cbChartType.selectedLabel.toString()=="Candlestick" || cbChartType.selectedLabel.toString()=="HighLowOpenClose")
+		cbOpen.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+68;
+		if (ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="Candlestick" || ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="HighLowOpenClose")
 		{
 			cbOpen.visible=true;
 		}else{
 			cbOpen.visible=false;
 		}
-		piano.addChild(cbOpen);
+		cnvs.addChild(cbOpen);
 		
 		var cbClose:ComboBox=new ComboBox();
-		cbClose.id="cbCloseField"+numberOfSeries;
-		cbClose.name="cbCloseField"+numberOfSeries;
+		cbClose.id="cnvs"+accordionIndex+"_cbCloseField"+numberOfSerie[accordionIndex];
+		cbClose.name="cnvs"+accordionIndex+"_cbCloseField"+numberOfSerie[accordionIndex];
 		cbClose.addEventListener(Event.CHANGE, refreshChartEvent);
 		cbClose.dataProvider=arrAxis;
 		cbClose.prompt="Close Field...";
 		cbClose.x=85;
-		cbClose.y=hrEnd.y+98;
-		if (cbChartType.selectedLabel.toString()=="Candlestick" || cbChartType.selectedLabel.toString()=="HighLowOpenClose")
+		cbClose.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+98;
+		if (ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="Candlestick" || ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="HighLowOpenClose")
 		{
 			cbClose.visible=true;
 		}else{
 			cbClose.visible=false;
 		}
-		piano.addChild(cbClose);
+		cnvs.addChild(cbClose);
 		
 		var chkRemove:CheckBox=new CheckBox();
-		chkRemove.id="chkRemove"+numberOfSeries;
-		chkRemove.name="chkRemove"+numberOfSeries;
+		chkRemove.id="cnvs"+accordionIndex+"_chkRemove"+numberOfSerie[accordionIndex];
+		chkRemove.name="cnvs"+accordionIndex+"_chkRemove"+numberOfSerie[accordionIndex];
 		chkRemove.x=200;
-		chkRemove.y=hrEnd.y+9;
+		chkRemove.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+9;
 		chkRemove.addEventListener(MouseEvent.CLICK, removeSeriesEvent);
-		piano.addChild(chkRemove);
+		cnvs.addChild(chkRemove);
 		
-		btnAddNewSerie.move(btnAddNewSerie.x,btnAddNewSerie.y+158);
-		hrEnd.move(hrEnd.x,hrEnd.y+158);
+		Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).move(Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).x,Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).y+158);
+		HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).move(HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).x,HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+158);
 	}
 	
 	private function removeSeriesEvent(event:Event):void{
-		num=event.target.name.substr(9);
-		piano.removeChild(piano.getChildByName("sep"+num));
-		piano.removeChild(piano.getChildByName("lblSerieNum"+num));
-		piano.removeChild(piano.getChildByName("cp"+num));
-		piano.removeChild(piano.getChildByName("cbyAxis"+num));
-		piano.removeChild(piano.getChildByName("chkRemove"+num));
-		piano.removeChild(piano.getChildByName("cbCartSerie"+num));
-		piano.removeChild(piano.getChildByName("cbCartForm"+num));
-		piano.removeChild(piano.getChildByName("cbRadius"+num));
-		piano.removeChild(piano.getChildByName("cbxAxis"+num));
-		piano.removeChild(piano.getChildByName("cbOpenField"+num));
-		piano.removeChild(piano.getChildByName("cbCloseField"+num));
-		for (var i:int=1; i<=numberOfSeries; i++) { 
+		accordionIndex=leftAccordion.selectedIndex+1
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
+		num=event.target.name.substr(15);
+		
+		cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num));
+		cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_lblSerieNum"+num));
+		cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_cp"+num));
+		cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num));
+		cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_chkRemove"+num));
+		cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+num));
+		cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+num));
+		cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num));
+		cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num));
+		cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num));
+		cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num));
+		
+		for (var i:int=1; i<=numberOfSerie[accordionIndex]; i++) { 
 			if (i>num){
-				HRule(piano.getChildByName("sep"+i)).move(HRule(piano.getChildByName("sep"+i)).x,HRule(piano.getChildByName("sep"+i)).y-158);
-				Label(piano.getChildByName("lblSerieNum"+i)).move(Label(piano.getChildByName("lblSerieNum"+i)).x,Label(piano.getChildByName("lblSerieNum"+i)).y-158);
-				Label(piano.getChildByName("lblSerieNum"+i)).text="Serie " + (i-1) + " :";
-				ColorPicker(piano.getChildByName("cp"+i)).move(ColorPicker(piano.getChildByName("cp"+i)).x,ColorPicker(piano.getChildByName("cp"+i)).y-158);
-				ComboBox(piano.getChildByName("cbyAxis"+i)).move(ComboBox(piano.getChildByName("cbyAxis"+i)).x,ComboBox(piano.getChildByName("cbyAxis"+i)).y-158);
-				CheckBox(piano.getChildByName("chkRemove"+i)).move(CheckBox(piano.getChildByName("chkRemove"+i)).x,CheckBox(piano.getChildByName("chkRemove"+i)).y-158);
-				ComboBox(piano.getChildByName("cbCartSerie"+i)).move(ComboBox(piano.getChildByName("cbCartSerie"+i)).x,ComboBox(piano.getChildByName("cbCartSerie"+i)).y-158);
-				ComboBox(piano.getChildByName("cbCartForm"+i)).move(ComboBox(piano.getChildByName("cbCartForm"+i)).x,ComboBox(piano.getChildByName("cbCartForm"+i)).y-158);
-				ComboBox(piano.getChildByName("cbRadius"+i)).move(ComboBox(piano.getChildByName("cbRadius"+i)).x,ComboBox(piano.getChildByName("cbRadius"+i)).y-158);
-				ComboBox(piano.getChildByName("cbxAxis"+i)).move(ComboBox(piano.getChildByName("cbxAxis"+i)).x,ComboBox(piano.getChildByName("cbxAxis"+i)).y-158);
-				ComboBox(piano.getChildByName("cbOpenField"+i)).move(ComboBox(piano.getChildByName("cbOpenField"+i)).x,ComboBox(piano.getChildByName("cbOpenField"+i)).y-158);
-				ComboBox(piano.getChildByName("cbCloseField"+i)).move(ComboBox(piano.getChildByName("cbCloseField"+i)).x,ComboBox(piano.getChildByName("cbCloseField"+i)).y-158);
+				HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+i)).move(HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+i)).x,HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+i)).y-158);
+				Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblSerieNum"+i)).move(Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblSerieNum"+i)).x,Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblSerieNum"+i)).y-158);
+				Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblSerieNum"+i)).text="Serie " + (i-1) + " :";
+				ColorPicker(cnvs.getChildByName("cnvs"+accordionIndex+"_cp"+i)).move(ColorPicker(cnvs.getChildByName("cnvs"+accordionIndex+"_cp"+i)).x,ColorPicker(cnvs.getChildByName("cnvs"+accordionIndex+"_cp"+i)).y-158);
+				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+i)).move(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+i)).x,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+i)).y-158);
+				CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkRemove"+i)).move(CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkRemove"+i)).x,CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkRemove"+i)).y-158);
+				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+i)).move(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+i)).x,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+i)).y-158);
+				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+i)).move(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+i)).x,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+i)).y-158);
+				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+i)).move(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+i)).x,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+i)).y-158);
+				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+i)).move(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+i)).x,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+i)).y-158);
+				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+i)).move(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+i)).x,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+i)).y-158);
+				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+i)).move(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+i)).x,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+i)).y-158);
 				
-				piano.getChildByName("sep"+i).name="sep"+(i-1);
-				piano.getChildByName("lblSerieNum"+i).name="lblSerieNum"+(i-1);
-				piano.getChildByName("cp"+i).name="cp"+(i-1);
-				piano.getChildByName("cbyAxis"+i).name="cbyAxis"+(i-1);
-				piano.getChildByName("chkRemove"+i).name="chkRemove"+(i-1);
-				piano.getChildByName("cbCartSerie"+i).name="cbCartSerie"+(i-1);
-				piano.getChildByName("cbCartForm"+i).name="cbCartForm"+(i-1);
-				piano.getChildByName("cbRadius"+i).name="cbRadius"+(i-1);
-				piano.getChildByName("cbxAxis"+i).name="cbxAxis"+(i-1);
-				piano.getChildByName("cbOpenField"+i).name="cbOpenField"+(i-1);
-				piano.getChildByName("cbCloseField"+i).name="cbCloseField"+(i-1);
+				cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+i).name="cnvs"+accordionIndex+"_sep"+(i-1);
+				cnvs.getChildByName("cnvs"+accordionIndex+"_lblSerieNum"+i).name="cnvs"+accordionIndex+"_lblSerieNum"+(i-1);
+				cnvs.getChildByName("cnvs"+accordionIndex+"_cp"+i).name="cnvs"+accordionIndex+"_cp"+(i-1);
+				cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+i).name="cnvs"+accordionIndex+"_cbyAxis"+(i-1);
+				cnvs.getChildByName("cnvs"+accordionIndex+"_chkRemove"+i).name="cnvs"+accordionIndex+"_chkRemove"+(i-1);
+				cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+i).name="cnvs"+accordionIndex+"_cbCartSerie"+(i-1);
+				cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+i).name="cnvs"+accordionIndex+"_cbCartForm"+(i-1);
+				cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+i).name="cnvs"+accordionIndex+"_cbRadius"+(i-1);
+				cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+i).name="cnvs"+accordionIndex+"_cbxAxis"+(i-1);
+				cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+i).name="cnvs"+accordionIndex+"_cbOpenField"+(i-1);
+				cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+i).name="cnvs"+accordionIndex+"_cbCloseField"+(i-1);
 			}
 		}
-		btnAddNewSerie.move(btnAddNewSerie.x,btnAddNewSerie.y-158);
-		hrEnd.move(hrEnd.x,hrEnd.y-158);
+		Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).move(Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).x,Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).y-158);
+		HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).move(HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).x,HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y-158);
 		
-		numberOfSeries=numberOfSeries-1;
+		numberOfSerie[accordionIndex]=numberOfSerie[accordionIndex]-1;
+		//numberOfSeries=numberOfSeries-1;
 		
-		if(numberOfSeries==1){
-			lblDisplay.visible=false;
-			cbDisplay.visible=false;
+		//if(numberOfSeries==1){
+		if(numberOfSerie[accordionIndex]==1){
+			Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblDisplay")).visible=false;
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbDisplay")).visible=false;
 		}
 		
 		refreshChart();
@@ -414,386 +943,274 @@
 	
 	//Fonction qui définit les éléments paramétrables en fonction du type de graphique séléctionné
 	public function changeTypeEvt(event:Event):void {
-		var strChartType:String = cbChartType.selectedLabel.toString()
-		/*var test:Object;
-		test=Canvas(leftAccordion.getChildByName("piano2"))
+		accordionIndex=leftAccordion.selectedIndex+1
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
+		var strChartType:String = ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()
+		HBoxMinMaxx=HBox(cnvs.getChildByName("cnvs"+accordionIndex+"_HBoxMinMaxx"))
+		HBoxMinMaxy=HBox(cnvs.getChildByName("cnvs"+accordionIndex+"_HBoxMinMaxy"))
 		
-		Alert.show(ComboBox(test.getChildByName("cbChartType2")).selectedLabel.toString(), 'Alert Box',mx.controls.Alert.OK);
-		*/
-		//Alert.show((leftAccordion.selectedIndex+1).toString(), 'Alert Box',mx.controls.Alert.OK);
-		//Alert.show(ComboBox(test.getChildByName("cbChartType")).selectedLabel.toString(), 'Alert Box',mx.controls.Alert.OK);
 		//show or hide form combobox
 		if (myChart.chart.(@Type==strChartType).Properties.Property.Forms.length() !=0)
 		{
-			cbForm.visible=true;
-			lblForm.visible=true;
-			cbForm.dataProvider=myChart.chart.(@Type==strChartType).Properties.Property.Forms.Form;
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbForm")).visible=true;
+			Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblForm")).visible=true;cnvs1_lblForm
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbForm")).dataProvider=myChart.chart.(@Type==strChartType).Properties.Property.Forms.Form;
 		}else{
-			cbForm.visible=false;
-			lblForm.visible=false;
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbForm")).visible=false;
+			Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblForm")).visible=false;
 		}
+		
 		//show or hide x/y AxisType combobox
 		if (myChart.chart.(@Type==strChartType).Properties.Property.axis.length() !=0)
 		{
-			cbxAxisType1.visible=true;
-			lblxAxisType1.visible=true;
-			cbyAxisType1.visible=true;
-			lblyAxisType1.visible=true;
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType1")).visible=true;
+			Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblxAxisType1")).visible=true;
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).visible=true;
+			Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblyAxisType1")).visible=true;
 		}else{
-			cbxAxisType1.visible=false;
-			lblxAxisType1.visible=false;
-			cbyAxisType1.visible=false;
-			lblyAxisType1.visible=false;
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType1")).visible=false;
+			Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblxAxisType1")).visible=false;
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).visible=false;
+			Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblyAxisType1")).visible=false;
 		}
 		
 		//show or hide show Grid checkbox
 		if (myChart.chart.(@Type==strChartType).Properties.Property.(@name=="GridLines").length() !=0)
 		{
-			chkGrid.visible=true;
+			CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkGrid")).visible=true;
 		}else{
-			chkGrid.visible=false;
+			CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkGrid")).visible=false;
 		}
 		
 		
 		//show or hide color picker
 		if (myChart.chart.(@Type==strChartType).Properties.Property.(@name=="Fill").length() !=0)
 		{
-			for (var i:int=1; i<=numberOfSeries; i++) { 
-				piano.getChildByName("cp"+i).visible=true;
+			for (var i:int=1; i<=numberOfSerie[accordionIndex]; i++) { 
+				cnvs.getChildByName("cnvs"+accordionIndex+"_cp"+i).visible=true;
 			}
 		}else{
-			for (var i:int=1; i<=numberOfSeries; i++) { 
-				piano.getChildByName("cp"+i).visible=false;
+			for (var i:int=1; i<=numberOfSerie[accordionIndex]; i++) { 
+				cnvs.getChildByName("cnvs"+accordionIndex+"_cp"+i).visible=false;
 			}
 		}
 		
 		//show or hide Display
 		if (myChart.chart.(@Type==strChartType).Properties.Property.(@name=="barTypes").length() !=0)
 		{
-			lblDisplay.visible=true;
-			cbDisplay.visible=true;
+			Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblDisplay")).visible=true;
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbDisplay")).visible=true;
 		}else{
-			lblDisplay.visible=false;
-			cbDisplay.visible=false;
+			Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblDisplay")).visible=false;
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbDisplay")).visible=false;
 		}
 		
-		/*
-		//show hide radius field
-		for (num=1; num<=numberOfSeries; num++) {
+		
+		
+		
+		for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
 			if (strChartType=="Cartesian")
 			{
-				if(ComboBox(piano.getChildByName("cbCartSerie"+num)).selectedLabel.toString()=="Bubble"){
+				cnvs.getChildByName("cnvs"+accordionIndex+"_lblLabelPosition").visible=false;
+				cnvs.getChildByName("cnvs"+accordionIndex+"_cbLabelPosition").visible=false;
+				cnvs.getChildByName("cnvs"+accordionIndex+"_PieExplode").visible=false;
+				cnvs.getChildByName("cnvs"+accordionIndex+"_PieAngle").visible=false;
+				cnvs.getChildByName("cnvs"+accordionIndex+"_lblExplode").visible=false;
+				cnvs.getChildByName("cnvs"+accordionIndex+"_lblAngle").visible=false;
+				cnvs.getChildByName("cnvs"+accordionIndex+"_lblDonuts").visible=false;
+				cnvs.getChildByName("cnvs"+accordionIndex+"_PieDonuts").visible=false;
+				if(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+num)).selectedLabel.toString()=="Bubble"){
 					if(num==1){
-						piano.getChildByName("lblRadius"+num).visible=true;
-						piano.getChildByName("lblOpenField"+num).visible=false;
-						piano.getChildByName("lblCloseField"+num).visible=false;
+						cnvs.getChildByName("cnvs"+accordionIndex+"_lblRadius"+num).visible=true;
+						cnvs.getChildByName("cnvs"+accordionIndex+"_lblOpenField"+num).visible=false;
+						cnvs.getChildByName("cnvs"+accordionIndex+"_lblCloseField"+num).visible=false;
 					}else{
-						ComboBox(piano.getChildByName("cbCartSerie"+num)).move(3,piano.getChildByName("sep"+num).y+38)
+						ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+num)).move(3,cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+38)
 					}
-					piano.getChildByName("cbRadius"+num).visible=true;
-					piano.getChildByName("cbOpenField"+num).visible=false;
-					piano.getChildByName("cbCloseField"+num).visible=false;
-				}else if(ComboBox(piano.getChildByName("cbCartSerie"+num)).selectedLabel.toString()=="Candlestick" || ComboBox(piano.getChildByName("cbCartSerie"+num)).selectedLabel.toString()=="HLOC"){
+					cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num).visible=true;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num).visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num).visible=false;
+				}else if(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+num)).selectedLabel.toString()=="Candlestick" || ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+num)).selectedLabel.toString()=="HLOC"){
 					if(num==1){
-						piano.getChildByName("lblRadius"+num).visible=false;
-						piano.getChildByName("lblOpenField"+num).visible=true;
-						piano.getChildByName("lblCloseField"+num).visible=true;
+						cnvs.getChildByName("cnvs"+accordionIndex+"_lblRadius"+num).visible=false;
+						cnvs.getChildByName("cnvs"+accordionIndex+"_lblOpenField"+num).visible=true;
+						cnvs.getChildByName("cnvs"+accordionIndex+"_lblCloseField"+num).visible=true;
 					}else{
-						ComboBox(piano.getChildByName("cbCartSerie"+num)).move(3,piano.getChildByName("sep"+num).y+38)
-						ComboBox(piano.getChildByName("cbyAxis"+num)).prompt="Low Field...";
+						ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).visible=true;
+						ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).visible=true;
+						
+						ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+num)).move(85,cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+8)
+						ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num)).move(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num).x, cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+128);
+						ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num)).move(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num).x, cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+98);
+						ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).move(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num).x, cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+68);
+						ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).move(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num).x, cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+38);
+						ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).prompt="Low Field...";
 					}
-					piano.getChildByName("cbRadius"+num).visible=false;
-					piano.getChildByName("cbOpenField"+num).visible=true;
-					piano.getChildByName("cbCloseField"+num).visible=true;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num).visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num).visible=true;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num).visible=true;
 				}else{
 					if(num==1){
-						piano.getChildByName("lblRadius"+num).visible=false;
-						piano.getChildByName("lblOpenField"+num).visible=false;
-						piano.getChildByName("lblCloseField"+num).visible=false;
+						cnvs.getChildByName("cnvs"+accordionIndex+"_lblRadius"+num).visible=false;
+						cnvs.getChildByName("cnvs"+accordionIndex+"_lblOpenField"+num).visible=false;
+						cnvs.getChildByName("cnvs"+accordionIndex+"_lblCloseField"+num).visible=false;
 					}else{
-						ComboBox(piano.getChildByName("cbCartSerie"+num)).move(3,piano.getChildByName("sep"+num).y+38)
+						ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).visible=false;
+						ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).move(85,cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+8)
+						ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).prompt="Select..."
+						ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+num)).move(3,cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+38)
 					}
-					piano.getChildByName("cbRadius"+num).visible=false;
-					piano.getChildByName("cbOpenField"+num).visible=false;
-					piano.getChildByName("cbCloseField"+num).visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num).visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num).visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num).visible=false;
 				}
 			}else if (myChart.chart.(@Type==strChartType).Properties.Property.(@name=="radiusField").length() !=0){
 				if(num==1){
-					piano.getChildByName("lblRadius"+num).visible=true;
-					piano.getChildByName("lblOpenField"+num).visible=false;
-					piano.getChildByName("lblCloseField"+num).visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_lblRadius"+num).visible=true;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_lblOpenField"+num).visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_lblCloseField"+num).visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_lblLabelPosition").visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_cbLabelPosition").visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_PieExplode").visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_PieAngle").visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_lblExplode").visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_lblAngle").visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_lblDonuts").visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_PieDonuts").visible=false;
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblxAxis"+num)).text="xAxis :";
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblyAxis"+num)).text="yAxis :";
 				}else{
-					ComboBox(piano.getChildByName("cbCartSerie"+num)).move(3,piano.getChildByName("sep"+num).y+38)
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).prompt="Select...";
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).visible=false;
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).move(85,cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+8)
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+num)).move(3,cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+38)
 				}
-				piano.getChildByName("cbRadius"+num).visible=true;
-				piano.getChildByName("cbOpenField"+num).visible=false;
-				piano.getChildByName("cbCloseField"+num).visible=false;
-			}else{
-				if(num==1){
-					piano.getChildByName("lblRadius"+num).visible=false;
-					piano.getChildByName("lblOpenField"+num).visible=false;
-					piano.getChildByName("lblCloseField"+num).visible=false;
-				}else{
-					ComboBox(piano.getChildByName("cbCartSerie"+num)).move(3,piano.getChildByName("sep"+num).y+38)
-				}
-				piano.getChildByName("cbRadius"+num).visible=false;
-				piano.getChildByName("cbOpenField"+num).visible=false;
-				piano.getChildByName("cbCloseField"+num).visible=false;
-			}
-		}
-		
-		//Show hide field for pie chart
-		for (num=1; num<=numberOfSeries; num++) {
-    		if (strChartType=="Pie")
-			{
-				if(num==1){
-					Label(piano.getChildByName("lblyAxis"+num)).text="Field :";
-					piano.getChildByName("lblxAxis"+num).visible=false;
-					piano.getChildByName("cbxAxis"+num).visible=false;
-					lblxMin1.visible=false;
-		    		lblxMax1.visible=false;
-		    		lblxInterval1.visible=false;
-		    		minMaxxSlider.visible=false;
-		    		txtxInterval1.visible=false;
-    				lblyMin1.visible=false;
-		    		lblyMax1.visible=false;
-		    		lblyInterval1.visible=false;
-		    		minMaxySlider.visible=false;
-		    		txtyInterval1.visible=false;
-					piano.getChildByName("lblLabelPosition").visible=true;
-					piano.getChildByName("cbLabelPosition").visible=true;
-					piano.getChildByName("PieExplode").visible=true;
-					piano.getChildByName("PieAngle").visible=true;
-					piano.getChildByName("lblExplode").visible=true;
-					piano.getChildByName("lblAngle").visible=true;
-					piano.getChildByName("lblDonuts").visible=true;
-					piano.getChildByName("PieDonuts").visible=true;
-				}	
-			}else{
-				if(num==1){
-					Label(piano.getChildByName("lblyAxis"+num)).text="yAxis :"
-					piano.getChildByName("lblxAxis"+num).visible=true;
-					
-					if (cbxAxisType1.selectedLabel.toString()!="Category"){
-						lblxMin1.visible=true;
-			    		lblxMax1.visible=true;
-			    		lblxInterval1.visible=true;
-			    		minMaxxSlider.visible=true;
-			    		txtxInterval1.visible=true;
-					}
-					
-					if (cbyAxisType1.selectedLabel.toString()!="Category"){
-						lblyMin1.visible=true;
-			    		lblyMax1.visible=true;
-			    		lblyInterval1.visible=true;
-			    		minMaxySlider.visible=true;
-			    		txtyInterval1.visible=true;
-					}
-					
-					piano.getChildByName("cbxAxis"+num).visible=true;
-					piano.getChildByName("lblLabelPosition").visible=false;
-					piano.getChildByName("cbLabelPosition").visible=false;
-					piano.getChildByName("PieExplode").visible=false;
-					piano.getChildByName("PieAngle").visible=false;
-					piano.getChildByName("lblExplode").visible=false;
-					piano.getChildByName("lblAngle").visible=false;
-					piano.getChildByName("lblDonuts").visible=false;
-					piano.getChildByName("PieDonuts").visible=false;
-				}
-			}
-		}
-		
-		//Show hide field for Candlestick chart
-		for (num=1; num<=numberOfSeries; num++) {
-    		if (strChartType=="Candlestick" || strChartType=="HighLowOpenClose")
-			{
-				if(num==1){
-					Label(piano.getChildByName("lblxAxis"+num)).text="High Field :";
-					Label(piano.getChildByName("lblyAxis"+num)).text="Low Field :";
-					piano.getChildByName("lblOpenField"+num).visible=true;
-					piano.getChildByName("lblCloseField"+num).visible=true;
-				}else{
-					ComboBox(piano.getChildByName("cbCloseField"+num)).move(piano.getChildByName("cbCloseField"+num).x, piano.getChildByName("sep"+num).y+98);
-					ComboBox(piano.getChildByName("cbOpenField"+num)).move(piano.getChildByName("cbOpenField"+num).x, piano.getChildByName("sep"+num).y+68);
-					ComboBox(piano.getChildByName("cbyAxis"+num)).move(piano.getChildByName("cbyAxis"+num).x, piano.getChildByName("sep"+num).y+8);
-					ComboBox(piano.getChildByName("cbxAxis"+num)).move(piano.getChildByName("cbxAxis"+num).x, piano.getChildByName("sep"+num).y+38);
-					ComboBox(piano.getChildByName("cbyAxis"+num)).prompt="Low Field...";
-					piano.getChildByName("cbxAxis"+num).visible=true;
-					//ComboBox(piano.getChildByName("cbyAxis"+num)).move(piano.getChildByName("cbyAxis"+num).x,piano.getChildByName("sep"+num).y+38);
-					//ComboBox(piano.getChildByName("cbyAxis"+i)).move(ComboBox(piano.getChildByName("cbyAxis"+i)).x,ComboBox(piano.getChildByName("cbyAxis"+i)).y+30);
-				}	
-				piano.getChildByName("cbOpenField"+num).visible=true;
-				piano.getChildByName("cbCloseField"+num).visible=true;
-				
-			}else{
-				Alert.show(strChartType.toString(), 'Alert Box',mx.controls.Alert.OK);
-			
-					
-				if(num==1){
-					Label(piano.getChildByName("lblxAxis"+num)).text="xAxis :";
-					Label(piano.getChildByName("lblyAxis"+num)).text="yAxis :";
-					piano.getChildByName("lblOpenField"+num).visible=false;
-					piano.getChildByName("lblCloseField"+num).visible=false;
-				}else{
-					ComboBox(piano.getChildByName("cbyAxis"+num)).prompt="Select...";
-					piano.getChildByName("cbxAxis"+num).visible=false;
-					ComboBox(piano.getChildByName("cbyAxis"+num)).move(piano.getChildByName("cbyAxis"+num).x,piano.getChildByName("sep"+num).y+8);
-					//ComboBox(piano.getChildByName("cbyAxis"+i)).move(ComboBox(piano.getChildByName("cbyAxis"+i)).x,ComboBox(piano.getChildByName("cbyAxis"+i)).y-30);
-				}
-				piano.getChildByName("cbOpenField"+num).visible=false;
-				piano.getChildByName("cbCloseField"+num).visible=false;
-					
-			}
-		}*/
-		
-		
-		for (num=1; num<=numberOfSeries; num++) {
-			if (strChartType=="Cartesian")
-			{
-				if(ComboBox(piano.getChildByName("cbCartSerie"+num)).selectedLabel.toString()=="Bubble"){
-					if(num==1){
-						piano.getChildByName("lblRadius"+num).visible=true;
-						piano.getChildByName("lblOpenField"+num).visible=false;
-						piano.getChildByName("lblCloseField"+num).visible=false;
-					}else{
-						ComboBox(piano.getChildByName("cbCartSerie"+num)).move(3,piano.getChildByName("sep"+num).y+38)
-					}
-					piano.getChildByName("cbRadius"+num).visible=true;
-					piano.getChildByName("cbOpenField"+num).visible=false;
-					piano.getChildByName("cbCloseField"+num).visible=false;
-				}else if(ComboBox(piano.getChildByName("cbCartSerie"+num)).selectedLabel.toString()=="Candlestick" || ComboBox(piano.getChildByName("cbCartSerie"+num)).selectedLabel.toString()=="HLOC"){
-					if(num==1){
-						piano.getChildByName("lblRadius"+num).visible=false;
-						piano.getChildByName("lblOpenField"+num).visible=true;
-						piano.getChildByName("lblCloseField"+num).visible=true;
-					}else{
-						ComboBox(piano.getChildByName("cbxAxis"+num)).visible=true;
-						ComboBox(piano.getChildByName("cbCartSerie"+num)).move(85,piano.getChildByName("sep"+num).y+8)
-						ComboBox(piano.getChildByName("cbCloseField"+num)).move(piano.getChildByName("cbCloseField"+num).x, piano.getChildByName("sep"+num).y+128);
-						ComboBox(piano.getChildByName("cbOpenField"+num)).move(piano.getChildByName("cbOpenField"+num).x, piano.getChildByName("sep"+num).y+98);
-						ComboBox(piano.getChildByName("cbyAxis"+num)).move(piano.getChildByName("cbyAxis"+num).x, piano.getChildByName("sep"+num).y+68);
-						ComboBox(piano.getChildByName("cbxAxis"+num)).move(piano.getChildByName("cbxAxis"+num).x, piano.getChildByName("sep"+num).y+38);
-						ComboBox(piano.getChildByName("cbyAxis"+num)).prompt="Low Field...";
-					}
-					piano.getChildByName("cbRadius"+num).visible=false;
-					piano.getChildByName("cbOpenField"+num).visible=true;
-					piano.getChildByName("cbCloseField"+num).visible=true;
-				}else{
-					if(num==1){
-						piano.getChildByName("lblRadius"+num).visible=false;
-						piano.getChildByName("lblOpenField"+num).visible=false;
-						piano.getChildByName("lblCloseField"+num).visible=false;
-					}else{
-						ComboBox(piano.getChildByName("cbxAxis"+num)).visible=false;
-						ComboBox(piano.getChildByName("cbyAxis"+num)).move(85,piano.getChildByName("sep"+num).y+8)
-						ComboBox(piano.getChildByName("cbyAxis"+num)).prompt="Select..."
-						ComboBox(piano.getChildByName("cbCartSerie"+num)).move(3,piano.getChildByName("sep"+num).y+38)
-					}
-					piano.getChildByName("cbRadius"+num).visible=false;
-					piano.getChildByName("cbOpenField"+num).visible=false;
-					piano.getChildByName("cbCloseField"+num).visible=false;
-				}
-			}else if (myChart.chart.(@Type==strChartType).Properties.Property.(@name=="radiusField").length() !=0){
-				if(num==1){
-					piano.getChildByName("lblRadius"+num).visible=true;
-					piano.getChildByName("lblOpenField"+num).visible=false;
-					piano.getChildByName("lblCloseField"+num).visible=false;
-				}else{
-					ComboBox(piano.getChildByName("cbxAxis"+num)).visible=false;
-					ComboBox(piano.getChildByName("cbCartSerie"+num)).move(3,piano.getChildByName("sep"+num).y+38)
-				}
-				piano.getChildByName("cbRadius"+num).visible=true;
-				piano.getChildByName("cbOpenField"+num).visible=false;
-				piano.getChildByName("cbCloseField"+num).visible=false;
+				cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num).visible=true;
+				cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num).visible=false;
+				cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num).visible=false;
 			}else if (strChartType=="Pie"){
 				if(num==1){
-					Label(piano.getChildByName("lblyAxis"+num)).text="Field :";
-					piano.getChildByName("lblxAxis"+num).visible=false;
-					piano.getChildByName("cbxAxis"+num).visible=false;
-					lblxMin1.visible=false;
-		    		lblxMax1.visible=false;
-		    		lblxInterval1.visible=false;
-		    		minMaxxSlider.visible=false;
-		    		txtxInterval1.visible=false;
-    				lblyMin1.visible=false;
-		    		lblyMax1.visible=false;
-		    		lblyInterval1.visible=false;
-		    		minMaxySlider.visible=false;
-		    		txtyInterval1.visible=false;
-					piano.getChildByName("lblLabelPosition").visible=true;
-					piano.getChildByName("cbLabelPosition").visible=true;
-					piano.getChildByName("PieExplode").visible=true;
-					piano.getChildByName("PieAngle").visible=true;
-					piano.getChildByName("lblExplode").visible=true;
-					piano.getChildByName("lblAngle").visible=true;
-					piano.getChildByName("lblDonuts").visible=true;
-					piano.getChildByName("PieDonuts").visible=true;
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblyAxis"+num)).text="Field :";
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblxAxis"+num)).visible=false;
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).visible=false;
+					Label(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_lblxMin1")).visible=false;
+					Label(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_lblxMax1")).visible=false;
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblxInterval1")).visible=false;
+		    		flexlib.controls.HSlider(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_minMaxxSlider")).visible=false;
+		    		NumericStepper(cnvs.getChildByName("cnvs"+accordionIndex+"_txtxInterval1")).visible=false;
+    				Label(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_lblyMin1")).visible=false;
+					Label(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_lblyMax1")).visible=false;
+		    		Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblyInterval1")).visible=false;
+		    		flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxySlider")).visible=false;
+		    		NumericStepper(cnvs.getChildByName("cnvs"+accordionIndex+"_txtyInterval1")).visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_lblLabelPosition").visible=true;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_cbLabelPosition").visible=true;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_PieExplode").visible=true;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_PieAngle").visible=true;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_lblExplode").visible=true;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_lblAngle").visible=true;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_lblDonuts").visible=true;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_PieDonuts").visible=true;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_lblRadius"+num).visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num).visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_lblOpenField"+num).visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_lblCloseField"+num).visible=false;
 				}else{
-					ComboBox(piano.getChildByName("cbxAxis"+num)).visible=false;
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).move(85,cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+8);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).prompt="Select...";
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).visible=false;
 				}
+				cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num).visible=false;
+				cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num).visible=false;
+				cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num).visible=false;	
 			}else if (strChartType=="Candlestick" || strChartType=="HighLowOpenClose"){
 				if(num==1){
-					piano.getChildByName("lblRadius"+num).visible=false;
-					Label(piano.getChildByName("lblxAxis"+num)).text="High Field :";
-					Label(piano.getChildByName("lblyAxis"+num)).text="Low Field :";
-					piano.getChildByName("lblOpenField"+num).visible=true;
-					piano.getChildByName("lblCloseField"+num).visible=true;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_lblRadius"+num).visible=false;
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblxAxis"+num)).visible=true;
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblxAxis"+num)).text="High Field :";
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblyAxis"+num)).text="Low Field :";
+					cnvs.getChildByName("cnvs"+accordionIndex+"_lblOpenField"+num).visible=true;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_lblCloseField"+num).visible=true;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_lblLabelPosition").visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_cbLabelPosition").visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_PieExplode").visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_PieAngle").visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_lblExplode").visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_lblAngle").visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_lblDonuts").visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_PieDonuts").visible=false;
+					
 				}else{
-					ComboBox(piano.getChildByName("cbCloseField"+num)).move(piano.getChildByName("cbCloseField"+num).x, piano.getChildByName("sep"+num).y+98);
-					ComboBox(piano.getChildByName("cbOpenField"+num)).move(piano.getChildByName("cbOpenField"+num).x, piano.getChildByName("sep"+num).y+68);
-					ComboBox(piano.getChildByName("cbyAxis"+num)).move(piano.getChildByName("cbyAxis"+num).x, piano.getChildByName("sep"+num).y+38);
-					ComboBox(piano.getChildByName("cbxAxis"+num)).move(piano.getChildByName("cbxAxis"+num).x, piano.getChildByName("sep"+num).y+8);
-					ComboBox(piano.getChildByName("cbyAxis"+num)).prompt="Low Field...";
-					piano.getChildByName("cbxAxis"+num).visible=true;
-					//ComboBox(piano.getChildByName("cbyAxis"+num)).move(piano.getChildByName("cbyAxis"+num).x,piano.getChildByName("sep"+num).y+38);
-					//ComboBox(piano.getChildByName("cbyAxis"+i)).move(ComboBox(piano.getChildByName("cbyAxis"+i)).x,ComboBox(piano.getChildByName("cbyAxis"+i)).y+30);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num)).move(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num).x, cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+98);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num)).move(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num).x, cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+68);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).move(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num).x, cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+38);
+					
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).move(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num).x, cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+8);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).prompt="Low Field...";
+					
+					//ComboBox(cnvs.getChildByName("cbyAxis"+num)).move(cnvs.getChildByName("cbyAxis"+num).x,cnvs.getChildByName("sep"+num).y+38);
+					//ComboBox(cnvs.getChildByName("cbyAxis"+i)).move(ComboBox(cnvs.getChildByName("cbyAxis"+i)).x,ComboBox(cnvs.getChildByName("cbyAxis"+i)).y+30);
 				}	
-				piano.getChildByName("cbRadius"+num).visible=false;
-				piano.getChildByName("cbOpenField"+num).visible=true;
-				piano.getChildByName("cbCloseField"+num).visible=true;
+				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).visible=true;
+				cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num).visible=false;
+				cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num).visible=true;
+				cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num).visible=true;
 				
 			}else{
 				if(num==1){
-					piano.getChildByName("lblRadius"+num).visible=false;
-					piano.getChildByName("lblOpenField"+num).visible=false;
-					piano.getChildByName("lblCloseField"+num).visible=false;
-					Label(piano.getChildByName("lblxAxis"+num)).text="xAxis :";
-					Label(piano.getChildByName("lblyAxis"+num)).text="yAxis :";
+					cnvs.getChildByName("cnvs"+accordionIndex+"_lblRadius"+num).visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_lblOpenField"+num).visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_lblCloseField"+num).visible=false;
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblxAxis"+num)).visible=true;
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblxAxis"+num)).text="xAxis :";
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblyAxis"+num)).text="yAxis :";
+					
+					cnvs.getChildByName("cnvs"+accordionIndex+"_lblLabelPosition").visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_cbLabelPosition").visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_PieExplode").visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_PieAngle").visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_lblExplode").visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_lblAngle").visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_lblDonuts").visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_PieDonuts").visible=false;
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).visible=true;
 				}else{
-					piano.getChildByName("cbxAxis"+num).visible=false;
-					ComboBox(piano.getChildByName("cbyAxis"+num)).move(85,piano.getChildByName("sep"+num).y+8)
-					ComboBox(piano.getChildByName("cbyAxis"+num)).prompt="Select...";
-					ComboBox(piano.getChildByName("cbCartSerie"+num)).move(3,piano.getChildByName("sep"+num).y+38)
-					ComboBox(piano.getChildByName("cbCartSerie"+num)).visible=false;
+					cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num).visible=false;
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).move(85,cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+8)
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).prompt="Select...";
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+num)).move(3,cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+38)
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+num)).visible=false;
 				}
-				piano.getChildByName("cbRadius"+num).visible=false;
-				piano.getChildByName("cbOpenField"+num).visible=false;
-				piano.getChildByName("cbCloseField"+num).visible=false;
+				cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num).visible=false;
+				cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num).visible=false;
+				cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num).visible=false;
 			}
 		}
-		
-		
-		
 		drawChart(strChartType);
     }
     
     
 	
 	public function FindMinMax(axe:String):void { 
+		accordionIndex=leftAccordion.selectedIndex+1
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
+		HBoxMinMaxx=HBox(cnvs.getChildByName("cnvs"+accordionIndex+"_HBoxMinMaxx"))
+		HBoxMinMaxy=HBox(cnvs.getChildByName("cnvs"+accordionIndex+"_HBoxMinMaxy"))
 		var AxisAttributes:XMLList = xmlData.children().attributes()
 		var arrValues:Array = new Array();
+		
 		//Alert.show(AxisAttributes.toXMLString(), 'Alert Box',mx.controls.Alert.OK);
 		var i:int = 0;
 		var n:String = "";
 		var serieField:String
-		for (num=1; num<=numberOfSeries; num++) {
+		for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
 			if(axe=="x"){
-				serieField=ComboBox(piano.getChildByName("cbxAxis1")).selectedLabel.toString();
+				serieField=ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis1")).selectedLabel.toString();
 			}else{
-    			serieField=ComboBox(piano.getChildByName("cbyAxis"+num)).selectedLabel.toString();
+    			serieField=ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
 			}
 			for each (var axisElements:XML in AxisAttributes) { 
-			//Alert.show(axisElements.toXMLString(), 'Alert Box',mx.controls.Alert.OK);
+			
 				n = axisElements.name();	
 		  		if (n == serieField) {
 		  			arrValues[i]=int(axisElements.toXMLString());
@@ -803,217 +1220,200 @@
 		}
 		
 		arrValues.sort(Array.NUMERIC);
+		
 		if(axe=="x"){
 			minxValue=arrValues[0];
 			maxxValue=arrValues[arrValues.length-1];
-			maxxSlideValue=int(arrValues[arrValues.length-1])//*numberOfSeries;
+			maxxSlideValue=int(arrValues[arrValues.length-1])//*numberOfSerie[accordionIndex];
 			maxxSlideDefault=int(arrValues[arrValues.length-1]);	
-			minMaxxSlider.minimum=minxValue;
+			flexlib.controls.HSlider(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_minMaxxSlider")).minimum=minxValue;
+			flexlib.controls.HSlider(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_minMaxxSlider")).maximum=maxxValue;
+			//flexlib.controls.HSlider(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_minMaxxSlider")).values=[minxValue, maxxValue];
 		}else{
 			minyValue=arrValues[0];
 			maxyValue=arrValues[arrValues.length-1];
-			maxySlideValue=int(arrValues[arrValues.length-1])*2//*numberOfSeries;
+			maxySlideValue=int(arrValues[arrValues.length-1])*2//*numberOfSerie[accordionIndex];
 			maxySlideDefault=int(arrValues[arrValues.length-1]);
+			flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxySlider")).minimum=minyValue;
+			flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxySlider")).maximum=maxyValue;
+			//flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxySlider")).values=[minyValue, maxyValue];
 		}
 	}
     
  private function xAxisTypeChange(event:Event):void{
-    	if(event.target.selectedLabel.toString()=="Category"){
-    		lblxMin1.visible=false;
-    		lblxMax1.visible=false;
-    		lblxInterval1.visible=false;
-    		//txtxMin1.visible=false;
-    		//txtxMax1.visible=false;
-    		minMaxxSlider.visible=false;
-    		txtxInterval1.visible=false;
+ 	accordionIndex=leftAccordion.selectedIndex+1
+	cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
+	HBoxMinMaxx=HBox(cnvs.getChildByName("cnvs"+accordionIndex+"_HBoxMinMaxx"))
+		if(event.target.selectedLabel.toString()=="Category"){
+    		Label(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_lblxMin1")).visible=false;
+    		Label(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_lblxMax1")).visible=false;
+    		Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblxInterval1")).visible=false;
+    		flexlib.controls.HSlider(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_minMaxxSlider")).visible=false;
+    		NumericStepper(cnvs.getChildByName("cnvs"+accordionIndex+"_txtxInterval1")).visible=false;
     	}else{
-    		lblxMin1.visible=true;
-    		lblxMax1.visible=true;
-    		lblxInterval1.visible=true;
-    		//txtxMin1.visible=true;
-    		//txtxMax1.visible=true;
-    		minMaxxSlider.visible=true;
-    		txtxInterval1.visible=true;
+    		Label(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_lblxMin1")).visible=true;
+    		Label(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_lblxMax1")).visible=true;
+    		Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblxInterval1")).visible=true;
+    		flexlib.controls.HSlider(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_minMaxxSlider")).visible=true;
+    		NumericStepper(cnvs.getChildByName("cnvs"+accordionIndex+"_txtxInterval1")).visible=true;
     		FindMinMax("x");
     	}
-    	//txtxMin1.text="";
-    	//txtxMax1.text="";
-    	//txtxInterval1.text="";
     	refreshChart();
     }
     
-    /*public function FindMinMax():void { 
-		var AxisAttributes:XMLList = xmlData.children().attributes()
-		var arrValues:Array = new Array();
-		//Alert.show(AxisAttributes.toXMLString(), 'Alert Box',mx.controls.Alert.OK);
-		var i:int = 0;
-		var n:String = "";
-		for each (var axisElements:XML in AxisAttributes) { 
-			//Alert.show(axisElements.toXMLString(), 'Alert Box',mx.controls.Alert.OK);
-		n = axisElements.name();	
-  		if (n == cbyAxis1.selectedLabel.toString()) {
-  			arrValues[i]=int(axisElements.toXMLString());
-  			i++
-			}
-		} 
-		arrValues.sort(Array.NUMERIC);
-		minValue=arrValues[0];
-		maxValue=arrValues[arrValues.length-1];
-		maxSlideValue=arrValues[arrValues.length-1];
-		//Alert.show(minValue.toString(), 'Alert Box',mx.controls.Alert.OK);
-		//Alert.show(maxValue.toString(), 'Alert Box',mx.controls.Alert.OK);	
-	}*/
-	
-	
-	
+    
 	
     private function yAxisTypeChange(event:Event):void{
+    	accordionIndex=leftAccordion.selectedIndex+1
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
+		HBoxMinMaxy=HBox(cnvs.getChildByName("cnvs"+accordionIndex+"_HBoxMinMaxy"))
     	if(event.target.selectedLabel.toString()=="Category"){
-    		lblyMin1.visible=false;
-    		lblyMax1.visible=false;
-    		lblyInterval1.visible=false;
-    		// txtyMin1.visible=false;
-    		minMaxySlider.visible=false;
-    		txtyInterval1.visible=false;
+    		Label(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_lblyMin1")).visible=false;
+    		Label(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_lblyMax1")).visible=false;
+    		Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblyInterval1")).visible=false;
+    		flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxySlider")).visible=false;
+    		NumericStepper(cnvs.getChildByName("cnvs"+accordionIndex+"_txtyInterval1")).visible=false;
     	}else{
-    		lblyMin1.visible=true;
-    		lblyMax1.visible=true;
-    		lblyInterval1.visible=true;
-    		// txtyMin1.visible=true;
-    		minMaxySlider.visible=true;
-    		txtyInterval1.visible=true;
+    		Label(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_lblyMin1")).visible=true;
+    		Label(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_lblyMax1")).visible=true;
+    		Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblyInterval1")).visible=true;
+    		flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxySlider")).visible=true;
+    		NumericStepper(cnvs.getChildByName("cnvs"+accordionIndex+"_txtyInterval1")).visible=true;
     		FindMinMax("y");
-    		//Alert.show(maxValue.toString(), 'Alert Box',mx.controls.Alert.OK);
-    		//Alert.show(minValue.toString(), 'Alert Box',mx.controls.Alert.OK);
-    		//minMaxySlider.maximum=maxValue;
-    		//minMaxySlider.minimum=minValue;
+    		
     	}
-    	//txtxMin1.text="";
-    	//txtxMax1.text="";
-    	//txtxInterval1.text="";
+    	
     	refreshChart();
     }
     
     private function refreshChart():void {
-    	var strChartType:String = cbChartType.selectedLabel.toString()
+    	accordionIndex=leftAccordion.selectedIndex+1
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
+    	var strChartType:String = ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()
     	drawChart(strChartType);
     }
     
      public function refreshChartEvent(event:Event):void {
-    	var strChartType:String = cbChartType.selectedLabel.toString()
+     	accordionIndex=leftAccordion.selectedIndex+1
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
+    	var strChartType:String = ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()
     	drawChart(strChartType);
     }
   
     private function refreshCartChartEvent(event:Event):void {
-    	num=event.target.name.substr(11);
+    	accordionIndex=leftAccordion.selectedIndex+1
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
+    	num=event.target.name.substr(17);
     	if(event.target.selectedLabel.toString()=="Area" || event.target.selectedLabel.toString()=="Line")
     	{
     		if (num==1)
 				{
-					Label(piano.getChildByName("lblRadius"+num)).visible=false;
-					Label(piano.getChildByName("lblCatForm"+num)).visible=true;
-					Label(piano.getChildByName("lblxAxis"+num)).text="xAxis :";
-					Label(piano.getChildByName("lblyAxis"+num)).text="yAxis :";
-					Label(piano.getChildByName("lblOpenField"+num)).visible=false;
-    				Label(piano.getChildByName("lblCloseField"+num)).visible=false;
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblRadius"+num)).visible=false;
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblCatForm"+num)).visible=true;
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblxAxis"+num)).text="xAxis :";
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblyAxis"+num)).text="yAxis :";
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblOpenField"+num)).visible=false;
+    				Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblCloseField"+num)).visible=false;
 				}else{
-					ComboBox(piano.getChildByName("cbyAxis"+num)).prompt="Select...";
-    				ComboBox(piano.getChildByName("cbCloseField"+num)).move(piano.getChildByName("cbCloseField"+num).x, piano.getChildByName("sep"+num).y+98);
-					ComboBox(piano.getChildByName("cbOpenField"+num)).move(piano.getChildByName("cbOpenField"+num).x, piano.getChildByName("sep"+num).y+68);
-					ComboBox(piano.getChildByName("cbyAxis"+num)).move(piano.getChildByName("cbyAxis"+num).x, piano.getChildByName("sep"+num).y+8);
-					ComboBox(piano.getChildByName("cbxAxis"+num)).move(piano.getChildByName("cbxAxis"+num).x, piano.getChildByName("sep"+num).y+38);
-					ComboBox(piano.getChildByName("cbCartSerie"+num)).move(3, piano.getChildByName("sep"+num).y+38);
-					ComboBox(piano.getChildByName("cbxAxis"+num)).visible=false;
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).prompt="Select...";
+    				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num)).move(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num).x, cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+98);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num)).move(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num).x, cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+68);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).move(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num).x, cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+8);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).move(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num).x, cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+38);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+num)).move(3, cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+38);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).visible=false;
 				}
-			ComboBox(piano.getChildByName("cbRadius"+num)).visible=false;	
-    		ComboBox(piano.getChildByName("cbCartForm"+num)).visible=true;
-    		ComboBox(piano.getChildByName("cbOpenField"+num)).visible=false;
-    		ComboBox(piano.getChildByName("cbCloseField"+num)).visible=false;
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num)).visible=false;	
+    		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+num)).visible=true;
+    		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num)).visible=false;
+    		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num)).visible=false;
     	}else if (event.target.selectedLabel.toString()=="Bubble"){
     		if (num==1)
 			{
-					Label(piano.getChildByName("lblCatForm"+num)).visible=false;
-    				Label(piano.getChildByName("lblRadius"+num)).visible=true;
-    				Label(piano.getChildByName("lblxAxis"+num)).text="xAxis :";
-					Label(piano.getChildByName("lblyAxis"+num)).text="yAxis :";
-					Label(piano.getChildByName("lblOpenField"+num)).visible=false;
-    				Label(piano.getChildByName("lblCloseField"+num)).visible=false;
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblCatForm"+num)).visible=false;
+    				Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblRadius"+num)).visible=true;
+    				Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblxAxis"+num)).text="xAxis :";
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblyAxis"+num)).text="yAxis :";
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblOpenField"+num)).visible=false;
+    				Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblCloseField"+num)).visible=false;
     		}else{
-					ComboBox(piano.getChildByName("cbyAxis"+num)).prompt="Select...";
-    				ComboBox(piano.getChildByName("cbCloseField"+num)).move(piano.getChildByName("cbCloseField"+num).x, piano.getChildByName("sep"+num).y+98);
-					ComboBox(piano.getChildByName("cbOpenField"+num)).move(piano.getChildByName("cbOpenField"+num).x, piano.getChildByName("sep"+num).y+68);
-					ComboBox(piano.getChildByName("cbyAxis"+num)).move(piano.getChildByName("cbyAxis"+num).x, piano.getChildByName("sep"+num).y+8);
-					ComboBox(piano.getChildByName("cbxAxis"+num)).move(piano.getChildByName("cbxAxis"+num).x, piano.getChildByName("sep"+num).y+38);
-					ComboBox(piano.getChildByName("cbCartSerie"+num)).move(3, piano.getChildByName("sep"+num).y+38);
-					ComboBox(piano.getChildByName("cbxAxis"+num)).visible=false;
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).prompt="Select...";
+    				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num)).move(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num).x, cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+98);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num)).move(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num).x, cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+68);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).move(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num).x, cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+8);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).move(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num).x, cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+38);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+num)).move(3, cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+38);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).visible=false;
 			}
-    		ComboBox(piano.getChildByName("cbCartForm"+num)).visible=false;
-    		ComboBox(piano.getChildByName("cbRadius"+num)).visible=true;
+    		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+num)).visible=false;
+    		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num)).visible=true;
     		
-    		ComboBox(piano.getChildByName("cbOpenField"+num)).visible=false;
-    		ComboBox(piano.getChildByName("cbCloseField"+num)).visible=false;
+    		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num)).visible=false;
+    		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num)).visible=false;
     	}else if (event.target.selectedLabel.toString()=="Candlestick" || event.target.selectedLabel.toString()=="HLOC"){
     		if (num==1)
 			{
-					Label(piano.getChildByName("lblRadius"+num)).visible=false;
-					Label(piano.getChildByName("lblCatForm"+num)).visible=false;
-					Label(piano.getChildByName("lblxAxis"+num)).text="High Field :";
-					Label(piano.getChildByName("lblyAxis"+num)).text="Low Field :";
-					Label(piano.getChildByName("lblOpenField"+num)).visible=true;
-    				Label(piano.getChildByName("lblCloseField"+num)).visible=true;
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblRadius"+num)).visible=false;
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblCatForm"+num)).visible=false;
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblxAxis"+num)).text="High Field :";
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblyAxis"+num)).text="Low Field :";
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblOpenField"+num)).visible=true;
+    				Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblCloseField"+num)).visible=true;
     		}else{
-    				ComboBox(piano.getChildByName("cbyAxis"+num)).prompt="Low Field...";
-    				ComboBox(piano.getChildByName("cbCloseField"+num)).move(piano.getChildByName("cbCloseField"+num).x, piano.getChildByName("sep"+num).y+128);
-					ComboBox(piano.getChildByName("cbOpenField"+num)).move(piano.getChildByName("cbOpenField"+num).x, piano.getChildByName("sep"+num).y+98);
-					ComboBox(piano.getChildByName("cbyAxis"+num)).move(piano.getChildByName("cbyAxis"+num).x, piano.getChildByName("sep"+num).y+68);
-					ComboBox(piano.getChildByName("cbxAxis"+num)).move(piano.getChildByName("cbxAxis"+num).x, piano.getChildByName("sep"+num).y+38);
-					ComboBox(piano.getChildByName("cbCartSerie"+num)).move(85, piano.getChildByName("sep"+num).y+8);
-					ComboBox(piano.getChildByName("cbxAxis"+num)).visible=true;
+    				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).prompt="Low Field...";
+    				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num)).move(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num).x, cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+128);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num)).move(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num).x, cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+98);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).move(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num).x, cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+68);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).move(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num).x, cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+38);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+num)).move(85, cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+8);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).visible=true;
     		}
-    		ComboBox(piano.getChildByName("cbRadius"+num)).visible=false;	
-    		ComboBox(piano.getChildByName("cbCartForm"+num)).visible=false;
-    		ComboBox(piano.getChildByName("cbOpenField"+num)).visible=true;
-    		ComboBox(piano.getChildByName("cbCloseField"+num)).visible=true;
+    		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num)).visible=false;	
+    		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+num)).visible=false;
+    		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num)).visible=true;
+    		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num)).visible=true;
     	}else{
     		if (num==1)
 				{
-					Label(piano.getChildByName("lblCatForm"+num)).visible=false;
-					Label(piano.getChildByName("lblRadius"+num)).visible=false;
-					Label(piano.getChildByName("lblCatForm"+num)).visible=false;
-					Label(piano.getChildByName("lblxAxis"+num)).text="xAxis :";
-					Label(piano.getChildByName("lblyAxis"+num)).text="yAxis :";
-					Label(piano.getChildByName("lblOpenField"+num)).visible=false;
-    				Label(piano.getChildByName("lblCloseField"+num)).visible=false;
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblCatForm"+num)).visible=false;
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblRadius"+num)).visible=false;
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblCatForm"+num)).visible=false;
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblxAxis"+num)).text="xAxis :";
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblyAxis"+num)).text="yAxis :";
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblOpenField"+num)).visible=false;
+    				Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblCloseField"+num)).visible=false;
 				}else{
-					ComboBox(piano.getChildByName("cbyAxis"+num)).prompt="Select...";
-    				ComboBox(piano.getChildByName("cbCloseField"+num)).move(piano.getChildByName("cbCloseField"+num).x, piano.getChildByName("sep"+num).y+98);
-					ComboBox(piano.getChildByName("cbOpenField"+num)).move(piano.getChildByName("cbOpenField"+num).x, piano.getChildByName("sep"+num).y+68);
-					ComboBox(piano.getChildByName("cbyAxis"+num)).move(piano.getChildByName("cbyAxis"+num).x, piano.getChildByName("sep"+num).y+8);
-					ComboBox(piano.getChildByName("cbxAxis"+num)).move(piano.getChildByName("cbxAxis"+num).x, piano.getChildByName("sep"+num).y+38);
-					ComboBox(piano.getChildByName("cbCartSerie"+num)).move(3, piano.getChildByName("sep"+num).y+38);
-					ComboBox(piano.getChildByName("cbxAxis"+num)).visible=false;
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).prompt="Select...";
+    				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num)).move(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num).x, cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+98);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num)).move(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num).x, cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+68);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).move(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num).x, cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+8);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).move(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num).x, cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+38);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+num)).move(3, cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num).y+38);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).visible=false;
 				}
 				
-    		ComboBox(piano.getChildByName("cbCartForm"+num)).visible=false;
-    		ComboBox(piano.getChildByName("cbRadius"+num)).visible=false;
-    		ComboBox(piano.getChildByName("cbCartForm"+num)).visible=false;
-    		ComboBox(piano.getChildByName("cbOpenField"+num)).visible=false;
-    		ComboBox(piano.getChildByName("cbCloseField"+num)).visible=false;
+    		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+num)).visible=false;
+    		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num)).visible=false;
+    		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+num)).visible=false;
+    		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num)).visible=false;
+    		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num)).visible=false;
     	}
     	refreshChart();
     }
     
    private function showhideCartesianSerie(chartType:String):void{
-   		for (num=1; num<=numberOfSeries; num++) {
-    		if (cbChartType.selectedLabel.toString()=="Cartesian")
+   	accordionIndex=leftAccordion.selectedIndex+1
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
+   		for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
+    		if (ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="Cartesian")
 			{
-				ComboBox(piano.getChildByName("cbCartSerie"+num)).visible=true;
+				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+num)).visible=true;
 			}else{
-				ComboBox(piano.getChildByName("cbCartSerie"+num)).visible=false;
-				ComboBox(piano.getChildByName("cbCartForm"+num)).visible=false
+				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+num)).visible=false;
+				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+num)).visible=false
 				if (num==1)
 				{
-					Label(piano.getChildByName("lblCatForm"+num)).visible=false;
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblCatForm"+num)).visible=false;
 				}
 				
 			}
@@ -1024,14 +1424,14 @@
    
     //function qui créé le graphique en fonction des paramètres séléctionnés depuis le tableau de bord
     private function drawChart(strChartType:String):void {
+    	accordionIndex=leftAccordion.selectedIndex+1
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
     	FindMinMax("x");
     	FindMinMax("y");
     	p1.removeAllChildren();
     	showhideCartesianSerie(strChartType);
-		//showhideCartesianForm(strChartType)
-    	// X and Y fields
-    	xField="@"+cbxAxis1.selectedLabel.toString();
-    	DisplayType=cbDisplay.selectedLabel.toString();
+		xField="@"+ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis1")).selectedLabel.toString();
+    	DisplayType=ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbDisplay")).selectedLabel.toString();
 		
 		
     	switch (strChartType) { 
@@ -1075,25 +1475,27 @@
 		        drawCartesianChart();
 		        break; 
 		}
-		//Alert.show(typeof(myChart), 'Alert Box',mx.controls.Alert.OK);
-		
-    }
+	}
     
     public function createLegend(Chart:Object):void {
+    	accordionIndex=leftAccordion.selectedIndex+1
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
     	var myLegend:Legend = new Legend();
 		myLegend.dataProvider = Chart;
 		myLegend.direction = "horizontal";
-		if(chkLegend.selected){
+		if(CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkLegend")).selected){
 			p1.addChild(myLegend);
 		}
 	}
 	
 	public function addGridLines(Chart:Object):void {
+		accordionIndex=leftAccordion.selectedIndex+1
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
 		var bge:GridLines;
 		bge = new GridLines();
 		bge.setStyle("direction", "both");
 		var s:Stroke
-		if(chkGrid.selected)
+		if(CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkGrid")).selected)
 		{
 			s = new Stroke(0x9BC4E2,1);
 			bge.setStyle("horizontalStroke", s);
@@ -1115,25 +1517,29 @@
 	}
 	
 	public function setMinMaxInt(axis:Object,orientation:String):void{
+		accordionIndex=leftAccordion.selectedIndex+1
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
+		HBoxMinMaxx=HBox(cnvs.getChildByName("cnvs"+accordionIndex+"_HBoxMinMaxx"))
+		HBoxMinMaxy=HBox(cnvs.getChildByName("cnvs"+accordionIndex+"_HBoxMinMaxy"))
 		if(orientation=="h"){
-			if (minMaxxSlider.values[1]!=""){
-    			axis.maximum=minMaxxSlider.values[1];
+			if (flexlib.controls.HSlider(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_minMaxxSlider")).values[1]!=""){
+    			axis.maximum=flexlib.controls.HSlider(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_minMaxxSlider")).values[1];
     		}
-    		if (minMaxxSlider.values[0]!=""){
-    			axis.minimum=minMaxxSlider.values[0];
+    		if (flexlib.controls.HSlider(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_minMaxxSlider")).values[0]!=""){
+    			axis.minimum=flexlib.controls.HSlider(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_minMaxxSlider")).values[0];
     		}
-    		if (txtxInterval1.value.toString()!=""){
-    			axis.interval=txtxInterval1.value.toString();
+    		if (NumericStepper(cnvs.getChildByName("cnvs"+accordionIndex+"_txtxInterval1")).value.toString()!=""){
+    			axis.interval=NumericStepper(cnvs.getChildByName("cnvs"+accordionIndex+"_txtxInterval1")).value.toString();
     		}
 		}else{
-			if (minMaxySlider.values[1]!=""){
-    			axis.maximum=minMaxySlider.values[1];
+			if (flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxySlider")).values[1]!=""){
+    			axis.maximum=flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxySlider")).values[1];
     		}
-    		if (minMaxySlider.values[0]!=""){
-    			axis.minimum=minMaxySlider.values[0];
+    		if (flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxySlider")).values[0]!=""){
+    			axis.minimum=flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxySlider")).values[0];
     		}
-    		if (txtyInterval1.value.toString()!=""){
-    			axis.interval=txtyInterval1.value.toString();
+    		if (NumericStepper(cnvs.getChildByName("cnvs"+accordionIndex+"_txtyInterval1")).value.toString()!=""){
+    			axis.interval=NumericStepper(cnvs.getChildByName("cnvs"+accordionIndex+"_txtyInterval1")).value.toString();
     		}
 		}
 	}
@@ -1189,23 +1595,23 @@
 	
 	
 	public function setSerie(serie:Object,chartType:String, syField:String, num:int):void{
-		if(cbChartType.selectedLabel.toString()=="Pie")
+		accordionIndex=leftAccordion.selectedIndex+1
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
+		if(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="Pie")
 		{
 			serie.field=syField;
 			serie.nameField=syField;
-			serie.setStyle("labelPosition", cbLabelPosition.selectedLabel.toString()); 
+			serie.setStyle("labelPosition", ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbLabelPosition")).selectedLabel.toString()); 
 			
-			serie.explodeRadius=PieExplode.value//.12
-			serie.startAngle=PieAngle.value;
-			//serie.nameField=syField;
-			//serie.labelPosition = "callout";
-		}else if (cbChartType.selectedLabel.toString()=="Candlestick" || cbChartType.selectedLabel.toString()=="HighLowOpenClose"){
+			serie.explodeRadius=HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_PieExplode")).value//.12
+			serie.startAngle=HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_PieAngle")).value;
+		}else if (ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="Candlestick" || ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="HighLowOpenClose"){
 			serie.openField=openField;
 			serie.closeField=closeField;
 			serie.highField=highField;
 			serie.lowField=lowField;
-		}else if (cbChartType.selectedLabel.toString()=="Cartesian"){
-			if(ComboBox(piano.getChildByName("cbCartSerie"+num)).selectedLabel.toString()=="Candlestick" || ComboBox(piano.getChildByName("cbCartSerie"+num)).selectedLabel.toString()=="HLOC"){
+		}else if (ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="Cartesian"){
+			if(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+num)).selectedLabel.toString()=="Candlestick" || ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+num)).selectedLabel.toString()=="HLOC"){
 				serie.openField=openField;
 				serie.closeField=closeField;
 				serie.highField=highField;
@@ -1221,14 +1627,18 @@
 			serie.displayName = syField.substring(1,syField.length);
 		}
 		
-		if(cbChartType.selectedLabel.toString()=="Cartesian")
+		if (myChart.chart.(@Type==chartType).Properties.Property.Forms.length() !=0)
+		{
+		if(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="Cartesian")
 			{
-				serie.setStyle('form', ComboBox(piano.getChildByName("cbCartForm"+num)).text)
+				serie.setStyle('form', ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+num)).text)
 			}else{
-				serie.setStyle('form', cbForm.text);
+				serie.setStyle('form', ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbForm")).text);
 			}
-		f=new SolidColor(ColorPicker(piano.getChildByName("cp"+num)).selectedColor,1);
-			s = new Stroke(ColorPicker(piano.getChildByName("cp"+num)).selectedColor,1);
+		}
+		
+		f=new SolidColor(ColorPicker(cnvs.getChildByName("cnvs"+accordionIndex+"_cp"+num)).selectedColor,1);
+			s = new Stroke(ColorPicker(cnvs.getChildByName("cnvs"+accordionIndex+"_cp"+num)).selectedColor,1);
 			if(chartType=="Area"){
 				serie.setStyle('areaFill',f);
 			}else if(chartType=="Line"){
@@ -1253,28 +1663,28 @@
 	}
 	
      public function drawAreaChart():void {
-    	var myAreaSeries:Array=new Array();
+     	var myAreaSeries:Array=new Array();
     	var myAreaChart:AreaChart;
     	var AreaSerie1:AreaSeries;
 	    myAreaChart = new AreaChart();
-        myAreaChart.showDataTips = chkDataType.selected;
+        myAreaChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
         myAreaChart.dataProvider=dataListCollection;//xmlDataModif.children()//xmlData.children();//slicedResults;////expenses;
     	
-    	if (numberOfSeries>1){
+    	if (numberOfSerie[accordionIndex]>1){
     		myAreaChart.type=DisplayType;
     	}
     	
-    	for (num=1; num<=numberOfSeries; num++) {
+    	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
     		AreaSerie1=new AreaSeries();
-    		yField="@"+  ComboBox(piano.getChildByName("cbyAxis"+num)).selectedLabel.toString();
+    		yField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
 			setSerie(AreaSerie1,'Area',yField,num);
 			myAreaSeries.push(AreaSerie1);
 		}	
 		
 		// Define the horizontal axis.
-       setTypeAxis(myAreaChart,cbxAxisType1.text,"h");
+       setTypeAxis(myAreaChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType1")).text,"h");
 	   // Define the vertical axis.
-	   setTypeAxis(myAreaChart,cbyAxisType1.text,"v");		
+	   setTypeAxis(myAreaChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");		
 		
 		myAreaChart.series = myAreaSeries;
 		resizeChart(myAreaChart);
@@ -1291,24 +1701,24 @@
         var barSeries1:BarSeries;
         
         myBarChart = new BarChart();
-        myBarChart.showDataTips = chkDataType.selected;
+        myBarChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
         myBarChart.dataProvider=dataListCollection;//xmlData.children()//"{data.value}";//expenses//"{myAC}";//"{results.value}";//"{myData.lastResult.value}";//expenses;
         
-        if (numberOfSeries>1){
+        if (numberOfSerie[accordionIndex]>1){
     		myBarChart.type=DisplayType;
     	}
     	
-    	for (num=1; num<=numberOfSeries; num++) {
+    	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
     		barSeries1=new BarSeries();
-    		yField="@"+  ComboBox(piano.getChildByName("cbyAxis"+num)).selectedLabel.toString();
+    		yField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
 			setSerie(barSeries1,'Bar',yField,num);
 			myBarSeries.push(barSeries1);
 		}
 		
        // Define the horizontal axis.
-       setTypeAxis(myBarChart,cbxAxisType1.text,"h");
+       setTypeAxis(myBarChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType1")).text,"h");
 	   // Define the vertical axis.
-	   setTypeAxis(myBarChart,cbyAxisType1.text,"v");	
+	   setTypeAxis(myBarChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");	
 		
 		myBarChart.series = myBarSeries;
 		resizeChart(myBarChart);
@@ -1325,23 +1735,23 @@
         var Bubbleseries1:BubbleSeries;
      
         MyBubbleChart = new BubbleChart();
-        MyBubbleChart.showDataTips = chkDataType.selected;
+        MyBubbleChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
         MyBubbleChart.dataProvider=dataListCollection;//xmlData.children()//expenses;
 		
 		
-    	for (num=1; num<=numberOfSeries; num++) {
+    	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
     		Bubbleseries1=new BubbleSeries();
-    		yField="@"+  ComboBox(piano.getChildByName("cbyAxis"+num)).selectedLabel.toString();
-			rField="@"+  ComboBox(piano.getChildByName("cbRadius"+num)).selectedLabel.toString();
+    		yField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
+			rField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num)).selectedLabel.toString();
 			setSerie(Bubbleseries1,'Bubble',yField,num);
 			Bubbleseries1.radiusField=rField;//"@amount";
 			myBubbleSeries.push(Bubbleseries1);
 		}
 		
 	   // Define the horizontal axis.
-       setTypeAxis(MyBubbleChart,cbxAxisType1.text,"h");
+       setTypeAxis(MyBubbleChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType1")).text,"h");
 	   // Define the vertical axis.
-	   setTypeAxis(MyBubbleChart,cbyAxisType1.text,"v");
+	   setTypeAxis(MyBubbleChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");
 	   
 		
 		MyBubbleChart.series = myBubbleSeries;
@@ -1360,24 +1770,24 @@
         var CandlestickSeries1:CandlestickSeries;
         
         myCandlestickChart = new CandlestickChart();
-        myCandlestickChart.showDataTips = chkDataType.selected;
+        myCandlestickChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
         myCandlestickChart.dataProvider=dataListCollection;//xmlData.children();
         
        
-    	for (num=1; num<=numberOfSeries; num++) {
+    	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
     		CandlestickSeries1=new CandlestickSeries();
-    		highField="@"+  ComboBox(piano.getChildByName("cbxAxis"+num)).selectedLabel.toString();
-    		lowField="@"+  ComboBox(piano.getChildByName("cbyAxis"+num)).selectedLabel.toString();
-    		openField="@"+  ComboBox(piano.getChildByName("cbOpenField"+num)).selectedLabel.toString();
-    		closeField="@"+  ComboBox(piano.getChildByName("cbCloseField"+num)).selectedLabel.toString();
+    		highField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).selectedLabel.toString();
+    		lowField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
+    		openField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num)).selectedLabel.toString();
+    		closeField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num)).selectedLabel.toString();
 			setSerie(CandlestickSeries1,'Candlestick',"",num);
 			myCandlestickSeries.push(CandlestickSeries1);
 		}
 		
        // Define the horizontal axis.
-       setTypeAxis(myCandlestickChart,cbxAxisType1.text,"h");
+       setTypeAxis(myCandlestickChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType1")).text,"h");
 	   // Define the vertical axis.
-	   setTypeAxis(myCandlestickChart,cbyAxisType1.text,"v");
+	   setTypeAxis(myCandlestickChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");
 		
 		myCandlestickChart.series = myCandlestickSeries;
 		
@@ -1396,24 +1806,24 @@
         var ColumnSeries1:ColumnSeries;
         
         myColumnChart = new ColumnChart();
-        myColumnChart.showDataTips = chkDataType.selected;
+        myColumnChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
         myColumnChart.dataProvider=dataListCollection;//xmlData.children();
         
-        if (numberOfSeries>1){
+        if (numberOfSerie[accordionIndex]>1){
     		myColumnChart.type=DisplayType;
     	}
     	
-    	for (num=1; num<=numberOfSeries; num++) {
+    	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
     		ColumnSeries1=new ColumnSeries();
-    		yField="@"+  ComboBox(piano.getChildByName("cbyAxis"+num)).selectedLabel.toString();
+    		yField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
 			setSerie(ColumnSeries1,'Column',yField,num);
 			myColumnSeries.push(ColumnSeries1);
 		}
 		
        // Define the horizontal axis.
-       setTypeAxis(myColumnChart,cbxAxisType1.text,"h");
+       setTypeAxis(myColumnChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType1")).text,"h");
 	   // Define the vertical axis.
-	   setTypeAxis(myColumnChart,cbyAxisType1.text,"v");
+	   setTypeAxis(myColumnChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");
 		
 		myColumnChart.series = myColumnSeries;
 		
@@ -1432,24 +1842,24 @@
         var HLOCSeries1:HLOCSeries;
         
         myHLOCChart = new HLOCChart();
-        myHLOCChart.showDataTips = chkDataType.selected;
+        myHLOCChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
         myHLOCChart.dataProvider=dataListCollection;//xmlData.children();
         
     	
-    	for (num=1; num<=numberOfSeries; num++) {
+    	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
     		HLOCSeries1=new HLOCSeries();
-    		highField="@"+  ComboBox(piano.getChildByName("cbxAxis"+num)).selectedLabel.toString();
-    		lowField="@"+  ComboBox(piano.getChildByName("cbyAxis"+num)).selectedLabel.toString();
-    		openField="@"+  ComboBox(piano.getChildByName("cbOpenField"+num)).selectedLabel.toString();
-    		closeField="@"+  ComboBox(piano.getChildByName("cbCloseField"+num)).selectedLabel.toString();
+    		highField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).selectedLabel.toString();
+    		lowField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
+    		openField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num)).selectedLabel.toString();
+    		closeField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num)).selectedLabel.toString();
 			setSerie(HLOCSeries1,'Candlestick',"",num);
 			myHLOCSeries.push(HLOCSeries1);
 		}
 		
        // Define the horizontal axis.
-       setTypeAxis(myHLOCChart,cbxAxisType1.text,"h");
+       setTypeAxis(myHLOCChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType1")).text,"h");
 	   // Define the vertical axis.
-	   setTypeAxis(myHLOCChart,cbyAxisType1.text,"v");
+	   setTypeAxis(myHLOCChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");
 		
 		myHLOCChart.series = myHLOCSeries;
 		
@@ -1468,20 +1878,20 @@
 		var LineSeries1:LineSeries;
 		
 		MyLineChart = new LineChart();
-        MyLineChart.showDataTips = chkDataType.selected;
+        MyLineChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
         MyLineChart.dataProvider=dataListCollection;//xmlData.children();//expenses;
     	
-    	for (num=1; num<=numberOfSeries; num++) {
+    	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
     		LineSeries1=new LineSeries();
-    		yField="@"+  ComboBox(piano.getChildByName("cbyAxis"+num)).selectedLabel.toString();
+    		yField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
 			setSerie(LineSeries1,'Line',yField,num);
 			myLineSeries.push(LineSeries1);
 		}
 		
        // Define the horizontal axis.
-       setTypeAxis(MyLineChart,cbxAxisType1.text,"h");
+       setTypeAxis(MyLineChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType1")).text,"h");
 	   // Define the vertical axis.
-	   setTypeAxis(MyLineChart,cbyAxisType1.text,"v");
+	   setTypeAxis(MyLineChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");
 		
 		MyLineChart.series = myLineSeries;
 		
@@ -1501,17 +1911,17 @@
 		var PieSeries1:PieSeries;
 		
 		MyPieChart = new PieChart();
-        MyPieChart.showDataTips = chkDataType.selected;
+        MyPieChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
         MyPieChart.dataProvider=dataListCollection;//xmlData.children();//expenses;
     	
-    	for (num=1; num<=numberOfSeries; num++) {
+    	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
     		PieSeries1=new PieSeries();
-    		yField="@"+  ComboBox(piano.getChildByName("cbyAxis"+num)).selectedLabel.toString();
-			setSerie(PieSeries1,'Line',yField,num);
+    		yField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
+			setSerie(PieSeries1,'Pie',yField,num);
 			//PieSeries1.startAngle=PieAngleSlider.value;
 			myPieSeries.push(PieSeries1);
 		}
-		MyPieChart.setStyle("innerRadius", PieDonuts.value.toString()); 
+		MyPieChart.setStyle("innerRadius", HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_PieDonuts")).value.toString()); 
        	MyPieChart.series = myPieSeries;
 		resizeChart(MyPieChart);
 		// Attach chart and legend to the display list.
@@ -1526,20 +1936,20 @@
 		var myPlotChart:PlotChart;
         var PlotSeries1:PlotSeries;
         myPlotChart = new PlotChart();
-        myPlotChart.showDataTips = chkDataType.selected;
+        myPlotChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
         myPlotChart.dataProvider=dataListCollection;//xmlData.children();
         
-    	for (num=1; num<=numberOfSeries; num++) {
+    	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
     		PlotSeries1=new PlotSeries();
-    		yField="@"+  ComboBox(piano.getChildByName("cbyAxis"+num)).selectedLabel.toString();
+    		yField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
 			setSerie(PlotSeries1,'Plot',yField,num);
 			myPlotSeries.push(PlotSeries1);
 		}
 		
        // Define the horizontal axis.
-       setTypeAxis(myPlotChart,cbxAxisType1.text,"h");
+       setTypeAxis(myPlotChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType1")).text,"h");
 	   // Define the vertical axis.
-	   setTypeAxis(myPlotChart,cbyAxisType1.text,"v");
+	   setTypeAxis(myPlotChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");
 	
 		myPlotChart.series = myPlotSeries;
 		
@@ -1605,13 +2015,12 @@
     	var myCartesianChart:CartesianChart;
     	
     	myCartesianChart = new CartesianChart();
-        myCartesianChart.showDataTips = chkDataType.selected;
+        myCartesianChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
         myCartesianChart.dataProvider=dataListCollection;//xmlDataModif.children()//xmlData.children();//slicedResults;////expenses;
-    	
-		for (num=1; num<=numberOfSeries; num++) {
-			yField="@"+  ComboBox(piano.getChildByName("cbyAxis"+num)).selectedLabel.toString();
+    	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
+			yField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
 				
-			switch (ComboBox(piano.getChildByName("cbCartSerie"+num)).selectedLabel.toString()) { 
+			switch (ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+num)).selectedLabel.toString()) { 
 		    case "Area" : 
 		    	var cartAreaSerie:AreaSeries;
 		    	cartAreaSerie=new AreaSeries();
@@ -1627,7 +2036,7 @@
 		    case "Bubble" : 
 		        var cartBubbleSerie:BubbleSeries;
 		    	cartBubbleSerie=new BubbleSeries();
-		    	rField="@"+  ComboBox(piano.getChildByName("cbRadius"+num)).selectedLabel.toString();
+		    	rField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num)).selectedLabel.toString();
 		    	setSerie(cartBubbleSerie,'Bubble',yField,num);
 					cartBubbleSerie.radiusField=rField;
 					myCartesianSeries.push(cartBubbleSerie);
@@ -1635,10 +2044,10 @@
 		    case "Candlestick" : 
 		        var cartCandlestickSerie:CandlestickSeries;
 		    	cartCandlestickSerie=new CandlestickSeries();
-		    	highField="@"+  ComboBox(piano.getChildByName("cbxAxis"+num)).selectedLabel.toString();
-	    		lowField="@"+  ComboBox(piano.getChildByName("cbyAxis"+num)).selectedLabel.toString();
-	    		openField="@"+  ComboBox(piano.getChildByName("cbOpenField"+num)).selectedLabel.toString();
-	    		closeField="@"+  ComboBox(piano.getChildByName("cbCloseField"+num)).selectedLabel.toString();
+		    	highField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).selectedLabel.toString();
+	    		lowField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
+	    		openField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num)).selectedLabel.toString();
+	    		closeField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num)).selectedLabel.toString();
 		    	setSerie(cartCandlestickSerie,'Candlestick',"",num);
 				myCartesianSeries.push(cartCandlestickSerie);
 		        break; 
@@ -1651,10 +2060,10 @@
 		    case "HLOC" : 
 		        var cartHLOCSerie:HLOCSeries;
 		    	cartHLOCSerie=new HLOCSeries();
-		    	highField="@"+  ComboBox(piano.getChildByName("cbxAxis"+num)).selectedLabel.toString();
-	    		lowField="@"+  ComboBox(piano.getChildByName("cbyAxis"+num)).selectedLabel.toString();
-	    		openField="@"+  ComboBox(piano.getChildByName("cbOpenField"+num)).selectedLabel.toString();
-	    		closeField="@"+  ComboBox(piano.getChildByName("cbCloseField"+num)).selectedLabel.toString();
+		    	highField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).selectedLabel.toString();
+	    		lowField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
+	    		openField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num)).selectedLabel.toString();
+	    		closeField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num)).selectedLabel.toString();
 		    	setSerie(cartHLOCSerie,'HighLowOpenClose',yField,num);
 				myCartesianSeries.push(cartHLOCSerie);
 		        break; 
@@ -1675,9 +2084,9 @@
 			}
 		
 		// Define the horizontal axis.
-       setTypeAxis(myCartesianChart,cbxAxisType1.text,"h");
+       setTypeAxis(myCartesianChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType1")).text,"h");
 	   // Define the vertical axis.
-	   setTypeAxis(myCartesianChart,cbyAxisType1.text,"v");
+	   setTypeAxis(myCartesianChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");
 	   
 	   
 		myCartesianChart.series = myCartesianSeries;
@@ -1743,98 +2152,83 @@
 	<mx:VBox id="NavContainerRB" horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle" horizontalAlign="center" verticalGap="1" horizontalGap="0" width="100%" height="100%" hideEffect="{wipeLeft}" showEffect="{wipeRight}">
 	<mx:Accordion id="leftAccordion" headerRenderer="org.un.birdeye.measure.renderers.HeaderRenderer" paddingBottom="5" paddingRight="5" paddingTop="5" paddingLeft="5" width="100%" height="100%" creationPolicy="all"  >
 					
-	<mx:Canvas id="piano" height="100%" width="100%" label="Chart Builder 1"  >
-		<mx:Label id="lblChartType" x="2" y="10" text="Chart type :"/>
-		<mx:ComboBox id="cbChartType" dataProvider="{myChart.chart.@Type}" change="changeTypeEvt(event);"   x="73" y="8"  width="160"/>
-		<mx:Label id="lblForm" x="3" y="36" text="Form :"/>
-		<mx:ComboBox id="cbForm" x="73" y="34" change="refreshChartEvent(event);"/>
+	<mx:Canvas id="piano1" height="100%" width="100%" label="Chart Builder 1"  >
+		<mx:Label id="cnvs1_lblChartType" name="cnvs1_lblChartType" x="2" y="10" text="Chart type :"/>
+		<mx:ComboBox id="cnvs1_cbChartType" name="cnvs1_cbChartType" dataProvider="{myChart.chart.@Type}" change="changeTypeEvt(event);"   x="73" y="8"  width="160"/>
+		<mx:Label id="cnvs1_lblForm" name="cnvs1_lblForm" x="3" y="36" text="Form :"/>
+		<mx:ComboBox id="cnvs1_cbForm" name="cnvs1_cbForm" x="73" y="34" change="refreshChartEvent(event);"/>
 		<mx:HRule x="13" y="89" width="210"/>
-		<mx:Label x="3" y="165" text="Serie 1 :" width="139" id="lblSelectData" />
+		<mx:Label x="3" y="165" text="Serie 1 :" width="139" id="cnvs1_lblSelectData" name="cnvs1_lblSelectData" />
 		
-			<mx:Label x="3" y="188" text="xAxis :" name="lblxAxis1" id="lblxAxis1"/>
-			<mx:ComboBox x="73" y="186" id="cbxAxis1" name="cbxAxis1" change="refreshChartEvent(event);"/>
+			<mx:Label x="3" y="188" text="xAxis :" name="cnvs1_lblxAxis1" id="cnvs1_lblxAxis1"/>
+			<mx:ComboBox x="73" y="186" id="cnvs1_cbxAxis1" name="cnvs1_cbxAxis1" change="refreshChartEvent(event);"/>
 			
-			<mx:Label x="3" y="270" text="yAxis :" name="lblyAxis1" id="lblyAxis1"/>
-			<mx:ComboBox x="73" y="268" name="cbyAxis1" id="cbyAxis1" change="refreshChartEvent(event);"/>
-			<mx:Label x="3" y="214" text="xAxisType :" name="lblxAxisType1" id="lblxAxisType1"/>
-			<mx:ComboBox x="73" y="213" name="cbxAxisType1" id="cbxAxisType1" change="xAxisTypeChange(event);"/><!--change="xAxisTypeChange(event);"-->
-			<mx:Label x="3" y="297" name="lblyAxisType1" id="lblyAxisType1" text="yAxixType :"/>
-			<mx:ComboBox x="73" y="295" name="cbyAxisType1" id="cbyAxisType1" change="yAxisTypeChange(event);"/><!--change="yAxisTypeChange(event);"-->
+			<mx:Label x="3" y="270" text="yAxis :" name="cnvs1_lblyAxis1" id="cnvs1_lblyAxis1"/>
+			<mx:ComboBox x="73" y="268" name="cnvs1_cbyAxis1" id="cnvs1_cbyAxis1" change="refreshChartEvent(event);"/>
+			<mx:Label x="3" y="214" text="xAxisType :" name="cnvs1_lblxAxisType1" id="cnvs1_lblxAxisType1"/>
+			<mx:ComboBox x="73" y="213" name="cnvs1_cbxAxisType1" id="cnvs1_cbxAxisType1" change="xAxisTypeChange(event);"/><!--change="xAxisTypeChange(event);"-->
+			<mx:Label x="3" y="297" name="cnvs1_lblyAxisType1" id="cnvs1_lblyAxisType1" text="yAxixType :"/>
+			<mx:ComboBox x="73" y="295" name="cnvs1_cbyAxisType1" id="cnvs1_cbyAxisType1" change="yAxisTypeChange(event);"/><!--change="yAxisTypeChange(event);"-->
 		
-		<mx:HRule x="10" y="161" width="210" height="1"/>
-		<mx:CheckBox x="10" y="95" label="Show DataTips" id="chkDataType" enabled="true" selected="true" click="refreshChartEvent(event);" />
-		<mx:CheckBox x="10" y="117" label="Show Legend" id="chkLegend" enabled="true" selected="true" click="refreshChartEvent(event);" />
-		<mx:CheckBox x="10" y="139" label="Show Grid" id="chkGrid" enabled="true" selected="false" click="refreshChartEvent(event);" />
-		<mx:ColorPicker id="cp1" x="53" y="166" selectedColor="0x6699CC" change="refreshChartEvent(event);"  width="17" height="17"/>
-		<mx:ComboBox id="cbCartSerie1" change="refreshCartChartEvent(event);" prompt="Select..." x="73" y="163"/>
-		<mx:Label id="lblCatForm1" x="3" y="370" text="Form :" visible="false"/>
-		<mx:ComboBox id="cbCartForm1"  change="refreshChartEvent(event);" visible="false" x="73" y="368"/>
-		<mx:Label id="lblRadius1" x="3" y="370" text="Radius :" visible="false"/>
-		<mx:ComboBox id="cbRadius1"  change="refreshChartEvent(event);" visible="false" x="73" y="368"/>
+		<mx:HRule x="13" y="161" width="210" height="1"/>
+		<mx:CheckBox x="10" y="95" label="Show DataTips" id="cnvs1_chkDataType" name="cnvs1_chkDataType" enabled="true" selected="true" click="refreshChartEvent(event);" />
+		<mx:CheckBox x="10" y="117" label="Show Legend" id="cnvs1_chkLegend" name="cnvs1_chkLegend" enabled="true" selected="true" click="refreshChartEvent(event);" />
+		<mx:CheckBox x="10" y="139" label="Show Grid" id="cnvs1_chkGrid" name="cnvs1_chkGrid" enabled="true" selected="false" click="refreshChartEvent(event);" />
+		<mx:ColorPicker id="cnvs1_cp1" name="cnvs1_cp1" x="53" y="166" selectedColor="0x6699CC" change="refreshChartEvent(event);"  width="17" height="17"/>
+		<mx:ComboBox id="cnvs1_cbCartSerie1" name="cnvs1_cbCartSerie1" change="refreshCartChartEvent(event);" prompt="Select..." x="73" y="163"/>
+		<mx:Label id="cnvs1_lblCatForm1" name="cnvs1_lblCatForm1" x="3" y="370" text="Form :" visible="false"/>
+		<mx:ComboBox id="cnvs1_cbCartForm1" name="cnvs1_cbCartForm1" change="refreshChartEvent(event);" visible="false" x="73" y="368"/>
+		<mx:Label id="cnvs1_lblRadius1" name="cnvs1_lblRadius1" x="3" y="370" text="Radius :" visible="false"/>
+		<mx:ComboBox id="cnvs1_cbRadius1" name="cnvs1_cbRadius1" change="refreshChartEvent(event);" visible="false" x="73" y="368"/>
 		
-		<mx:Label x="3" y="62" text="Display :" id="lblDisplay" visible="false"/>
-		<mx:ComboBox x="73" y="60" id="cbDisplay" change="refreshChartEvent(event);" visible="false"/>
-		<!--<mx:Label x="4" y="244" text="min" name="lblxMin1" id="lblxMin1" visible="false"/>
-		<mx:TextInput x="29" y="242" name="txtxMin1" id="txtxMin1" width="36" visible="false" change="refreshChartEvent(event);"/>
-		<mx:Label x="74" y="244" text="max" name="lblxMax1" id="lblxMax1" visible="false"/>
-		<mx:Label x="150" y="244" text="Interval" name="lblxInterval1" id="lblxInterval1" visible="false"/>
-		<mx:TextInput x="103" y="242" width="36" name="txtxMax1" id="txtxMax1" visible="false" change="refreshChartEvent(event);"/>
-		<mx:TextInput x="197" y="242" width="36" name="txtxInterval1" id="txtxInterval1" visible="false" change="refreshChartEvent(event);"/>-->
+		<mx:Label x="3" y="62" text="Display :" id="cnvs1_lblDisplay" name="cnvs1_lblDisplay" visible="false"/>
+		<mx:ComboBox x="73" y="60" id="cnvs1_cbDisplay" name="cnvs1_cbDisplay" change="refreshChartEvent(event);" visible="false"/>
 		
-		<mx:Label x="150" y="232" text="Interval" name="lblxInterval1" id="lblxInterval1" visible="false"/>
-		<mx:NumericStepper x="197" y="230" width="36" name="txtxInterval1" id="txtxInterval1" visible="false" change="refreshChartEvent(event);" />
-		<mx:HBox width="100%" x="4" y="248" >
-		<mx:Label text="min" name="lblxMin1" id="lblxMin1" visible="false"/>	
+		<mx:Label x="150" y="232" text="Interval" name="cnvs1_lblxInterval1" id="cnvs1_lblxInterval1" visible="false"/>
+		<mx:NumericStepper x="197" y="230" width="36" name="cnvs1_txtxInterval1" id="cnvs1_txtxInterval1" visible="false" change="refreshChartEvent(event);" />
+		<mx:HBox name="cnvs1_HBoxMinMaxx" id="cnvs1_HBoxMinMaxx" width="100%" x="4" y="248" >
+		<mx:Label text="min" name="cnvs1_lblxMin1" id="cnvs1_lblxMin1" visible="false"/>	
 		
 		
-		<flexlib:HSlider  id="minMaxxSlider"
+		<flexlib:HSlider  id="cnvs1_minMaxxSlider" name="cnvs1_minMaxxSlider" 
 							trackHighlightSkin="flexlib.skins.SliderThumbHighlightSkin"
 							allowTrackClick="true" allowThumbOverlap="true" 
 							liveDragging="true" 
 							showDataTip="true"  dataTipPlacement="bottom" dataTipOffset="3"
 							showTrackHighlight="true"
 							thumbCount="2"  width="100%" change="refreshChartEvent(event);"
-							snapInterval="1" visible="false"  maximum="{maxxSlideValue}" 
+							snapInterval=".1" visible="false"  maximum="{maxxSlideValue}" 
 							values="{[0, maxxSlideDefault]}"
 							
-						/><!--xmlData.length()-1-->
-		<mx:Label text="max" name="lblxMax1" id="lblxMax1" visible="false"/>
+						/>
+		<mx:Label text="max" name="cnvs1_lblxMax1" id="cnvs1_lblxMax1" visible="false"/>
 		</mx:HBox>
 		
 		
-		<mx:Label x="150" y="324" text="Interval" name="lblyInterval1" id="lblyInterval1" visible="false"/>
-		<mx:NumericStepper x="197" y="322" width="36" name="txtyInterval1" id="txtyInterval1" visible="false" change="refreshChartEvent(event);" />
+		<mx:Label x="150" y="324" text="Interval" name="cnvs1_lblyInterval1" id="cnvs1_lblyInterval1" visible="false"/>
+		<mx:NumericStepper x="197" y="322" width="36" name="cnvs1_txtyInterval1" id="cnvs1_txtyInterval1" visible="false" change="refreshChartEvent(event);" />
 		<!-- This is best to use for setting the min and max values -->
-		<mx:HBox width="100%" x="4" y="345" >
-		<mx:Label text="min" name="lblyMin1" id="lblyMin1" visible="false"/>	
+		<mx:HBox name="cnvs1_HBoxMinMaxy" id="cnvs1_HBoxMinMaxy" width="100%" x="4" y="345" >
+		<mx:Label text="min" name="cnvs1_lblyMin1" id="cnvs1_lblyMin1" visible="false"/>	
 		
-		<!--<flexlib:HSlider  id="minMaxySlider"
-							trackHighlightSkin="flexlib.skins.SliderThumbHighlightSkin"
-							allowTrackClick="true" allowThumbOverlap="true" 
-							liveDragging="true" 
-							showDataTip="true"  dataTipPlacement="bottom"   dataTipOffset="3"
-							showTrackHighlight="true"
-							thumbCount="2"  width="100%" change="sliceResults();"
-							snapInterval="1" visible="false" 
-							values="{[xmlData.length()/4, xmlData.length()]}"
-						/>--><!--change="refreshChartEvent(event);"-->
-		<flexlib:HSlider  id="minMaxySlider"
+		<flexlib:HSlider  id="cnvs1_minMaxySlider" 
+							name="cnvs1_minMaxySlider"
 							trackHighlightSkin="flexlib.skins.SliderThumbHighlightSkin"
 							allowTrackClick="true" allowThumbOverlap="true" 
 							liveDragging="true" 
 							showDataTip="true"  dataTipPlacement="bottom" dataTipOffset="3"
 							showTrackHighlight="true"
 							thumbCount="2"  width="100%" change="refreshChartEvent(event);"
-							snapInterval="1" visible="false" minimum="0" maximum="{maxySlideValue}" 
+							snapInterval=".1" visible="false" minimum="0" maximum="{maxySlideValue}" 
 							values="{[0, maxySlideDefault]}"
 							
-						/><!--xmlData.length()-1-->
-		<mx:Label text="max" name="lblyMax1" id="lblyMax1" visible="false"/>
+						/>
+		<mx:Label text="max" name="cnvs1_lblyMax1" id="cnvs1_lblyMax1" visible="false"/>
 		</mx:HBox>
-		<mx:HRule x="10" y="430" width="210" id="hrEnd"/>
-		<mx:Button x="73" y="440" label="Add new Serie" id="btnAddNewSerie" click="addSeries()"/>
-		<mx:Label text="Distance of Separation" id="lblExplode" name="lblExplode" fontSize="9" textAlign="center" x="3" y="317" width="100%" visible="false" />
-	   <flexlib:HSlider  id="PieExplode"
+		<mx:HRule x="13" y="430" width="210" id="cnvs1_hrEnd" name="cnvs1_hrEnd"/>
+		<mx:Button x="73" y="440" label="Add new Serie" id="cnvs1_btnAddNewSerie" name="cnvs1_btnAddNewSerie" click="addSeries(event)"/>
+		<mx:Label text="Distance of Separation" id="cnvs1_lblExplode" name="cnvs1_lblExplode" fontSize="9" textAlign="center" x="3" y="317" width="100%" visible="false" />
+	   <flexlib:HSlider  id="cnvs1_PieExplode" name="cnvs1_PieExplode"
 							trackHighlightSkin="flexlib.skins.SliderThumbHighlightSkin"
 							allowTrackClick="true" allowThumbOverlap="false" 
 							liveDragging="true" 
@@ -1845,8 +2239,8 @@
 							values="0" x="3" y="324" 
 							
 						/>
-		<mx:Label text="Angle of rotation" id="lblAngle" name="lblAngle" fontSize="9" textAlign="center" x="3" y="339" width="100%" visible="false" />
-		<flexlib:HSlider  id="PieAngle"
+		<mx:Label text="Angle of rotation" id="cnvs1_lblAngle" name="cnvs1_lblAngle" fontSize="9" textAlign="center" x="3" y="339" width="100%" visible="false" />
+		<flexlib:HSlider  id="cnvs1_PieAngle" name="cnvs1_PieAngle"
 							trackHighlightSkin="flexlib.skins.SliderThumbHighlightSkin"
 							allowTrackClick="true" allowThumbOverlap="false" 
 							liveDragging="true" 
@@ -1857,8 +2251,8 @@
 							values="0" x="3" y="345" dataTipFormatFunction="degrees_func"
 						/>   
 	
-		<mx:Label text="Donuts" id="lblDonuts" name="lblDonuts" fontSize="9" textAlign="center" x="3" y="361" width="100%" visible="false" />
-		<flexlib:HSlider  id="PieDonuts"
+		<mx:Label text="Donuts" id="cnvs1_lblDonuts" name="cnvs1_lblDonuts" fontSize="9" textAlign="center" x="3" y="361" width="100%" visible="false" />
+		<flexlib:HSlider  id="cnvs1_PieDonuts" name="cnvs1_PieDonuts"
 							trackHighlightSkin="flexlib.skins.SliderThumbHighlightSkin"
 							allowTrackClick="true" allowThumbOverlap="false" 
 							liveDragging="true" 
@@ -1869,13 +2263,13 @@
 							values="0" x="3" y="368" 
 						/>  
 						        
-    <mx:Label x="3" y="297" name="lblLabelPosition" id="lblLabelPosition" text="Label position :" visible="false"/>
-	<mx:ComboBox x="95" y="295" name="cbLabelPosition" id="cbLabelPosition" change="refreshChartEvent(event);" visible="false"/>
+    <mx:Label x="3" y="297" name="cnvs1_lblLabelPosition" id="cnvs1_lblLabelPosition" text="Label position :" visible="false"/>
+	<mx:ComboBox x="95" y="295" name="cnvs1_cbLabelPosition" id="cnvs1_cbLabelPosition" change="refreshChartEvent(event);" visible="false"/>
 	
-	<mx:Label x="3" y="375" text="Open :" width="55" name="lblOpenField1" id="lblOpenField1" visible="false"/>
-	<mx:ComboBox x="73" y="373" id="cbOpenField1" name="cbOpenField1" change="refreshChartEvent(event);" visible="false"/>
-	<mx:Label x="3" y="398" text="Close :" width="55" name="lblCloseField1" id="lblCloseField1" visible="false"/>
-	<mx:ComboBox x="73" y="396" id="cbCloseField1" name="cbCloseField1" change="refreshChartEvent(event);" visible="false"/>
+	<mx:Label x="3" y="375" text="Open :" width="55" name="cnvs1_lblOpenField1" id="cnvs1_lblOpenField1" visible="false"/>
+	<mx:ComboBox x="73" y="373" id="cnvs1_cbOpenField1" name="cnvs1_cbOpenField1" change="refreshChartEvent(event);" visible="false"/>
+	<mx:Label x="3" y="398" text="Close :" width="55" name="cnvs1_lblCloseField1" id="cnvs1_lblCloseField1" visible="false"/>
+	<mx:ComboBox x="73" y="396" id="cnvs1_cbCloseField1" name="cnvs1_cbCloseField1" change="refreshChartEvent(event);" visible="false"/>
    
 	</mx:Canvas>
 	
