@@ -27,17 +27,28 @@ SOFTWARE.
 	
 	<mx:Script>
 		<![CDATA[
+			import org.un.birdeye.measure.Measure;
+			import mx.controls.ComboBox;
+			import mx.controls.Label;
 			import mx.containers.Canvas;
 			import mx.controls.Button;
+			import mx.controls.Alert;
+			public var canvasNum:int;
 			
-			private function addPianoCnvs():void {
+			private function addPianoCnvs():void {				
 				var pianoCnvs:Canvas;
 				pianoCnvs = new Canvas();
-				pianoCnvs.label="";
+				canvasNum=parentDocument.leftAccordion.numChildren+1;
+				pianoCnvs.id="piano"+canvasNum;
+				pianoCnvs.name="piano"+canvasNum;
+				pianoCnvs.label="Chart Builder " + (canvasNum).toString();
+				parentDocument.addDefaultChildToCnvs(pianoCnvs,canvasNum);
 				parentDocument.leftAccordion.addChild(pianoCnvs);
 				headerBar.removeChild(addDashboard);
 				
 			}
+			
+			
 			
 			
 		]]>
