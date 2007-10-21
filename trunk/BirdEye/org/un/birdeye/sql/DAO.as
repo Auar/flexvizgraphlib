@@ -1,5 +1,53 @@
 // ActionScript file
 
+/*
+
+Table and Field Definitions
+
+Table: xnodes
+Fields:
+
+NodeID
+NodeName
+NodeDec
+NodeType
+
+Table: xedges
+Fields:
+
+EdgeID
+EdgeSource
+EdgeTarget
+EdgeType
+EdgeDesc
+EdgeFlow
+
+Table: nodemetas
+Fields:
+
+NodeMetaID
+NodeFieldLabel
+NodeFieldType
+NodeFieldData
+NodeMetaLink
+NodeID
+
+Table: nodetypelookups
+Fields:
+
+NodeTypeID
+NodeTypeName
+NodeTypeImage
+NodeTypeColor
+
+Table: edgetypelookups
+Fields:
+
+EdgeTypeID
+EdgeTypeName
+
+*/
+
 		import flash.data.SQLConnection;
 		import flash.data.SQLResult;
 		import flash.data.SQLStatement;
@@ -207,7 +255,7 @@
 					
 					for each (var item:* in edgesAC)
 					{
-						rootNode.appendChild(<Edge fromID={item.EdgeSource} toID={item.EdgeTarget} edgeType={item.EdgeType} edgeDesc={item.EdgeDesc} />);
+						rootNode.appendChild(<Edge fromID={item.EdgeSource} toID={item.EdgeTarget} edgeType={item.EdgeType} edgeDesc={item.EdgeDesc} flow="4" />);
 						//trace(rootNode);					
 					}
 				});
@@ -239,6 +287,12 @@
 	
 	public function createNode(Node:Object):void
 	{
+		// Table: xnodes
+		// Fields:
+		// NodeID
+		// NodeName
+		// NodeDesc
+		// NodeType
 		// create the SQL statement
 		var selectStmt:SQLStatement = new SQLStatement();
 		selectStmt.sqlConnection = _conn;

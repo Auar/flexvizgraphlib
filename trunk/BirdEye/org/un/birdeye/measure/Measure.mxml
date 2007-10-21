@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
 	xmlns:ui="org.un.birdeye.ui.*"
-	xmlns:charts="qs.charts.*"
 	xmlns:flexlib="http://code.google.com/p/flexlib/"
 	creationComplete="init();" >    
 	
@@ -10,9 +9,13 @@
         source="Chart.xml" 
         /> 
   
+  
+  	<mx:Script source="Dashboard.as" />
 	<mx:Script><![CDATA[
-		import flexlib.skins.SliderThumbHighlightSkin;
-		import mx.controls.sliderClasses.Slider;
+		import ilog.charts.AngularAxis;
+	
+	import flexlib.skins.SliderThumbHighlightSkin;
+	import mx.controls.sliderClasses.Slider;
 	
 	import mx.charts.chartClasses.CartesianChart;	
 	import mx.graphics.SolidColor;
@@ -31,6 +34,9 @@
     import mx.charts.events.ChartItemEvent;
     import mx.charts.ChartItem;
     
+    // Pod
+    import org.un.birdeye.measure.view.PodContentBase;
+    
     // ILOG
     import mx.graphics.SolidColor;
     import ilog.maps.MapBase;
@@ -38,11 +44,18 @@
     import ilog.maps.MapFeature;
     import ilog.maps.WorldCountriesMap;
     import ilog.maps.MapSymbol;
-    
+    import ilog.charts.RadarChart;
+    import ilog.charts.series.RadarLineSeries;
+    import ilog.charts.series.*;
+    import ilog.treemap.TreeMap;
+    import ilog.treemap.TreeMap;
+	
     // Symbols lib
     import com.flexibleexperiments.primitiveIcons.*;
     
-	public var myData:XML = new XML();		
+    // Public vars
+    public var myTreeData:XML = new XML();	
+    public var myData:XML = new XML();		
 	public var xmlData:XML = new XML();
 	public var xmlDataModif:XML = new XML();
 	public var arrAxis:Array = new Array();
@@ -56,6 +69,7 @@
 	public var labelField:String;
 	public var weightField:String;
 	public var colorField:String;
+	public var dataField:String;
 	public var CategoryxField:String;
 	public var CategoryyField:String;
 	public var f:SolidColor;
@@ -128,11 +142,12 @@
 	private function init():void {
 		// This XML data source creates a nested tree structure
 		// This would be needed for drill down capability
-		// myData =  parentDocument.gTreeXML;
+		myTreeData =  parentDocument.gTreeXML;
 		//JR
 		xmlData = parentDocument.gDataXML;
 		// This data source creates a flat structure
 		// myData = parentDocument.rootNode;
+		createPodManager();
 		cnvs1_cbForm.dataProvider=myChart.chart[0].Properties.Property.Forms.Form;
 		//Alert.show(data.value, 'Alert Box',mx.controls.Alert.OK);
 		cnvs1_cbxAxisType1.dataProvider=myChart.chart[0].Properties.Property.axis;
@@ -147,7 +162,10 @@
 		
 		LoadXML();
 		trace(myData);
+		
+		
 	}
+	
 	
 	public function addDefaultChildToCnvs(pianoCnvs:Object,canvasNum:int):void{
 		//this["numberOfSeries"+canvasNum]=1;
@@ -1428,7 +1446,9 @@
 		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
     	FindMinMax("x");
     	FindMinMax("y");
-    	p1.removeAllChildren();
+    	
+    	// p1.removeAllChildren();
+    	
     	showhideCartesianSerie(strChartType);
 		xField="@"+ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis1")).selectedLabel.toString();
     	DisplayType=ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbDisplay")).selectedLabel.toString();
@@ -1462,8 +1482,8 @@
 		    case "Plot" : 
 		        drawPlotChart();
 		        break;
-		    case "Polar" : 
-		        drawPolarChart();
+		    case "Radar" : 
+		        drawRadarChart();
 		        break;
 		    case "TreeMap" : 
 		        drawTreeMap();
@@ -1484,7 +1504,19 @@
 		myLegend.dataProvider = Chart;
 		myLegend.direction = "horizontal";
 		if(CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkLegend")).selected){
-			p1.addChild(myLegend);
+			this.addChild(myLegend);
+		}
+	}
+	
+	// Test
+	public function createLegend2(Chart:Object, container:VBox):void {
+    	accordionIndex=leftAccordion.selectedIndex+1
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
+    	var myLegend:Legend = new Legend();
+		myLegend.dataProvider = Chart;
+		myLegend.direction = "horizontal";
+		if(CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkLegend")).selected){
+			container.addChild(myLegend);
 		}
 	}
 	
@@ -1621,6 +1653,10 @@
 				serie.yField=syField;
 				serie.displayName = syField.substring(1,syField.length);
 			}
+		}
+		else if (ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="Radar"){
+			serie.dataField=dataField;
+			
 		}else{
 			serie.xField=xField;
 			serie.yField=syField;
@@ -1663,12 +1699,16 @@
 	}
 	
      public function drawAreaChart():void {
+     	var chartVBox:VBox = new VBox();
      	var myAreaSeries:Array=new Array();
     	var myAreaChart:AreaChart;
     	var AreaSerie1:AreaSeries;
 	    myAreaChart = new AreaChart();
         myAreaChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
         myAreaChart.dataProvider=dataListCollection;//xmlDataModif.children()//xmlData.children();//slicedResults;////expenses;
+    	myAreaChart.percentWidth=100;
+    	myAreaChart.percentHeight=100;
+    	
     	
     	if (numberOfSerie[accordionIndex]>1){
     		myAreaChart.type=DisplayType;
@@ -1687,10 +1727,25 @@
 	   setTypeAxis(myAreaChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");		
 		
 		myAreaChart.series = myAreaSeries;
-		resizeChart(myAreaChart);
-		p1.addChild(myAreaChart);
+		
+		resizeChart(chartVBox);
+		chartVBox.addChild(myAreaChart);
+		
+		var podContent:PodContentBase = new PodContentBase();
+	  	podContent.addChild(chartVBox);
+		var areaPod:Pod = new Pod();
+	  	areaPod.addChild(podContent);  
+	  	
+	  	// Listen for the last pod to complete so the layout from the ContainerWindowManager is done correctly. 
+		//		piePod.addEventListener(FlexEvent.UPDATE_COMPLETE, onCreationCompletePod);
+				areaPod.id = "areaPod";
+				areaPod.title = "Area";
+		
+		addPod(areaPod, 2, areaPod.id);
+
+		
 		// Create a legend.
-		createLegend(myAreaChart);
+		createLegend2(myAreaChart, chartVBox);
 		addGridLines(myAreaChart);
 		}
     
@@ -1906,6 +1961,8 @@
 
     
     private function drawPieChart():void {
+    	
+    	var chartVBox:VBox = new VBox();
     	var myPieSeries:Array=new Array();
 		var MyPieChart:PieChart;
 		var PieSeries1:PieSeries;
@@ -1913,6 +1970,8 @@
 		MyPieChart = new PieChart();
         MyPieChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
         MyPieChart.dataProvider=dataListCollection;//xmlData.children();//expenses;
+        MyPieChart.percentHeight=100;
+        MyPieChart.percentWidth=100;
     	
     	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
     		PieSeries1=new PieSeries();
@@ -1925,19 +1984,39 @@
        	MyPieChart.series = myPieSeries;
 		resizeChart(MyPieChart);
 		// Attach chart and legend to the display list.
-		p1.addChild(MyPieChart);
+		// p1.addChild(MyPieChart);
+		resizeChart(chartVBox);
+		chartVBox.addChild(MyPieChart);
+		
+		var podContent:PodContentBase = new PodContentBase();
+	  	podContent.addChild(chartVBox);
+		var piePod:Pod = new Pod();
+	  	piePod.addChild(podContent);  
+	  	
+	  	// Listen for the last pod to complete so the layout from the ContainerWindowManager is done correctly. 
+		//		piePod.addEventListener(FlexEvent.UPDATE_COMPLETE, onCreationCompletePod);
+				piePod.id = "piePod";
+				piePod.title = "Pie";
+		
+		addPod(piePod, 0, piePod.id);
+
 		
 		// Create a legend.
-		createLegend(MyPieChart);
+		createLegend2(MyPieChart, chartVBox);
     }
     
     private function drawPlotChart():void {
+	    
+	    var chartVBox:VBox = new VBox();
+	    
 	    var myPlotSeries:Array=new Array();
 		var myPlotChart:PlotChart;
         var PlotSeries1:PlotSeries;
         myPlotChart = new PlotChart();
         myPlotChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
         myPlotChart.dataProvider=dataListCollection;//xmlData.children();
+        myPlotChart.percentHeight=100;
+        myPlotChart.percentWidth=100;
         
     	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
     		PlotSeries1=new PlotSeries();
@@ -1953,59 +2032,194 @@
 	
 		myPlotChart.series = myPlotSeries;
 		
-		resizeChart(myPlotChart);
-		// Attach chart
-		p1.addChild(myPlotChart);   
+		resizeChart(chartVBox);
+		chartVBox.addChild(myPlotChart);
+					
+		var podContent:PodContentBase = new PodContentBase();
+	  	podContent.addChild(chartVBox);
+		var plotPod:Pod = new Pod();
+	  	plotPod.addChild(podContent);  
+	  	
+	  	// Listen for the last pod to complete so the layout from the ContainerWindowManager is done correctly. 
+		//		plotPod.addEventListener(FlexEvent.UPDATE_COMPLETE, onCreationCompletePod);
+				plotPod.id = "plotPod";
+				plotPod.title = "PlotChart";
+		
+		
+		addPod(plotPod, 1, plotPod.id);
+		
+		
 		// Create a legend.
-		createLegend(myPlotChart);   
+		createLegend2(myPlotChart, chartVBox);   
 		addGridLines(myPlotChart); 
     }
        
 	// The following are ILOG Chart Components
 	    
-    private function drawPolarChart():void {
+    private function drawRadarChart():void {
 	// ILOG component
+    
+    /*
+    <ilog:RadarChart dataProvider="{temperature}">
+   <ilog:angularAxis>
+     <ilog:AngularAxis categoryField="Month" displayName="Month"/>
+   </ilog:angularAxis>
+   <ilog:radialAxis>
+     <mx:LinearAxis  displayName="Temperature (˚F)"/>
+   </ilog:radialAxis>
+   <ilog:series>
+     <series:RadarLineSeries dataField="London" displayName="London"/>
+     <series:RadarLineSeries dataField="Sydney" displayName="Sydney"/>
+   </ilog:series>
+</ilog:RadarChart>
+*/
+        var chartVBox:VBox = new VBox();
+	    
+	    var myRadarLineSeries:Array=new Array();
+	    var myRadarBubbleSeries:Array=new Array();
+	    var myRadarPlotSeries:Array=new Array();
+	    var myRadarColumnSeries:Array=new Array();
+	    
+		var myRadarChart:RadarChart;
+        var RadarLineSeries1:RadarLineSeries = new RadarLineSeries();
+        var RadarBubbleSeries1:RadarBubbleSeries = new RadarBubbleSeries();
+        var RadarPlotSeries1:RadarPlotSeries = new RadarPlotSeries();
+        var RadarColumnSeries1:RadarColumnSeries = new RadarColumnSeries();
+        
+        var angularAxis1:AngularAxis = new AngularAxis();
+        var radialAxis1:LinearAxis = new LinearAxis();
+        
+        angularAxis1.categoryField="@nodeType";
+         
+        RadarLineSeries1.dataField="@nodeId";
+        myRadarLineSeries.push(RadarLineSeries1);
+        
+        myRadarChart = new RadarChart();
+        myRadarChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
+        myRadarChart.dataProvider=dataListCollection;//xmlData.children();
+        myRadarChart.percentHeight=100;
+        myRadarChart.percentWidth=100;
+        myRadarChart.angularAxis = angularAxis1;
+        myRadarChart.radialAxis = radialAxis1;
+        myRadarChart.series = myRadarLineSeries;   
+        
+        /*
+        for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
+    		RadarLineSeries1=new RadarLineSeries();
+    		dataField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
+			setSerie(RadarLineSeries1,'Radar',dataField,num);
+			myRadarLineSeries.push(RadarLineSeries1);
+		}
+		*/
+		
+       // Define the Angular axis.
+       // setTypeAxis(myRadarChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType1")).text,"h");
+	   // Define the Radial axis.
+	   // setTypeAxis(myRadarChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");
+	
+		
+		
+		resizeChart(chartVBox);
+		chartVBox.addChild(myRadarChart);
+					
+		var podContent:PodContentBase = new PodContentBase();
+	  	podContent.addChild(chartVBox);
+		var radarPod:Pod = new Pod();
+	  	radarPod.addChild(podContent);  
+	  	
+	  	// Listen for the last pod to complete so the layout from the ContainerWindowManager is done correctly. 
+		//		plotPod.addEventListener(FlexEvent.UPDATE_COMPLETE, onCreationCompletePod);
+				radarPod.id = "radarPod";
+				radarPod.title = "RadarChart";
+		
+		
+		addPod(radarPod, 3, radarPod.id);
+		
+		
+		// Create a legend.
+		createLegend2(myRadarChart, chartVBox);   
+		// addGridLines(myRadarChart);
     	    			
     }
     
     private function drawTreeMap():void {
     // ILOG component	
-    	
+    
+    var myTreeMap:TreeMap = new TreeMap();
+	        
+	    myTreeMap = new TreeMap();
+        myTreeMap.dataProvider=new HierarchicalData(myTreeData);//xmlData.children();
+        
+        myTreeMap.algorithm="squarified";
+        myTreeMap.areaField="@id";
+        myTreeMap.colorField="@id";
+        myTreeMap.labelField="@name";
+        myTreeMap.labelThreshold=2;
+        myTreeMap.setStyle('colorScheme', "div-green-red");
+        myTreeMap.setStyle('topMarginProportion', 0.2);
+        myTreeMap.setStyle('backgroundColor', 0xFFFFFF);
+        myTreeMap.setStyle('textBackgroundColor', 0xFFFFFF);
+        myTreeMap.setStyle('borderColor', 0x000000);
+		myTreeMap.setStyle('borderThickness', 1);
+		myTreeMap.setStyle('backgroundColor', 0xFFFFFF);
+	
+        /*
+        for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
+    		RadarLineSeries1=new RadarLineSeries();
+    		dataField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
+			setSerie(RadarLineSeries1,'Radar',dataField,num);
+			myRadarLineSeries.push(RadarLineSeries1);
+		}
+		*/
+       
 		
+		resizeChart(myTreeMap);
+					
+		var podContent:PodContentBase = new PodContentBase();
+	  	podContent.addChild(myTreeMap);
+		var treeMapPod:Pod = new Pod();
+	  	treeMapPod.addChild(podContent);  
+	  	
+	  	// Listen for the last pod to complete so the layout from the ContainerWindowManager is done correctly. 
+		//		plotPod.addEventListener(FlexEvent.UPDATE_COMPLETE, onCreationCompletePod);
+				treeMapPod.id = "treeMapPod";
+				treeMapPod.title = "TreeMap";
+		
+		
+		addPod(treeMapPod, 6, treeMapPod.id);	
     }
     
     private function drawGeoMap():void {
     // ILOG component
     
-    
+	        
       // Create a map of World Countries.
       var myGeoMap:WorldCountriesMap = new WorldCountriesMap();
       
-      myGeoMap.allowNavigation=true;
-  	  myGeoMap.zoomableSymbols=true;
+      // myGeoMap.allowNavigation=true;
+  	  // myGeoMap.zoomableSymbols=true;
   	  
-  	  myGeoMap.setStyle('backgroundFill', 0xFFFFFF);
-  	  myGeoMap.setStyle('fill', 0xFFFFFF);
-  	  myGeoMap.setStyle('highlightStroke', 0x000000);
-  	  myGeoMap.setStyle('stroke', 0x000000);
+  	  // myGeoMap.setStyle('backgroundFill', 0xFFFFFF);
+  	  // myGeoMap.setStyle('fill', 0xFFFFFF);
+  	  // myGeoMap.setStyle('highlightStroke', 0x000000);
+  	  // myGeoMap.setStyle('stroke', 0x000000);
   	  
-	  resizeChart(myGeoMap);
-      p1.addChild(myGeoMap);   
-    
-      // Test of Map Feature (color France in green.)
-      var mf:MapFeature = myGeoMap.getFeature("FRA");
-      mf.setStyle(MapBase.FILL, new SolidColor(0x00ff00));
-      
-      // Test of Map Symbol
-      var ms:MapSymbol = new MapSymbol();
-      ms.key="ESP";
-      var myCircle:PrimitiveCircle = new PrimitiveCircle();
-      myCircle.width=10;
-      myCircle.height=10;
-      myCircle.setStyle("backgroundColor", "0x0000cc");
-      myCircle.toolTip="Spain"
-      ms.addChild(myCircle);
-	  myGeoMap.addChild(ms);
+  	  // myGeoMap.percentHeight=100;
+  	  // myGeoMap.percentWidth=100;
+  	  			
+		var podContent:PodContentBase = new PodContentBase();
+	  	podContent.addChild(myGeoMap);
+		var mapPod:Pod = new Pod();
+	  	mapPod.addChild(podContent);  
+	  	
+	  	// Listen for the last pod to complete so the layout from the ContainerWindowManager is done correctly. 
+		//		mapPod.addEventListener(FlexEvent.UPDATE_COMPLETE, onCreationCompletePod);
+				mapPod.id = "mapPod";
+				mapPod.title = "GeoMap";
+		
+		resizeChart(myGeoMap);
+		addPod(mapPod, 4, mapPod.id);
+	  
     }
 	
 	// End ILOG Chart Components
@@ -2079,6 +2293,7 @@
 		    	setSerie(cartPlotSerie,'Plot',yField,num);
 				myCartesianSeries.push(cartPlotSerie);
 		        break;
+		     
 		}
 	    		
 			}
@@ -2277,11 +2492,10 @@
 	</mx:VBox>
 	</mx:HBox>
 	
-	<mx:Canvas id="p1Cnvs" borderStyle="solid" borderColor="#CCCCCC" width="100%" height="100%"  >
-	<mx:VBox id="p1" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" >
-	 
-    
-	</mx:VBox>
+	<mx:Canvas id="p1" borderStyle="solid" borderColor="#CCCCCC" width="100%" height="100%" 
+		horizontalScrollPolicy="off" verticalScrollPolicy="off" 
+		  >
+	
 	</mx:Canvas>	
 	</mx:HBox>
 

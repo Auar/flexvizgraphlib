@@ -42,6 +42,8 @@ SOFTWARE.
 				pianoCnvs.id="piano"+canvasNum;
 				pianoCnvs.name="piano"+canvasNum;
 				pianoCnvs.label="Chart Builder " + (canvasNum).toString();
+				pianoCnvs.percentHeight=100;
+				pianoCnvs.percentWidth=100;
 				parentDocument.addDefaultChildToCnvs(pianoCnvs,canvasNum);
 				parentDocument.leftAccordion.addChild(pianoCnvs);
 				headerBar.removeChild(addDashboard);
