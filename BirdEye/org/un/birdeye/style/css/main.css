@@ -205,6 +205,74 @@ ToolTip {
 			borderThickness: 3;
 		}
 		
+
+.maximizeRestoreButton
+{
+	up-skin:        	Embed("../../images/assets/maximize_up.png");
+	over-skin:      	Embed("../../images/assets/maximize_over.png");
+	down-skin:      	Embed("../../images/assets/maximize_up.png");
+	selected-up-skin:   Embed("../../images/assets/restore_up.png");
+	selected-over-skin: Embed("../../images/assets/restore_over.png");
+	selected-down-skin: Embed("../../images/assets/restore_up.png");
+}
+
+.minimizeButton
+{
+	up-skin:        Embed("../../images/assets/minimize_up.png");
+	over-skin:      Embed("../../images/assets/minimize_over.png");
+	down-skin:      Embed("../../images/assets/minimize_up.png");
+}
+
+Pod
+{
+	padding-top: 31px;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-bottom: 10px;
+	rounded-bottom-corners: false;
+	border-thickness: 1px;
+	border-style: solid;
+	border-color: #999999;
+	header-colors: #cccccc, #999999;
+	highlight-alphas: .9, 0;
+	background-color: #ffffff;
+	corner-radius: 6px;
+	header-height: 22px;
+	shadow-direction: right;
+	drop-shadow-color: #999999;
+}
+
+.podTitle
+{
+	font-size: 11px;
+	font-family: Arial;
+	font-weight: bold;
+}
+
+DragHighlight
+{
+	border-color: #CCCCCC;
+	border-thickness: 3px;
+	border-style: solid;
+	background-color: #F3F3F3;
+}
+
+.leftArrowButton
+{
+	up-skin:		Embed("../../images/assets/left_arrow_up.gif");
+	over-skin:		Embed("../../images/assets/left_arrow_over.gif");
+	down-skin:		Embed("../../images/assets/left_arrow_up.gif");
+	disabled-skin:	Embed("../../images/assets/left_arrow_disabled.gif");
+}
+
+.rightArrowButton
+{
+	up-skin:		Embed("../../images/assets/right_arrow_up.gif");
+	over-skin:		Embed("../../images/assets/right_arrow_over.gif");
+	down-skin:		Embed("../../images/assets/right_arrow_up.gif");
+	disabled-skin:	Embed("../../images/assets/right_arrow_disabled.gif");
+}
+		
 	
 
 

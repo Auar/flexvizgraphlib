@@ -227,20 +227,67 @@
 						<Property name="Fill" />
 			</Properties>
 		</chart>
-		<chart Type="Polar" Class="PolarChart" Series="PolarSeries">
+		<chart Type="Radar" Class="RadarChart" >
 			<Properties>
-						<Property name="angleField" />
-						<Property name="weightField" />
+						<Property name="Axis" >
+							<Axis>radialAxis</Axis>
+							<Axis>angularAxis</Axis>
+						</Property>
+						<Property name="RadarSeries" >
+							<RadarSeries>RadarBubbleSeries</RadarSeries>
+							<RadarSeries>RadarColumnSeries</RadarSeries>
+							<RadarSeries>RadarLineSeries</RadarSeries>
+							<RadarSeries>RadarPlotSeries</RadarSeries>
+						</Property>	 
 						<Property name="labelField" />
 			</Properties>
 		</chart>
-		<chart Type="TreeMap" Class="TreeMap" Series="BarSeries">
+		<chart Type="TreeMap" Class="TreeMap" >
 			<Properties>
-						<Property name="colorField" />
-						<Property name="weightField" />
-						<Property name="labelField" />
-			</Properties>
-		</chart>
+						<Property name="algorithm" >
+							<algorithm>squarified</algorithm>
+							<algorithm>alternating</algorithm>
+						</Property>	
+      					<Property name="areaField" />
+      					<Property name="colorField" />
+      					<Property name="labelField" />
+      					<Property name="labelThreshold" >
+      						<labelThreshold>-1</labelThreshold>
+      						<labelThreshold>0</labelThreshold>
+      						<labelThreshold>1</labelThreshold>
+      						<labelThreshold>2</labelThreshold>
+      					</Property>
+      					<Property name="primaryDirection" >
+      						<primaryDirection>right</primaryDirection>
+      						<primaryDirection>left</primaryDirection>
+      						<primaryDirection>top</primaryDirection>
+      						<primaryDirection>bottom</primaryDirection>
+      					</Property>
+      					<Property name="secondaryDirection" >
+      						<secondaryDirection>right</secondaryDirection>
+      						<secondaryDirection>left</secondaryDirection>
+      						<secondaryDirection>top</secondaryDirection>
+      						<secondaryDirection>bottom</secondaryDirection>
+      					</Property>
+      		</Properties>
+      		<Styles>
+      	      			<Style name="colorScheme" >
+       							<colorScheme>none</colorScheme>
+								<colorScheme>sequential</colorScheme>
+								<colorScheme>depth</colorScheme>
+								<colorScheme>qualitative</colorScheme>
+								<colorScheme>div-red-green</colorScheme>
+								<colorScheme>div-green-red</colorScheme>
+								<colorScheme>div-blue-yellow</colorScheme>
+								<colorScheme>div-yellow-blue</colorScheme>
+								<colorScheme>avg-red-green</colorScheme>
+								<colorScheme>avg-green-red</colorScheme>
+								<colorScheme>avg-blue-yellow</colorScheme>
+								<colorScheme>avg-yellow-blue</colorScheme>
+      					</Style>
+      					<Style name="selectionColor" />
+    		</Styles>  			
+	</chart>
 		<chart Type="GeoMap" Class="GeoMap" >
 		</chart>
 </charts>

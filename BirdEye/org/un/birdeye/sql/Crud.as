@@ -1,4 +1,54 @@
 // ActionScript file
+
+
+/*
+
+Table and Field Definitions
+
+Table: xnodes
+Fields:
+
+NodeID
+NodeName
+NodeDec
+NodeType
+
+Table: xedges
+Fields:
+
+EdgeID
+EdgeSource
+EdgeTarget
+EdgeType
+EdgeDesc
+EdgeFlow
+
+Table: nodemetas
+Fields:
+
+NodeMetaID
+NodeFieldLabel
+NodeFieldType
+NodeFieldData
+NodeMetaLink
+NodeID
+
+Table: nodetypelookups
+Fields:
+
+NodeTypeID
+NodeTypeName
+NodeTypeImage
+NodeTypeColor
+
+Table: edgetypelookups
+Fields:
+
+EdgeTypeID
+EdgeTypeName
+
+*/
+
 import org.un.birdeye.images.EmbeddedIcons;
 		
   		// Filter functions
