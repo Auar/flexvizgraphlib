@@ -34,7 +34,7 @@
 		var podId:String = podID;
 		
 		
-		manager.addItemAt(pod,podIndex,true);
+		manager.addItemAt(pod,podIndex,false);
 		pod.addEventListener(IndexChangedEvent.CHANGE, onChangePodView);
 		pod.addEventListener(FlexEvent.UPDATE_COMPLETE, onCreationCompletePod);
 		podHash[pod] = manager;

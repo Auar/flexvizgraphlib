@@ -20,7 +20,7 @@ import mx.effects.Resize;
 import mx.effects.easing.Exponential;
 import mx.events.DragEvent;
 import mx.events.ResizeEvent;
-
+import mx.controls.Alert;
 // Dispatched whenever the layout changes.
 [Event(name="update", type="org.un.birdeye.measure.events.LayoutChangeEvent")]
 
@@ -109,6 +109,7 @@ public class PodLayoutManager extends EventDispatcher
 	
 	private function initItem(pod:Pod):void
 	{
+		//Alert.show(pod.id.toString());
 		container.addChild(pod);
 		
 		pod.addEventListener(DragEvent.DRAG_START, onDragStartPod);
