@@ -12,6 +12,7 @@
   
   	<mx:Script source="Dashboard.as" />
 	<mx:Script><![CDATA[
+		import org.un.birdeye.measure.view.Pod;
 		import ilog.charts.AngularAxis;
 	
 	import flexlib.skins.SliderThumbHighlightSkin;
@@ -36,7 +37,8 @@
     
     // Pod
     import org.un.birdeye.measure.view.PodContentBase;
-    
+    import org.un.birdeye.measure.managers.PodLayoutManager;
+    import org.un.birdeye.measure.events.LayoutChangeEvent;
     // ILOG
     import mx.graphics.SolidColor;
     import ilog.maps.MapBase;
@@ -52,6 +54,7 @@
 	
     // Symbols lib
     import com.flexibleexperiments.primitiveIcons.*;
+    
     
     // Public vars
     public var myTreeData:XML = new XML();	
@@ -90,6 +93,12 @@
 	public var accordionIndex:int;
 	public var HBoxMinMaxx:HBox;
 	public var HBoxMinMaxy:HBox;
+	public var arrPods:Array=new Array();
+	public var firstPod:Pod = new Pod();
+	//public var nextPod:Pod = new Pod();
+	public var createNewPod:Boolean;
+	public var numOfPiano:int;
+	public var pianoNumber:int;
 	
 	public function ParseAxis(Axis:XML):void { 
 		var AxisAttributes:XMLList = Axis.children().attributes(); 
@@ -122,6 +131,13 @@
 		cnvs1_cbRadius1.dataProvider=arrAxis;
 		cnvs1_cbOpenField1.dataProvider=arrAxis;
 		cnvs1_cbCloseField1.dataProvider=arrAxis;
+		
+		//création du 1er Pod
+		//StateManager.setViewIndex(1);
+		firstPod.addEventListener(FlexEvent.UPDATE_COMPLETE, onCreationCompletePod);
+		firstPod.id = "Pod1";
+		addPod(firstPod, 1, firstPod.id);
+		arrPods[1]=firstPod;
 		refreshChart();
 	} 
 	
@@ -158,10 +174,9 @@
 		cnvs1_cbLabelPosition.dataProvider=myChart.chart.(@Type=="Pie").Properties.Property.labelPosition.value;
 		//numberOfSeries=1;
 		numberOfSerie[1]=1;
+		createNewPod=false;
 		//chargement du fichier XML contenant les données  
-		
 		LoadXML();
-		trace(myData);
 		
 		
 	}
@@ -185,6 +200,7 @@
 				cbChartType.name="cnvs"+canvasNum+"_cbChartType";
 				cbChartType.dataProvider=myChart.chart.@Type;
 				cbChartType.addEventListener(Event.CHANGE, changeTypeEvt); 
+				cbChartType.prompt="Select...";
 				cbChartType.x=73;
 				cbChartType.y=8;
 				cbChartType.width=160;
@@ -717,9 +733,12 @@
 				cbCloseField.y=396;
 				cbCloseField.visible=false;
 				pianoCnvs.addChild(cbCloseField)
+				
+				createNewPod=true;
+				//numOfPiano=canvasNum;
 				//Alert.show("cnvs"+canvasNum+"_HBoxMinMaxx"+"/ cnvs"+accordionIndex+"_minMaxxSlider", 'Alert Box',mx.controls.Alert.OK);
 				//Alert.show("cnvs"+accordionIndex+"_minMaxxSlider" + " / cnvs"+accordionIndex+"_HBoxMinMaxx", 'Alert Box',mx.controls.Alert.OK);
-			refreshChart();
+			//refreshChart();
 			}
 			
 	private function addSeries(event:Event):void{
@@ -1304,7 +1323,7 @@
     	refreshChart();
     }
     
-    private function refreshChart():void {
+    public function refreshChart():void {
     	accordionIndex=leftAccordion.selectedIndex+1
 		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
     	var strChartType:String = ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()
@@ -1438,21 +1457,43 @@
 		}
    }
    
-   
+   public function createNextPod(num:int):void{
+   	if (createNewPod){
+			//création du nouveau Pod
+				var nextPod:Pod = new Pod();
+				nextPod.addEventListener(FlexEvent.UPDATE_COMPLETE, onCreationCompletePod);
+				nextPod.id = "Pod"+(num);//leftAccordion.numChildren+1
+				addPod(nextPod, num, nextPod.id);
+				arrPods[num]=nextPod;
+				createNewPod=false;
+				//updateLayout(true);
+				//dispatchEvent(new LayoutChangeEvent(LayoutChangeEvent.UPDATE));
+				//var strChartType:String = ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()
+				//drawChart(strChartType);
+				refreshChart();
+		}
+   }
    
     //function qui créé le graphique en fonction des paramètres séléctionnés depuis le tableau de bord
-    private function drawChart(strChartType:String):void {
+    public function drawChart(strChartType:String):void {
     	accordionIndex=leftAccordion.selectedIndex+1
+    	numOfPiano=leftAccordion.numChildren+1
+    	//Alert.show(accordionIndex.toString() + ' / ' +numOfPiano.toString());
+    	if(createNewPod==true){
+    		pianoNumber=numOfPiano;
+    	}else{
+    		pianoNumber=accordionIndex;
+    	}
 		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
     	FindMinMax("x");
     	FindMinMax("y");
     	
-    	// p1.removeAllChildren();
-    	
+    	//p1.removeAllChildren();
     	showhideCartesianSerie(strChartType);
 		xField="@"+ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis1")).selectedLabel.toString();
     	DisplayType=ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbDisplay")).selectedLabel.toString();
 		
+		//createNextPod();
 		
     	switch (strChartType) { 
 		    case "Area" : 
@@ -1729,21 +1770,28 @@
 		myAreaChart.series = myAreaSeries;
 		
 		resizeChart(chartVBox);
+		//chartVBox.removeAllChildren();
 		chartVBox.addChild(myAreaChart);
 		
 		var podContent:PodContentBase = new PodContentBase();
+		//podContent.removeAllChildren();
 	  	podContent.addChild(chartVBox);
-		var areaPod:Pod = new Pod();
-	  	areaPod.addChild(podContent);  
+		//var areaPod:Pod = new Pod();
+	  	//areaPod.addChild(podContent);  
+	 
+	  	createNextPod(accordionIndex);
 	  	
+	  	Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= "Area"+accordionIndex;
 	  	// Listen for the last pod to complete so the layout from the ContainerWindowManager is done correctly. 
 		//		piePod.addEventListener(FlexEvent.UPDATE_COMPLETE, onCreationCompletePod);
-				areaPod.id = "areaPod";
-				areaPod.title = "Area";
-		
-		addPod(areaPod, 2, areaPod.id);
-
-		
+		//areaPod.id = "areaPod"+accordionIndex;
+		//areaPod.title = "Area"+accordionIndex;
+		//addPod(areaPod, accordionIndex, areaPod.id);//2
+		//Alert.show(Pod(arrPods[accordionIndex]).id);
+    	
+		//Alert.show(Pod(arrPods[1]).id);
 		// Create a legend.
 		createLegend2(myAreaChart, chartVBox);
 		addGridLines(myAreaChart);
@@ -1751,6 +1799,7 @@
     
     
     private function drawBarChart():void {
+    	var chartVBox:VBox = new VBox();
     	var myBarSeries:Array=new Array();
 	    var myBarChart:BarChart;
         var barSeries1:BarSeries;
@@ -1759,6 +1808,7 @@
         myBarChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
         myBarChart.dataProvider=dataListCollection;//xmlData.children()//"{data.value}";//expenses//"{myAC}";//"{results.value}";//"{myData.lastResult.value}";//expenses;
         
+    	
         if (numberOfSerie[accordionIndex]>1){
     		myBarChart.type=DisplayType;
     	}
@@ -1777,14 +1827,22 @@
 		
 		myBarChart.series = myBarSeries;
 		resizeChart(myBarChart);
-		// Attach chart to the display list.
-		p1.addChild(myBarChart);
-		// Create a legend.
-		createLegend(myBarChart);
+		resizeChart(chartVBox);
+		chartVBox.addChild(myBarChart);
+		
+		var podContent:PodContentBase = new PodContentBase();
+		podContent.addChild(chartVBox);
+		createNextPod(accordionIndex);
+		Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= "Bar"+accordionIndex;
+	  	createLegend2(myBarChart, chartVBox);
+	  	
 		addGridLines(myBarChart);
     }
     
     private function drawBubbleChart():void {
+    	var chartVBox:VBox = new VBox();
     	var myBubbleSeries:Array=new Array();
 	    var MyBubbleChart:BubbleChart;
         var Bubbleseries1:BubbleSeries;
@@ -1811,15 +1869,22 @@
 		
 		MyBubbleChart.series = myBubbleSeries;
 		resizeChart(MyBubbleChart);
-		// Attach chart to the display list.
-		p1.addChild(MyBubbleChart);
-		// Create a legend.
-		createLegend(MyBubbleChart);
-		addGridLines(MyBubbleChart);
+		resizeChart(chartVBox);
+		chartVBox.addChild(MyBubbleChart);
+		
+		var podContent:PodContentBase = new PodContentBase();
+		podContent.addChild(chartVBox);
+		createNextPod(accordionIndex);
+		Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= "Bubble"+accordionIndex;
+	  	createLegend2(MyBubbleChart, chartVBox);
+	  	addGridLines(MyBubbleChart);
     }
     
     
     private function drawCandlestickChart():void {
+    	var chartVBox:VBox = new VBox();
     	var myCandlestickSeries:Array=new Array();
 	    var myCandlestickChart:CandlestickChart;
         var CandlestickSeries1:CandlestickSeries;
@@ -1845,17 +1910,22 @@
 	   setTypeAxis(myCandlestickChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");
 		
 		myCandlestickChart.series = myCandlestickSeries;
-		
 		resizeChart(myCandlestickChart);
-		// Attach chart to the display list.
-		p1.addChild(myCandlestickChart);    
+		resizeChart(chartVBox);
+		chartVBox.addChild(myCandlestickChart);
 		
-		// Create a legend.
-		createLegend(myCandlestickChart);  
+		var podContent:PodContentBase = new PodContentBase();
+		podContent.addChild(chartVBox);
+		createNextPod(accordionIndex);
+		Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= "Candlestick"+accordionIndex;
+	  	createLegend2(myCandlestickChart, chartVBox);  
 		addGridLines(myCandlestickChart);
     }
     
     private function drawColumnChart():void {
+    	var chartVBox:VBox = new VBox();
 		var myColumnSeries:Array=new Array();
 	    var myColumnChart:ColumnChart;
         var ColumnSeries1:ColumnSeries;
@@ -1881,17 +1951,22 @@
 	   setTypeAxis(myColumnChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");
 		
 		myColumnChart.series = myColumnSeries;
-		
 		resizeChart(myColumnChart);
-		// Attach chart to the display list.
-		p1.addChild(myColumnChart);    
+		resizeChart(chartVBox);
+		chartVBox.addChild(myColumnChart);
 		
-		// Create a legend.
-		createLegend(myColumnChart);  
+		var podContent:PodContentBase = new PodContentBase();
+		podContent.addChild(chartVBox);
+		createNextPod(accordionIndex);
+		Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= "Column"+accordionIndex;
+	  	createLegend2(myColumnChart, chartVBox);  
 		addGridLines(myColumnChart);
     }
     
     private function drawHLOCChart():void {
+    	var chartVBox:VBox = new VBox();
     	var myHLOCSeries:Array=new Array();
 	    var myHLOCChart:HLOCChart;
         var HLOCSeries1:HLOCSeries;
@@ -1917,17 +1992,22 @@
 	   setTypeAxis(myHLOCChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");
 		
 		myHLOCChart.series = myHLOCSeries;
-		
 		resizeChart(myHLOCChart);
-		// Attach chart to the display list.
-		p1.addChild(myHLOCChart);    
+		resizeChart(chartVBox);
+		chartVBox.addChild(myHLOCChart);
 		
-		// Create a legend.
-		createLegend(myHLOCChart);  
+		var podContent:PodContentBase = new PodContentBase();
+		podContent.addChild(chartVBox);
+		createNextPod(accordionIndex);
+		Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= "HLOC"+accordionIndex;
+	  	createLegend2(myHLOCChart, chartVBox); 
 		addGridLines(myHLOCChart);
     }
     
     private function drawLineChart():void {
+    	var chartVBox:VBox = new VBox();
     	var myLineSeries:Array=new Array();
 		var MyLineChart:LineChart;
 		var LineSeries1:LineSeries;
@@ -1949,13 +2029,17 @@
 	   setTypeAxis(MyLineChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");
 		
 		MyLineChart.series = myLineSeries;
-		
 		resizeChart(MyLineChart);
-		// Attach chart and legend to the display list.
-		p1.addChild(MyLineChart);
+		resizeChart(chartVBox);
+		chartVBox.addChild(MyLineChart);
 		
-		// Create a legend.
-		createLegend(MyLineChart);
+		var podContent:PodContentBase = new PodContentBase();
+		podContent.addChild(chartVBox);
+		createNextPod(accordionIndex);
+		Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= "Line"+accordionIndex;
+	  	createLegend2(MyLineChart, chartVBox);
 		addGridLines(MyLineChart);
     }
 
@@ -1990,15 +2074,10 @@
 		
 		var podContent:PodContentBase = new PodContentBase();
 	  	podContent.addChild(chartVBox);
-		var piePod:Pod = new Pod();
-	  	piePod.addChild(podContent);  
-	  	
-	  	// Listen for the last pod to complete so the layout from the ContainerWindowManager is done correctly. 
-		//		piePod.addEventListener(FlexEvent.UPDATE_COMPLETE, onCreationCompletePod);
-				piePod.id = "piePod";
-				piePod.title = "Pie";
-		
-		addPod(piePod, 0, piePod.id);
+	  	createNextPod(accordionIndex);
+		Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= "Pie"+accordionIndex;
 
 		
 		// Create a legend.
@@ -2031,24 +2110,17 @@
 	   setTypeAxis(myPlotChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");
 	
 		myPlotChart.series = myPlotSeries;
-		
+		resizeChart(myPlotChart);
 		resizeChart(chartVBox);
 		chartVBox.addChild(myPlotChart);
 					
 		var podContent:PodContentBase = new PodContentBase();
 	  	podContent.addChild(chartVBox);
-		var plotPod:Pod = new Pod();
-	  	plotPod.addChild(podContent);  
+	  	createNextPod(accordionIndex);
+		Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= "Plot"+accordionIndex;
 	  	
-	  	// Listen for the last pod to complete so the layout from the ContainerWindowManager is done correctly. 
-		//		plotPod.addEventListener(FlexEvent.UPDATE_COMPLETE, onCreationCompletePod);
-				plotPod.id = "plotPod";
-				plotPod.title = "PlotChart";
-		
-		
-		addPod(plotPod, 1, plotPod.id);
-		
-		
 		// Create a legend.
 		createLegend2(myPlotChart, chartVBox);   
 		addGridLines(myPlotChart); 
@@ -2124,18 +2196,20 @@
 					
 		var podContent:PodContentBase = new PodContentBase();
 	  	podContent.addChild(chartVBox);
-		var radarPod:Pod = new Pod();
-	  	radarPod.addChild(podContent);  
+		//var radarPod:Pod = new Pod();
+	  	//radarPod.addChild(podContent);  
 	  	
 	  	// Listen for the last pod to complete so the layout from the ContainerWindowManager is done correctly. 
 		//		plotPod.addEventListener(FlexEvent.UPDATE_COMPLETE, onCreationCompletePod);
-				radarPod.id = "radarPod";
-				radarPod.title = "RadarChart";
+				//radarPod.id = "radarPod"+accordionIndex;
+				//radarPod.title = "RadarChart";
 		
 		
-		addPod(radarPod, 3, radarPod.id);
-		
-		
+		//addPod(radarPod, 3, radarPod.id);
+		createNextPod(accordionIndex);
+		Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= "Radar"+accordionIndex;
 		// Create a legend.
 		createLegend2(myRadarChart, chartVBox);   
 		// addGridLines(myRadarChart);
@@ -2177,16 +2251,20 @@
 					
 		var podContent:PodContentBase = new PodContentBase();
 	  	podContent.addChild(myTreeMap);
-		var treeMapPod:Pod = new Pod();
-	  	treeMapPod.addChild(podContent);  
+		//var treeMapPod:Pod = new Pod();
+	  	//treeMapPod.addChild(podContent);  
 	  	
 	  	// Listen for the last pod to complete so the layout from the ContainerWindowManager is done correctly. 
 		//		plotPod.addEventListener(FlexEvent.UPDATE_COMPLETE, onCreationCompletePod);
-				treeMapPod.id = "treeMapPod";
-				treeMapPod.title = "TreeMap";
+		//		treeMapPod.id = "treeMapPod"+accordionIndex;
+		//		treeMapPod.title = "TreeMap";
 		
 		
-		addPod(treeMapPod, 6, treeMapPod.id);	
+		//addPod(treeMapPod, 6, treeMapPod.id);	
+		createNextPod(accordionIndex);
+		Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= "TreeMap"+accordionIndex;
     }
     
     private function drawGeoMap():void {
@@ -2209,22 +2287,26 @@
   	  			
 		var podContent:PodContentBase = new PodContentBase();
 	  	podContent.addChild(myGeoMap);
-		var mapPod:Pod = new Pod();
-	  	mapPod.addChild(podContent);  
+		//var mapPod:Pod = new Pod();
+	  	//mapPod.addChild(podContent);  
 	  	
 	  	// Listen for the last pod to complete so the layout from the ContainerWindowManager is done correctly. 
 		//		mapPod.addEventListener(FlexEvent.UPDATE_COMPLETE, onCreationCompletePod);
-				mapPod.id = "mapPod";
-				mapPod.title = "GeoMap";
+		//		mapPod.id = "mapPod"+accordionIndex;
+		//		mapPod.title = "GeoMap";
 		
 		resizeChart(myGeoMap);
-		addPod(mapPod, 4, mapPod.id);
-	  
+		//addPod(mapPod, 4, mapPod.id);
+		createNextPod(accordionIndex);
+	  	Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= "GeoMap"+accordionIndex;
     }
 	
 	// End ILOG Chart Components
 	
    	private function drawCartesianChart():void{
+   		var chartVBox:VBox = new VBox();
    		var myCartesianSeries:Array=new Array();
     	var myCartesianChart:CartesianChart;
     	
@@ -2305,11 +2387,17 @@
 	   
 	   
 		myCartesianChart.series = myCartesianSeries;
-		
 		resizeChart(myCartesianChart);
-		p1.addChild(myCartesianChart);
+		resizeChart(chartVBox);
+		chartVBox.addChild(myCartesianChart);
 		
-		createLegend(myCartesianChart);   
+		var podContent:PodContentBase = new PodContentBase();
+		podContent.addChild(chartVBox);
+		createNextPod(accordionIndex);
+		Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= "Cartesian"+accordionIndex;
+	  	createLegend2(myCartesianChart, chartVBox);  
 		addGridLines(myCartesianChart);
    	}
     
@@ -2496,7 +2584,7 @@
 		horizontalScrollPolicy="off" verticalScrollPolicy="off" 
 		  >
 	
-	</mx:Canvas>	
+	</mx:Canvas>
 	</mx:HBox>
 
 <mx:states>

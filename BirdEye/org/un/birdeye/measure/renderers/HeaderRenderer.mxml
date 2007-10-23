@@ -47,15 +47,14 @@ SOFTWARE.
 				parentDocument.addDefaultChildToCnvs(pianoCnvs,canvasNum);
 				parentDocument.leftAccordion.addChild(pianoCnvs);
 				headerBar.removeChild(addDashboard);
-				
+				//parentDocument.createNextPod(canvasNum);
+				//parentDocument.drawChart("Area");
+				//parentDocument.refreshChart();
 			}
-			
-			
-			
 			
 		]]>
 	</mx:Script>
-	<mx:VBox id="headerBar" width="100%" height="25" verticalAlign="middle" horizontalAlign="right" paddingRight="5" >
+	<mx:VBox id="headerBar" width="100%" height="25" verticalAlign="middle" horizontalAlign="right" paddingRight="5">
 		<mx:Button id="addDashboard" toolTip="Click to add a new chart" height="20" width="20" icon="@Embed('/org/un/birdeye/images/ui/zoomin.png')" includeInLayout="true" click="addPianoCnvs();" />
 	</mx:VBox>
 	
