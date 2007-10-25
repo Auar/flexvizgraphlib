@@ -10,13 +10,13 @@
 <body>
 <script type="text/javascript" language="javascript" src="../../../../../asdoc.js"></script><script type="text/javascript" language="javascript" src="../../../../../cookies.js"></script><script type="text/javascript" language="javascript">
 <!--
-				asdocTitle = 'AnimatedBaseLayouter - API Documentation';
+				asdocTitle = 'AnimatedBaseLayouter - Flex GraphLayout API Documentation';
 				var baseRef = '../../../../../';
 				window.onload = configPage;
 			--></script>
 <table style="display:none" id="titleTable" cellspacing="0" cellpadding="0" class="titleTable">
 <tr>
-<td align="left" class="titleTableTitle">API Documentation</td><td align="right" class="titleTableTopNav"><a onclick="loadClassListFrame('../../../../../all-classes.html')" href="../../../../../package-summary.html">All&nbsp;Packages</a>&nbsp;|&nbsp;<a onclick="loadClassListFrame('../../../../../all-classes.html')" href="../../../../../class-summary.html">All&nbsp;Classes</a>&nbsp;|&nbsp;<a onclick="loadClassListFrame('../../../../../index-list.html')" href="../../../../../all-index-A.html">Index</a>&nbsp;|&nbsp;<a href="../../../../../index.html?org/un/flex/graphLayout/layout/AnimatedBaseLayouter.html&amp;org/un/flex/graphLayout/layout/class-list.html" id="framesLink1">Frames</a><a onclick="parent.location=document.location" href="" style="display:none" id="noFramesLink1">No&nbsp;Frames</a></td><td rowspan="3" align="right" class="titleTableLogo"><img alt="Adobe Logo" title="Adobe Logo" class="logoImage" src="../../../../../images/logo.jpg"></td>
+<td align="left" class="titleTableTitle">Flex GraphLayout API Documentation</td><td align="right" class="titleTableTopNav"><a onclick="loadClassListFrame('../../../../../all-classes.html')" href="../../../../../package-summary.html">All&nbsp;Packages</a>&nbsp;|&nbsp;<a onclick="loadClassListFrame('../../../../../all-classes.html')" href="../../../../../class-summary.html">All&nbsp;Classes</a>&nbsp;|&nbsp;<a onclick="loadClassListFrame('../../../../../index-list.html')" href="../../../../../all-index-A.html">Index</a>&nbsp;|&nbsp;<a href="../../../../../index.html?org/un/flex/graphLayout/layout/AnimatedBaseLayouter.html&amp;org/un/flex/graphLayout/layout/class-list.html" id="framesLink1">Frames</a><a onclick="parent.location=document.location" href="" style="display:none" id="noFramesLink1">No&nbsp;Frames</a></td><td rowspan="3" align="right" class="titleTableLogo"><img alt="Adobe Logo" title="Adobe Logo" class="logoImage" src="../../../../../images/logo.jpg"></td>
 </tr>
 <tr class="titleTableRow2">
 <td align="left" id="subTitle" class="titleTableSubTitle">Class&nbsp;AnimatedBaseLayouter</td><td align="right" id="subNav" class="titleTableSubNav"><a href="#propertySummary">Properties</a>&nbsp;| <a href="#methodSummary">Methods</a>&nbsp;| <a href="#constantSummary">Constants</a></td>
@@ -44,7 +44,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <td class="classHeaderTableLabel">Implements</td><td><a href="ILayoutAlgorithm.html">ILayoutAlgorithm</a></td>
 </tr>
 <tr>
-<td class="classHeaderTableLabel">Subclasses</td><td><a href="../layout/ConcentricRadialLayouter.html">ConcentricRadialLayouter</a>, <a href="../layout/HierarchicalLayouter.html">HierarchicalLayouter</a>, <a href="../layout/ParentCenteredRadialLayouter.html">ParentCenteredRadialLayouter</a>, <a href="../layout/PhylloTreeLayouter.html">PhylloTreeLayouter</a></td>
+<td class="classHeaderTableLabel">Subclasses</td><td><a href="../layout/CircularLayouter.html">CircularLayouter</a>, <a href="../layout/ConcentricRadialLayouter.html">ConcentricRadialLayouter</a>, <a href="../layout/HierarchicalLayouter.html">HierarchicalLayouter</a>, <a href="../layout/ParentCenteredRadialLayouter.html">ParentCenteredRadialLayouter</a>, <a href="../layout/PhylloTreeLayouter.html">PhylloTreeLayouter</a></td>
 </tr>
 </table>
 <p></p>
@@ -292,7 +292,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
-<a class="signatureLink" href="#interpolateCartCoords()">interpolateCartCoords</a>():void</div>
+<a class="signatureLink" href="#interpolateCartCoords()">interpolateCartCoords</a>():Boolean</div>
 <div class="summaryTableDescription">
    Interpolates the target coordinates with the current real coordinates
    achieving a smooth animation.</div>
@@ -301,7 +301,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
-<a class="signatureLink" href="#interpolatePolarCoords()">interpolatePolarCoords</a>():void</div>
+<a class="signatureLink" href="#interpolatePolarCoords()">interpolatePolarCoords</a>():Boolean</div>
 <div class="summaryTableDescription">
    Interpolates the target Polar coordinates with the current real coordinates
    achieving a smooth animation.</div>
@@ -482,12 +482,19 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>protected function interpolateCartCoords():void</code><p>
+<code>protected function interpolateCartCoords():Boolean</code><p>
    Interpolates the target coordinates with the current real coordinates
    achieving a smooth animation.
    It works in the same way as interpolatePolarCoords() but
    uses cartesian coordinates.
-   </p><p>
+   </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Boolean</code></td>
+</tr>
+</table>
+<p>
 <span class="label">See also</span>
 </p>
 <div class="seeAlso">interpolatePolarCoords()</div>
@@ -499,7 +506,7 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>protected function interpolatePolarCoords():void</code><p>
+<code>protected function interpolatePolarCoords():Boolean</code><p>
    Interpolates the target Polar coordinates with the current real coordinates
    achieving a smooth animation.
    
@@ -514,7 +521,14 @@ showHideInherited();
    actual target coordinates are applied.
    If there are animation steps left, a timer is started to call
    the same function again for the next animation step.
-   </p></div>
+   </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Boolean</code></td>
+</tr>
+</table>
+</div>
 <a name="killTimer()"></a>
 <table cellspacing="0" cellpadding="0" class="detailHeader">
 <tr>

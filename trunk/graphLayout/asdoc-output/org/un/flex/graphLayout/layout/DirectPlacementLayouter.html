@@ -4,22 +4,22 @@
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="../../../../../style.css" type="text/css" media="screen">
 <link rel="stylesheet" href="../../../../../print.css" type="text/css" media="print">
-<meta content="ConcentricRadialLayouter,org.un.flex.graphLayout.layout.ConcentricRadialLayouter,DEFAULT_RADIUS,linkLength,layoutPass,resetAll,setAngularBounds" name="keywords">
-<title>org.un.flex.graphLayout.layout.ConcentricRadialLayouter</title>
+<meta content="DirectPlacementLayouter,org.un.flex.graphLayout.layout.DirectPlacementLayouter,centeredLayout,relativeHeight,relativeOrigin,relativeWidth,layoutPass,resetAll" name="keywords">
+<title>org.un.flex.graphLayout.layout.DirectPlacementLayouter</title>
 </head>
 <body>
 <script type="text/javascript" language="javascript" src="../../../../../asdoc.js"></script><script type="text/javascript" language="javascript" src="../../../../../cookies.js"></script><script type="text/javascript" language="javascript">
 <!--
-				asdocTitle = 'ConcentricRadialLayouter - Flex GraphLayout API Documentation';
+				asdocTitle = 'DirectPlacementLayouter - Flex GraphLayout API Documentation';
 				var baseRef = '../../../../../';
 				window.onload = configPage;
 			--></script>
 <table style="display:none" id="titleTable" cellspacing="0" cellpadding="0" class="titleTable">
 <tr>
-<td align="left" class="titleTableTitle">Flex GraphLayout API Documentation</td><td align="right" class="titleTableTopNav"><a onclick="loadClassListFrame('../../../../../all-classes.html')" href="../../../../../package-summary.html">All&nbsp;Packages</a>&nbsp;|&nbsp;<a onclick="loadClassListFrame('../../../../../all-classes.html')" href="../../../../../class-summary.html">All&nbsp;Classes</a>&nbsp;|&nbsp;<a onclick="loadClassListFrame('../../../../../index-list.html')" href="../../../../../all-index-A.html">Index</a>&nbsp;|&nbsp;<a href="../../../../../index.html?org/un/flex/graphLayout/layout/ConcentricRadialLayouter.html&amp;org/un/flex/graphLayout/layout/class-list.html" id="framesLink1">Frames</a><a onclick="parent.location=document.location" href="" style="display:none" id="noFramesLink1">No&nbsp;Frames</a></td><td rowspan="3" align="right" class="titleTableLogo"><img alt="Adobe Logo" title="Adobe Logo" class="logoImage" src="../../../../../images/logo.jpg"></td>
+<td align="left" class="titleTableTitle">Flex GraphLayout API Documentation</td><td align="right" class="titleTableTopNav"><a onclick="loadClassListFrame('../../../../../all-classes.html')" href="../../../../../package-summary.html">All&nbsp;Packages</a>&nbsp;|&nbsp;<a onclick="loadClassListFrame('../../../../../all-classes.html')" href="../../../../../class-summary.html">All&nbsp;Classes</a>&nbsp;|&nbsp;<a onclick="loadClassListFrame('../../../../../index-list.html')" href="../../../../../all-index-A.html">Index</a>&nbsp;|&nbsp;<a href="../../../../../index.html?org/un/flex/graphLayout/layout/DirectPlacementLayouter.html&amp;org/un/flex/graphLayout/layout/class-list.html" id="framesLink1">Frames</a><a onclick="parent.location=document.location" href="" style="display:none" id="noFramesLink1">No&nbsp;Frames</a></td><td rowspan="3" align="right" class="titleTableLogo"><img alt="Adobe Logo" title="Adobe Logo" class="logoImage" src="../../../../../images/logo.jpg"></td>
 </tr>
 <tr class="titleTableRow2">
-<td align="left" id="subTitle" class="titleTableSubTitle">Class&nbsp;ConcentricRadialLayouter</td><td align="right" id="subNav" class="titleTableSubNav"><a href="#propertySummary">Properties</a>&nbsp;| <a href="#methodSummary">Methods</a>&nbsp;| <a href="#constantSummary">Constants</a></td>
+<td align="left" id="subTitle" class="titleTableSubTitle">Class&nbsp;DirectPlacementLayouter</td><td align="right" id="subNav" class="titleTableSubNav"><a href="#propertySummary">Properties</a>&nbsp;| <a href="#methodSummary">Methods</a>&nbsp;| <a href="#constantSummary">Constants</a></td>
 </tr>
 <tr class="titleTableRow3">
 <td colspan="2">&nbsp;</td>
@@ -27,7 +27,7 @@
 </table>
 <script type="text/javascript" language="javascript">
 <!--
-if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Class ConcentricRadialLayouter"); titleBar_setSubNav(true,true,false,false,false,false,true,false,false,false,false,false,false,false);}
+if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Class DirectPlacementLayouter"); titleBar_setSubNav(true,true,false,false,false,false,true,false,false,false,false,false,false,false);}
 --></script>
 <div class="MainContent">
 <table cellspacing="0" cellpadding="0" class="classHeaderTable">
@@ -35,22 +35,22 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <td class="classHeaderTableLabel">Package</td><td><a onclick="javascript:loadClassListFrame('class-list.html')" href="package-detail.html">org.un.flex.graphLayout.layout</a></td>
 </tr>
 <tr>
-<td class="classHeaderTableLabel">Class</td><td class="classSignature">public class ConcentricRadialLayouter</td>
+<td class="classHeaderTableLabel">Class</td><td class="classSignature">public class DirectPlacementLayouter</td>
 </tr>
 <tr>
-<td class="classHeaderTableLabel">Inheritance</td><td class="inheritanceList">ConcentricRadialLayouter <img class="inheritArrow" alt="Inheritance" title="Inheritance" src="../../../../../images/inherit-arrow.gif"> <a href="AnimatedBaseLayouter.html">AnimatedBaseLayouter</a> <img class="inheritArrow" alt="Inheritance" title="Inheritance" src="../../../../../images/inherit-arrow.gif"> <a href="BaseLayouter.html">BaseLayouter</a></td>
+<td class="classHeaderTableLabel">Inheritance</td><td class="inheritanceList">DirectPlacementLayouter <img class="inheritArrow" alt="Inheritance" title="Inheritance" src="../../../../../images/inherit-arrow.gif"> <a href="BaseLayouter.html">BaseLayouter</a></td>
 </tr>
 <tr>
 <td class="classHeaderTableLabel">Implements</td><td><a href="ILayoutAlgorithm.html">ILayoutAlgorithm</a></td>
 </tr>
 </table>
 <p></p>
-  This is an implementation of the generic radial
-  layout algorithm that uses concentric rings
-  for the distance. In addition it will implement
-  the animation algorithm by Yee et. al that moves
-  nodes along their circles instead of in straight
-  lines.
+  This layouter does not use any algorithm for node placement,
+  but relys on coordinate information (x,y-coordinates) specified
+  in each nodes associated XML object.
+  It also takes a relative height and width parameter (which may be
+  calculated by autofit) to put the specified coordinates into
+  perspective.
   <p></p>
 <br>
 <hr>
@@ -71,17 +71,22 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <th>&nbsp;</th><th colspan="2">Property</th><th class="summaryTableOwnerCol">Defined&nbsp;by</th>
 </tr>
 <tr class="hideInheritedProperty">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="AnimatedBaseLayouter.html#animInProgress">animInProgress</a> : Boolean<div class="summaryTableDescription">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="BaseLayouter.html#animInProgress">animInProgress</a> : Boolean<div class="summaryTableDescription">
    
    Indicator if currently an animation sequence is still
    in progress.</div>
-</td><td class="summaryTableOwnerCol"><a href="AnimatedBaseLayouter.html">AnimatedBaseLayouter</a></td>
+</td><td class="summaryTableOwnerCol"><a href="BaseLayouter.html">BaseLayouter</a></td>
 </tr>
 <tr class="hideInheritedProperty">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="BaseLayouter.html#autoFitEnabled">autoFitEnabled</a> : Boolean<div class="summaryTableDescription">
    
    </div>
 </td><td class="summaryTableOwnerCol"><a href="BaseLayouter.html">BaseLayouter</a></td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#centeredLayout">centeredLayout</a> : Boolean<div class="summaryTableDescription">
+   defines if the vgraph's center offset should be applied.</div>
+</td><td class="summaryTableOwnerCol">DirectPlacementLayouter</td>
 </tr>
 <tr class="hideInheritedProperty">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="BaseLayouter.html#graph">graph</a> : <a href="../data/IGraph.html">IGraph</a>
@@ -99,12 +104,27 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
    </div>
 </td><td class="summaryTableOwnerCol"><a href="BaseLayouter.html">BaseLayouter</a></td>
 </tr>
+<tr class="hideInheritedProperty">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="BaseLayouter.html#linkLength">linkLength</a> : Number<div class="summaryTableDescription">
+   This is a NOP in the BaseLayouter class.</div>
+</td><td class="summaryTableOwnerCol"><a href="BaseLayouter.html">BaseLayouter</a></td>
+</tr>
 <tr class="">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#linkLength">linkLength</a> : Number<div class="summaryTableDescription">
-   
-   Access to a value that controls the length
-   of links (or rather edges).</div>
-</td><td class="summaryTableOwnerCol">ConcentricRadialLayouter</td>
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#relativeHeight">relativeHeight</a> : Number<div class="summaryTableDescription">
+   Access the relative height for the y coordinates specified.</div>
+</td><td class="summaryTableOwnerCol">DirectPlacementLayouter</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#relativeOrigin">relativeOrigin</a> : Point<div class="summaryTableDescription">
+   Access the relative origin, which will result in an offset for
+   each coordinate, default is (0,0);
+   </div>
+</td><td class="summaryTableOwnerCol">DirectPlacementLayouter</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#relativeWidth">relativeWidth</a> : Number<div class="summaryTableDescription">
+   Access the relative width for the x coordinates specified.</div>
+</td><td class="summaryTableOwnerCol">DirectPlacementLayouter</td>
 </tr>
 <tr class="hideInheritedProperty">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="BaseLayouter.html#vgraph">vgraph</a> : <a href="../visual/IVisualGraph.html">IVisualGraph</a>
@@ -133,30 +153,16 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <th>&nbsp;</th><th colspan="2">Property</th><th class="summaryTableOwnerCol">Defined&nbsp;by</th>
 </tr>
 <tr class="hideInheritedProtectedProperty">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="AnimatedBaseLayouter.html#animationType">animationType</a> : int<div class="summaryTableDescription">
-   Access to the type of animation, currently supported
-   type is:
-   ANIM_RADIAL which does interpolation of polar coordinates.</div>
-</td><td class="summaryTableOwnerCol"><a href="AnimatedBaseLayouter.html">AnimatedBaseLayouter</a></td>
-</tr>
-<tr class="hideInheritedProtectedProperty">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="AnimatedBaseLayouter.html#_animInProgress">_animInProgress</a> : Boolean = false<div class="summaryTableDescription">
-   Indicator if there is currently an animation in progress
-   </div>
-</td><td class="summaryTableOwnerCol"><a href="AnimatedBaseLayouter.html">AnimatedBaseLayouter</a></td>
-</tr>
-<tr class="hideInheritedProtectedProperty">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="BaseLayouter.html#_autoFitEnabled">_autoFitEnabled</a> : Boolean = false<div class="summaryTableDescription">
    The indicator if AutoFit should currently be used or not.</div>
 </td><td class="summaryTableOwnerCol"><a href="BaseLayouter.html">BaseLayouter</a></td>
 </tr>
 <tr class="hideInheritedProtectedProperty">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="AnimatedBaseLayouter.html#currentDrawing">currentDrawing</a> : <a href="../layout/BaseLayoutDrawing.html">BaseLayoutDrawing</a>
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="BaseLayouter.html#currentDrawing">currentDrawing</a> : <a href="../layout/BaseLayoutDrawing.html">BaseLayoutDrawing</a>
 <div class="summaryTableDescription">
-   
    Allow to set the reference to the drawing object from
    derived classes.</div>
-</td><td class="summaryTableOwnerCol"><a href="AnimatedBaseLayouter.html">AnimatedBaseLayouter</a></td>
+</td><td class="summaryTableOwnerCol"><a href="BaseLayouter.html">BaseLayouter</a></td>
 </tr>
 <tr class="hideInheritedProtectedProperty">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="BaseLayouter.html#_graph">_graph</a> : <a href="../data/IGraph.html">IGraph</a> = null<div class="summaryTableDescription">
@@ -208,11 +214,10 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
-<a class="signatureLink" href="#ConcentricRadialLayouter()">ConcentricRadialLayouter</a>(vg:<a href="../visual/IVisualGraph.html">IVisualGraph</a> = null)</div>
+<a class="signatureLink" href="#DirectPlacementLayouter()">DirectPlacementLayouter</a>(vg:<a href="../visual/IVisualGraph.html">IVisualGraph</a> = null)</div>
 <div class="summaryTableDescription">
-   The constructor initializes the layouter and may assign
-   already a VisualGraph object, but this can also be set later.</div>
-</td><td class="summaryTableOwnerCol">ConcentricRadialLayouter</td>
+   The constructor only initialises some data structures.</div>
+</td><td class="summaryTableOwnerCol">DirectPlacementLayouter</td>
 </tr>
 <tr class="hideInheritedMethod">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
@@ -235,10 +240,9 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <div class="summarySignature">
 <a class="signatureLink" href="#layoutPass()">layoutPass</a>():Boolean</div>
 <div class="summaryTableDescription">
-   
-   This is the main method of the layouter, that actually
-   implements the calculation of the layout.</div>
-</td><td class="summaryTableOwnerCol">ConcentricRadialLayouter</td>
+   This main interface method computes and
+   and executes the new layout.</div>
+</td><td class="summaryTableOwnerCol">DirectPlacementLayouter</td>
 </tr>
 <tr class="hideInheritedMethod">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
@@ -254,19 +258,10 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <a class="signatureLink" href="#resetAll()">resetAll</a>():void</div>
 <div class="summaryTableDescription">
    
-   
    This should reset all parameters of the layouter,
    which might not be needed for all layouters, and it is
    up to each layouter to do something with it.</div>
-</td><td class="summaryTableOwnerCol">ConcentricRadialLayouter</td>
-</tr>
-<tr class="">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
-<div class="summarySignature">
-<a class="signatureLink" href="#setAngularBounds()">setAngularBounds</a>(theta:Number, width:Number):void</div>
-<div class="summaryTableDescription">
-   Presets the angular bounds of the layout, if desired.</div>
-</td><td class="summaryTableOwnerCol">ConcentricRadialLayouter</td>
+</td><td class="summaryTableOwnerCol">DirectPlacementLayouter</td>
 </tr>
 </table>
 </div>
@@ -303,52 +298,6 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
    are in the Dictionary object passed as argument.</div>
 </td><td class="summaryTableOwnerCol"><a href="BaseLayouter.html">BaseLayouter</a></td>
 </tr>
-<tr class="hideInheritedProtectedMethod">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
-<div class="summarySignature">
-<a class="signatureLink" href="AnimatedBaseLayouter.html#interpolateCartCoords()">interpolateCartCoords</a>():Boolean</div>
-<div class="summaryTableDescription">
-   Interpolates the target coordinates with the current real coordinates
-   achieving a smooth animation.</div>
-</td><td class="summaryTableOwnerCol"><a href="AnimatedBaseLayouter.html">AnimatedBaseLayouter</a></td>
-</tr>
-<tr class="hideInheritedProtectedMethod">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
-<div class="summarySignature">
-<a class="signatureLink" href="AnimatedBaseLayouter.html#interpolatePolarCoords()">interpolatePolarCoords</a>():Boolean</div>
-<div class="summaryTableDescription">
-   Interpolates the target Polar coordinates with the current real coordinates
-   achieving a smooth animation.</div>
-</td><td class="summaryTableOwnerCol"><a href="AnimatedBaseLayouter.html">AnimatedBaseLayouter</a></td>
-</tr>
-<tr class="hideInheritedProtectedMethod">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
-<div class="summarySignature">
-<a class="signatureLink" href="AnimatedBaseLayouter.html#killTimer()">killTimer</a>():void</div>
-<div class="summaryTableDescription">
-   This method kills any currently running timers
-   which is needed if some data is going to be
-   reinitialised.</div>
-</td><td class="summaryTableOwnerCol"><a href="AnimatedBaseLayouter.html">AnimatedBaseLayouter</a></td>
-</tr>
-<tr class="hideInheritedProtectedMethod">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
-<div class="summarySignature">
-<a class="signatureLink" href="AnimatedBaseLayouter.html#resetAnimation()">resetAnimation</a>():void</div>
-<div class="summaryTableDescription">
-   Reset/Reinitialise animation related variables.</div>
-</td><td class="summaryTableOwnerCol"><a href="AnimatedBaseLayouter.html">AnimatedBaseLayouter</a></td>
-</tr>
-<tr class="hideInheritedProtectedMethod">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
-<div class="summarySignature">
-<a class="signatureLink" href="AnimatedBaseLayouter.html#startAnimation()">startAnimation</a>():void</div>
-<div class="summaryTableDescription">
-   This method starts the animation according
-   to the preset type in the _animationType
-   variable.</div>
-</td><td class="summaryTableOwnerCol"><a href="AnimatedBaseLayouter.html">AnimatedBaseLayouter</a></td>
-</tr>
 </table>
 </div>
 <a name="constantSummary"></a>
@@ -362,33 +311,15 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <a onclick="javascript:setInheritedVisible(true,'Constant');" href="#constantSummary" class="showHideLink"><img src="../../../../../images/collapsed.gif" class="showHideLinkImage"> Show Inherited Public Constants</a>
 </div>
 </div>
-<table id="summaryTableConstant" class="summaryTable " cellpadding="3" cellspacing="0">
+<table id="summaryTableConstant" class="summaryTable hideInheritedConstant" cellpadding="3" cellspacing="0">
 <tr>
 <th>&nbsp;</th><th colspan="2">Constant</th><th class="summaryTableOwnerCol">Defined&nbsp;by</th>
-</tr>
-<tr class="hideInheritedConstant">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="AnimatedBaseLayouter.html#ANIM_RADIAL">ANIM_RADIAL</a> : int = 1<div class="summaryTableDescription">
-   constant to define the radial animation type, which
-   interpolates node's polar coordinates.</div>
-</td><td class="summaryTableOwnerCol"><a href="AnimatedBaseLayouter.html">AnimatedBaseLayouter</a></td>
-</tr>
-<tr class="hideInheritedConstant">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="AnimatedBaseLayouter.html#ANIM_STRAIGHT">ANIM_STRAIGHT</a> : int = 2<div class="summaryTableDescription">
-   constant to define the radial animation type, which
-   interpolates node's polar coordinates.</div>
-</td><td class="summaryTableOwnerCol"><a href="AnimatedBaseLayouter.html">AnimatedBaseLayouter</a></td>
 </tr>
 <tr class="hideInheritedConstant">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="BaseLayouter.html#DEFAULT_MARGIN">DEFAULT_MARGIN</a> : Number = 30<div class="summaryTableDescription">[static]
    The default margin to be considered when using
    autoFit.</div>
 </td><td class="summaryTableOwnerCol"><a href="BaseLayouter.html">BaseLayouter</a></td>
-</tr>
-<tr class="">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#DEFAULT_RADIUS">DEFAULT_RADIUS</a> : Number = 50<div class="summaryTableDescription">[static]
-   The default radius increase between
-   the concentric circles.</div>
-</td><td class="summaryTableOwnerCol">ConcentricRadialLayouter</td>
 </tr>
 <tr class="hideInheritedConstant">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="BaseLayouter.html#MINIMUM_NODE_HEIGHT">MINIMUM_NODE_HEIGHT</a> : Number = 5<div class="summaryTableDescription">[static]
@@ -411,45 +342,85 @@ showHideInherited();
 <div class="MainContent">
 <a name="propertyDetail"></a>
 <div class="detailSectionHeader">Property detail</div>
-<a name="linkLength"></a>
+<a name="centeredLayout"></a>
 <table cellspacing="0" cellpadding="0" class="detailHeader">
 <tr>
-<td class="detailHeaderName">linkLength</td><td class="detailHeaderType">property</td>
+<td class="detailHeaderName">centeredLayout</td><td class="detailHeaderType">property</td>
 </tr>
 </table>
 <div class="detailBody">
-<code>linkLength:Number</code>&nbsp;&nbsp;[read-write]<p>
-   
-   Access to a value that controls the length
-   of links (or rather edges). It is up to the
-   layouter what to do with it, and some may ignore
-   this value under certain circumstances (like autoFit).
-   The interface requires the value to be between 0 and 100;
-   </p><p>This property can be used as the source for data binding.</p>
-<span class="label">Implementation</span>
+<code>public var centeredLayout:Boolean</code><p>
+   defines if the vgraph's center offset should be applied.
+   Set it to true if your coordinates assume a centered origin
+   and you place them all around the center.
+   </p><p>The default value is <code>false</code>.</p>
+</div>
+<a name="relativeHeight"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">relativeHeight</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>relativeHeight:Number</code>&nbsp;&nbsp;[read-write]<p>
+   Access the relative height for the y coordinates specified.
+   Default is 1000.
+   </p><span class="label">Implementation</span>
 <br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get linkLength():Number</code>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get relativeHeight():Number</code>
 <br>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set linkLength(value:Number):void</code>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set relativeHeight(value:Number):void</code>
+<br>
+</div>
+<a name="relativeOrigin"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">relativeOrigin</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>relativeOrigin:Point</code>&nbsp;&nbsp;[read-write]<p>
+   Access the relative origin, which will result in an offset for
+   each coordinate, default is (0,0);
+   </p><span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get relativeOrigin():Point</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set relativeOrigin(value:Point):void</code>
+<br>
+</div>
+<a name="relativeWidth"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">relativeWidth</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>relativeWidth:Number</code>&nbsp;&nbsp;[read-write]<p>
+   Access the relative width for the x coordinates specified.
+   Default is 1000.
+   </p><span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get relativeWidth():Number</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set relativeWidth(value:Number):void</code>
 <br>
 </div>
 <a name="constructorDetail"></a>
 <div class="detailSectionHeader">Constructor detail</div>
-<a name="ConcentricRadialLayouter()"></a>
+<a name="DirectPlacementLayouter()"></a>
 <table cellspacing="0" cellpadding="0" class="detailHeader">
 <tr>
-<td class="detailHeaderName">ConcentricRadialLayouter</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">constructor</td>
+<td class="detailHeaderName">DirectPlacementLayouter</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">constructor</td>
 </tr>
 </table>
 <div class="detailBody">
-<code>public function ConcentricRadialLayouter(vg:<a href="../visual/IVisualGraph.html">IVisualGraph</a> = null)</code><p>
-   The constructor initializes the layouter and may assign
-   already a VisualGraph object, but this can also be set later.
+<code>public function DirectPlacementLayouter(vg:<a href="../visual/IVisualGraph.html">IVisualGraph</a> = null)</code><p>
+   The constructor only initialises some data structures.
    </p><span class="label">Parameters</span>
 <table border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td width="20px"></td><td><code><span class="label">vg</span>:<a href="../visual/IVisualGraph.html">IVisualGraph</a></code> (default = <code>null</code>)<code></code> &mdash; The VisualGraph object on which this layouter should work on.
-   </td>
+<td width="20px"></td><td><code><span class="label">vg</span>:<a href="../visual/IVisualGraph.html">IVisualGraph</a></code> (default = <code>null</code>)<code></code></td>
 </tr>
 </table>
 </div>
@@ -463,16 +434,13 @@ showHideInherited();
 </table>
 <div class="detailBody">
 <code>public override function layoutPass():Boolean</code><p>
-   
-   This is the main method of the layouter, that actually
-   implements the calculation of the layout. It will be called
-   by the VisualGraph on any significant change that will
-   require a layout to be recomputed.
+   This main interface method computes and
+   and executes the new layout.
    </p><p></p>
 <span class="label">Returns</span>
 <table border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td width="20"></td><td><code>Boolean</code> &mdash; true if something was done successfully, false otherwise.
+<td width="20"></td><td><code>Boolean</code> &mdash; Currently the return value is not set or used.
    </td>
 </tr>
 </table>
@@ -486,51 +454,10 @@ showHideInherited();
 <div class="detailBody">
 <code>public override function resetAll():void</code><p>
    
-   
    This should reset all parameters of the layouter,
    which might not be needed for all layouters, and it is
    up to each layouter to do something with it.
    It would also stop any existing layouting loops/timers.
-   </p></div>
-<a name="setAngularBounds()"></a>
-<table cellspacing="0" cellpadding="0" class="detailHeader">
-<tr>
-<td class="detailHeaderName">setAngularBounds</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
-</tr>
-</table>
-<div class="detailBody">
-<code>public function setAngularBounds(theta:Number, width:Number):void</code><p>
-   Presets the angular bounds of the layout, if desired.
-   This allows to restrict the layout from drawing a full circle
-   to only draw in a segment of the circle.
-   WARNING: XXX THIS HAS NOT BEEN TESTED YET
-   </p><span class="label">Parameters</span>
-<table border="0" cellspacing="0" cellpadding="0">
-<tr>
-<td width="20px"></td><td><code><span class="label">theta</span>:Number</code> &mdash; The starting angle in radians of the bounding segment. Default is 0.
-   </td>
-</tr>
-<tr>
-<td class="paramSpacer">&nbsp;</td>
-</tr>
-<tr>
-<td width="20px"></td><td><code><span class="label">width</span>:Number</code> &mdash; The angular width of the segment in radians. Default is 2I.
-   </td>
-</tr>
-</table>
-</div>
-<a name="constantDetail"></a>
-<div class="detailSectionHeader">Constant detail</div>
-<a name="DEFAULT_RADIUS"></a>
-<table cellspacing="0" cellpadding="0" class="detailHeader">
-<tr>
-<td class="detailHeaderName">DEFAULT_RADIUS</td><td class="detailHeaderType">constant</td>
-</tr>
-</table>
-<div class="detailBody">
-<code>public static const DEFAULT_RADIUS:Number = 50</code><p>
-   The default radius increase between
-   the concentric circles.
    </p></div>
 <br>
 <br>

@@ -9,13 +9,13 @@
 <body>
 <script type="text/javascript" language="javascript" src="asdoc.js"></script><script type="text/javascript" language="javascript" src="cookies.js"></script><script type="text/javascript" language="javascript">
 <!--
-				asdocTitle = 'All Classes - API Documentation';
+				asdocTitle = 'All Classes - Flex GraphLayout API Documentation';
 				var baseRef = '';
 				window.onload = configPage;
 			--></script>
 <table style="display:none" id="titleTable" cellspacing="0" cellpadding="0" class="titleTable">
 <tr>
-<td align="left" class="titleTableTitle">API Documentation</td><td align="right" class="titleTableTopNav"><a onclick="loadClassListFrame('all-classes.html')" href="package-summary.html">All&nbsp;Packages</a>&nbsp;|&nbsp;<a onclick="loadClassListFrame('index-list.html')" href="all-index-A.html">Index</a>&nbsp;|&nbsp;<a href="index.html?class-summary.html&amp;all-classes.html" id="framesLink1">Frames</a><a onclick="parent.location=document.location" href="" style="display:none" id="noFramesLink1">No&nbsp;Frames</a></td><td rowspan="3" align="right" class="titleTableLogo"><img alt="Adobe Logo" title="Adobe Logo" class="logoImage" src="images/logo.jpg"></td>
+<td align="left" class="titleTableTitle">Flex GraphLayout API Documentation</td><td align="right" class="titleTableTopNav"><a onclick="loadClassListFrame('all-classes.html')" href="package-summary.html">All&nbsp;Packages</a>&nbsp;|&nbsp;<a onclick="loadClassListFrame('index-list.html')" href="all-index-A.html">Index</a>&nbsp;|&nbsp;<a href="index.html?class-summary.html&amp;all-classes.html" id="framesLink1">Frames</a><a onclick="parent.location=document.location" href="" style="display:none" id="noFramesLink1">No&nbsp;Frames</a></td><td rowspan="3" align="right" class="titleTableLogo"><img alt="Adobe Logo" title="Adobe Logo" class="logoImage" src="images/logo.jpg"></td>
 </tr>
 <tr class="titleTableRow2">
 <td align="left" id="subTitle" class="titleTableSubTitle">All&nbsp;Classes</td><td align="right" id="subNav" class="titleTableSubNav"></td>
@@ -60,6 +60,14 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Al
   everything required by the Interface.</td>
 </tr>
 <tr class="prow0">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="org/un/flex/graphLayout/layout/CircularLayouter.html">CircularLayouter</a>
+<br>
+</td><td class="summaryTableCol"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/layout/class-list.html');" href="org/un/flex/graphLayout/layout/package-detail.html">org.un.flex.graphLayout.layout</a></td><td class="summaryTableLastCol">
+  This is an implementation of the circular layout -
+  all visible nodes are arranged in a circle
+  </td>
+</tr>
+<tr class="prow1">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="org/un/flex/graphLayout/layout/ConcentricRadialLayoutDrawing.html">ConcentricRadialLayoutDrawing</a>
 <br>
 </td><td class="summaryTableCol"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/layout/class-list.html');" href="org/un/flex/graphLayout/layout/package-detail.html">org.un.flex.graphLayout.layout</a></td><td class="summaryTableLastCol">
@@ -68,7 +76,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Al
   with a Concentric Radial Layout and corresponding access methods
   It actually represents a calculated layout.</td>
 </tr>
-<tr class="prow1">
+<tr class="prow0">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="org/un/flex/graphLayout/layout/ConcentricRadialLayouter.html">ConcentricRadialLayouter</a>
 <br>
 </td><td class="summaryTableCol"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/layout/class-list.html');" href="org/un/flex/graphLayout/layout/package-detail.html">org.un.flex.graphLayout.layout</a></td><td class="summaryTableLastCol">
@@ -76,19 +84,27 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Al
   layout algorithm that uses concentric rings
   for the distance.</td>
 </tr>
-<tr class="prow0">
+<tr class="prow1">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="org/un/flex/graphLayout/visual/DefaultEdgeRenderer.html">DefaultEdgeRenderer</a>
 <br>
 </td><td class="summaryTableCol"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/visual/class-list.html');" href="org/un/flex/graphLayout/visual/package-detail.html">org.un.flex.graphLayout.visual</a></td><td class="summaryTableLastCol">
   This is the default edge renderer, which draws the edges
   as straight lines from one node to another.</td>
 </tr>
-<tr class="prow1">
+<tr class="prow0">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="org/un/flex/graphLayout/visual/DirectedEdgeRenderer.html">DirectedEdgeRenderer</a>
 <br>
 </td><td class="summaryTableCol"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/visual/class-list.html');" href="org/un/flex/graphLayout/visual/package-detail.html">org.un.flex.graphLayout.visual</a></td><td class="summaryTableLastCol">
   This is a directed edge renderer, which draws the edges
   with slim ballon like curves that indicate a source.</td>
+</tr>
+<tr class="prow1">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="org/un/flex/graphLayout/layout/DirectPlacementLayouter.html">DirectPlacementLayouter</a>
+<br>
+</td><td class="summaryTableCol"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/layout/class-list.html');" href="org/un/flex/graphLayout/layout/package-detail.html">org.un.flex.graphLayout.layout</a></td><td class="summaryTableLastCol">
+  This layouter does not use any algorithm for node placement,
+  but relys on coordinate information (x,y-coordinates) specified
+  in each nodes associated XML object.</td>
 </tr>
 <tr class="prow0">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="org/un/flex/graphLayout/data/Edge.html">Edge</a>
@@ -100,20 +116,26 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Al
   </td>
 </tr>
 <tr class="prow1">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="org/un/flex/graphLayout/visual/FlowEdgeRenderer.html">FlowEdgeRenderer</a>
+<br>
+</td><td class="summaryTableCol"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/visual/class-list.html');" href="org/un/flex/graphLayout/visual/package-detail.html">org.un.flex.graphLayout.visual</a></td><td class="summaryTableLastCol">
+  This is a flow edge renderer.</td>
+</tr>
+<tr class="prow0">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="org/un/flex/graphLayout/layout/ForceDirectedLayouter.html">ForceDirectedLayouter</a>
 <br>
 </td><td class="summaryTableCol"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/layout/class-list.html');" href="org/un/flex/graphLayout/layout/package-detail.html">org.un.flex.graphLayout.layout</a></td><td class="summaryTableLastCol">
   This is an implementation of the ForceDirected/SpringGraph
   Layouting algorithm.</td>
 </tr>
-<tr class="prow0">
+<tr class="prow1">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="org/un/flex/utils/Geometry.html">Geometry</a>
 <br>
 </td><td class="summaryTableCol"><a onclick="javascript:loadClassListFrame('org/un/flex/utils/class-list.html');" href="org/un/flex/utils/package-detail.html">org.un.flex.utils</a></td><td class="summaryTableLastCol">
   This is a class to provide some static functions
   to help with angles and geometry.</td>
 </tr>
-<tr class="prow1">
+<tr class="prow0">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="org/un/flex/graphLayout/data/Graph.html">Graph</a>
 <br>
 </td><td class="summaryTableCol"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/data/class-list.html');" href="org/un/flex/graphLayout/data/package-detail.html">org.un.flex.graphLayout.data</a></td><td class="summaryTableLastCol">
@@ -122,7 +144,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Al
   vertices nodes, which is here more in line with similar
   implementations.</td>
 </tr>
-<tr class="prow0">
+<tr class="prow1">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="org/un/flex/graphLayout/data/GTree.html">GTree</a>
 <br>
 </td><td class="summaryTableCol"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/data/class-list.html');" href="org/un/flex/graphLayout/data/package-detail.html">org.un.flex.graphLayout.data</a></td><td class="summaryTableLastCol">
@@ -131,7 +153,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Al
   of the connected component of the
   associated graph.</td>
 </tr>
-<tr class="prow1">
+<tr class="prow0">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="org/un/flex/graphLayout/layout/HierarchicalLayoutDrawing.html">HierarchicalLayoutDrawing</a>
 <br>
 </td><td class="summaryTableCol"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/layout/class-list.html');" href="org/un/flex/graphLayout/layout/package-detail.html">org.un.flex.graphLayout.layout</a></td><td class="summaryTableLastCol">
@@ -140,7 +162,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Al
   with a Hierarchical Layout according to 
   </td>
 </tr>
-<tr class="prow0">
+<tr class="prow1">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="org/un/flex/graphLayout/layout/HierarchicalLayouter.html">HierarchicalLayouter</a>
 <br>
 </td><td class="summaryTableCol"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/layout/class-list.html');" href="org/un/flex/graphLayout/layout/package-detail.html">org.un.flex.graphLayout.layout</a></td><td class="summaryTableLastCol">
@@ -151,7 +173,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Al
   "Improving Walker's Algorithm to run in linear time"
   </td>
 </tr>
-<tr class="prow1">
+<tr class="prow0">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="org/un/flex/graphLayout/data/IDataItem.html"><i>IDataItem</i></a>
 <br>
 </td><td class="summaryTableCol"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/data/class-list.html');" href="org/un/flex/graphLayout/data/package-detail.html">org.un.flex.graphLayout.data</a></td><td class="summaryTableLastCol"> 
@@ -159,13 +181,13 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Al
   of our data items, like nodes (vertices)
   and edges, it specifies ID and data properties.</td>
 </tr>
-<tr class="prow0">
+<tr class="prow1">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="org/un/flex/graphLayout/data/IEdge.html"><i>IEdge</i></a>
 <br>
 </td><td class="summaryTableCol"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/data/class-list.html');" href="org/un/flex/graphLayout/data/package-detail.html">org.un.flex.graphLayout.data</a></td><td class="summaryTableLastCol">
   The Edge interface for graph edges.</td>
 </tr>
-<tr class="prow1">
+<tr class="prow0">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="org/un/flex/graphLayout/visual/IEdgeRenderer.html"><i>IEdgeRenderer</i></a>
 <br>
 </td><td class="summaryTableCol"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/visual/class-list.html');" href="org/un/flex/graphLayout/visual/package-detail.html">org.un.flex.graphLayout.visual</a></td><td class="summaryTableLastCol">
@@ -173,7 +195,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Al
   basically this is very simple as it just
   requires a draw() method.</td>
 </tr>
-<tr class="prow0">
+<tr class="prow1">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="org/un/flex/graphLayout/data/IGraph.html"><i>IGraph</i></a>
 <br>
 </td><td class="summaryTableCol"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/data/class-list.html');" href="org/un/flex/graphLayout/data/package-detail.html">org.un.flex.graphLayout.data</a></td><td class="summaryTableLastCol">
@@ -182,7 +204,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Al
   and edges that actually form that graph
   </td>
 </tr>
-<tr class="prow1">
+<tr class="prow0">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="org/un/flex/graphLayout/data/IGTree.html"><i>IGTree</i></a>
 <br>
 </td><td class="summaryTableCol"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/data/class-list.html');" href="org/un/flex/graphLayout/data/package-detail.html">org.un.flex.graphLayout.data</a></td><td class="summaryTableLastCol">
@@ -190,7 +212,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Al
   holds a spanning tree of the graph
   </td>
 </tr>
-<tr class="prow0">
+<tr class="prow1">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="org/un/flex/graphLayout/layout/ILayoutAlgorithm.html"><i>ILayoutAlgorithm</i></a>
 <br>
 </td><td class="summaryTableCol"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/layout/class-list.html');" href="org/un/flex/graphLayout/layout/package-detail.html">org.un.flex.graphLayout.layout</a></td><td class="summaryTableLastCol">
@@ -198,11 +220,17 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Al
   with VisualGraph components and underlying Graph data
   structures.</td>
 </tr>
-<tr class="prow1">
+<tr class="prow0">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="org/un/flex/graphLayout/data/INode.html"><i>INode</i></a>
 <br>
 </td><td class="summaryTableCol"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/data/class-list.html');" href="org/un/flex/graphLayout/data/package-detail.html">org.un.flex.graphLayout.data</a></td><td class="summaryTableLastCol"> 
   Interface for the node (vertex) data structure.</td>
+</tr>
+<tr class="prow1">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="org/un/flex/graphLayout/layout/IterativeBaseLayouter.html">IterativeBaseLayouter</a>
+<br>
+</td><td class="summaryTableCol"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/layout/class-list.html');" href="org/un/flex/graphLayout/layout/package-detail.html">org.un.flex.graphLayout.layout</a></td><td class="summaryTableLastCol">
+  This is a base class of an Iterative Layouting algorithm.</td>
 </tr>
 <tr class="prow0">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="org/un/flex/graphLayout/visual/IVisualEdge.html"><i>IVisualEdge</i></a>
