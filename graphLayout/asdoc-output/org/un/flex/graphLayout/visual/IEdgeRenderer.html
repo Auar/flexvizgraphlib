@@ -10,13 +10,13 @@
 <body>
 <script type="text/javascript" language="javascript" src="../../../../../asdoc.js"></script><script type="text/javascript" language="javascript" src="../../../../../cookies.js"></script><script type="text/javascript" language="javascript">
 <!--
-				asdocTitle = 'IEdgeRenderer - API Documentation';
+				asdocTitle = 'IEdgeRenderer - Flex GraphLayout API Documentation';
 				var baseRef = '../../../../../';
 				window.onload = configPage;
 			--></script>
 <table style="display:none" id="titleTable" cellspacing="0" cellpadding="0" class="titleTable">
 <tr>
-<td align="left" class="titleTableTitle">API Documentation</td><td align="right" class="titleTableTopNav"><a onclick="loadClassListFrame('../../../../../all-classes.html')" href="../../../../../package-summary.html">All&nbsp;Packages</a>&nbsp;|&nbsp;<a onclick="loadClassListFrame('../../../../../all-classes.html')" href="../../../../../class-summary.html">All&nbsp;Classes</a>&nbsp;|&nbsp;<a onclick="loadClassListFrame('../../../../../index-list.html')" href="../../../../../all-index-A.html">Index</a>&nbsp;|&nbsp;<a href="../../../../../index.html?org/un/flex/graphLayout/visual/IEdgeRenderer.html&amp;org/un/flex/graphLayout/visual/class-list.html" id="framesLink1">Frames</a><a onclick="parent.location=document.location" href="" style="display:none" id="noFramesLink1">No&nbsp;Frames</a></td><td rowspan="3" align="right" class="titleTableLogo"><img alt="Adobe Logo" title="Adobe Logo" class="logoImage" src="../../../../../images/logo.jpg"></td>
+<td align="left" class="titleTableTitle">Flex GraphLayout API Documentation</td><td align="right" class="titleTableTopNav"><a onclick="loadClassListFrame('../../../../../all-classes.html')" href="../../../../../package-summary.html">All&nbsp;Packages</a>&nbsp;|&nbsp;<a onclick="loadClassListFrame('../../../../../all-classes.html')" href="../../../../../class-summary.html">All&nbsp;Classes</a>&nbsp;|&nbsp;<a onclick="loadClassListFrame('../../../../../index-list.html')" href="../../../../../all-index-A.html">Index</a>&nbsp;|&nbsp;<a href="../../../../../index.html?org/un/flex/graphLayout/visual/IEdgeRenderer.html&amp;org/un/flex/graphLayout/visual/class-list.html" id="framesLink1">Frames</a><a onclick="parent.location=document.location" href="" style="display:none" id="noFramesLink1">No&nbsp;Frames</a></td><td rowspan="3" align="right" class="titleTableLogo"><img alt="Adobe Logo" title="Adobe Logo" class="logoImage" src="../../../../../images/logo.jpg"></td>
 </tr>
 <tr class="titleTableRow2">
 <td align="left" id="subTitle" class="titleTableSubTitle">Interface&nbsp;IEdgeRenderer</td><td align="right" id="subNav" class="titleTableSubNav"><a href="#methodSummary">Methods</a></td>
@@ -38,7 +38,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("In
 <td class="classHeaderTableLabel">Interface</td><td class="classSignature">public interface IEdgeRenderer</td>
 </tr>
 <tr>
-<td class="classHeaderTableLabel">Implementors</td><td><a href="../visual/DefaultEdgeRenderer.html">DefaultEdgeRenderer</a>, <a href="../visual/DirectedEdgeRenderer.html">DirectedEdgeRenderer</a>, <a href="../visual/OrthogonalEdgeRenderer.html">OrthogonalEdgeRenderer</a></td>
+<td class="classHeaderTableLabel">Implementors</td><td><a href="../visual/DefaultEdgeRenderer.html">DefaultEdgeRenderer</a>, <a href="../visual/DirectedEdgeRenderer.html">DirectedEdgeRenderer</a>, <a href="../visual/FlowEdgeRenderer.html">FlowEdgeRenderer</a>, <a href="../visual/OrthogonalEdgeRenderer.html">OrthogonalEdgeRenderer</a></td>
 </tr>
 </table>
 <p></p>
@@ -59,7 +59,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("In
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
-<a class="signatureLink" href="#draw()">draw</a>(g:Graphics, edge:<a href="../data/IEdge.html">IEdge</a>, disting:Boolean, displayLabel:Boolean = false):void</div>
+<a class="signatureLink" href="#draw()">draw</a>(g:Graphics, edge:<a href="../data/IEdge.html">IEdge</a>, displayLabel:Boolean = false):void</div>
 <div class="summaryTableDescription">
    Draws an edge.</div>
 </td><td class="summaryTableOwnerCol">IEdgeRenderer</td>
@@ -80,7 +80,7 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public function draw(g:Graphics, edge:<a href="../data/IEdge.html">IEdge</a>, disting:Boolean, displayLabel:Boolean = false):void</code><p>
+<code>public function draw(g:Graphics, edge:<a href="../data/IEdge.html">IEdge</a>, displayLabel:Boolean = false):void</code><p>
    Draws an edge.
    The way how the colouring is currently handled, with the distinguished
    parameter is not appropriate, this may need to change to something more
@@ -97,13 +97,6 @@ showHideInherited();
 </tr>
 <tr>
 <td width="20px"></td><td><code><span class="label">edge</span>:<a href="../data/IEdge.html">IEdge</a></code> &mdash; The edge to draw, it needs to provide all the information required, i.e. locations.
-   </td>
-</tr>
-<tr>
-<td class="paramSpacer">&nbsp;</td>
-</tr>
-<tr>
-<td width="20px"></td><td><code><span class="label">disting</span>:Boolean</code> &mdash; This is in indicator if this edge is distinguished in a certain way.
    </td>
 </tr>
 <tr>

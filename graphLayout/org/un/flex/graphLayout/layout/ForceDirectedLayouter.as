@@ -61,19 +61,12 @@ package org.un.flex.graphLayout.layout {
 	 * 
 	 * See license infortmation at the top.
 	 * */
-	public class ForceDirectedLayouter extends BaseLayouter implements ILayoutAlgorithm {
+	public class ForceDirectedLayouter extends IterativeBaseLayouter implements ILayoutAlgorithm {
 		
 		/*********************************************
 		* CONSTANTS
 		* ********************************************/
 		
-		/**
-		 * @internal
-		 * Timing related constants.
-		 * */
-		private const _TIMERDELAY:Number = 10;
-		private const _TIMERREPCOUNT:int = 2;
-
 		/**
 		 * @internal
 		 * This controls the amount of adjustement passes during one
@@ -190,17 +183,12 @@ package org.un.flex.graphLayout.layout {
 		/*********************************************
 		* Members
 		* ********************************************/
-		/* the timer object */
-		private var _timer:Timer = null;
 		
 		/* general setting whether to activate damping or not */
 		private var _dampingActive:Boolean = true;
 		
 		/* current viewing bounds of the graph */
 		private var _viewbounds:Rectangle;
-		
-		/* for dragging and dropping */
-		private var _dragNode:IVisualNode = null;
 
 		/* each node has it's own repulsion value, which is
 		 * kept in this map. The values are calculated on the fly
@@ -233,15 +221,11 @@ package org.un.flex.graphLayout.layout {
 		 * as it constantly updates the layout (using the timer).
 		 * */
 		override public function resetAll():void {
+			super.resetAll();
 			
-			if(_timer != null) {
-				_timer.stop()
-				_timer.reset();
-				//_timer = null;
-				//trace("Timer STOPPED");
-			}
+			/* already reset in refreshInit() called in super.resetAll() */
+			//_damper = 1.0;
 			
-			_damper = 1.0;
 			_maxMotion = 0.0;
 			_maxMotionTmp = 0.0;
 			_lastMaxMotion = 0.0;
@@ -253,8 +237,6 @@ package org.un.flex.graphLayout.layout {
 			_rigidity = _RIGIDITY_CONSTANT;
 			_newRigidity = _RIGIDITY_CONSTANT;
 
-			_dragNode = null;
-			
 			_deltaPositions = new Dictionary;
 			_repulsionMap = new Dictionary;
 			_repulsionFactor = _UNIT_CHARGE_CONSTANT;
@@ -272,41 +254,6 @@ package org.un.flex.graphLayout.layout {
 		}
 		
 		/**
-		 * This method notifies the layouter about a drag/drop
-		 * operation. This is important to exempt are currently
-		 * dragged node from the layouting, to allow it to drag
-		 * the whole graph with it. This method basically sets the
-		 * current drag node.
-		 * @param event The mouse event that is fired on the starting of the drag operation.
-		 * @param vn The node which is being dragged.
-		 * */
-		override public function dragEvent(event:MouseEvent, vn:IVisualNode):void {
-			/* we have to make sure, that what we want
-			 * to drag is actually a UIComponent, i.e. 
-			 * part of our nodes, if not we do nothing. */
-			//trace("layouter received a drag event");
-			if(event.currentTarget is UIComponent) {
-				_dragNode = vn;
-			  resetDamperValue();
-				//_layoutChanged = true;
-				//_vgraph.dispatchEvent(new Event("vgraphChanged"));
-			}
-		}
-		
-		/**
-		 * If we receive a drop event, we delete the drag node.
-		 * @param event The mouse event that is fired on the starting of the drag operation.
-		 * @param vn The node which is being dragged.
-		 * */
-		override public function dropEvent(event:MouseEvent, vn:IVisualNode):void {
-			_dragNode = null;
-			resetDamperValue();
-			//_layoutChanged = true;
-			//_vgraph.dispatchEvent(new Event("vgraphChanged"));
-		}
-		
-
-		/**
 		 * @inheritDoc
 		 * */
 		override public function set linkLength(f:Number):void {
@@ -320,6 +267,7 @@ package org.un.flex.graphLayout.layout {
 				_springLength = Math.max(_MIN_NODE_SEPARATION, Math.min(f, _MAX_EDGE_LENGTH));
 				//trace("Set springLength:" + _springLength);
 			}
+			layoutIteration();
 		}
 		
 		/**
@@ -407,98 +355,25 @@ package org.un.flex.graphLayout.layout {
 		}
 		
 		/*********************************************
-		* Layout Methods - Top Level Wrappers
+		* Layout Methods - Computational Methods
 		* ********************************************/
-
-		/**
-		 * This is the actual method that does a layout pass. In this
-		 * Layouter, it is supposed to interrupt and kick-off a new
-		 * layout cycle, which is different from most others, since this
-		 * layouter keeps on calculating the layout through a timer.
-		 * */
-		override public function layoutPass():Boolean {
+		
+		/* Calculation step of the layout */
+		override protected function calculateLayout():void {
+			/* call the relax method to pull on the edges */
+			calculateForces();
 			
-			/*
-			trace("layoutPass called");
-			*/
-			
-			/* if we have a current timer running, kill it off
-			 * to avoid mutiple unnecessary calls */
-			if(_timer != null) {
-				_timer.stop();
+			if(_autoFitEnabled) {
+				adjustRepulsion();
+				scrollToFit();
 			}
-			
-			/* now start the calculation and computation */
-			return calculateLayout();
 		}
 		
-		/**
-		 * @internal
-		 * do a full calculation of the layout, also trigger the
-		 * timer to repeat doing it a couple of times.
-		 * */
-		private function calculateLayout():Boolean {
-			
-			/* return value, not really used */
-			var rv:Boolean = true;
-			
-			//trace("calculate called");
-			//trace("Repulsion: "+_repulsionFactor+" AF:"+_autoFitEnabled.toString());
-			//trace("d: "+_damper+" dactive: "+_dampingActive.toString()+" mM: "+_maxMotion+" mL: "+_motionLimit);
-			
-			/* Perform calculations only if the damper was reset or the graph has any movement */
-			/* TO-DO Remember to change these limits after implementing the motion controller */
-			if (_damper > 0.1 || _maxMotion > _motionLimit) {
-				
-				/* call the relax method to pull on the edges */
-				calculateForces();
-				
-				if(_autoFitEnabled) {
-					adjustRepulsion();
-					scrollToFit();
-				}
-				
-				/* indicated that the layout has changed */
-				_layoutChanged = true;
-				_vgraph.dispatchEvent(new Event("vgraphChanged"));
-				/* maybe we could/should invalidate the display list? */
-			}
-			
-			restartTimer();
-			/* return always true for now */
-			return rv;
+		/* Terminating condition for the layout */
+		override protected function isStable():Boolean {
+			return (_damper <= 0.1 && _maxMotion <= _motionLimit);
 		}
 
-		
-		/**
-		 * @internal
-		 * This starts the timer, which essentially kicks off the
-		 * iterative layout calculation until the layout has stabilised.
-		 * */
-		private function restartTimer():void {
-			/* if timer is not initialized, create a new timer */
-			if(_timer == null) {
-				_timer = new Timer(_TIMERDELAY, _TIMERREPCOUNT);
-				_timer.addEventListener(TimerEvent.TIMER_COMPLETE, timerFired);
-			} else {
-				_timer.stop();
-				_timer.reset();
-			}
-			_timer.start();
-		}
-		
-		/**
-		 * @internal
-		 * When the timer fired, this calls a layout pass, but it
-		 * should rather call a different function that implements the
-		 * real layout passes to avoid calling layoutpass too often.
-		 * Also multiple calls could get created.
-		 * */
-		private function timerFired(event:TimerEvent = null):void {
-			/* repeat the calculation */
-			calculateLayout();
-		}
-				
 		/*********************************************
 		* Layout Methods - Force Computations
 		* ********************************************/

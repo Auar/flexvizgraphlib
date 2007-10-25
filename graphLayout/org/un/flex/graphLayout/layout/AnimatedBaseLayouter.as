@@ -94,11 +94,6 @@ package org.un.flex.graphLayout.layout {
 
 		/**
 		 * @internal
-		 * to indicate if an animation cycle has finished */
-		private var _animCycleFinished:Boolean;
-		
-		/**
-		 * @internal
 		 * the current step in the animation cycle */
 		private var _animStep:int; 
 		
@@ -121,7 +116,6 @@ package org.un.flex.graphLayout.layout {
 			
 			super(vg);
 			_animInProgress = false;
-			_animCycleFinished = false;
 		}
 
 		/**
@@ -170,16 +164,16 @@ package org.un.flex.graphLayout.layout {
 			if(_animTimer != null) {
 				//trace("timer killed");
 				_animTimer.stop();
-				_animTimer = null;
+				_animTimer.reset();
+				//_animTimer = null;
 			}
 		}
 
 		/**
 		 * Reset/Reinitialise animation related variables.
 		 * */
-		protected function resetAnimation():void {		
+		protected function resetAnimation():void {
 			/* reset animation cycle */
-			_animCycleFinished = false;
 			_animStep = 0;
 		}
 
@@ -193,18 +187,41 @@ package org.un.flex.graphLayout.layout {
 		 * added.
 		 * */
 		protected function startAnimation():void {
+			var cyclefinished:Boolean;
+			/* indicate an animation in progress */
+			_animInProgress = true;
+			 
 			switch(_animationType) {
 				case ANIM_RADIAL:
-					interpolatePolarCoords();
+					cyclefinished = interpolatePolarCoords();
 					break;
 				case ANIM_STRAIGHT:	
-					interpolateCartCoords();
+					cyclefinished = interpolateCartCoords();
 					break;
 				default:
 					trace("Illegal animation Type, default to ANIM_RADIAL");
-					interpolatePolarCoords();
+					cyclefinished = interpolatePolarCoords();
 					break;
-			}			
+			}
+			
+			/* make sure the edges are redrawn */
+			_layoutChanged = true;
+			//_vgraph.dispatchEvent(new MouseEvent("forceRedrawEvent"));
+			//_vgraph.invalidateDisplayList();
+			_vgraph.redrawEdges();
+			
+			/* check if we ran out of anim cycles, but are not finished */
+			if (cyclefinished) {
+				trace("Achieved final node positions, terminating animation...");
+				_animInProgress = false;
+			} else if(_animStep >= _ANIMATIONSTEPS) {
+				trace("Exceeded animation steps, setting nodes to final positions...");
+				applyTargetToNodes(_vgraph.visibleVNodes);
+				_animInProgress = false;
+			} else {
+				++_animStep;
+				startAnimTimer();
+			}
 		}
 
 		/**
@@ -223,7 +240,7 @@ package org.un.flex.graphLayout.layout {
 		 * If there are animation steps left, a timer is started to call
 		 * the same function again for the next animation step.
 		 * */
-		protected function interpolatePolarCoords():void {
+		protected function interpolatePolarCoords():Boolean {
 			var visVNodes:Dictionary;
 			var vn:IVisualNode;
 			var n:INode;
@@ -240,9 +257,6 @@ package org.un.flex.graphLayout.layout {
 			var stepPoint:Point;
 			var cyclefinished:Boolean;
 			
-			/* indicate an animation in progress */
-			_animInProgress = true;
-			 
 			cyclefinished = true; // init to true, if any one node is not target, will be set to false
 			
 			/* careful for invisible nodes, the values are not
@@ -278,15 +292,28 @@ package org.un.flex.graphLayout.layout {
 				
 				/* not sure if this really fixes the animation end cycle ... */
 				deltaRadius = (targetRadius - currRadius) * _animStep / _ANIMATIONSTEPS;
-				deltaPhi = (targetPhi - currPhi) * _animStep / _ANIMATIONSTEPS;
+
+				/* New logic for interpolating polar angles
+				 * Take the minimum angle to the final position */
 				
+				if ( Math.abs(targetPhi - currPhi) < (360 - Math.abs(targetPhi - currPhi)) ) {
+					deltaPhi = (targetPhi - currPhi) * _animStep / _ANIMATIONSTEPS;
+				} else { // difference b/w initial and final angles more than 180 degrees
+					if (targetPhi < currPhi) {
+						//crossing over from a very large angle to a very small angle
+						deltaPhi = (360 + targetPhi - currPhi) * _animStep / _ANIMATIONSTEPS;
+					} else { 
+						//crossing over from a very small angle to a very large angle
+						deltaPhi = (targetPhi - currPhi - 360) * _animStep / _ANIMATIONSTEPS;
+					}
+				}
 				
 				/* calculate the intermediate coordinates */
 				stepRadius = currRadius + deltaRadius;
 				stepPhi = currPhi + deltaPhi;
 				
 				/* check if we are already done or not */
-				if(currPoint != _currentDrawing.getRelCartCoordinates(n)) {
+				if(!equal(currPoint, _currentDrawing.getRelCartCoordinates(n))) {
 					cyclefinished = false;
 				}
 				
@@ -315,38 +342,8 @@ package org.un.flex.graphLayout.layout {
 				
 				/* commit, i.e. move the node */
 				vn.commit();
-				
-				/* make sure the edges are redrawn */
-				_layoutChanged = true;
-				//_vgraph.dispatchEvent(new MouseEvent("forceRedrawEvent"));
-				//_vgraph.invalidateDisplayList();
-				_vgraph.redrawEdges();
 			}
-			
-			/* check if we ran out of anim cycles, but are not finished */
-			if(_animStep >= _ANIMATIONSTEPS) {
-				if(cyclefinished) {
-					_animCycleFinished = true;
-				} else {
-					trace("Exceeded animation steps, but still not finished");
-					/* cap the animStep here */
-					_animStep = _ANIMATIONSTEPS;
-					applyTargetToNodes(visVNodes);
-					_animCycleFinished = true;
-				}
-			} else {
-				_animCycleFinished = false;
-				++_animStep;
-			}
-			
-			/* now we have to call start the timer, to do the next
-			 * step, unless the cycle is completed */
-			if(!_animCycleFinished) {
-				startAnimTimer();
-			} else {
-				/* indicate the animation has finished */
-				_animInProgress = false;
-			}
+			return cyclefinished;
 		}
 		
 		/**
@@ -356,7 +353,7 @@ package org.un.flex.graphLayout.layout {
 		 * uses cartesian coordinates.
 		 * @see interpolatePolarCoords()
 		 * */
-		protected function interpolateCartCoords():void {
+		protected function interpolateCartCoords():Boolean {
 			var visVNodes:Dictionary;
 			var vn:IVisualNode;
 			var n:INode;
@@ -367,9 +364,6 @@ package org.un.flex.graphLayout.layout {
 			var targetPoint:Point;
 			var cyclefinished:Boolean;
 			
-			/* indicate an animation in progress */
-			_animInProgress = true;
-			 
 			cyclefinished = true; // init to true, if any one node is not target, will be set to false
 			
 			/* careful for invisible nodes, the values are not
@@ -400,7 +394,7 @@ package org.un.flex.graphLayout.layout {
 				}
 
 				/* check if we are already done or not */
-				if(currPoint != targetPoint) {
+				if(!equal(currPoint, targetPoint)) {
 					cyclefinished = false;
 				}
 
@@ -423,41 +417,9 @@ package org.un.flex.graphLayout.layout {
 				
 				/* commit, i.e. move the node */
 				vn.commit();
-				
-				/* make sure the edges are redrawn */
-				_layoutChanged = true;
-				//_vgraph.dispatchEvent(new MouseEvent("forceRedrawEvent"));
-				//_vgraph.invalidateDisplayList();
-				_vgraph.redrawEdges();	
 			}
-			
-			/* check if we ran out of anim cycles, but are not finished */
-			if(_animStep >= _ANIMATIONSTEPS) {
-				if(cyclefinished) {
-					_animCycleFinished = true;
-				} else {
-					trace("Exceeded animation steps, but still not finished");
-					/* cap the animStep here */
-					_animStep = _ANIMATIONSTEPS;
-					applyTargetToNodes(visVNodes);
-					_animCycleFinished = true;
-				}
-			} else {
-				_animCycleFinished = false;
-				++_animStep;
-			}
-			
-			/* now we have to call start the timer, to do the next
-			 * step, unless the cycle is completed */
-			if(!_animCycleFinished) {
-				startAnimTimer();
-			} else {
-				/* indicate the animation has finished */
-				_animInProgress = false;
-			}
+			return cyclefinished;
 		}
-		
-		
 		
 		/**
 		 * @internal
@@ -497,8 +459,14 @@ package org.un.flex.graphLayout.layout {
 			 * and ask for one execution, then the event handler will be
 			 * called, which does nothing except to call the interpolation
 			 * method again */
-			_animTimer = new Timer(timerdelay, 1);
-			_animTimer.addEventListener(TimerEvent.TIMER_COMPLETE, animTimerFired);
+			if (_animTimer == null) {
+				_animTimer = new Timer(timerdelay, 1);
+				_animTimer.addEventListener(TimerEvent.TIMER_COMPLETE, animTimerFired);
+			} else {
+				_animTimer.stop();
+				if (timerdelay > 0) _animTimer.delay = timerdelay;
+				_animTimer.reset();				
+			}
 			_animTimer.start();
 		}
 		
@@ -512,7 +480,15 @@ package org.un.flex.graphLayout.layout {
 		private function animTimerFired(event:TimerEvent = null):void {
 			//trace("Timer fired!");
 			startAnimation();
-		}	
-
+		}
+		
+		/**
+		 * @internal
+		 * Function that tests if two points are equal within tolerance
+		 * The current tolerance limit is (1, 1)
+		 */
+		private function equal(p1:Point, p2:Point):Boolean {
+			return (Math.abs(p1.x - p2.x) <= 1) && (Math.abs(p1.y - p2.y) <= 1);
+		}
 	}
 }
