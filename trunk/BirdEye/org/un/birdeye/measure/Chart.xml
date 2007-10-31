@@ -229,22 +229,24 @@
 		</chart>
 		<chart Type="Radar" Class="RadarChart" >
 			<Properties>
-						<Property name="Axis" >
-							<Axis>radialAxis</Axis>
-							<Axis>angularAxis</Axis>
+						<Property name="Axis">
+								<axis>Linear</axis>
+								<axis>Log</axis>
+								<axis>DateTime</axis>
 						</Property>
 						<Property name="RadarSeries" >
-							<RadarSeries>RadarBubbleSeries</RadarSeries>
-							<RadarSeries>RadarColumnSeries</RadarSeries>
-							<RadarSeries>RadarLineSeries</RadarSeries>
-							<RadarSeries>RadarPlotSeries</RadarSeries>
+							<RadarSerie>Bubble</RadarSerie>
+							<RadarSerie>Column</RadarSerie>
+							<RadarSerie>Line</RadarSerie>
+							<RadarSerie>Plot</RadarSerie>
 						</Property>	 
 						<Property name="labelField" />
+						<Property name="Fill" />
 			</Properties>
 		</chart>
 		<chart Type="TreeMap" Class="TreeMap" >
 			<Properties>
-						<Property name="algorithm" >
+						<Property name="algorithms" >
 							<algorithm>squarified</algorithm>
 							<algorithm>alternating</algorithm>
 						</Property>	
@@ -269,9 +271,10 @@
       						<secondaryDirection>top</secondaryDirection>
       						<secondaryDirection>bottom</secondaryDirection>
       					</Property>
+      					
       		</Properties>
       		<Styles>
-      	      			<Style name="colorScheme" >
+      	      			<Style name="colorSchemes" >
        							<colorScheme>none</colorScheme>
 								<colorScheme>sequential</colorScheme>
 								<colorScheme>depth</colorScheme>
@@ -288,6 +291,140 @@
       					<Style name="selectionColor" />
     		</Styles>  			
 	</chart>
-		<chart Type="GeoMap" Class="GeoMap" >
+	<chart Type="GeoMap" Class="GeoMap" >
+		
+	</chart>
+	<chart Type="Area3D" Class="AreaChart3D" Series="AreaSeries3D">
+			<Properties>
+						<Property name="yField" />
+						<Property name="xField" />
+						<Property name="minField" />
+						<Property name="form">
+								<Forms>
+			            			<Form>segment</Form>
+			            			<Form>step</Form>
+			            			<Form>reverseStep</Form>
+								</Forms>
+						</Property>
+						<Property name="barTypes">
+							<barTypes>
+								<barType>overlaid</barType>
+								<barType>stacked</barType>
+								<barType>100%</barType>
+							</barTypes>
+						</Property>
+						<Property name="Axis">
+								<axis>Category</axis>
+								<axis>Linear</axis>
+								<axis>Log</axis>
+								<axis>DateTime</axis>
+						</Property>
+						<Property name="GridLines" />
+						<Property name="Fill" />
+			</Properties>
+		</chart>
+		<chart Type="Bar3D" Class="BarChart3D" Series="BarSeries3D">
+			<Properties>
+						<Property name="yField" />
+						<Property name="xField" />
+						<Property name="minField" />
+						<Property name="barTypes">
+							<barTypes>
+								<barType>clustered</barType>
+								<barType>overlaid</barType>
+								<barType>stacked</barType>
+								<barType>100%</barType>
+							</barTypes>
+						</Property>
+						<Property name="form">
+								<Forms>
+			            			<Form>cuboid</Form>
+			            			<Form>cylinder</Form>
+			            		</Forms>
+						</Property>
+						<Property name="Axis">
+								<axis>Category</axis>
+								<axis>Linear</axis>
+								<axis>Log</axis>
+								<axis>DateTime</axis>
+						</Property>
+						<Property name="GridLines" />
+						<Property name="Fill" />
+			</Properties>
+		</chart>
+		<chart Type="Column3D" Class="ColumnChart3D" Series="ColumnSeries3D">
+			<Properties>
+						<Property name="yField" />
+						<Property name="xField" />
+						<Property name="lowField" />
+						<Property name="minField" />
+						<Property name="barTypes">
+							<barTypes>
+								<barType>clustered</barType>
+								<barType>overlaid</barType>
+								<barType>stacked</barType>
+								<barType>100%</barType>
+							</barTypes>
+						</Property>
+						<Property name="form">
+								<Forms>
+			            			<Form>cuboid</Form>
+			            			<Form>cylinder</Form>
+			            		</Forms>
+						</Property>
+						<Property name="Axis">
+								<axis>Category</axis>
+								<axis>Linear</axis>
+								<axis>Log</axis>
+								<axis>DateTime</axis>
+						</Property>
+						<Property name="GridLines" />
+						<Property name="Fill" />
+			</Properties>
+		</chart>
+		<chart Type="Line3D" Class="LineChart3D" Series="LineSeries3D">
+			<Properties>
+						<Property name="yField" />
+						<Property name="xField" />
+						<Property name="interpolateValues" />
+						<Property name="form">
+								<Forms>
+			            			<Form>segment</Form>
+			            			<Form>step</Form>
+			            			<Form>reverseStep</Form>
+								</Forms>
+						</Property>
+						<Property name="Axis">
+								<axis>Category</axis>
+								<axis>Linear</axis>
+								<axis>Log</axis>
+								<axis>DateTime</axis>
+						</Property>
+						<Property name="GridLines" />
+						<Property name="Fill" />
+			</Properties>
+		</chart>
+		<chart Type="Pie3D" Class="PieChart3D" Series="PieSeries3D">
+			<Properties>
+						<Property name="field" />
+						<Property name="labelPosition">
+									<labelPosition>
+										<value>none</value>
+		        						<value>inside</value>
+		        						<value>outside</value>
+									</labelPosition>
+						</Property>
+						<Property name="nameField" />
+			</Properties>
+			<PieSeries>
+						<PSProperty>calloutGap</PSProperty>
+						<PSProperty>calloutStroke</PSProperty>
+						<PSProperty>insideLabelSizeLimit</PSProperty>
+			</PieSeries>
+			<Exploding>
+						<ExProperty>explodeRadius</ExProperty>
+						<ExProperty>perWedgeExplodeRadius</ExProperty>
+						<ExProperty>reserveExplodeRadius</ExProperty>
+			</Exploding>
 		</chart>
 </charts>
