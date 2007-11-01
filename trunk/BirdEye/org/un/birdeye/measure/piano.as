@@ -1,4 +1,4 @@
-//actionscript
+
 import flexlib.controls.HSlider;
 import flexlib.skins.SliderThumbHighlightSkin;
 
