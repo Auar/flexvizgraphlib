@@ -14,16 +14,16 @@ private function addSeries(event:Event):void{
 		}
 		var myColor:uint = Math.round( Math.random()*0xFFFFFF );
 		var sep:HRule=new HRule();
-    		var lblSerieNum:Label=new Label();
-    		var colPicker:ColorPicker=new ColorPicker();
-    		var cbxAxis:ComboBox=new ComboBox();
-    		var cbyAxis:ComboBox=new ComboBox();
-    		var chkRemove:CheckBox=new CheckBox();
-    		var cbRadius:ComboBox=new ComboBox();
-    		var cbOpen:ComboBox=new ComboBox();
-    		var cbClose:ComboBox=new ComboBox();
-    		var cbCartSerie:ComboBox=new ComboBox();
-    		var cbCartForm:ComboBox=new ComboBox();
+		var lblSerieNum:Label=new Label();
+		var colPicker:ColorPicker=new ColorPicker();
+		var cbxAxis:ComboBox=new ComboBox();
+		var cbyAxis:ComboBox=new ComboBox();
+		var chkRemove:CheckBox=new CheckBox();
+		var cbRadius:ComboBox=new ComboBox();
+		var cbOpen:ComboBox=new ComboBox();
+		var cbClose:ComboBox=new ComboBox();
+		var cbCartSerie:ComboBox=new ComboBox();
+		var cbCartForm:ComboBox=new ComboBox();
     		
 		if(strChart=="Area" || strChart=="Bar" || strChart=="Column" || strChart=="Line" || strChart=="Plot" || strChart=="Area3D" || strChart=="Bar3D" || strChart=="Column3D" || strChart=="Line3D"){
 		
@@ -46,10 +46,9 @@ private function addSeries(event:Event):void{
     		colPicker.x=60;
     		colPicker.width=17;
     		colPicker.height=17;
-    		colPicker.selectedColor=myColor;//0x6699CC;
+    		colPicker.selectedColor=myColor;
     		colPicker.addEventListener(Event.CHANGE, refreshChartEvent);
     		cnvs.addChild(colPicker);
-    		
     		
     		cbyAxis.id="cnvs"+accordionIndex+"_cbyAxis"+numberOfSerie[accordionIndex];
     		cbyAxis.name="cnvs"+accordionIndex+"_cbyAxis"+numberOfSerie[accordionIndex];
@@ -67,10 +66,10 @@ private function addSeries(event:Event):void{
     		cnvs.addChild(chkRemove);
 		
     		Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).move(Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).x,Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).y+38);
-				HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).move(HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).x,HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+38);
+			HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).move(HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).x,HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+38);
 		
 		}else if(strChart=="Bubble" || strChart=="Radar"){
-				sep.id="cnvs"+accordionIndex+"_sep"+numberOfSerie[accordionIndex];
+			sep.id="cnvs"+accordionIndex+"_sep"+numberOfSerie[accordionIndex];
     		sep.name="cnvs"+accordionIndex+"_sep"+numberOfSerie[accordionIndex];
     		sep.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y;
     		sep.x=13;sep.width=210;
@@ -102,7 +101,7 @@ private function addSeries(event:Event):void{
     		cbyAxis.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+8;
     		cnvs.addChild(cbyAxis);
 				
-				cbRadius.id="cnvs"+accordionIndex+"_cbRadius"+numberOfSerie[accordionIndex];
+			cbRadius.id="cnvs"+accordionIndex+"_cbRadius"+numberOfSerie[accordionIndex];
     		cbRadius.name="cnvs"+accordionIndex+"_cbRadius"+numberOfSerie[accordionIndex];
     		cbRadius.addEventListener(Event.CHANGE, refreshChartEvent);
     		cbRadius.dataProvider=arrAxis;
@@ -120,17 +119,17 @@ private function addSeries(event:Event):void{
     		cbRadius.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+38;
     		cnvs.addChild(cbRadius);
 				
-				chkRemove.id="cnvs"+accordionIndex+"_chkRemove"+numberOfSerie[accordionIndex];
+			chkRemove.id="cnvs"+accordionIndex+"_chkRemove"+numberOfSerie[accordionIndex];
     		chkRemove.name="cnvs"+accordionIndex+"_chkRemove"+numberOfSerie[accordionIndex];
     		chkRemove.x=200;
     		chkRemove.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+9;
     		chkRemove.addEventListener(MouseEvent.CLICK, removeSeriesEvent);
     		cnvs.addChild(chkRemove);
 				
-				Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).move(Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).x,Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).y+68);
-				HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).move(HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).x,HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+68);
+			Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).move(Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).x,Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).y+68);
+			HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).move(HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).x,HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+68);
 		}else if(strChart=="Candlestick" || strChart=="HighLowOpenClose" ){
-		sep.id="cnvs"+accordionIndex+"_sep"+numberOfSerie[accordionIndex];
+			sep.id="cnvs"+accordionIndex+"_sep"+numberOfSerie[accordionIndex];
     		sep.name="cnvs"+accordionIndex+"_sep"+numberOfSerie[accordionIndex];
     		sep.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y;
     		sep.x=13;sep.width=210;
@@ -149,7 +148,7 @@ private function addSeries(event:Event):void{
     		colPicker.x=60;
     		colPicker.width=17;
     		colPicker.height=17;
-    		colPicker.selectedColor=myColor;//0x6699CC;
+    		colPicker.selectedColor=myColor;
     		colPicker.addEventListener(Event.CHANGE, refreshChartEvent);
     		cnvs.addChild(colPicker);
     		
@@ -162,7 +161,7 @@ private function addSeries(event:Event):void{
     		cbyAxis.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+8;
     		cnvs.addChild(cbyAxis);
 				
-		cbxAxis.id="cnvs"+accordionIndex+"_cbxAxis"+numberOfSerie[accordionIndex];
+			cbxAxis.id="cnvs"+accordionIndex+"_cbxAxis"+numberOfSerie[accordionIndex];
     		cbxAxis.name="cnvs"+accordionIndex+"_cbxAxis"+numberOfSerie[accordionIndex];
     		cbxAxis.addEventListener(Event.CHANGE, refreshChartEvent);
     		cbxAxis.dataProvider=arrAxis;
@@ -171,7 +170,7 @@ private function addSeries(event:Event):void{
     		cbxAxis.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+38;
     		cnvs.addChild(cbxAxis);
 				
-		cbOpen.id="cnvs"+accordionIndex+"_cbOpenField"+numberOfSerie[accordionIndex];
+			cbOpen.id="cnvs"+accordionIndex+"_cbOpenField"+numberOfSerie[accordionIndex];
     		cbOpen.name="cnvs"+accordionIndex+"_cbOpenField"+numberOfSerie[accordionIndex];
     		cbOpen.addEventListener(Event.CHANGE, refreshChartEvent);
     		cbOpen.dataProvider=arrAxis;
@@ -189,17 +188,17 @@ private function addSeries(event:Event):void{
     		cbClose.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+98;
     		cnvs.addChild(cbClose);
 				
-		chkRemove.id="cnvs"+accordionIndex+"_chkRemove"+numberOfSerie[accordionIndex];
+			chkRemove.id="cnvs"+accordionIndex+"_chkRemove"+numberOfSerie[accordionIndex];
     		chkRemove.name="cnvs"+accordionIndex+"_chkRemove"+numberOfSerie[accordionIndex];
     		chkRemove.x=200;
     		chkRemove.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+9;
     		chkRemove.addEventListener(MouseEvent.CLICK, removeSeriesEvent);
     		cnvs.addChild(chkRemove);
 				
-				Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).move(Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).x,Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).y+128);
-				HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).move(HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).x,HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+128);
+			Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).move(Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).x,Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).y+128);
+			HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).move(HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).x,HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+128);
 		}else if(strChart=="Pie" || strChart=="Pie3D" ){
-		sep.id="cnvs"+accordionIndex+"_sep"+numberOfSerie[accordionIndex];
+			sep.id="cnvs"+accordionIndex+"_sep"+numberOfSerie[accordionIndex];
     		sep.name="cnvs"+accordionIndex+"_sep"+numberOfSerie[accordionIndex];
     		sep.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y;
     		sep.x=13;sep.width=210;
@@ -221,18 +220,18 @@ private function addSeries(event:Event):void{
     		cbyAxis.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+8;
     		cnvs.addChild(cbyAxis);
 				
-		chkRemove.id="cnvs"+accordionIndex+"_chkRemove"+numberOfSerie[accordionIndex];
+			chkRemove.id="cnvs"+accordionIndex+"_chkRemove"+numberOfSerie[accordionIndex];
     		chkRemove.name="cnvs"+accordionIndex+"_chkRemove"+numberOfSerie[accordionIndex];
     		chkRemove.x=200;
     		chkRemove.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+9;
     		chkRemove.addEventListener(MouseEvent.CLICK, removeSeriesEvent);
     		cnvs.addChild(chkRemove);
 				
-				Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).move(Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).x,Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).y+38);
-				HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).move(HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).x,HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+38);
+			Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).move(Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).x,Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).y+38);
+			HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).move(HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).x,HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+38);
 		
 		}else if(strChart=="Cartesian"){
-		sep.id="cnvs"+accordionIndex+"_sep"+numberOfSerie[accordionIndex];
+			sep.id="cnvs"+accordionIndex+"_sep"+numberOfSerie[accordionIndex];
     		sep.name="cnvs"+accordionIndex+"_sep"+numberOfSerie[accordionIndex];
     		sep.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y;
     		sep.x=13;sep.width=210;
@@ -251,11 +250,11 @@ private function addSeries(event:Event):void{
     		colPicker.x=60;
     		colPicker.width=17;
     		colPicker.height=17;
-    		colPicker.selectedColor=myColor;//0x6699CC;
+    		colPicker.selectedColor=myColor;
     		colPicker.addEventListener(Event.CHANGE, refreshChartEvent);
     		cnvs.addChild(colPicker);
     		
-		cbCartSerie.id="cnvs"+accordionIndex+"_cbCartSerie"+numberOfSerie[accordionIndex];
+			cbCartSerie.id="cnvs"+accordionIndex+"_cbCartSerie"+numberOfSerie[accordionIndex];
     		cbCartSerie.name="cnvs"+accordionIndex+"_cbCartSerie"+numberOfSerie[accordionIndex];
     		cbCartSerie.addEventListener(Event.CHANGE, refreshCartChartEvent);
     		cbCartSerie.dataProvider=myChart.chart.(@Type=="Cartesian").Properties.Property.Series.Serie;
@@ -273,24 +272,24 @@ private function addSeries(event:Event):void{
     		cbyAxis.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+38;
     		cnvs.addChild(cbyAxis);
 				
-		cbxAxis.id="cnvs"+accordionIndex+"_cbxAxis"+numberOfSerie[accordionIndex];
+			cbxAxis.id="cnvs"+accordionIndex+"_cbxAxis"+numberOfSerie[accordionIndex];
     		cbxAxis.name="cnvs"+accordionIndex+"_cbxAxis"+numberOfSerie[accordionIndex];
     		cbxAxis.addEventListener(Event.CHANGE, refreshChartEvent);
     		cbxAxis.dataProvider=arrAxis;
     		cbxAxis.prompt="High Field...";
-				cbxAxis.alpha=0.3;
-				cbxAxis.setStyle("color", 0xCCCCCC);
+			cbxAxis.alpha=0.3;
+			cbxAxis.setStyle("color", 0xCCCCCC);
     		cbxAxis.x=85;
     		cbxAxis.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+68;
     		cnvs.addChild(cbxAxis);
 				
-		cbOpen.id="cnvs"+accordionIndex+"_cbOpenField"+numberOfSerie[accordionIndex];
+			cbOpen.id="cnvs"+accordionIndex+"_cbOpenField"+numberOfSerie[accordionIndex];
     		cbOpen.name="cnvs"+accordionIndex+"_cbOpenField"+numberOfSerie[accordionIndex];
     		cbOpen.addEventListener(Event.CHANGE, refreshChartEvent);
     		cbOpen.dataProvider=arrAxis;
     		cbOpen.prompt="Open Field...";
-				cbOpen.alpha=0.3;
-				cbOpen.setStyle("color", 0xCCCCCC);
+			cbOpen.alpha=0.3;
+			cbOpen.setStyle("color", 0xCCCCCC);
     		cbOpen.x=85;
     		cbOpen.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+98;
     		cnvs.addChild(cbOpen);
@@ -300,30 +299,30 @@ private function addSeries(event:Event):void{
     		cbClose.addEventListener(Event.CHANGE, refreshChartEvent);
     		cbClose.dataProvider=arrAxis;
     		cbClose.prompt="Close Field...";
-				cbClose.alpha=0.3;
-				cbClose.setStyle("color", 0xCCCCCC);
+			cbClose.alpha=0.3;
+			cbClose.setStyle("color", 0xCCCCCC);
     		cbClose.x=85;
     		cbClose.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+128;
     		cnvs.addChild(cbClose);
 				
-		cbRadius.id="cnvs"+accordionIndex+"_cbRadius"+numberOfSerie[accordionIndex];
+			cbRadius.id="cnvs"+accordionIndex+"_cbRadius"+numberOfSerie[accordionIndex];
     		cbRadius.name="cnvs"+accordionIndex+"_cbRadius"+numberOfSerie[accordionIndex];
     		cbRadius.addEventListener(Event.CHANGE, refreshChartEvent);
     		cbRadius.dataProvider=arrAxis;
     		cbRadius.prompt="Radius...";
-				cbRadius.alpha=0.3;
-				cbRadius.setStyle("color", 0xCCCCCC);
+			cbRadius.alpha=0.3;
+			cbRadius.setStyle("color", 0xCCCCCC);
     		cbRadius.x=85;
     		cbRadius.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+158;
     		cnvs.addChild(cbRadius);
 				
-		cbCartForm.id="cnvs"+accordionIndex+"_cbCartForm"+numberOfSerie[accordionIndex];
+			cbCartForm.id="cnvs"+accordionIndex+"_cbCartForm"+numberOfSerie[accordionIndex];
     		cbCartForm.name="cnvs"+accordionIndex+"_cbCartForm"+numberOfSerie[accordionIndex];
     		cbCartForm.addEventListener(Event.CHANGE, refreshChartEvent);
     		cbCartForm.dataProvider=myChart.chart.(@Type=="Cartesian").Properties.Property.cartForms.cartForm;
     		cbCartForm.prompt="Form...";
-				cbCartForm.alpha=0.3;
-				cbCartForm.setStyle("color", 0xCCCCCC);
+			cbCartForm.alpha=0.3;
+			cbCartForm.setStyle("color", 0xCCCCCC);
     		cbCartForm.x=85;
     		cbCartForm.y=HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+188;
     		cnvs.addChild(cbCartForm);
@@ -335,8 +334,8 @@ private function addSeries(event:Event):void{
     		chkRemove.addEventListener(MouseEvent.CLICK, removeSeriesEvent);
     		cnvs.addChild(chkRemove);
 				
-				Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).move(Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).x,Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).y+218);
-				HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).move(HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).x,HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+218);
+			Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).move(Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).x,Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).y+218);
+			HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).move(HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).x,HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y+218);
 		
 		}
 	}
@@ -348,7 +347,7 @@ private function addSeries(event:Event):void{
 		var strChart:String=ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()
 		var i:int
 		if(strChart=="Area" || strChart=="Bar" || strChart=="Column" || strChart=="Line" || strChart=="Plot" || strChart=="Area3D" || strChart=="Bar3D" || strChart=="Column3D" || strChart=="Line3D" ){
-					cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num));
+			cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num));
       		cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_lblSerieNum"+num));
       		cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_cp"+num));
       		cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num));
@@ -374,7 +373,7 @@ private function addSeries(event:Event):void{
       		HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).move(HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).x,HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y-38);
       		
 		}else if(strChart=="Bubble" || strChart=="Radar"){
-					cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num));
+			cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num));
       		cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_lblSerieNum"+num));
       		cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_cp"+num));
       		cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num));
@@ -438,7 +437,7 @@ private function addSeries(event:Event):void{
       		HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).move(HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).x,HRule(cnvs.getChildByName("cnvs"+accordionIndex+"_hrEnd")).y-128);
       		
 		}else if(strChart=="Pie" || strChart=="Pie3D"){
-					cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num));
+			cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+num));
       		cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_lblSerieNum"+num));
       		cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num));
       		cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_chkRemove"+num));
@@ -470,9 +469,9 @@ private function addSeries(event:Event):void{
     		cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+num));
     		cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+num));
     		cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num));
-				cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num));
-      	cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num));
-      	cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num));
+			cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num));
+      		cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num));
+      		cnvs.removeChild(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num));
 					
     		for (i=1; i<=numberOfSerie[accordionIndex]; i++) { 
     			if (i>num){
@@ -485,9 +484,9 @@ private function addSeries(event:Event):void{
     				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+i)).move(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+i)).x,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+i)).y-218);
     				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+i)).move(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+i)).x,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+i)).y-218);
     				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+i)).move(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+i)).x,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+i)).y-218);
-      			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+i)).move(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+i)).x,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+i)).y-218);
-      			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+i)).move(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+i)).x,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+i)).y-218);
-      			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+i)).move(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+i)).x,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+i)).y-218);
+      				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+i)).move(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+i)).x,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+i)).y-218);
+      				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+i)).move(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+i)).x,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+i)).y-218);
+      				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+i)).move(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+i)).x,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+i)).y-218);
       				
     				cnvs.getChildByName("cnvs"+accordionIndex+"_sep"+i).name="cnvs"+accordionIndex+"_sep"+(i-1);
     				cnvs.getChildByName("cnvs"+accordionIndex+"_lblSerieNum"+i).name="cnvs"+accordionIndex+"_lblSerieNum"+(i-1);
@@ -496,10 +495,10 @@ private function addSeries(event:Event):void{
     				cnvs.getChildByName("cnvs"+accordionIndex+"_chkRemove"+i).name="cnvs"+accordionIndex+"_chkRemove"+(i-1);
     				cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+i).name="cnvs"+accordionIndex+"_cbCartSerie"+(i-1);
     				cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+i).name="cnvs"+accordionIndex+"_cbCartForm"+(i-1);
-						cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+i).name="cnvs"+accordionIndex+"_cbRadius"+(i-1);
-						cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+i).name="cnvs"+accordionIndex+"_cbxAxis"+(i-1);
-      			cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+i).name="cnvs"+accordionIndex+"_cbOpenField"+(i-1);
-      			cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+i).name="cnvs"+accordionIndex+"_cbCloseField"+(i-1);
+					cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+i).name="cnvs"+accordionIndex+"_cbRadius"+(i-1);
+					cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+i).name="cnvs"+accordionIndex+"_cbxAxis"+(i-1);
+      				cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+i).name="cnvs"+accordionIndex+"_cbOpenField"+(i-1);
+      				cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+i).name="cnvs"+accordionIndex+"_cbCloseField"+(i-1);
     			}
     		}
     		Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).move(Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).x,Button(cnvs.getChildByName("cnvs"+accordionIndex+"_btnAddNewSerie")).y-218);
@@ -635,7 +634,7 @@ private function addSeries(event:Event):void{
 		switch (strChartType) { 
 		    case "Area" : 
 		    
-		    lblForm.id="cnvs"+accordionIndex+"_lblForm";
+		    	lblForm.id="cnvs"+accordionIndex+"_lblForm";
 				lblForm.name="cnvs"+accordionIndex+"_lblForm";
 				lblForm.x=3;
 				lblForm.y=36;
@@ -840,7 +839,7 @@ private function addSeries(event:Event):void{
 				cbyAxisType.id="cnvs"+accordionIndex+"_cbyAxisType1";
 				cbyAxisType.name="cnvs"+accordionIndex+"_cbyAxisType1";
 				cbyAxisType.dataProvider=myChart.chart.(@Type=="Area").Properties.Property.axis;
-				cbyAxisType.addEventListener(Event.CHANGE, yAxisTypeChange); //parentDocument.
+				cbyAxisType.addEventListener(Event.CHANGE, yAxisTypeChange);
 				cbyAxisType.x=73;
 				cbyAxisType.y=307;
 				cnvs.addChild(cbyAxisType);
@@ -1035,7 +1034,7 @@ private function addSeries(event:Event):void{
 				cbxAxisType.id="cnvs"+accordionIndex+"_cbxAxisType1";
 				cbxAxisType.name="cnvs"+accordionIndex+"_cbxAxisType1";
 				cbxAxisType.dataProvider=myChart.chart.(@Type=="Bar").Properties.Property.axis;
-				cbxAxisType.addEventListener(Event.CHANGE, xAxisTypeChange); //parentDocument.
+				cbxAxisType.addEventListener(Event.CHANGE, xAxisTypeChange);
 				cbxAxisType.x=73;
 				cbxAxisType.y=187;
 				cnvs.addChild(cbxAxisType);
@@ -1478,7 +1477,7 @@ private function addSeries(event:Event):void{
 				cbxAxis.name="cnvs"+accordionIndex+"_cbxAxis1";
 				cbxAxis.prompt="Select...";
 				cbxAxis.dataProvider=arrAxis;
-				cbxAxis.addEventListener(Event.CHANGE, refreshChartEvent); //parentDocument.
+				cbxAxis.addEventListener(Event.CHANGE, refreshChartEvent);
 				cbxAxis.x=73;
 				cbxAxis.y=133;
 				cnvs.addChild(cbxAxis);
@@ -1494,7 +1493,7 @@ private function addSeries(event:Event):void{
 				cbyAxis.name="cnvs"+accordionIndex+"_cbyAxis1";
 				cbyAxis.prompt="Select...";
 				cbyAxis.dataProvider=arrAxis;
-				cbyAxis.addEventListener(Event.CHANGE, refreshChartEvent); //parentDocument.
+				cbyAxis.addEventListener(Event.CHANGE, refreshChartEvent);
 				cbyAxis.x=73;
 				cbyAxis.y=215;
 				cnvs.addChild(cbyAxis);
@@ -1509,7 +1508,7 @@ private function addSeries(event:Event):void{
 				cbxAxisType.id="cnvs"+accordionIndex+"_cbxAxisType1";
 				cbxAxisType.name="cnvs"+accordionIndex+"_cbxAxisType1";
 				cbxAxisType.dataProvider=myChart.chart.(@Type=="Candlestick").Properties.Property.axis;
-				cbxAxisType.addEventListener(Event.CHANGE, xAxisTypeChange); //parentDocument.
+				cbxAxisType.addEventListener(Event.CHANGE, xAxisTypeChange);
 				cbxAxisType.x=73;
 				cbxAxisType.y=160;
 				cnvs.addChild(cbxAxisType);
@@ -1524,7 +1523,7 @@ private function addSeries(event:Event):void{
 				cbyAxisType.id="cnvs"+accordionIndex+"_cbyAxisType1";
 				cbyAxisType.name="cnvs"+accordionIndex+"_cbyAxisType1";
 				cbyAxisType.dataProvider=myChart.chart.(@Type=="Candlestick").Properties.Property.axis;
-				cbyAxisType.addEventListener(Event.CHANGE, yAxisTypeChange); //parentDocument.
+				cbyAxisType.addEventListener(Event.CHANGE, yAxisTypeChange);
 				cbyAxisType.x=73;
 				cbyAxisType.y=242;
 				cnvs.addChild(cbyAxisType);
@@ -1928,7 +1927,7 @@ private function addSeries(event:Event):void{
 				cbyAxisType.id="cnvs"+accordionIndex+"_cbyAxisType1";
 				cbyAxisType.name="cnvs"+accordionIndex+"_cbyAxisType1";
 				cbyAxisType.dataProvider=myChart.chart.(@Type=="Column").Properties.Property.axis;
-				cbyAxisType.addEventListener(Event.CHANGE, yAxisTypeChange); //parentDocument.
+				cbyAxisType.addEventListener(Event.CHANGE, yAxisTypeChange);
 				cbyAxisType.x=73;
 				cbyAxisType.y=280;
 				cnvs.addChild(cbyAxisType);
@@ -2031,7 +2030,7 @@ private function addSeries(event:Event):void{
 				cbxAxis.name="cnvs"+accordionIndex+"_cbxAxis1";
 				cbxAxis.prompt="Select...";
 				cbxAxis.dataProvider=arrAxis;
-				cbxAxis.addEventListener(Event.CHANGE, refreshChartEvent); //parentDocument.
+				cbxAxis.addEventListener(Event.CHANGE, refreshChartEvent); 
 				cbxAxis.x=73;
 				cbxAxis.y=133;
 				cnvs.addChild(cbxAxis);
@@ -2047,7 +2046,7 @@ private function addSeries(event:Event):void{
 				cbyAxis.name="cnvs"+accordionIndex+"_cbyAxis1";
 				cbyAxis.prompt="Select...";
 				cbyAxis.dataProvider=arrAxis;
-				cbyAxis.addEventListener(Event.CHANGE, refreshChartEvent); //parentDocument.
+				cbyAxis.addEventListener(Event.CHANGE, refreshChartEvent);
 				cbyAxis.x=73;
 				cbyAxis.y=215;
 				cnvs.addChild(cbyAxis);
@@ -2062,7 +2061,7 @@ private function addSeries(event:Event):void{
 				cbxAxisType.id="cnvs"+accordionIndex+"_cbxAxisType1";
 				cbxAxisType.name="cnvs"+accordionIndex+"_cbxAxisType1";
 				cbxAxisType.dataProvider=myChart.chart.(@Type=="HighLowOpenClose").Properties.Property.axis;
-				cbxAxisType.addEventListener(Event.CHANGE, xAxisTypeChange); //parentDocument.
+				cbxAxisType.addEventListener(Event.CHANGE, xAxisTypeChange);
 				cbxAxisType.x=73;
 				cbxAxisType.y=160;
 				cnvs.addChild(cbxAxisType);
@@ -2077,7 +2076,7 @@ private function addSeries(event:Event):void{
 				cbyAxisType.id="cnvs"+accordionIndex+"_cbyAxisType1";
 				cbyAxisType.name="cnvs"+accordionIndex+"_cbyAxisType1";
 				cbyAxisType.dataProvider=myChart.chart.(@Type=="HighLowOpenClose").Properties.Property.axis;
-				cbyAxisType.addEventListener(Event.CHANGE, yAxisTypeChange); //parentDocument.
+				cbyAxisType.addEventListener(Event.CHANGE, yAxisTypeChange);
 				cbyAxisType.x=73;
 				cbyAxisType.y=242;
 				cnvs.addChild(cbyAxisType);
@@ -2411,7 +2410,7 @@ private function addSeries(event:Event):void{
 				cbxAxisType.id="cnvs"+accordionIndex+"_cbxAxisType1";
 				cbxAxisType.name="cnvs"+accordionIndex+"_cbxAxisType1";
 				cbxAxisType.dataProvider=myChart.chart.(@Type=="Line").Properties.Property.axis;
-				cbxAxisType.addEventListener(Event.CHANGE, xAxisTypeChange); //parentDocument.
+				cbxAxisType.addEventListener(Event.CHANGE, xAxisTypeChange);
 				cbxAxisType.x=73;
 				cbxAxisType.y=187;
 				cnvs.addChild(cbxAxisType);
@@ -2483,7 +2482,7 @@ private function addSeries(event:Event):void{
 				cbyAxisType.id="cnvs"+accordionIndex+"_cbyAxisType1";
 				cbyAxisType.name="cnvs"+accordionIndex+"_cbyAxisType1";
 				cbyAxisType.dataProvider=myChart.chart.(@Type=="Line").Properties.Property.axis;
-				cbyAxisType.addEventListener(Event.CHANGE, yAxisTypeChange); //parentDocument.
+				cbyAxisType.addEventListener(Event.CHANGE, yAxisTypeChange);
 				cbyAxisType.x=73;
 				cbyAxisType.y=280;
 				cnvs.addChild(cbyAxisType);
@@ -2843,7 +2842,7 @@ private function addSeries(event:Event):void{
 				cbxAxisType.id="cnvs"+accordionIndex+"_cbxAxisType1";
 				cbxAxisType.name="cnvs"+accordionIndex+"_cbxAxisType1";
 				cbxAxisType.dataProvider=myChart.chart.(@Type=="Plot").Properties.Property.axis;
-				cbxAxisType.addEventListener(Event.CHANGE, xAxisTypeChange); //parentDocument.
+				cbxAxisType.addEventListener(Event.CHANGE, xAxisTypeChange);
 				cbxAxisType.x=73;
 				cbxAxisType.y=160;
 				cnvs.addChild(cbxAxisType);
@@ -2915,7 +2914,7 @@ private function addSeries(event:Event):void{
 				cbyAxisType.id="cnvs"+accordionIndex+"_cbyAxisType1";
 				cbyAxisType.name="cnvs"+accordionIndex+"_cbyAxisType1";
 				cbyAxisType.dataProvider=myChart.chart.(@Type=="Plot").Properties.Property.axis;
-				cbyAxisType.addEventListener(Event.CHANGE, yAxisTypeChange); //parentDocument.
+				cbyAxisType.addEventListener(Event.CHANGE, yAxisTypeChange);
 				cbyAxisType.x=73;
 				cbyAxisType.y=253;
 				cnvs.addChild(cbyAxisType);
@@ -2978,8 +2977,6 @@ private function addSeries(event:Event):void{
 				lblyMax.setStyle("color", 0xCCCCCC);
 				HBoxMinMaxy.addChild(lblyMax);
 				
-				
-				
 				hrEnd.name="cnvs"+accordionIndex+"_hrEnd";
 				hrEnd.id="cnvs"+accordionIndex+"_hrEnd";
 				hrEnd.x=10;
@@ -3020,7 +3017,6 @@ private function addSeries(event:Event):void{
 				chkLegend.selected=true;
 				chkLegend.addEventListener(MouseEvent.CLICK, refreshChartEvent);
 				cnvs.addChild(chkLegend);
-				
 				
 				chkGrid.x=10;
 				chkGrid.y=86;
@@ -3240,7 +3236,7 @@ private function addSeries(event:Event):void{
 				cbAreaField.name="cnvs"+accordionIndex+"_cbAreaField1";
 				cbAreaField.prompt="Select...";
 				cbAreaField.dataProvider=arrTreeAxis;
-				cbAreaField.addEventListener(Event.CHANGE, refreshChartEvent); //parentDocument.
+				cbAreaField.addEventListener(Event.CHANGE, refreshChartEvent);
 				cbAreaField.x=73;
 				cbAreaField.y=66;
 				cnvs.addChild(cbAreaField);
@@ -3256,7 +3252,7 @@ private function addSeries(event:Event):void{
 				cbColorField.name="cnvs"+accordionIndex+"_cbColorField1";
 				cbColorField.prompt="Select...";
 				cbColorField.dataProvider=arrTreeAxis;
-				cbColorField.addEventListener(Event.CHANGE, refreshChartEvent); //parentDocument.
+				cbColorField.addEventListener(Event.CHANGE, refreshChartEvent);
 				cbColorField.x=73;
 				cbColorField.y=92;
 				cnvs.addChild(cbColorField);
@@ -3272,7 +3268,7 @@ private function addSeries(event:Event):void{
 				cbLabelField.name="cnvs"+accordionIndex+"_cbLabelField1";
 				cbLabelField.prompt="Select...";
 				cbLabelField.dataProvider=arrTreeAxis;
-				cbLabelField.addEventListener(Event.CHANGE, refreshChartEvent); //parentDocument.
+				cbLabelField.addEventListener(Event.CHANGE, refreshChartEvent);
 				cbLabelField.x=73;
 				cbLabelField.y=118;
 				cnvs.addChild(cbLabelField);
@@ -3287,7 +3283,7 @@ private function addSeries(event:Event):void{
 				cbcolorSheme.id="cnvs"+accordionIndex+"_cbcolorSheme1";
 				cbcolorSheme.name="cnvs"+accordionIndex+"_cbcolorSheme1";
 				cbcolorSheme.dataProvider=myChart.chart.(@Type=="TreeMap").Styles.Style.(@name=="colorSchemes").colorScheme;
-				cbcolorSheme.addEventListener(Event.CHANGE, refreshChartEvent); //parentDocument.
+				cbcolorSheme.addEventListener(Event.CHANGE, refreshChartEvent);
 				cbcolorSheme.x=93;
 				cbcolorSheme.y=144;
 				cnvs.addChild(cbcolorSheme);
@@ -3492,7 +3488,7 @@ private function addSeries(event:Event):void{
 				cbxAxisType.id="cnvs"+accordionIndex+"_cbxAxisType1";
 				cbxAxisType.name="cnvs"+accordionIndex+"_cbxAxisType1";
 				cbxAxisType.dataProvider=myChart.chart.(@Type=="Cartesian").Properties.Property.axis;
-				cbxAxisType.addEventListener(Event.CHANGE, xAxisTypeChange); //parentDocument.
+				cbxAxisType.addEventListener(Event.CHANGE, xAxisTypeChange);
 				cbxAxisType.x=73;
 				cbxAxisType.y=160;
 				cnvs.addChild(cbxAxisType);
@@ -3564,7 +3560,7 @@ private function addSeries(event:Event):void{
 				cbyAxisType.id="cnvs"+accordionIndex+"_cbyAxisType1";
 				cbyAxisType.name="cnvs"+accordionIndex+"_cbyAxisType1";
 				cbyAxisType.dataProvider=myChart.chart.(@Type=="Cartesian").Properties.Property.axis;
-				cbyAxisType.addEventListener(Event.CHANGE, yAxisTypeChange); //parentDocument.
+				cbyAxisType.addEventListener(Event.CHANGE, yAxisTypeChange);
 				cbyAxisType.x=73;
 				cbyAxisType.y=253;
 				cnvs.addChild(cbyAxisType);
@@ -3924,7 +3920,7 @@ private function addSeries(event:Event):void{
 				cbyAxisType.id="cnvs"+accordionIndex+"_cbyAxisType1";
 				cbyAxisType.name="cnvs"+accordionIndex+"_cbyAxisType1";
 				cbyAxisType.dataProvider=myChart.chart.(@Type=="Area3D").Properties.Property.axis;
-				cbyAxisType.addEventListener(Event.CHANGE, yAxisTypeChange); //parentDocument.
+				cbyAxisType.addEventListener(Event.CHANGE, yAxisTypeChange);
 				cbyAxisType.x=73;
 				cbyAxisType.y=307;
 				cnvs.addChild(cbyAxisType);
@@ -4391,7 +4387,7 @@ private function addSeries(event:Event):void{
 				cbxAxisType.id="cnvs"+accordionIndex+"_cbxAxisType1";
 				cbxAxisType.name="cnvs"+accordionIndex+"_cbxAxisType1";
 				cbxAxisType.dataProvider=myChart.chart.(@Type=="Bar3D").Properties.Property.axis;
-				cbxAxisType.addEventListener(Event.CHANGE, xAxisTypeChange); //parentDocument.
+				cbxAxisType.addEventListener(Event.CHANGE, xAxisTypeChange);
 				cbxAxisType.x=73;
 				cbxAxisType.y=213;
 				cnvs.addChild(cbxAxisType);
@@ -4463,7 +4459,7 @@ private function addSeries(event:Event):void{
 				cbyAxisType.id="cnvs"+accordionIndex+"_cbyAxisType1";
 				cbyAxisType.name="cnvs"+accordionIndex+"_cbyAxisType1";
 				cbyAxisType.dataProvider=myChart.chart.(@Type=="Bar3D").Properties.Property.axis;
-				cbyAxisType.addEventListener(Event.CHANGE, yAxisTypeChange); //parentDocument.
+				cbyAxisType.addEventListener(Event.CHANGE, yAxisTypeChange);
 				cbyAxisType.x=73;
 				cbyAxisType.y=306;
 				cnvs.addChild(cbyAxisType);
@@ -5456,7 +5452,7 @@ private function addSeries(event:Event):void{
 				cbxAxisType.id="cnvs"+accordionIndex+"_cbxAxisType1";
 				cbxAxisType.name="cnvs"+accordionIndex+"_cbxAxisType1";
 				cbxAxisType.dataProvider=myChart.chart.(@Type=="Line3D").Properties.Property.axis;
-				cbxAxisType.addEventListener(Event.CHANGE, xAxisTypeChange); //parentDocument.
+				cbxAxisType.addEventListener(Event.CHANGE, xAxisTypeChange);
 				cbxAxisType.x=73;
 				cbxAxisType.y=187;
 				cnvs.addChild(cbxAxisType);
@@ -5528,7 +5524,7 @@ private function addSeries(event:Event):void{
 				cbyAxisType.id="cnvs"+accordionIndex+"_cbyAxisType1";
 				cbyAxisType.name="cnvs"+accordionIndex+"_cbyAxisType1";
 				cbyAxisType.dataProvider=myChart.chart.(@Type=="Line").Properties.Property.axis;
-				cbyAxisType.addEventListener(Event.CHANGE, yAxisTypeChange); //parentDocument.
+				cbyAxisType.addEventListener(Event.CHANGE, yAxisTypeChange);
 				cbyAxisType.x=73;
 				cbyAxisType.y=280;
 				cnvs.addChild(cbyAxisType);
