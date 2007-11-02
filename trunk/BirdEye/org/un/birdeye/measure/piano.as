@@ -5914,7 +5914,7 @@ private function addSeries(event:Event):void{
 				cbyAxis.y=115;
 				cnvs.addChild(cbyAxis);
 				
-		    lblExplode.id="cnvs"+accordionIndex+"_lblExplode";
+		    	lblExplode.id="cnvs"+accordionIndex+"_lblExplode";
 				lblExplode.name="cnvs"+accordionIndex+"_lblExplode";
 				lblExplode.text= "Distance of Separation";
 				lblExplode.x=3;

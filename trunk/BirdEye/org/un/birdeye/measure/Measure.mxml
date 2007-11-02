@@ -110,7 +110,7 @@
 	public var pianoNumber:int;
 	public var blnSel:Boolean;
 	public var blnMultiSel:Boolean;
-	
+	public var wjmtest:XML = new XML();
 	public function ParseAxis(Axis:XML,arrDefAxis:Array):void { 
 		var AxisAttributes:XMLList = Axis.children().attributes(); 
 		var i:int = 0;
@@ -160,6 +160,7 @@
 	private function init():void {
 		myTreeData =  parentDocument.gTreeXML;
 		xmlData = parentDocument.gDataXML;
+		wjmtest=parentDocument.gDataXML;
 		createPodManager();
 		numberOfSerie[1]=1;
 		LoadXML();	
@@ -297,6 +298,31 @@
     	refreshChart();
     }
     
+    public function filterData():void{
+    	var strChart:String=ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()
+    	if(strChart!="TreeMap" && strChart!="GeoMap"){
+    	var NewXML:XML=new XML(xmlData);
+    	var NewDataList:XMLList=new XMLList();
+    	dataList=xmlData.children();
+    	var i:int=0
+    	for each(var node:XML in dataList) {
+    		var isMatch:int=0;
+    		for each(var aattributes:XML in node.attributes()){
+    			if (aattributes.name()==ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis1")).selectedLabel.toString()){
+    				isMatch++;
+    			}
+    		}
+    		if (isMatch==0){
+    			delete NewXML.children()[i];
+    			i--;
+    		}
+    		i++
+    	}
+    	NewDataList=NewXML.children();
+    	dataListCollection=new XMLListCollection(NewDataList);
+    	}
+    }
+    
     public function refreshChart():void {
     	accordionIndex=leftAccordion.selectedIndex+1
 		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
@@ -305,6 +331,7 @@
     }
     
      public function refreshChartEvent(event:Event):void {
+     	filterData();
      	accordionIndex=leftAccordion.selectedIndex+1
 		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
     	var strChartType:String = ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()
@@ -1134,7 +1161,6 @@
 
     
     private function drawPieChart():void {
-    	
     	var chartVBox:VBox = new VBox();
     	var myPieSeries:Array=new Array();
 		var MyPieChart:PieChart;
@@ -1564,6 +1590,7 @@
         MyPie3DChart.percentWidth=100;
     	
     	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
+    		
     		Pie3DSeries1=new PieSeries3D;
     		yField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
 			setSerie(Pie3DSeries1,'Pie3D',yField,num);
@@ -1593,6 +1620,7 @@
 	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". 3D Pie";
 
 		createLegend2(MyPie3DChart, chartVBox);
+		
     }
 						
 		
