@@ -43,6 +43,8 @@ package org.un.flex.graphLayout.layout {
 	 * (a) report measure of stability - update the user about the developments
 	 * (b) faster computation steps - less time spent before every refresh
 	 * (c) responsive UI - not to freeze the interface during computation
+	 * 
+	 * @author Nitin Lamba
 	 **/
 	public class IterativeBaseLayouter extends BaseLayouter implements ILayoutAlgorithm {
 		
@@ -145,22 +147,45 @@ package org.un.flex.graphLayout.layout {
 		
 		/**
 		 * Do a full calculation iteration of the layout. 
-		 * This is a wrapper only; the actual computation is done 
-		 * in calculateLayout()
+		 * This is a wrapper only; the actual computation at
+		 * every step is done in calculateLayout()
 		 * */
 		protected function layoutIteration():Boolean {
+			//var visVNodes:Dictionary = _vgraph.visibleVNodes;
+			var vn:IVisualNode;
 			
 			/* return value, not really used */
 			var rv:Boolean = true;
 			
 			/* Evaluate end condition */
 			if (!isStable()) {
+				
+				// Step 1: Retrieve old coordinates from vNodes
+				/* basically, refresh coordinates from their 'view' UI components */
+				for each(vn in _vgraph.visibleVNodes) {
+					if(!vn.isVisible) {
+						throw Error("Received invisible node while working on visible vnodes only");
+					}
+					vn.refresh();
+				}
+				
+				// Step 2: Calculate new layout
 				calculateLayout();
 				
-				/* indicated that the layout has changed */
+				// Step 3: Commit new coordinates to all vNodes
+				/* basically, set the view UI component to new values */
+				for each(vn in _vgraph.visibleVNodes) {
+					if(!vn.isVisible) {
+						throw Error("Received invisible node while working on visible vnodes only");
+					}
+					vn.commit();
+				}
+				
+				// Step 4: Indicate that the layout has changed
 				_layoutChanged = true;
 				_vgraph.dispatchEvent(new Event("vgraphChanged"));
 				
+				// Step 5: Re-start the Timer
 				restartTimer();
 			}
 			
