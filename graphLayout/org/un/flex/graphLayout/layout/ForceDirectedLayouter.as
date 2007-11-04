@@ -48,16 +48,16 @@ package org.un.flex.graphLayout.layout {
 	 * idea	from Mark Shepherd's SpringGraph component implementation
 	 * which is itself based on TouchGraph (Java). However, apart from
 	 * the general idea and some variable names, the code is a rewrite.
-	 * 
+	 * <br>
 	 * Here is the copyright information that was part of the code. I add
 	 * it just in case someone might feel offended if it is not there:
 	 * 
-	 * Copyright of the original TouchGraph LLC code:
+	 * <p>Copyright of the original TouchGraph LLC code:
 	 * (c) 2001-2002 Alexander Shapiro. All rights reserved.
 	 * Copyright of the adaption to Flex:
 	 * (c) Mark Shepherd, Adobe FlexBuilder Engineering, 2006.
 	 * Copyright of this reimplementation in Flex:
-	 * (c) Daniel Lang, United Nations, 2007.
+	 * (c) Daniel Lang, United Nations, 2007.</p>
 	 * 
 	 * See license infortmation at the top.
 	 * */
@@ -400,18 +400,8 @@ package org.un.flex.graphLayout.layout {
 				if(!vn.isVisible) {
 					throw Error("Received invisible node while working on visible vnodes only");
 				}
-				
 				/* first update each nodes repulsion value */
 				updateRepulsion(vn);
-				
-				/* now update the coordinates set in the VNode from the vnodes real
-				 * coordinates */
-				vn.refresh();
-				
-				/* *
-				trace("node: "+vn.id+" has dx:"+vn.dx+" dy:"+vn.dy+" x:"+vn.x+
-				" y:"+vn.y+" viewX:"+vn.viewX+" viewY:"+vn.viewY+" repulsion:"+_repulsionMap[vn]);
-				*/
 			}
 			
 			/* now call the three methods to work on the layout
@@ -427,15 +417,6 @@ package org.un.flex.graphLayout.layout {
 			/* update rigidity, it may have been set new */
 			if(_rigidity != _newRigidity) {
 				_rigidity = _newRigidity;
-			}
-			
-			/* commit all nodes, basically this sets the
-			 * view.x to their _x attribute */
-			for each(vn in visVNodes) {
-				if(!vn.isVisible) {
-				throw Error("Received invisible node while working on visible vnodes only");
-				}
-				vn.commit();
 			}
 		}
 
