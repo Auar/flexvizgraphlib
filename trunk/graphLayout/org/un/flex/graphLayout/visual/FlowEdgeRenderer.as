@@ -61,13 +61,7 @@ package org.un.flex.graphLayout.visual {
 		 * @default 100
 		 * */
 		public var maxBaseWidth:Number;
-		
-		/** 
-		 * This property describes the bezier curve parameter, i.e.
-		 * how far the curve will deviate from a straight line.
-		 * @default is 3
-		 * */
-		public var curveControl:Number;
+	
 		
 		/**
 		 * The constructor just initialises some default values.
@@ -75,7 +69,6 @@ package org.un.flex.graphLayout.visual {
 		public function FlowEdgeRenderer():void {
 			relativeEdgeMagnitude = 1000;
 			maxBaseWidth = 100;
-			curveControl = 3;
 		}
 		
 		/**
