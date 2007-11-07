@@ -61,7 +61,7 @@
 			import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
 			import org.un.flex.graphLayout.data.IGraph;
 			import org.un.flex.graphLayout.layout.ConcentricRadialLayouter;
-			import org.un.flex.graphLayout.layout.SpringForceDirectedLayouter;
+			import org.un.flex.graphLayout.layout.ForceDirectedLayouter;
 			import org.un.flex.graphLayout.layout.ParentCenteredRadialLayouter;
 			import org.un.flex.graphLayout.layout.PhylloTreeLayouter;
 			import org.un.flex.graphLayout.layout.HierarchicalLayouter;
@@ -304,7 +304,7 @@
 						orientationSelector.includeInLayout = false;
 						break;
 					case "ForceDirected":
-						layouter = new SpringForceDirectedLayouter(vgraph);
+						layouter = new ForceDirectedLayouter(vgraph);
 						layouter.linkLength = linkLength.value;
 						phidial.visible = false;
 						phidiallabel.visible = false;
@@ -552,8 +552,8 @@
  			}
  			
  			private function changeDamping():void {
- 				if(layouter is SpringForceDirectedLayouter) {
- 					(layouter as SpringForceDirectedLayouter).dampingActive = dampCheck.selected;
+ 				if(layouter is ForceDirectedLayouter) {
+ 					(layouter as ForceDirectedLayouter).dampingActive = dampCheck.selected;
  				}
  			}
  
