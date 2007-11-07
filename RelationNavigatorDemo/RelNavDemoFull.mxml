@@ -38,6 +38,7 @@
 
 	<mx:Script>
 		<![CDATA[
+			import mx.rpc.http.mxml.HTTPService;
 			import org.un.flex.graphLayout.visual.DefaultEdgeRenderer;
 			import org.un.flex.graphLayout.visual.OrthogonalEdgeRenderer;
 			import org.un.flex.graphLayout.visual.DirectedEdgeRenderer;
@@ -67,6 +68,8 @@
 			import org.un.flex.graphLayout.visual.VisualGraph;
 			import org.un.flex.unComponentToolbox.renderers.PrimitiveIconRenderer;
 			import org.un.flex.unComponentToolbox.icons.EmbeddedIcons;
+			
+			private var httpService:HTTPService;
 			
 			private var graph:IGraph;
 			private var layouter:ILayoutAlgorithm;
@@ -102,13 +105,37 @@
 			 * request. All further initalisation is done
 			 * in the event handler for the HTTP Service */
 			private function init():void {
-				SixDegreesExternalData.send();
+				//SixDegreesExternalData.send();
 				//initData(['Node','Edge','fromID','toID']);
 				leftAccordion.selectedIndex = 0;
+				dataSampleSelector.selectedItem = "ASDocs";
 			}
 			
-			private function handleHTTPResult(xmlNames:Array, event:ResultEvent):void {
+			private function selectData():void {
+				
+				httpService = new HTTPService();
+				httpService.useProxy = false;
+				
+				switch(dataSampleSelector.selectedItem as String) {
+					case "Poker":
+						httpService.url = "data/poker.xml";
+						break;
+					case "ASDocs":
+					default:
+						httpService.url = "data/asdocs.xml";
+						break;
+				}
+				httpService.showBusyCursor = true;
+				httpService.resultFormat = "e4x";
+				httpService.addEventListener(ResultEvent.RESULT,handleHTTPResult);
+				httpService.send();
+			}
+			
+			
+			private function handleHTTPResult(event:ResultEvent):void {
 				var xmldata:XML;
+				var xmlNames:Array = ['Node','Edge','fromID','toID'];
+				
 				xmldata = (event.result as XML);
 				initData(xmlNames, xmldata);
 			}
@@ -151,8 +178,9 @@
 				/* set the layouter */
 				setLayouter();
 
-				/* select a root node, most layouters requires a root node */
-				startRoot = graph.nodeByStringId("vizgraph").vnode;
+				/* select a root node, most layouters requires a root node 
+				 * careful if the graph has no nodes this crashes */
+				startRoot = (graph.nodes[0] as INode).vnode;
 				
 				/* set the visibility limit options, default 2 */
 				maxDistanceFromCurrent.value = 2;
@@ -214,6 +242,9 @@
 				/* create and set the layouter */
 				if(layouter != null) {
 					layouter.resetAll(); // to kill any timers
+					/* maye we need to be more radical here */
+					layouter = null;
+					vgraph.layouter = null;
 				} 
 				switch(currentLayouterType) {
 					case "ConcentricRadial":
@@ -652,9 +683,6 @@
 		]]>
 	</mx:Script>					
 
-	<mx:HTTPService id="SixDegreesExternalData" url="data/asdocs.xml" showBusyCursor="true" resultFormat="e4x"
-			result="handleHTTPResult(['Node','Edge','fromID','toID'], event)"/>
-
 	<!-- Effects -->
 	<mx:WipeLeft id="wipeLeft" duration="1000" />
 	<mx:WipeRight id="wipeRight" duration="1000" />
@@ -666,6 +694,19 @@
 				gripTip="Show/Hide Control Panel" />
 			<mx:VBox id="NavContainerRB" horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle" horizontalAlign="center" verticalGap="1" horizontalGap="0" width="100%" height="100%" hideEffect="{wipeLeft}" showEffect="{wipeRight}">
 				<mx:Accordion id="leftAccordion" paddingBottom="5" paddingRight="5" paddingTop="5" paddingLeft="5" width="100%" height="100%" creationPolicy="all"  >
+					<mx:Canvas id="datasource" label="Data Selection" height="100%" width="100%">
+						<mx:VBox width="100%" height="100%">
+							<mx:HBox>
+								<mx:Label toolTip="Select Data Sample" text="Select Data Sample" fontSize="9" textAlign="center"  />
+								<mx:ComboBox id="dataSampleSelector" width="95%" toolTip="" change="selectData()" >
+									<mx:ArrayCollection>
+										<mx:String>ASDocs</mx:String>
+										<mx:String>Poker</mx:String>
+									</mx:ArrayCollection>
+								</mx:ComboBox>
+							</mx:HBox>
+						</mx:VBox>
+					</mx:Canvas>
 					<mx:Canvas id="visibilitycnvs" label="Visibility/Layout" height="100%" width="100%" paddingBottom="5" >
 						<mx:VBox width="100%" horizontalAlign="center">
 							<mx:Spacer height="3"/>

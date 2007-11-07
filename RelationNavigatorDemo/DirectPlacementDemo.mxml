@@ -388,10 +388,10 @@
 								<mx:Label toolTip="Select edge style" text="Select Edge Style" fontSize="9" textAlign="center"  />
 								<mx:ComboBox id="edgeRenderSelector" width="95%" toolTip="Specifies how Edges are drawn" change="changeEdgeRenderer()" >
 									<mx:ArrayCollection>
+										<mx:String>Flow</mx:String>
 										<mx:String>Default</mx:String>
 										<mx:String>Directed</mx:String>
 										<mx:String>Orthogonal</mx:String>
-										<mx:String>Flow</mx:String>
 									</mx:ArrayCollection>
 								</mx:ComboBox>
 							</mx:HBox>
