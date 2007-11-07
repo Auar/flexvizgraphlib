@@ -39,6 +39,8 @@ package org.un.flex.graphLayout.visual {
 	 * It uses the flow value, put in relation with some
 	 * parameters of the renderer to have an initial edge
 	 * thickness. At the target the edge will coverge to a point.
+	 * The flow is drawn in the shape of a teardrop with the thick
+	 * end near the source and relative to the amount of the flow.
 	 * */
 	public class FlowEdgeRenderer implements IEdgeRenderer {
 		
@@ -165,67 +167,28 @@ package org.un.flex.graphLayout.visual {
 				);
 			}
 			
-			/* now we draw the first curve from base 1 to target */
-			g.beginFill(0);
-			g.moveTo(base1.x, base1.y);
+			/* now we draw the first curve with base 1 to target */
+			g.beginFill(uint(vedge.lineStyle.color));
+			g.moveTo(source.x, source.y);
 			g.curveTo(
-				base1.x - curveControl,
-				base1.y - curveControl,
+				base1.x,
+				base1.y,
 				target.x,
 				target.y
 			);
-			g.moveTo(base1.x, base1.y);
-			g.curveTo(
-				base1.x + curveControl,
-				base1.y - curveControl,
-				target.x,
-				target.y
-			);
-			g.moveTo(base1.x, base1.y);
-			g.curveTo(
-				base1.x - curveControl,
-				base1.y + curveControl,
-				target.x,
-				target.y
-			);
-			g.moveTo(base1.x, base1.y);
-			g.curveTo(
-				base1.x + curveControl,
-				base1.y + curveControl,
-				target.x,
-				target.y
-			);
-			
-			
-			g.moveTo(base2.x, base2.y);			
-			g.curveTo(
-				base1.x - curveControl,
-				base1.y - curveControl,
-				target.x,
-				target.y
-			);
-			g.moveTo(base2.x, base2.y);			
-			g.curveTo(
-				base1.x + curveControl,
-				base1.y - curveControl,
-				target.x,
-				target.y
-			);
-			g.moveTo(base2.x, base2.y);			
-			g.curveTo(
-				base1.x - curveControl,
-				base1.y + curveControl,
-				target.x,
-				target.y
-			);
-			g.moveTo(base2.x, base2.y);			
-			g.curveTo(
-				base1.x + curveControl,
-				base1.y + curveControl,
-				target.x,
-				target.y
-			);  
 			g.endFill();
+			
+			/* and the second curve using base 2 as control point */
+			g.beginFill(uint(vedge.lineStyle.color));
+			g.moveTo(source.x, source.y);			
+			g.curveTo(
+				base2.x,
+				base2.y,
+				target.x,
+				target.y
+			);
+			g.endFill();
+
 			
 			if(displayLabel) {
 				vedge.labelView.x = mid.x - (vedge.labelView.width / 2.0);
