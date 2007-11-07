@@ -25,7 +25,6 @@
 package org.un.flex.graphLayout.visual {
 
 	import flash.display.Graphics;
-	import org.un.flex.graphLayout.data.IGraph;
 	import org.un.flex.graphLayout.data.IEdge;
 	import mx.core.UIComponent;
 	
