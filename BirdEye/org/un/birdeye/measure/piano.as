@@ -2,6 +2,9 @@
 import flexlib.controls.HSlider;
 import flexlib.skins.SliderThumbHighlightSkin;
 
+import mx.controls.ComboBox;
+import mx.controls.Label;
+
 private function addSeries(event:Event):void{
 		accordionIndex=leftAccordion.selectedIndex+1
 		numberOfSerie[accordionIndex]=numberOfSerie[accordionIndex]+1;
@@ -557,6 +560,8 @@ private function addSeries(event:Event):void{
 		var cp:ColorPicker=new ColorPicker();
 		var lblxAxis:Label=new Label();
 		var cbxAxis:ComboBox=new ComboBox();
+		var lblMap:Label=new Label();
+		var cbMap:ComboBox=new ComboBox();
 		var lblyAxis:Label=new Label();
 		var cbyAxis:ComboBox=new ComboBox();
 		var lblxAxisType:Label=new Label();
@@ -3376,9 +3381,29 @@ private function addSeries(event:Event):void{
 				
 		        break;
 		    case "GeoMap" : 
+		    	hrChartType.x=13;
+				hrChartType.y=36;
+				hrChartType.width=210;
+				cnvs.addChild(hrChartType);
+				
+				lblMap.id="cnvs"+accordionIndex+"_lblMap";
+				lblMap.name="cnvs"+accordionIndex+"_lblMap";
+				lblMap.x=3;
+				lblMap.y=46;
+				lblMap.text="Maps :";
+				cnvs.addChild(lblMap);
+				
+				cbMap.id="cnvs"+accordionIndex+"_cbMap";
+				cbMap.name="cnvs"+accordionIndex+"_cbMap";
+				cbMap.dataProvider=myChart.chart.(@Type=="GeoMap").Properties.Property.Maps.Map;
+				cbMap.addEventListener(Event.CHANGE, refreshChartEvent); 
+				cbMap.prompt="Select...";
+				cbMap.x=73;
+				cbMap.y=44;
+				cnvs.addChild(cbMap);
 		        break; 
 		   case "Cartesian" : 
-		   	hrChartType.x=13;
+		   		hrChartType.x=13;
 				hrChartType.y=36;
 				hrChartType.width=210;
 				cnvs.addChild(hrChartType);
@@ -6061,7 +6086,7 @@ private function addSeries(event:Event):void{
 				Elevation.y=287;
 				cnvs.addChild(Elevation);
 				
-				lblRotation.id="cnvs"+accordionIndex+"_lblRotation";
+				/*lblRotation.id="cnvs"+accordionIndex+"_lblRotation";
 				lblRotation.name="cnvs"+accordionIndex+"_lblRotation";
 				lblRotation.text= "Rotation";
 				lblRotation.x=3;
@@ -6090,13 +6115,13 @@ private function addSeries(event:Event):void{
 				Rotation.values=[45];
 				Rotation.x=3;
 				Rotation.y=322;
-				cnvs.addChild(Rotation);
+				cnvs.addChild(Rotation);*/
 				
 				lblZoom.id="cnvs"+accordionIndex+"_lblZoom";
 				lblZoom.name="cnvs"+accordionIndex+"_lblZoom";
 				lblZoom.text= "Zoom";
 				lblZoom.x=3;
-				lblZoom.y=342;
+				lblZoom.y=307;//342;
 				lblZoom.setStyle("fontSize",9);
 				lblZoom.setStyle("textAlign","center");
 				lblZoom.percentWidth=80;
@@ -6120,14 +6145,14 @@ private function addSeries(event:Event):void{
 				Zoom.maximum=2;
 				Zoom.values=[1];
 				Zoom.x=3;
-				Zoom.y=357;
+				Zoom.y=322;//357;
 				cnvs.addChild(Zoom);
 				
 				lblDepth.id="cnvs"+accordionIndex+"_lblDepth";
 				lblDepth.name="cnvs"+accordionIndex+"_lblDepth";
 				lblDepth.text= "Depth";
 				lblDepth.x=3;
-				lblDepth.y=377;
+				lblDepth.y=342;//377;
 				lblDepth.setStyle("fontSize",9);
 				lblDepth.setStyle("textAlign","center");
 				lblDepth.percentWidth=80;
@@ -6151,14 +6176,14 @@ private function addSeries(event:Event):void{
 				Depth.maximum=100;
 				Depth.values=[20];
 				Depth.x=3;
-				Depth.y=392;
+				Depth.y=357;//392;
 				cnvs.addChild(Depth);
 				
 				lblDepthGap.id="cnvs"+accordionIndex+"_lblDepthGap";
 				lblDepthGap.name="cnvs"+accordionIndex+"_lblDepthGap";
 				lblDepthGap.text= "Depth Gap";
 				lblDepthGap.x=3;
-				lblDepthGap.y=412;
+				lblDepthGap.y=377;//412;
 				lblDepthGap.setStyle("fontSize",9);
 				lblDepthGap.setStyle("textAlign","center");
 				lblDepthGap.percentWidth=80;
@@ -6182,14 +6207,14 @@ private function addSeries(event:Event):void{
 				DepthGap.maximum=20;
 				DepthGap.values=[0];
 				DepthGap.x=3;
-				DepthGap.y=427;
+				DepthGap.y=392;//427;
 				cnvs.addChild(DepthGap);
 				
 				lblLightLatitude.id="cnvs"+accordionIndex+"_lblLightLatitude";
 				lblLightLatitude.name="cnvs"+accordionIndex+"_lblLightLatitude";
 				lblLightLatitude.text= "Light Latitude";
 				lblLightLatitude.x=3;
-				lblLightLatitude.y=447;
+				lblLightLatitude.y=412;//447;
 				lblLightLatitude.setStyle("fontSize",9);
 				lblLightLatitude.setStyle("textAlign","center");
 				lblLightLatitude.percentWidth=80;
@@ -6213,14 +6238,14 @@ private function addSeries(event:Event):void{
 				LightLatitude.maximum=+90;
 				LightLatitude.values=[0];
 				LightLatitude.x=3;
-				LightLatitude.y=462;
+				LightLatitude.y=427;//462;
 				cnvs.addChild(LightLatitude);
 				
 				lblLightLongitude.id="cnvs"+accordionIndex+"_lblLightLongitude";
 				lblLightLongitude.name="cnvs"+accordionIndex+"_lblLightLongitude";
-				lblLightLongitude.text= "Light Latitude";
+				lblLightLongitude.text= "Light Longitude";
 				lblLightLongitude.x=3;
-				lblLightLongitude.y=482;
+				lblLightLongitude.y=447;//482;
 				lblLightLongitude.setStyle("fontSize",9);
 				lblLightLongitude.setStyle("textAlign","center");
 				lblLightLongitude.percentWidth=80;
@@ -6244,14 +6269,14 @@ private function addSeries(event:Event):void{
 				LightLongitude.maximum=90;
 				LightLongitude.values=[0];
 				LightLongitude.x=3;
-				LightLongitude.y=497;
+				LightLongitude.y=462;//497;
 				cnvs.addChild(LightLongitude);
 				
 				lblAmbiantLight.id="cnvs"+accordionIndex+"_lblAmbiantLight";
 				lblAmbiantLight.name="cnvs"+accordionIndex+"_lblAmbiantLight";
-				lblAmbiantLight.text= "Light Latitude";
+				lblAmbiantLight.text= "Ambiant Light";
 				lblAmbiantLight.x=3;
-				lblAmbiantLight.y=517;
+				lblAmbiantLight.y=482;//517;
 				lblAmbiantLight.setStyle("fontSize",9);
 				lblAmbiantLight.setStyle("textAlign","center");
 				lblAmbiantLight.percentWidth=80;
@@ -6275,21 +6300,21 @@ private function addSeries(event:Event):void{
 				AmbiantLight.maximum=1;
 				AmbiantLight.values=[0.1];
 				AmbiantLight.x=3;
-				AmbiantLight.y=532;
+				AmbiantLight.y=497;//532;
 				cnvs.addChild(AmbiantLight);
 				
 				
 				hrEnd.name="cnvs"+accordionIndex+"_hrEnd";
 				hrEnd.id="cnvs"+accordionIndex+"_hrEnd";
 				hrEnd.x=10;
-				hrEnd.y=552;
+				hrEnd.y=517;//552;
 				hrEnd.width=210;
 				cnvs.addChild(hrEnd);
 				
 				btnAddSerie.id="cnvs"+accordionIndex+"_btnAddNewSerie";
 				btnAddSerie.name="cnvs"+accordionIndex+"_btnAddNewSerie";
 				btnAddSerie.x=73;
-				btnAddSerie.y=562;
+				btnAddSerie.y=527;//562;
 				btnAddSerie.label="Add new serie";
 				btnAddSerie.addEventListener(MouseEvent.CLICK, addSeries);
 				cnvs.addChild(btnAddSerie);
