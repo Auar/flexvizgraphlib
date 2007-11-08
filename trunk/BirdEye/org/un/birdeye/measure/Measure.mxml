@@ -9,6 +9,7 @@
   	<mx:Script source="piano.as" />
 	
 	<mx:Script><![CDATA[
+		import mx.containers.Panel;
 	import org.un.birdeye.measure.view.Pod;
 	import mx.controls.sliderClasses.Slider;
 	//import mx.charts.chartClasses.ChartElement;
@@ -33,6 +34,7 @@
     import mx.charts.events.ChartItemEvent;
     import mx.charts.ChartItem;
     import mx.charts.series.items.*;
+    import mx.core.Container;
 
     // Pod
     import org.un.birdeye.measure.view.Pod;
@@ -45,7 +47,6 @@
 	import ilog.maps.MapBase;
     import ilog.maps.MapEvent;
     import ilog.maps.MapFeature;
-    import ilog.maps.WorldCountriesMap;
     import ilog.maps.MapSymbol;
     import ilog.charts.RadarChart;
     import ilog.charts.series.RadarLineSeries;
@@ -56,7 +57,7 @@
 	import ilog.charts3d.series.*;
 	import ilog.charts3d.series.items.*;
 	import ilog.charts.series.items.*;
-    // Symbols lib
+	// Symbols lib
     import com.flexibleexperiments.primitiveIcons.*;
     
     
@@ -111,6 +112,7 @@
 	public var blnSel:Boolean;
 	public var blnMultiSel:Boolean;
 	public var wjmtest:XML = new XML();
+		
 	public function ParseAxis(Axis:XML,arrDefAxis:Array):void { 
 		var AxisAttributes:XMLList = Axis.children().attributes(); 
 		var i:int = 0;
@@ -133,7 +135,7 @@
 		ParseAxis(myTreeData,arrTreeAxis);
 		 numberItems=xmlData.children().length();
 				
-		cnvs1_cbyAxis1.dataProvider=arrAxis;
+		//cnvs1_cbyAxis1.dataProvider=arrAxis;
 		
 		//création du 1er Pod
 		firstPod.addEventListener(FlexEvent.UPDATE_COMPLETE, onCreationCompletePod);
@@ -331,7 +333,12 @@
     }
     
      public function refreshChartEvent(event:Event):void {
-     	filterData();
+     	//Alert.show(event.target.name);
+	    	
+     	if (event.target.name.toString()=="cnvs1_cbyAxis1")
+     	{
+     		filterData();
+     	}
      	accordionIndex=leftAccordion.selectedIndex+1
 		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
     	var strChartType:String = ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()
@@ -560,9 +567,9 @@
     		if(strChartType=="Radar"){
     			FindMinMax("r","");
     		}else{
-	    		FindMinMax("x","");
+    			FindMinMax("x","");
 				FindMinMax("y","");
-				xField="@"+ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis1")).selectedLabel.toString();
+    			xField="@"+ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis1")).selectedLabel.toString();
     		}
     	}
     	if (myChart.chart.(@Type==strChartType).Properties.Property.(@name=="barTypes").length() !=0){
@@ -836,12 +843,12 @@
 		
 		if (myChart.chart.(@Type==chartType).Properties.Property.(@name=="form").length() !=0)
 		{
-  		if(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="Cartesian")
-  			{
-  				serie.setStyle('form', ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+num)).text)
-  		}else{
-  			serie.setStyle('form', ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbForm")).text);
-  			}
+	  		if(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="Cartesian")
+	  			{
+	  				serie.setStyle('form', ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+num)).text)
+	  		}else{
+	  			serie.setStyle('form', ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbForm")).text);
+	  		}
 		}
 		
 		if (myChart.chart.(@Type==chartType).Properties.Property.(@name=="Fill").length() !=0)
@@ -1345,9 +1352,9 @@
 		myTreeMap.setStyle('borderThickness', 1);
 	
 		resizeChart(myTreeMap);
-					
+		
 		var podContent:PodContentBase = new PodContentBase();
-	  	podContent.addChild(myTreeMap);
+    	podContent.addChild(myTreeMap);
 			
 		createNextPod(accordionIndex);
 		Pod(arrPods[accordionIndex]).removeAllChildren();
@@ -1355,26 +1362,57 @@
 	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". TreeMap";
     }
     
+    
+    
     private function drawGeoMap():void {
-    	var myGeoMap:WorldCountriesMap = new WorldCountriesMap();
-       //myGeoMap.allowNavigation=true;
-  	   //myGeoMap.zoomableSymbols=true;
-  	  
-  	   //myGeoMap.setStyle('backgroundFill', 0xFFFFFF);
-  	   //myGeoMap.setStyle('fill', 0xFFFFFF);
-  	   //myGeoMap.setStyle('highlightStroke', 0x000000);
-  	   //myGeoMap.setStyle('stroke', 0x000000);
-  	  
-  	  // myGeoMap.percentHeight=100;
-  	  // myGeoMap.percentWidth=100;
-  	  	resizeChart(myGeoMap);		
-		var podContent:PodContentBase = new PodContentBase();
-	  	podContent.addChild(myGeoMap);
-		
-		createNextPod(accordionIndex);
-	  	Pod(arrPods[accordionIndex]).removeAllChildren();
-	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
-	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". GeoMap";
+    	if(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbMap"))!=null){
+    		if(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbMap")).selectedLabel.toString()!=""){
+	    		var strTypeOfMap:String=ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbMap")).selectedLabel.toString()
+		    	var podContent:PodContentBase = new PodContentBase();
+		    	if(strTypeOfMap=="WorldCountries"){
+		    		var myWorldCountriesMap:WorldCountriesMap = new WorldCountriesMap();
+		  	  		resizeChart(myWorldCountriesMap);
+		  	  		podContent.addChild(myWorldCountriesMap);
+		    	} else if(strTypeOfMap=="AsiaPacific"){
+		    		var myAsiaPacificMap:AsiaPacificMap = new AsiaPacificMap();
+		    		resizeChart(myAsiaPacificMap);
+		    		podContent.addChild(myAsiaPacificMap);
+		    	} else if(strTypeOfMap=="America"){
+		    		var myAmericaMap:AmericasMap = new AmericasMap();
+		    		resizeChart(myAmericaMap);
+		    		podContent.addChild(myAmericaMap);
+		    	} else if(strTypeOfMap=="ContinentalEurope"){
+		    		var myContinentalEuropeMap:ContinentalEuropeMap = new ContinentalEuropeMap();
+		    		resizeChart(myContinentalEuropeMap);
+					podContent.addChild(myContinentalEuropeMap);
+		    	} else if(strTypeOfMap=="EuropeMiddleEastAfrica"){
+		    		var myEuropeMiddleEastAfricaMap:EuropeMiddleEastAfricaMap = new EuropeMiddleEastAfricaMap();
+		    		resizeChart(myEuropeMiddleEastAfricaMap);
+					podContent.addChild(myEuropeMiddleEastAfricaMap);
+		    	} else if(strTypeOfMap=="USStates"){
+		    		var myUSStatesMap:USStatesMap = new USStatesMap();
+		    		resizeChart(myUSStatesMap);
+					podContent.addChild(myUSStatesMap);
+		    	}
+		    	
+		       //myGeoMap.allowNavigation=true;
+		  	   //myGeoMap.zoomableSymbols=true;
+		  	  
+		  	   //myGeoMap.setStyle('backgroundFill', 0xFFFFFF);
+		  	   //myGeoMap.setStyle('fill', 0xFFFFFF);
+		  	   //myGeoMap.setStyle('highlightStroke', 0x000000);
+		  	   //myGeoMap.setStyle('stroke', 0x000000);
+		  	  
+		  	  // myGeoMap.percentHeight=100;
+		  	  // myGeoMap.percentWidth=100;
+		  	  
+		  	  createNextPod(accordionIndex);
+			  Pod(arrPods[accordionIndex]).removeAllChildren();
+			  Pod(arrPods[accordionIndex]).addChild(podContent); 
+			  Pod(arrPods[accordionIndex]).title= accordionIndex + ". GeoMap";
+		    	
+	    	}
+    	}
     }
 	
 	
@@ -1423,7 +1461,7 @@
 	  	
 	  	Pod(arrPods[accordionIndex]).removeAllChildren();
 	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
-	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". 3D Area";
+	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". Area 3D";
 	  	
 		createLegend2(myAreaChart, chartVBox);
 		addGridLines(myAreaChart);
@@ -1475,7 +1513,7 @@
 		createNextPod(accordionIndex);
 		Pod(arrPods[accordionIndex]).removeAllChildren();
 	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
-	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". 3D Bar";
+	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". Bar 3D";
 	  	createLegend2(myBarChart, chartVBox);
 	  	
 		addGridLines(myBarChart);
@@ -1526,7 +1564,7 @@
 		createNextPod(accordionIndex);
 		Pod(arrPods[accordionIndex]).removeAllChildren();
 	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
-	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". 3D Column";
+	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". Column 3D";
 	  	createLegend2(myColumnChart, chartVBox);  
 		addGridLines(myColumnChart);
     }
@@ -1571,7 +1609,7 @@
 		createNextPod(accordionIndex);
 		Pod(arrPods[accordionIndex]).removeAllChildren();
 	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
-	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". 3D Line";
+	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". Line 3D";
 	  	createLegend2(MyLineChart, chartVBox);
 		addGridLines(MyLineChart);
     }
@@ -1583,21 +1621,23 @@
 		var MyPie3DChart:PieChart3D;
 		var Pie3DSeries1:PieSeries3D;
 		
-		MyPie3DChart = new PieChart3D;
+		MyPie3DChart = new PieChart3D();
         MyPie3DChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
         MyPie3DChart.dataProvider=dataListCollection;
         MyPie3DChart.percentHeight=100;
         MyPie3DChart.percentWidth=100;
     	
     	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
-    		
-    		Pie3DSeries1=new PieSeries3D;
+    		Pie3DSeries1=new PieSeries3D();
     		yField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
-			setSerie(Pie3DSeries1,'Pie3D',yField,num);
-			myPie3DSeries.push(Pie3DSeries1);
+			if(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString()!=""){
+				setSerie(Pie3DSeries1,'Pie3D',yField,num);
+	    		myPie3DSeries.push(Pie3DSeries1);
+	   		}
 		}
+		
 		MyPie3DChart.elevationAngle=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_Elevation")).value; 
-		MyPie3DChart.rotationAngle=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_Rotation")).value; 
+		//MyPie3DChart.rotationAngle=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_Rotation")).value; 
 		MyPie3DChart.zoom=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_Zoom")).value; 
 		MyPie3DChart.depth=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_Depth")).value; 
 		MyPie3DChart.depthGap=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_DepthGap")).value; 
@@ -1606,8 +1646,7 @@
 		MyPie3DChart.ambientLight=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_AmbiantLight")).value;
       	MyPie3DChart.setStyle("innerRadius", flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_PieDonuts")).value); 
   		
-			
-  		MyPie3DChart.series = myPie3DSeries;
+		MyPie3DChart.series = myPie3DSeries;
 		resizeChart(MyPie3DChart);
 		resizeChart(chartVBox);
 		chartVBox.addChild(MyPie3DChart);
@@ -1617,7 +1656,7 @@
 	  	createNextPod(accordionIndex);
 		Pod(arrPods[accordionIndex]).removeAllChildren();
 	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
-	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". 3D Pie";
+	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". Pie 3D";
 
 		createLegend2(MyPie3DChart, chartVBox);
 		

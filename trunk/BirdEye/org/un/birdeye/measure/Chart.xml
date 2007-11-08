@@ -291,8 +291,19 @@
       					<Style name="selectionColor" />
     		</Styles>  			
 	</chart>
-	<chart Type="GeoMap" Class="GeoMap" >
-		
+	<chart Type="GeoMap" Class="GeoMap">
+		<Properties>
+			<Property name="Map">
+								<Maps>
+			            			<Map>America</Map>
+			            			<Map>AsiaPacific</Map>
+			            			<Map>ContinentalEurope</Map>
+			            			<Map>EuropeMiddleEastAfrica</Map>
+			            			<Map>USStates</Map>
+			            			<Map>WorldCountries</Map>
+								</Maps>
+						</Property>
+		</Properties>
 	</chart>
 	<chart Type="Area3D" Class="AreaChart3D" Series="AreaSeries3D">
 			<Properties>
