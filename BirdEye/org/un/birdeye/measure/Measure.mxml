@@ -301,6 +301,8 @@
     }
     
     public function filterData():void{
+    	accordionIndex=leftAccordion.selectedIndex+1
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
     	var strChart:String=ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()
     	if(strChart!="TreeMap" && strChart!="GeoMap"){
     	var NewXML:XML=new XML(xmlData);
@@ -333,12 +335,10 @@
     }
     
      public function refreshChartEvent(event:Event):void {
-     	//Alert.show(event.target.name);
-	    	
-     	if (event.target.name.toString()=="cnvs1_cbyAxis1")
+     	/*if (event.target.name.toString()=="cnvs1_cbyAxis1")
      	{
      		filterData();
-     	}
+     	}*/
      	accordionIndex=leftAccordion.selectedIndex+1
 		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
     	var strChartType:String = ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()
