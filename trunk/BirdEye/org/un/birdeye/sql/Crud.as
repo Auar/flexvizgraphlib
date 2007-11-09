@@ -225,7 +225,7 @@ import org.un.birdeye.images.EmbeddedIcons;
 		}
 		
 		
-		// Node Meta CRUD
+// Node Meta CRUD
 		
 		public function submitNodeMeta():void {
 			var NodeMeta:Object = new Object();
@@ -272,4 +272,46 @@ import org.un.birdeye.images.EmbeddedIcons;
 			nodeMetaModule.nodemetavs.selectedIndex = 0;
 		}
 			
+// Node Type CRUD
 		
+		public function submitNodeType():void {
+			var NodeType:Object = new Object();
+			//NodeType.NodeID=nodeTypeLookupModule.NodeTypeID.text;
+			NodeType.NodeTypeName=nodeTypeLookupModule.NodeTypeName.text;
+			NodeType.NodeTypeImage=nodeTypeLookupModule.getBase64FromComponent(nodeTypeLookupModule.imgPrev);
+			NodeType.NodeTypeColor=nodeTypeLookupModule.NodeTypeColor.text;
+						
+			createNodeType(NodeType);
+			nodeTypeControl.selectedIndex = 0;
+			
+		} 
+		
+		public function editNodeType():void {
+			var NodeType:Object = new Object();
+			//NodeType.NodeID=nodeTypeLookupModule.NodeTypeID.text;
+			NodeType.NodeTypeName=nodeTypeLookupModule.NodeTypeName.text;
+			NodeType.NodeTypeImage=nodeTypeLookupModule.NodeTypeImage.text;
+			NodeType.NodeTypeColor=nodeTypeLookupModule.NodeTypeColor.text;
+			
+			updateNode(NodeType);
+			nodeControl.selectedIndex = 0;
+			
+		}
+
+		public function delNodeType():void {
+			var NodeType:Object = new Object();
+			//NodeType.NodeID=nodeTypeLookupModule.NodeTypeID.text;
+			NodeType.NodeTypeName=nodeTypeLookupModule.NodeTypeName.text;
+			NodeType.NodeTypeImage=nodeTypeLookupModule.NodeTypeImage.text;
+			NodeType.NodeTypeColor=nodeTypeLookupModule.NodeTypeColor.text;
+			
+			deleteNodeType(NodeType);
+			nodeTypeControl.selectedIndex = 0;
+			
+		}
+		
+		public function addNodeType(e:Event):void
+		{
+			nodeTypeControl.selectedIndex = 1;
+			nodeTypeLookupModule.nodetypevs.selectedIndex = 0;
+		}
