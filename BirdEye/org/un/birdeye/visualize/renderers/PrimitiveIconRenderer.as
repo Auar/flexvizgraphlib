@@ -210,6 +210,13 @@ package org.un.birdeye.visualize.renderers {
 			/* get the portion of the name without the "db:" prefix */
 			var imageName:String = type.substr(3);
 			
+			/* check if we have a mapping */
+			if(GlobalParams.iconMap == null) {
+				trace("iconMap not initialised (is null), no image data available");
+				_imageObject = new Image(); // add an empty image
+				return;
+			}
+			
 			/* lookup in the global mapping object */
 			if(GlobalParams.iconMap.hasOwnProperty(imageName)) {
 				if(GlobalParams.iconMap[imageName] is Image) {
