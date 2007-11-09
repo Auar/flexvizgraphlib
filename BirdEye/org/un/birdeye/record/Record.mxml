@@ -103,7 +103,7 @@
 						<mx:Label text="Meta Data:"/>
 						<mx:TextInput id="MetaFieldDataFilter" change="filterNodeMeta.refresh()"/>
 					</mx:HBox>
-					<mx:Button toolTip="This will take you to a new record form" icon="@Embed('../images/ui/add.png')" label="New" click="addEdge(event);"/>
+					<mx:Button toolTip="This will take you to a new record form" icon="@Embed('../images/ui/add.png')" label="New" click="addNodeMeta(event);"/>
  					</mx:ApplicationControlBar>
 					<mx:DataGrid dataProvider="{filterNodeMeta}" id="dgNodeMeta" wordWrap="true" variableRowHeight="true" width="100%" height="100%" >
 						<mx:columns>
@@ -138,13 +138,13 @@
          					change="filterNodeType.refresh()"/>
 						
 					</mx:HBox>
-					<mx:Button toolTip="This will take you to a new record form" icon="@Embed('../images/ui/add.png')" label="New" click="addEdge(event);"/>
+					<mx:Button toolTip="This will take you to a new record form" icon="@Embed('../images/ui/add.png')" label="New" click="addNodeType(event);"/>
  					</mx:ApplicationControlBar>
 					<mx:DataGrid dataProvider="{filterNodeType}" id="dgNodeType" wordWrap="true" variableRowHeight="true" width="100%" height="100%" >
 						<mx:columns>
 							<mx:DataGridColumn headerText="NodeTypeID" width="55" dataField="NodeTypeID" />
 							<mx:DataGridColumn headerText="NodeTypeName" dataField="NodeTypeName" />
-							<mx:DataGridColumn headerText="NodeTypeObject" dataField="NodeTypeObject" />
+							<mx:DataGridColumn headerText="NodeTypeImage" dataField="NodeTypeImage" />
 							<mx:DataGridColumn headerText="NodeTypeColor" dataField="NodeTypeColor"/>
 							<mx:DataGridColumn minWidth="160" itemRenderer="org.un.birdeye.record.dgNodeTypeControlBtns" width="160" />
 						</mx:columns>

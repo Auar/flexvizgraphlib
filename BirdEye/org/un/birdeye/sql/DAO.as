@@ -76,6 +76,8 @@ EdgeTypeName
   		[Bindable]
 		public var dpNodeMeta:Array;
 		[Bindable]
+		public var dpNodeType:Array;
+		[Bindable]
 		public var dpNodes:Array;
 		[Bindable]
 		public var dpEdges:Array;
@@ -488,7 +490,7 @@ EdgeTypeName
 		selectStmt.execute();
 	}
 	
-	// NodeMetas
+// NodeMetas
  	public function getNodeMetas():void
 	{
 		// create the SQL statement
@@ -522,9 +524,9 @@ EdgeTypeName
 				if (_conn.totalChanges >= 1)
 			    {
 			    	getNodeMetas();
-			    	
 			    }
 			});
+		selectStmt.addEventListener(SQLErrorEvent.ERROR, selectError);
 		selectStmt.execute();
 	}
 	
@@ -564,8 +566,84 @@ EdgeTypeName
 		selectStmt.execute();
 	}
 
-// Lookups
+// NodeTypes
+ 	public function getNodeTypes():void
+	{
+		// create the SQL statement
+		var selectStmt:SQLStatement = new SQLStatement();
+		selectStmt.sqlConnection = _conn;
+		selectStmt.text = "SELECT * FROM nodetypelookups";
+		
+		// register listeners for the result and error events
+		selectStmt.addEventListener(SQLEvent.RESULT, 
+			function (event:SQLEvent):void
+			{
+				var result:SQLResult = selectStmt.getResult();
+				dpNodeType = result.data;
+			});
+		selectStmt.addEventListener(SQLErrorEvent.ERROR, selectError);
+		// execute the statement
+		selectStmt.execute();
+		
+	}
 	
+	public function createNodeType(NodeType:Object):void
+	{
+		// create the SQL statement
+		var selectStmt:SQLStatement = new SQLStatement();
+		selectStmt.sqlConnection = _conn;
+		//Node.NodeDate = formatDate(Node.NodeDate);
+		selectStmt.text = "INSERT INTO nodetypelookups (NodeTypeName, NodeTypeImage, NodeTypeColor)  values ('"+NodeType.NodeTypeName+"','"+NodeType.NodeTypeImage+"','"+NodeType.NodeTypeColor+"')";
+		selectStmt.addEventListener(SQLEvent.RESULT, 
+			function (event:SQLEvent):void
+			{
+				if (_conn.totalChanges >= 1)
+			    {
+			    	getNodeTypes();
+			    }
+			});
+		selectStmt.addEventListener(SQLErrorEvent.ERROR, selectError);
+		selectStmt.execute();
+	}
+	
+	public function updateNodeType(NodeType:Object):void
+	{
+		// create the SQL statement
+		var selectStmt:SQLStatement = new SQLStatement();
+		selectStmt.sqlConnection = _conn;
+		selectStmt.text = "UPDATE xnodes SET NodeID='"+NodeType.NodeID+"', NodeName='"+NodeType.NodeName+"', NodeDescription='"+NodeType.NodeDescription+"', NodeType='"+NodeType.NodeType+"',NodeLabelA='"+NodeType.NodeLabelA+"', NodeDataA='"+NodeType.NodeDataA+"', NodeLabelB='"+NodeType.NodeLabelB+"', NodeDataB='"+NodeType.NodeDataB+"',NodeAxisLabelA='"+NodeType.NodeAxisLabelA+"', NodeAxisDataA='"+NodeType.NodeAxisDataA+"', NodeAxisLabelB='"+NodeType.NodeAxisLabelB+"', NodeAxisDataB='"+NodeType.NodeAxisDataB+"', NodeDate='"+NodeType.NodeDate+"' WHERE NodeID='"+NodeType.NodeID+"'";
+		selectStmt.addEventListener(SQLEvent.RESULT, 
+			function (event:SQLEvent):void
+			{
+				if (_conn.totalChanges >= 1)
+			    {
+			    	getNodes();
+			    	getXMLNodes();
+			    }
+			});
+		selectStmt.execute();
+	}
+	
+	public function deleteNodeType(NodeType:Object):void
+	{
+		// create the SQL statement
+		var selectStmt:SQLStatement = new SQLStatement();
+		selectStmt.sqlConnection = _conn;
+		selectStmt.text = "DELETE FROM nodetypelookups WHERE NodeTypeID='"+NodeType.NodeTypeID+"'";
+		selectStmt.addEventListener(SQLEvent.RESULT, 
+			function (event:SQLEvent):void
+			{
+				if (_conn.totalChanges >= 1)
+			    {
+			    	getNodes();
+			    	getXMLNodes();
+			    }
+			});
+		selectStmt.execute();
+	}
+
+// Lookups
+
 	public function lookupNodeTypes():void
 	{
 		// create the SQL statement

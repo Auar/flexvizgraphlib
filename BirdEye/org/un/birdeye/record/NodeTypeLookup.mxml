@@ -8,84 +8,127 @@
 <mx:Script>
 	<![CDATA[
 	
-	private function backList(e:Event):void
-	{
-		parentDocument.nodeMetaControl.selectedIndex = 0;
-		// parentDocument.detailNav.selectedIndex = 1;
-	}
+		import mx.collections.ArrayCollection;
+		import flash.filesystem.File;
+		import flash.display.BitmapData;
+		import org.un.birdeye.ui.JPGEncoder;
+		import mx.utils.Base64Encoder;
+		import flash.utils.ByteArray;
+		 
+		private static const QUALITY:Number =80
+		
+		public var selectedFile:File = new File();
+
+		private function imgSet(e:Event):void
+		{
+			selectedFile.addEventListener(Event.SELECT, selectHandler);
+			selectedFile.browse();
+		}
+		
+		private function selectHandler( event:Event ):void 
+		{
+            imgFile.text = selectedFile.name;
+			imgPrev.source = selectedFile.url;
+        }
+		 
+		public function getBase64FromComponent(image:Image):String	{
+			var data1:BitmapData = new BitmapData(image.width, image.height);
+			data1.draw(image);
+			 
+			var en:JPGEncoder = new JPGEncoder(QUALITY);
+			var bArray:ByteArray=   en.encode(data1);
+			 
+			var encoder:Base64Encoder = new Base64Encoder();
+			encoder.encodeBytes(bArray, 0, bArray.length);
+			var base64data:String = encoder.flush();
+			return base64data;
+		}
 	
-	import mx.events.CalendarLayoutChangeEvent;
+		private function backList(e:Event):void
+		{
+			parentDocument.nodeTypeControl.selectedIndex = 0;
+			// parentDocument.detailNav.selectedIndex = 1;
+		}
+		
+		import mx.events.CalendarLayoutChangeEvent;
   	
 	]]>
 </mx:Script>
 	
 	
 
-	<mx:ViewStack id="nodemetavs" height="100%" width="100%" >
+	<mx:ViewStack id="nodetypevs" height="100%" width="100%" >
 	<!-- View -->
 	
 	<mx:Canvas id="crudCnvs" height="100%" width="100%">
 	<mx:Form width="100%" height="100%">
 		<mx:FormItem >
 			<mx:Grid>
-				<!-- NodeMetaID -->
-				<mx:GridRow width="100%" height="100%">
+				<!-- NodeTypeID -->
+<!--				<mx:GridRow width="100%" height="100%">
 					<mx:GridItem width="100%" height="100%">
-						<mx:Label text="NodeMetaID"/>
+						<mx:Label text="NodeTypeID"/>
 					</mx:GridItem>
 					<mx:GridItem width="100%" height="100%">
 						<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
 					</mx:GridItem>		
 					<mx:GridItem width="100%" height="100%">
-						<mx:TextInput id="NodeMetaID" text="{parentDocument.dgNodeMeta.selectedItem.NodeMetaID}"/>
+						<mx:TextInput id="NodeTypeID" text="{parentDocument.dgNodeType.selectedItem.NodeTypeID}"/>
+					</mx:GridItem>
+				</mx:GridRow>-->
+				<!-- NodeTypeFieldLabel -->
+				<mx:GridRow width="100%" height="100%">
+					<mx:GridItem width="100%" height="100%">
+						<mx:Label text="NodeType Name"/>
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%">
+						<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
+					</mx:GridItem>		
+					<mx:GridItem width="100%" height="100%">
+						<mx:TextInput id="NodeTypeName" text="{parentDocument.dgNodeType.selectedItem.NodeTypeName}"/>
 					</mx:GridItem>
 				</mx:GridRow>
-				<!-- MetaFieldLabel -->
-				<mx:GridRow width="100%" height="100%">
+				<!-- NodeType Desc -->
+<!--				<mx:GridRow width="100%" height="100%">
 					<mx:GridItem width="100%" height="100%">
-						<mx:Label text="MetaFieldLabel"/>
+						<mx:Label text="NodeType Description"/>
 					</mx:GridItem>
 					<mx:GridItem width="100%" height="100%">
 						<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
 					</mx:GridItem>		
 					<mx:GridItem width="100%" height="100%">
-						<mx:TextInput id="MetaFieldLabel" text="{parentDocument.dgNodeMeta.selectedItem.MetaFieldLabel}"/>
+						<mx:TextArea id="TypeFieldType" text="{parentDocument.dgNodeType.selectedItem.TypeFieldType}" width="300" height="100" />
+					</mx:GridItem>
+				</mx:GridRow>-->
+				<!-- NodeType Img -->
+				<mx:GridRow width="100%" height="100%">
+					<mx:GridItem width="100%" height="100%">
+						<mx:Label text="NodeType Image"/>
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%">
+						<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
+					</mx:GridItem>		
+					<mx:GridItem width="100%" height="100%">
+						<mx:TextInput id="NodeTypeImage" text="{parentDocument.dgNodeType.selectedItem.NodeTypeImage}"/>
+						<mx:Button label="Browse" click="imgSet(event);" />
+						<mx:Label text="Preview:" />
+						<mx:Label id="imgFile" />
+						<mx:VBox width="100%" >
+							
+							<mx:Image id="imgPrev" />
+						</mx:VBox>	
 					</mx:GridItem>
 				</mx:GridRow>
-				<!-- MetaFieldType -->
+				<!-- NodeType Color -->
 				<mx:GridRow width="100%" height="100%">
 					<mx:GridItem width="100%" height="100%">
-						<mx:Label text="MetaFieldType"/>
+						<mx:Label text="NodeType Color"/>
 					</mx:GridItem>
 					<mx:GridItem width="100%" height="100%">
 						<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
 					</mx:GridItem>		
 					<mx:GridItem width="100%" height="100%">
-						<mx:TextArea id="MetaFieldType" text="{parentDocument.dgNodeMeta.selectedItem.MetaFieldType}" width="300" height="100" />
-					</mx:GridItem>
-				</mx:GridRow>
-				<!-- MetaFieldData -->
-				<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-						<mx:Label text="MetaFieldData"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-						<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
-					</mx:GridItem>		
-					<mx:GridItem width="100%" height="100%">
-						<mx:TextInput id="MetaFieldData" text="{parentDocument.dgNodeMeta.selectedItem.MetaFieldData}"/>	
-					</mx:GridItem>
-				</mx:GridRow>
-				<!-- NodeID -->
-				<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-						<mx:Label text="NodeID"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-						<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
-					</mx:GridItem>		
-					<mx:GridItem width="100%" height="100%">
-						<mx:TextInput id="NodeID" text="{parentDocument.dgNodeMeta.selectedItem.NodeID}"/>	
+						<mx:TextInput id="NodeTypeColor" text="{parentDocument.dgNodeType.selectedItem.NodeTypeColor}"/>	
 					</mx:GridItem>
 				</mx:GridRow>
 				
@@ -94,8 +137,9 @@
 		<mx:HBox>
 			
 			<mx:Button toolTip="This will take you to detail view" icon="@Embed('../images/ui/view.gif')" label="Back to View" click="backList(event);"/>					
-			<mx:Button toolTip="Submit changes." icon="@Embed('../images/ui/submit.png')" label="Submit" click="parentDocument.editNodeMeta()"/>
-			<mx:Button toolTip="Delete the selected record." icon="@Embed('../images/ui/delete.png')" label="Delete" click="parentDocument.delNodeMeta()"/>
+			<mx:Button toolTip="Submit" icon="@Embed('../images/ui/submit.png')" label="Submit" click="parentDocument.submitNodeType()"/>
+			<mx:Button toolTip="Submit changes." icon="@Embed('../images/ui/submit.png')" label="Edit" click="parentDocument.editNodeType()"/>
+			<mx:Button toolTip="Delete the selected record." icon="@Embed('../images/ui/delete.png')" label="Delete" click="parentDocument.delNodeType()"/>
 		</mx:HBox>
 	</mx:Form>
 
