@@ -88,82 +88,103 @@ package org.un.birdeye.visualize.renderers {
 			this.addChild(lb);
 		}
 
-
+		/**
+		 * Create an image component for the renderer.
+		 * The image type determines the image and how it is
+		 * obtained. Currently there are three possibilities:
+		 * - if the image type matches the name of primitive icon,
+		 *   the primitive icon will be drawn and used.
+		 * - if the image type matches one of the list of embedded
+		 *   images, the embedded image will be used.
+		 * - if the image type has a prefix of "db:" the mapping
+		 *   will be checked if the image has been provided
+		 *   there from the database and then the image is used
+		 *   from there.
+		 * The mapping which is required for that purpose is
+		 * GlobalParama.iconMap
+		 * */
 		private function createImageComponent():void {
 			
 			var type:String = this.data.data.@nodeType;
 			
-			/* first create the image object node */
-			switch(type) {
-		    	
-				case "Globe":
-				case "GoalOne":
-				case "GoalTwo":
-				case "GoalThree":
-				case "GoalFour":
-				case "GoalFive":
-				case "GoalSix":
-				case "GoalSeven":
-				case "GoalEight":
-				case "UNlogo":
-				
-					setImageNode(type);
-			        break;
+			/* first check if we have a "db:" prefix, substr()
+			 * should be quicker than match() or something similar */
+			if(type.substr(0,3) == "db:") {
+				setDBImageNode(type);
+			} else {
+			
+				/* now test for specific types */
+				switch(type) {
 			    	
-		    	case "PrimitivePolygon":
-		    	case "PrimitiveSquare":
-		    	case "PrimitiveTriangle":
-		    		setPolygonNode(type);
-		    		break;
-			    		
-				case "PrimitiveStar":
-					_imageObject = new PrimitiveStar();
-					(_imageObject as PrimitiveStar).points = 9;
-					_imageObject.setStyle("backgroundColor", "0x666666");
-					_imageObject.width=15;
-					_imageObject.height=15;
-					break;
-			    	
-				case "PrimitiveBurst":
-					_imageObject = new PrimitiveBurst();
-					_imageObject.setStyle("backgroundColor", "0x0000cc");
-					_imageObject.width=15;
-					_imageObject.height=15;
-					break;
-
-				case "PrimitiveCircle":
-					_imageObject = new PrimitiveCircle();
-					_imageObject.setStyle("backgroundColor", "0x0000cc");
-					_imageObject.width=10;
-					_imageObject.height=10;
-					break;
-
-				case "PrimitiveGear":
-					_imageObject = new PrimitiveGear();
-					(_imageObject as PrimitiveGear).outerRadius = 23;
-					(_imageObject as PrimitiveGear).innerRadius = 36;
-					(_imageObject as PrimitiveGear).points = 9;
-					(_imageObject as PrimitiveGear).holeRadius = 10;
-					(_imageObject as PrimitiveGear).holePoints = 9;
-					(_imageObject as PrimitiveGear).angle = 90;
-					_imageObject.setStyle("backgroundColor", "0x0000cc");
-					_imageObject.width=10;
-					_imageObject.height=10;
-					break;
-
-				case "PrimitiveReverseBurst":
-					_imageObject = new PrimitiveReverseBurst();
-					_imageObject.setStyle("backgroundColor", "0xFF0000");
-					_imageObject.width=10;
-					_imageObject.height=10;
-					break;
-
-		    	default:
-			        // trace("Out of range");
-			        setPolygonNode(type);
-			        _imageObject.toolTip=this.data.data.@name;
-			        _imageObject.setStyle("backgroundColor", "0xcccccc");
-			        break;
+					case "Globe":
+					case "GoalOne":
+					case "GoalTwo":
+					case "GoalThree":
+					case "GoalFour":
+					case "GoalFive":
+					case "GoalSix":
+					case "GoalSeven":
+					case "GoalEight":
+					case "UNlogo":
+					
+						setImageNode(type);
+				        break;
+				    	
+			    	case "PrimitivePolygon":
+			    	case "PrimitiveSquare":
+			    	case "PrimitiveTriangle":
+			    		setPolygonNode(type);
+			    		break;
+				    		
+					case "PrimitiveStar":
+						_imageObject = new PrimitiveStar();
+						(_imageObject as PrimitiveStar).points = 9;
+						_imageObject.setStyle("backgroundColor", "0x666666");
+						_imageObject.width=15;
+						_imageObject.height=15;
+						break;
+				    	
+					case "PrimitiveBurst":
+						_imageObject = new PrimitiveBurst();
+						_imageObject.setStyle("backgroundColor", "0x0000cc");
+						_imageObject.width=15;
+						_imageObject.height=15;
+						break;
+	
+					case "PrimitiveCircle":
+						_imageObject = new PrimitiveCircle();
+						_imageObject.setStyle("backgroundColor", "0x0000cc");
+						_imageObject.width=10;
+						_imageObject.height=10;
+						break;
+	
+					case "PrimitiveGear":
+						_imageObject = new PrimitiveGear();
+						(_imageObject as PrimitiveGear).outerRadius = 23;
+						(_imageObject as PrimitiveGear).innerRadius = 36;
+						(_imageObject as PrimitiveGear).points = 9;
+						(_imageObject as PrimitiveGear).holeRadius = 10;
+						(_imageObject as PrimitiveGear).holePoints = 9;
+						(_imageObject as PrimitiveGear).angle = 90;
+						_imageObject.setStyle("backgroundColor", "0x0000cc");
+						_imageObject.width=10;
+						_imageObject.height=10;
+						break;
+	
+					case "PrimitiveReverseBurst":
+						_imageObject = new PrimitiveReverseBurst();
+						_imageObject.setStyle("backgroundColor", "0xFF0000");
+						_imageObject.width=10;
+						_imageObject.height=10;
+						break;
+	
+			    	default:
+				        // trace("Out of range");
+				        setPolygonNode(type);
+				        _imageObject.toolTip=this.data.data.@name;
+				        _imageObject.setStyle("backgroundColor", "0xcccccc");
+				        break;
+				}
 			}
 				
 			/* styles for any Primitive object */
@@ -179,6 +200,28 @@ package org.un.birdeye.visualize.renderers {
 			/* for any _imageObject */
 			_imageObject.scaleX = org.un.birdeye.GlobalParams.scaleFactor;
 			_imageObject.scaleY = org.un.birdeye.GlobalParams.scaleFactor;
+		}
+		
+		/**
+		 * This function sets the image node to the image object
+		 * found in the global iconMap. */
+		private function setDBImageNode(type:String):void {
+			
+			/* get the portion of the name without the "db:" prefix */
+			var imageName:String = type.substr(3);
+			
+			/* lookup in the global mapping object */
+			if(GlobalParams.iconMap.hasOwnProperty(imageName)) {
+				if(GlobalParams.iconMap[imageName] is Image) {
+					_imageObject = GlobalParams.iconMap[imageName] as Image;
+				} else {
+					trace("Object in iconMap with name: "+imageName+" is not an Image");
+					_imageObject = new Image(); // add an empty image
+				}
+			} else {
+				trace("iconMap does have any item with key: "+imageName);
+				_imageObject = new Image(); // add an empty image
+			}
 		}
 		
 		private function setImageNode(type:String):void {

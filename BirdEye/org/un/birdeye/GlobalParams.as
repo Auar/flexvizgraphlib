@@ -11,14 +11,34 @@ package org.un.birdeye {
 	 * */
 	public class GlobalParams {
 		
-		/* scale factor for rendered items */
+		/** 
+		 * scale factor for rendered items */
 		public static var scaleFactor:Number = 1;
 		
-		/* some components in Visualize.mxml that have to 
-		 * communicate with the icon renderer to handle mouse events */
+		/**
+		 * Reference to a component in Visualize.mxml, which
+		 * must be available to the icon renderer, to handle
+		 * certain mouse events. */
 		public static var visualLeftAccordion:Accordion;
+		
+		/**
+		 * Reference to a component in Visualize.mxml, which
+		 * must be available to the icon renderer, to handle
+		 * certain mouse events. */
 		public static var visualDetailTitle:TextArea;
+		
+		/**
+		 * Reference to a component in Visualize.mxml, which
+		 * must be available to the icon renderer, to handle
+		 * certain mouse events. */
 		public static var visualDetailDesc:TextArea;
+		
+		/**
+		 * A global mapping with strings as keys and images as objects
+		 * to be used by IconRenderers and to be populated by the
+		 * database, so that Icon images can be pulled from the database.
+		 * */
+		public static var iconMap:Object;
 		
 	}
 }
