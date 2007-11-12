@@ -76,8 +76,6 @@ EdgeTypeName
   		[Bindable]
 		public var dpNodeMeta:Array;
 		[Bindable]
-		public var dpNodeType:Array;
-		[Bindable]
 		public var dpNodes:Array;
 		[Bindable]
 		public var dpEdges:Array;
@@ -89,9 +87,9 @@ EdgeTypeName
 		public var dpNodeMetaRecords:Array;
 		// Lookups
 		[Bindable]
-		public var dpLookupEdgeTypes:Array;
+		public var dpEdgeTypes:Array;
 		[Bindable]
-		public var dpLookupNodeTypes:Array;
+		public var dpNodeTypes:Array;
 		
 		[Bindable]
 		public var rootNode:XML = <Graph />;
@@ -130,8 +128,8 @@ EdgeTypeName
 			getEdges();
 			getEdgeView();
 			getNodeMetas(),
-			lookupNodeTypes(),
-			lookupEdgeTypes();
+			getNodeTypes(),
+			getEdgeTypes();
 		 	}
 		
 		private function openDatabaseError(event:SQLErrorEvent):void
@@ -579,7 +577,7 @@ EdgeTypeName
 			function (event:SQLEvent):void
 			{
 				var result:SQLResult = selectStmt.getResult();
-				dpNodeType = result.data;
+				dpNodeTypes = result.data;
 			});
 		selectStmt.addEventListener(SQLErrorEvent.ERROR, selectError);
 		// execute the statement
@@ -611,7 +609,7 @@ EdgeTypeName
 		// create the SQL statement
 		var selectStmt:SQLStatement = new SQLStatement();
 		selectStmt.sqlConnection = _conn;
-		selectStmt.text = "UPDATE xnodes SET NodeID='"+NodeType.NodeID+"', NodeName='"+NodeType.NodeName+"', NodeDescription='"+NodeType.NodeDescription+"', NodeType='"+NodeType.NodeType+"',NodeLabelA='"+NodeType.NodeLabelA+"', NodeDataA='"+NodeType.NodeDataA+"', NodeLabelB='"+NodeType.NodeLabelB+"', NodeDataB='"+NodeType.NodeDataB+"',NodeAxisLabelA='"+NodeType.NodeAxisLabelA+"', NodeAxisDataA='"+NodeType.NodeAxisDataA+"', NodeAxisLabelB='"+NodeType.NodeAxisLabelB+"', NodeAxisDataB='"+NodeType.NodeAxisDataB+"', NodeDate='"+NodeType.NodeDate+"' WHERE NodeID='"+NodeType.NodeID+"'";
+		selectStmt.text = "UPDATE nodetypelookups SET NodeTypeName='"+NodeType.NodeTypeName+"', NodeTypeImage='"+NodeType.NodeTypeImage+"', NodeTypeColor='"+NodeType.NodeTypeColor+"' WHERE NodeTypeID='"+NodeType.NodeTypeID+"'";
 		selectStmt.addEventListener(SQLEvent.RESULT, 
 			function (event:SQLEvent):void
 			{
@@ -644,26 +642,7 @@ EdgeTypeName
 
 // Lookups
 
-	public function lookupNodeTypes():void
-	{
-		// create the SQL statement
-		var selectStmt:SQLStatement = new SQLStatement();
-		selectStmt.sqlConnection = _conn;
-		selectStmt.text = "SELECT * FROM nodetypelookups";
-		
-		// register listeners for the result and error events
-		selectStmt.addEventListener(SQLEvent.RESULT, 
-			function (event:SQLEvent):void
-			{
-				var result:SQLResult = selectStmt.getResult();
-				dpLookupNodeTypes = result.data;
-			});
-		selectStmt.addEventListener(SQLErrorEvent.ERROR, selectError);
-		// execute the statement
-		selectStmt.execute();
-	}
-	
-	public function lookupEdgeTypes():void
+	public function getEdgeTypes():void
 	{
 		// create the SQL statement
 		var selectStmt:SQLStatement = new SQLStatement();
@@ -675,7 +654,7 @@ EdgeTypeName
 			function (event:SQLEvent):void
 			{
 				var result:SQLResult = selectStmt.getResult();
-				dpLookupEdgeTypes = result.data;
+				dpEdgeTypes = result.data;
 			});
 		selectStmt.addEventListener(SQLErrorEvent.ERROR, selectError);
 		// execute the statement
