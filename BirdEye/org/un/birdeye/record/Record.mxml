@@ -10,8 +10,8 @@
 	
 	<mx:ArrayCollection id="filterNodes" source="{dpNodes}" />
 	<mx:ArrayCollection id="filterEdges" source="{dpEdgeView}" />
-	<mx:ArrayCollection id="filterNodeType" source="{dpLookupNodeTypes}" />
-	<mx:ArrayCollection id="filterEdgeType" source="{dpLookupEdgeTypes}" />
+	<mx:ArrayCollection id="filterNodeTypes" source="{dpNodeTypes}" />
+	<mx:ArrayCollection id="filterEdgeTypes" source="{dpEdgeTypes}" />
 
 		<!-- Work area -->
 		<mx:Canvas id="graphCnvs" width="100%" height="100%"  >		
@@ -135,12 +135,12 @@
 						<mx:TextInput 
       						id="NodeTypeNameFilter" 
        	 					width="100%"
-         					change="filterNodeType.refresh()"/>
+         					change="filterNodeTypes.refresh()"/>
 						
 					</mx:HBox>
 					<mx:Button toolTip="This will take you to a new record form" icon="@Embed('../images/ui/add.png')" label="New" click="addNodeType(event);"/>
  					</mx:ApplicationControlBar>
-					<mx:DataGrid dataProvider="{filterNodeType}" id="dgNodeType" wordWrap="true" variableRowHeight="true" width="100%" height="100%" >
+					<mx:DataGrid dataProvider="{filterNodeTypes}" id="dgNodeType" wordWrap="true" variableRowHeight="true" width="100%" height="100%" >
 						<mx:columns>
 							<mx:DataGridColumn headerText="NodeTypeID" width="55" dataField="NodeTypeID" />
 							<mx:DataGridColumn headerText="NodeTypeName" dataField="NodeTypeName" />
@@ -168,12 +168,12 @@
 						<mx:TextInput 
       						id="EdgeTypeNameFilter" 
        	 					width="100%"
-         					change="filterEdgeType.refresh()"/>
+         					change="filterEdgeTypes.refresh()"/>
 						
 					</mx:HBox>
 					<mx:Button toolTip="This will take you to a new record form" icon="@Embed('../images/ui/add.png')" label="New" click="addEdge(event);"/>
  					</mx:ApplicationControlBar>
-					<mx:DataGrid dataProvider="{filterEdgeType}" id="dgEdgeType" wordWrap="true" variableRowHeight="true" width="100%" height="100%" >
+					<mx:DataGrid dataProvider="{filterEdgeTypes}" id="dgEdgeType" wordWrap="true" variableRowHeight="true" width="100%" height="100%" >
 						<mx:columns>
 							<mx:DataGridColumn headerText="EdgeTypeID" width="55" dataField="EdgeTypeID" />
 							<mx:DataGridColumn headerText="EdgeTypeName" dataField="EdgeTypeName" />

@@ -63,8 +63,8 @@ import org.un.birdeye.images.EmbeddedIcons;
   			filterNodes.filterFunction=processNodesFilter;
 			filterEdges.filterFunction=processEdgesFilter;
 			filterNodeMeta.filterFunction=processNodeMetaFilter;
-			filterNodeType.filterFunction=processNodeTypeFilter;
-			filterEdgeType.filterFunction=processEdgeTypeFilter;
+			filterNodeTypes.filterFunction=processNodeTypeFilter;
+			filterEdgeTypes.filterFunction=processEdgeTypeFilter;
  		}
   		
  		// Nodes Filter Function 
