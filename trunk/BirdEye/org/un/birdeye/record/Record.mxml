@@ -144,7 +144,7 @@
 						<mx:columns>
 							<mx:DataGridColumn headerText="NodeTypeID" width="55" dataField="NodeTypeID" />
 							<mx:DataGridColumn headerText="NodeTypeName" dataField="NodeTypeName" />
-							<mx:DataGridColumn headerText="NodeTypeImage" dataField="NodeTypeImage" />
+							<mx:DataGridColumn headerText="Image" itemRenderer="org.un.birdeye.record.dgNodeTypeImageRenderer" />
 							<mx:DataGridColumn headerText="NodeTypeColor" dataField="NodeTypeColor"/>
 							<mx:DataGridColumn minWidth="160" itemRenderer="org.un.birdeye.record.dgNodeTypeControlBtns" width="160" />
 						</mx:columns>
@@ -187,8 +187,6 @@
 		</mx:Canvas>
 
 		</mx:TabNavigator>
-			
 		</mx:Canvas>
-
 </mx:Canvas>
 
