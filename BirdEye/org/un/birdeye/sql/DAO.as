@@ -54,9 +54,13 @@ EdgeTypeName
 		import flash.events.SQLEvent;
 		import flash.filesystem.File;
 		
+		import flexlib.controls.Base64Image;
+		
 		import mx.collections.ArrayCollection;
 		import mx.controls.Alert;
 		import mx.managers.CursorManager;
+		
+		import org.un.birdeye.GlobalParams;
 		
 		private var _dbFile:File;
 		private var _conn:SQLConnection;
@@ -578,6 +582,14 @@ EdgeTypeName
 			{
 				var result:SQLResult = selectStmt.getResult();
 				dpNodeTypes = result.data;
+				
+				// populate GlobalParams.iconMap with available Node Icons
+				GlobalParams.iconMap = new Object();
+				for (var i:Number = 0; i < dpNodeTypes.length; i++) {
+					var img:Base64Image = new Base64Image();
+					img.source = dpNodeTypes[i].NodeTypeImage;
+					GlobalParams.iconMap[dpNodeTypes[i].NodeTypeName] = img;
+				}
 			});
 		selectStmt.addEventListener(SQLErrorEvent.ERROR, selectError);
 		// execute the statement
