@@ -60,7 +60,7 @@ package org.un.flex.graphLayout.visual {
 		public function draw(g:Graphics, edge:IEdge, displayLabel:Boolean = false):void {
 			
 			/* this is not interface conform !!!! */
-			arrowLength = 10*Application.application.scaleSlider.value
+			arrowLength = 10;
 			
 			/* first get the corresponding visual object */
 			var vedge:IVisualEdge = edge.vedge;
