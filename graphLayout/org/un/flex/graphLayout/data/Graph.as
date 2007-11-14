@@ -150,6 +150,7 @@ package org.un.flex.graphLayout.data {
 			if(xmlsource == null) {
 				throw Error("the xmlsource must not be null if creating a new Graph");
 			}
+			
 			return new Graph(id, directional, xmlsource, xmlnames);
 		}
 

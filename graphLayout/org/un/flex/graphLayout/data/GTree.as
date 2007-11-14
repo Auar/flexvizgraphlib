@@ -315,7 +315,11 @@ package org.un.flex.graphLayout.data {
 			queue.push(_root);
 			
 			while(queue.length > 0) {
-				u = (queue.pop() as INode);
+				
+				/* pop() may lead to a wrong BFS search, more DFS
+				 * may need to use shift() instead */
+				//u = (queue.pop() as INode);
+				u = (queue.shift() as INode);
 				
 				/* this should not have an effect, but we'll see */
 				if(_restrictToVisible && !u.vnode.isVisible) {
