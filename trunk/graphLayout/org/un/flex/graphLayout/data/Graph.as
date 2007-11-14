@@ -356,7 +356,7 @@ package org.un.flex.graphLayout.data {
 			 * are not empty. This also works for
 			 * non directional graphs, even though one
 			 * comparison would be sufficient */
-			if(n.inEdges.length > 0 || n.outEdges.length > 0) {
+			if(n.inEdges.length != 0 || n.outEdges.length != 0) {
 			   	throw Error("Attempted to remove Node: "+n.id+" but it still has Edges");
 			} else {
 				/* XXXX searching like this through arrays takes
