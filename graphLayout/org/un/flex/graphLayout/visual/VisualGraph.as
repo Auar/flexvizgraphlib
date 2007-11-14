@@ -191,7 +191,7 @@ package org.un.flex.graphLayout.visual {
         /**
          * Specify whether edge labels should be displayed or not
          * */
-        private var _displayEdgeLabels:Boolean = false;
+        private var _displayEdgeLabels:Boolean = true;
         
         /* Spring Graph also allowed a specification of an IViewFactory
          * which is a custom implementation of a factory that returns
@@ -502,22 +502,27 @@ package org.un.flex.graphLayout.visual {
 				// no change
 			} else {
 				_displayEdgeLabels = del;
+				updateVisibility();
+				this.invalidateDisplayList(); // maybe this is enough
+			}
 				
-				/* from false to true */
+				/* removed code which probably made problems 
+				
+				/* from false to true *
 				if(del == true) {
-					/* walk through all visible edges and create and display their labels */
+					/* walk through all visible edges and create and display their labels *
 					for each(e in _visibleEdges) {
 						createVEdgeView(e.vedge);
 					}
-				/* true to false */
+				/* true to false *
 				} else {
-					/* walk again, but remove labels this time */
+					/* walk again, but remove labels this time *
 					for each(e in _visibleEdges) {
 						removeVEdgeView(e.vedge.labelView);
 					}
 				}
-			}				
-			this.invalidateDisplayList(); // maybe this is enough
+			}
+			*/
 		}
 
 		/**
@@ -2117,13 +2122,12 @@ package org.un.flex.graphLayout.visual {
 					 * visible */
 					if(vno.isVisible || (newVisibleNodes[vno] != null)) {
 						_visibleEdges[e] = e;
-						/* check if there is no view */
-						if(e.vedge.labelView == null) {
+						/* check if there is no view and we need one */
+						if(_displayEdgeLabels && e.vedge.labelView == null) {
 							createVEdgeView(e.vedge);
 						}
 					}
 				}
-				
 			}
 			
 			/* this restarts any layouting */
