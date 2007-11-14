@@ -25,7 +25,6 @@
 
 package org.un.flex.graphLayout.data {
 	import flash.utils.Dictionary;
-	import mx.events.IndexChangedEvent;
 	
 	/**
 	 * Graph implements a graph datastructure G(V,E)
@@ -101,7 +100,6 @@ package org.un.flex.graphLayout.data {
 		 * */
 		private var _treeMap:Dictionary;
 		
-		
 		/**
 		 * Constructor method that creates the graph and can
 		 * initialise it directly from an XML object, if one is specified.
@@ -111,7 +109,14 @@ package org.un.flex.graphLayout.data {
 		 * @param xmlsource an XML object that contains node and edge items that define the graph.
 		 * @param xmlnames an optional Array that contains XML tag and attribute names that define the graph. 
 		 * */
-		public function Graph(id:String = "", directional:Boolean = false, xmlsource:XML = null, xmlnames:Array = null):void {
+		public function Graph(id:String, directional:Boolean = false, xmlsource:XML = null, xmlnames:Array = null):void {
+			if(id == null)
+				throw Error("id string must not be null")
+			if(id.length == 0)
+				throw Error("id string must not be empty")
+			
+			_id = id
+			
 			_nodes = new Array;
 			_edges = new Array;
 			_treeMap = new Dictionary;
@@ -125,22 +130,10 @@ package org.un.flex.graphLayout.data {
 			_numberOfNodes = 0;
 			_numberOfEdges = 0;
 			
-			if(id.length > 0) {
-				_id = id;
-			} else {
-				/* we may want to catch that error in the future
-				 * but I leave it like that for now....
-				 */
-				throw Error("Cannot create graph with empty id");
-			}
-			
-			//trace("Create graph with xmlsource:"+xmlsource.toString());
-			
 			if(xmlsource != null) {
 				//trace("Graph detected XML source:"+xmlsource.name().toString());
 				initFromXML(xmlsource, xmlnames);
-			}
-			
+			}			
 		}
 
 		/**
@@ -154,14 +147,10 @@ package org.un.flex.graphLayout.data {
 		 * @throws Error of the xmlsource is null.
 		 **/
 		public static function createGraph(id:String, directional:Boolean, xmlsource:XML, xmlnames:Array = null):IGraph {
-			var g:IGraph;
-			
 			if(xmlsource == null) {
 				throw Error("the xmlsource must not be null if creating a new Graph");
-				return null;
 			}
-			g = new Graph(id, directional, xmlsource, xmlnames);
-			return g;
+			return new Graph(id, directional, xmlsource, xmlnames);
 		}
 
 		/**
@@ -354,7 +343,7 @@ package org.un.flex.graphLayout.data {
 			
 			/* a new node means all potentially existing
 			 * trees in the treemap need to be invalidated */
-			_treeMap = new Dictionary;
+			purgeTrees()
 			
 			return myNode;
 		}
@@ -403,7 +392,7 @@ package org.un.flex.graphLayout.data {
 				 * so the GarbageCollector will get it */
 				
 				/* invalidate trees */
-				_treeMap = new Dictionary;
+				purgeTrees()
 			}
 		}
 		
@@ -473,7 +462,7 @@ package org.un.flex.graphLayout.data {
 			}
 							
 			/* invalidate trees */
-			_treeMap = new Dictionary;
+			purgeTrees()
 			return retEdge;
 		}
 		
@@ -538,7 +527,7 @@ package org.un.flex.graphLayout.data {
 			--_numberOfEdges;
 			
 			/* invalidate trees */
-			_treeMap = new Dictionary;
+			purgeTrees()
 		}
 		
 		/**
