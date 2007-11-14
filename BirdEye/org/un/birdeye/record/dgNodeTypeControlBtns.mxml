@@ -15,7 +15,7 @@
 	private function editRecord(e:Event):void
 	{
 		parentDocument.nodeTypeControl.selectedIndex = 1;
-		parentDocument.nodeTypeLookupModule.nodetypevs.selectedIndex = 1;  // flip to "edit" canvas of module viewstack
+		parentDocument.nodeTypeLookupModule.nodetypevs.selectedIndex = 0;  // flip to "edit" canvas of module viewstack
 	}
 	
 	private function viewChildren(e:Event):void
