@@ -1169,7 +1169,7 @@ package org.un.flex.graphLayout.visual {
 			}
 			
 			/* remove from the visible vnode map if present */
-			if(_visibleVNodes.hasOwnProperty(vn)) {
+			if(_visibleVNodes[vn] != undefined) {
 				delete _visibleVNodes[vn];
 				--_noVisibleVNodes;
 			}
