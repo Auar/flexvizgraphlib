@@ -1205,7 +1205,7 @@ package org.un.flex.graphLayout.visual {
 			attrs = ObjectUtil.getClassInfo(lStyle).properties;
 			
 			for each(attname in attrs) {
-				if((e.data as XML).attribute(attname).length() > 0) {
+				if(e.data != null && (e.data as XML).attribute(attname).length() > 0) {
 					lStyle[attname] = e.data.@[attname];
 				}
 			}
