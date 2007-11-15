@@ -4,7 +4,7 @@
 	label="nodeMetaModel Form"
 	xmlns="*"
 	xmlns:modules="modules.*"
-	>
+	xmlns:code="http://code.google.com/p/flexlib/">
 <mx:Script>
 	<![CDATA[
 	
@@ -108,16 +108,10 @@
 					<mx:GridItem width="100%" height="100%">
 						<mx:Image source="@Embed('../images/ui/hint.png')" toolTip="This is a mandatory field"/>
 					</mx:GridItem>		
-					<mx:GridItem width="100%" height="300">
-						<mx:Image id="imgPrev" source="{parentDocument.dgImg}" />
+					<mx:GridItem width="100%" height="100%">
+						<code:Base64Image id="imgPrev" source="{parentDocument.dgNodeType.selectedItem.NodeTypeImage}" />
 						<mx:TextInput id="NodeTypeImage" text="{parentDocument.dgNodeType.selectedItem.NodeTypeImage}" visible="false"/>
 						<mx:Button label="Browse" click="imgSet(event);" />
-<!--						<mx:Label text="Preview:" />
-						<mx:Label id="imgFile" />
-						<mx:VBox width="100%" >
-							
-							<mx:Image id="imgPrev" />
-						</mx:VBox>	-->
 					</mx:GridItem>
 				</mx:GridRow>
 				<!-- NodeType Color -->

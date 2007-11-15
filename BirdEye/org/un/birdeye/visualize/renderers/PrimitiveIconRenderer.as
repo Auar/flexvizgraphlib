@@ -107,16 +107,17 @@ package org.un.birdeye.visualize.renderers {
 			
 			var type:String = this.data.data.@nodeType;
 			
-			/* first check if we have a "db:" prefix, substr()
+			/* first check if we have a "Primitive" prefix, substr() or undefined
 			 * should be quicker than match() or something similar */
-			if(type.substr(0,3) == "db:") {
+			//if(type.substr(0,3) == "db:") {
+			if (type.substr(0,9) != "Primitive" && type != "") {
 				setDBImageNode(type);
 			} else {
 			
 				/* now test for specific types */
 				switch(type) {
 			    	
-					case "Globe":
+/* 					case "Globe":
 					case "GoalOne":
 					case "GoalTwo":
 					case "GoalThree":
@@ -129,7 +130,7 @@ package org.un.birdeye.visualize.renderers {
 					
 						setImageNode(type);
 				        break;
-				    	
+ */				    	
 			    	case "PrimitivePolygon":
 			    	case "PrimitiveSquare":
 			    	case "PrimitiveTriangle":
@@ -208,7 +209,8 @@ package org.un.birdeye.visualize.renderers {
 		private function setDBImageNode(type:String):void {
 			
 			/* get the portion of the name without the "db:" prefix */
-			var imageName:String = type.substr(3);
+			//var imageName:String = type.substr(3);
+			var imageName:String = type;
 			
 			/* check if we have a mapping */
 			if(GlobalParams.iconMap == null) {
@@ -231,7 +233,7 @@ package org.un.birdeye.visualize.renderers {
 			}
 		}
 		
-		private function setImageNode(type:String):void {
+/* 		private function setImageNode(type:String):void {
 			_imageObject = new Image();
 				
 			switch(type) {
@@ -272,7 +274,7 @@ package org.un.birdeye.visualize.renderers {
 					break;
 			}
 		}
-		
+ */		
 		private function setPolygonNode(type:String):void {
 			_imageObject = new PrimitivePolygon();
 			// _imageObject.setStyle("backgroundColor", 0x8b008b);

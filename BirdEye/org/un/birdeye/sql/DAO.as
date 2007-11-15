@@ -229,7 +229,7 @@ EdgeTypeName
 				{
 					var result:SQLResult = selectStmt.getResult();		
 					nodesAC.source = result.data;
-					
+				
 					for each (var item:* in nodesAC)
 					{
 						rootNode.appendChild(<Node id={item.NodeID} name={item.NodeName} description={item.NodeDesc}
