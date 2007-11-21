@@ -116,7 +116,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
-<a class="signatureLink" href="#Graph()">Graph</a>(id:String = "", directional:Boolean = false, xmlsource:XML = null, xmlnames:Array = null)</div>
+<a class="signatureLink" href="#Graph()">Graph</a>(id:String, directional:Boolean = false, xmlsource:XML = null, xmlnames:Array = null)</div>
 <div class="summaryTableDescription">
    Constructor method that creates the graph and can
    initialise it directly from an XML object, if one is specified.</div>
@@ -387,14 +387,14 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public function Graph(id:String = "", directional:Boolean = false, xmlsource:XML = null, xmlnames:Array = null)</code><p>
+<code>public function Graph(id:String, directional:Boolean = false, xmlsource:XML = null, xmlnames:Array = null)</code><p>
    Constructor method that creates the graph and can
    initialise it directly from an XML object, if one is specified.
    
    </p><span class="label">Parameters</span>
 <table border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td width="20px"></td><td><code><span class="label">id</span>:String</code> (default = "<code></code>")<code></code> &mdash; The id (or rather name) of the graph. Every graph has to have one.
+<td width="20px"></td><td><code><span class="label">id</span>:String</code> &mdash; The id (or rather name) of the graph. Every graph has to have one.
    </td>
 </tr>
 <tr>
