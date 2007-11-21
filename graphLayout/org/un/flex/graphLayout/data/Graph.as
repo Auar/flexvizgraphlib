@@ -24,6 +24,7 @@
  */
 
 package org.un.flex.graphLayout.data {
+	
 	import flash.utils.Dictionary;
 	
 	/**

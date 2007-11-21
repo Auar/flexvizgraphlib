@@ -24,6 +24,8 @@
  */
 
 package org.un.flex.graphLayout.data {
+
+	import org.un.flex.graphLayout.data.GraphWalkingDirectionsEnum;
 	
 	/**
 	 * Interface to the Graph datastructure class
