@@ -203,10 +203,10 @@ package org.un.flex.graphLayout.visual {
 				target.x,
 				target.y
 			);
-			g.endFill();
+			//g.endFill();
 			
 			/* and the second curve using base 2 as control point */
-			g.beginFill(uint(vedge.lineStyle.color));
+			//g.beginFill(uint(vedge.lineStyle.color));
 			g.moveTo(source.x, source.y);			
 			g.curveTo(
 				base2.x,
