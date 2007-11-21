@@ -34,15 +34,26 @@ package org.un.flex.graphLayout.visual {
 
 
 	/**
-	 * This is a flow edge renderer. It relys on a "flow"
+	 * This is a variant of the flow edge renderer. It relys on a "flow"
 	 * attribute in the edges XML data object.
 	 * It uses the flow value, put in relation with some
 	 * parameters of the renderer to have an initial edge
 	 * thickness. At the target the edge will coverge to a point.
 	 * The flow is drawn in the shape of a teardrop with the thick
 	 * end near the source and relative to the amount of the flow.
+	 * The whole flow is also bent in a bit of a curve.
 	 * */
-	public class FlowEdgeRenderer implements IEdgeRenderer {
+	public class FlowCurveEdgeRenderer implements IEdgeRenderer {
+		
+		/**
+		 * constant to describe that the bending should be left.
+		 * */
+		public static const BEND_LEFT:int = 0;
+		
+		/**
+		 * constant to describe that the bending should be right.
+		 * */
+		public static const BEND_RIGHT:int = 1;
 		
 		
 		/**
@@ -62,13 +73,29 @@ package org.un.flex.graphLayout.visual {
 		 * */
 		public var maxBaseWidth:Number;
 	
+		/**
+		 * This property describes the deviation of the bending point.
+		 * Right now this is fixed in pixel. Keeping the deviation
+		 * fixed will lead to more pronounced bending in short 
+		 * edges and are less pronounced one in longer edges.
+		 * Ideally this should be relative to the screen size.
+		 * */
+		public var bendingDegree:int = 100;
+	
+		/**
+		 * This property describes whether all the deviations should
+		 * turn left or right.
+		 * */
+		public var bendingDirection:int = BEND_LEFT;
 		
 		/**
 		 * The constructor just initialises some default values.
 		 * */
-		public function FlowEdgeRenderer():void {
+		public function FlowCurveEdgeRenderer():void {
 			relativeEdgeMagnitude = 1000;
 			maxBaseWidth = 100;
+			bendingDegree = 100;
+			bendingDirection = BEND_LEFT;
 		}
 		
 		/**
@@ -137,14 +164,21 @@ package org.un.flex.graphLayout.visual {
 			//trace("flow:"+flow+" base width:"+baseWidth);
 			
 			/* now calculate the first base point, which is half the width in
-			 * positive base direction */
-			base1 = source.add(Point.polar((baseWidth / 2), basedirectionAngle));
-			//trace("base1:"+base1.toString());
-			
-			/* the second is the same but in negative direction (or negative angle,
+			 * positive base direction in the curved version we have to add
+			 * or subtract depending on the direction *
+			 * the second is the same but in negative direction (or negative angle,
 			 * that should not make a difference */
-			base2 = source.add(Point.polar(-(baseWidth / 2), basedirectionAngle));
+			
+			if(bendingDirection == BEND_LEFT) {
+				base1 = source.add(Point.polar((baseWidth / 2)-bendingDegree, basedirectionAngle));
+				base2 = source.add(Point.polar(-(baseWidth / 2)-bendingDegree, basedirectionAngle));
+			} else {
+				base1 = source.add(Point.polar((baseWidth / 2)+bendingDegree, basedirectionAngle));
+				base2 = source.add(Point.polar(-(baseWidth / 2)+bendingDegree, basedirectionAngle));
+			}
+			
 			//trace("base1:"+base1.toString());
+			//trace("base2:"+base2.toString());
 
 			/* apply the style to the drawing */
 			if(vedge.lineStyle != null) {

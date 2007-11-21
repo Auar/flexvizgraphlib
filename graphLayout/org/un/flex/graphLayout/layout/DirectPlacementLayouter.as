@@ -202,10 +202,14 @@ package org.un.flex.graphLayout.layout {
 					throw Error("Node:"+vn.id+" associated XML object does not have y attribute");
 				}
 				
+				//trace("using rel width:"+_relativeWidth+" rh:"+_relativeHeight);
 				target = new Point(node_x * 1000 / _relativeWidth, node_y * 1000 / _relativeHeight);
+				//trace("target for node:"+vn.id+" = " + target.toString());
 				
 				/* apply the relative origin */
 				target.add(_relativeOrigin);
+				//trace("target2 for node:"+vn.id+" = " + target.toString());
+
 				
 				/* set the coordinates in the VNode, this won't be
 				 * applied until commit() is called */
