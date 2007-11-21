@@ -26,6 +26,7 @@
 package org.un.flex.graphLayout.data {
 	
 	import flash.utils.Dictionary;
+	import org.un.flex.graphLayout.data.GraphWalkingDirectionsEnum;
 	
 	/**
 	 * interface to the GTree data structure that
@@ -143,7 +144,7 @@ package org.un.flex.graphLayout.data {
 		 * 		  The value for the old functionality is GraphWalkingDirectionsEnum.FORWARD.
 		 * @return The map that contains each node's parent node.
 		 * */
-		function initTree(walkingDirection:int = GraphWalkingDirectionsEnum.BOTH):Dictionary;
+		function initTree(walkingDirection:int = GraphWalkingDirectionsEnum.FORWARD):Dictionary;
 		
 		/**
 		 * This method returns a map (Object) containing only 

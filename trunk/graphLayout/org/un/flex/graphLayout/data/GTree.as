@@ -74,6 +74,7 @@ package org.un.flex.graphLayout.data {
 		 * set in the constructor */
 		private var _restrictToVisible:Boolean;
 
+
 		/**
 		 * Constructor to create a new GTree object, the tree will not immediately
 		 * be initialised, but this will happen as soon as any attributes or methods
@@ -293,7 +294,7 @@ package org.un.flex.graphLayout.data {
 		/**
 		 * @inheritDoc
 		 * */ 
-		public function initTree(walkingDirection:int = GraphWalkingDirectionsEnum.BOTH):Dictionary {
+		public function initTree(walkingDirection:int = GraphWalkingDirectionsEnum.FORWARD):Dictionary {
 			var queue:Array = new Array();
 			
 			/* we create this as a dummy parent node, but it should
@@ -344,7 +345,7 @@ package org.un.flex.graphLayout.data {
 					default:
 						throw Error("unknown graph walking direction")
 				}
-				for each(var adjacentNode : INode in nodesToWalk) {
+				for each(var adjacentNode:INode in nodesToWalk) {
 					v = adjacentNode
 					
 					/* here we check if the child vnode is visible
