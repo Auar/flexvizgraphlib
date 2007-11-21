@@ -135,9 +135,12 @@ package org.un.flex.graphLayout.data {
 		 * @param n The root node of the tree.
 		 * @param restr This flag specifies if the resulting tree should be restricted to currently visible nodes.
 		 * @param nocache If set, always a new tree will be created and returned and the cache will be untouched.
+		 * @param walkingDirection The direction in which the graph must be walked to create the spanning tree.
+		 * 						   The value of GraphWalkingDirectionsEnum.FORWARD is the default and it represents the old (buggy) functionality.
+		 * 						   GraphWalkingDirectionsEnum.BOTH is the current (proper) functionality.
 		 * @return The a GTree object that contains the tree.
 		 * */
-		function getTree(n:INode,restr:Boolean = false, nocache:Boolean = false):IGTree;
+		function getTree(n:INode,restr:Boolean = false, nocache:Boolean = false, walkingDirection:int = GraphWalkingDirectionsEnum.FORWARD):IGTree;
 		
 		/**
 		 * Under certain circumstances all cached trees need

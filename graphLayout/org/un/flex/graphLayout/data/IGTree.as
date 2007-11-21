@@ -138,9 +138,12 @@ package org.un.flex.graphLayout.data {
 		/**
 		 * This initialiases the (spanning) tree
 		 * using BFS (Breadth first search).
+		 * @param walkingDirection The direction in which to walk the graph.
+		 * 		  The proper value is GraphWalkingDirectionsEnum.BOTH.
+		 * 		  The value for the old functionality is GraphWalkingDirectionsEnum.FORWARD.
 		 * @return The map that contains each node's parent node.
 		 * */
-		function initTree():Dictionary;
+		function initTree(walkingDirection:int = GraphWalkingDirectionsEnum.BOTH):Dictionary;
 		
 		/**
 		 * This method returns a map (Object) containing only 

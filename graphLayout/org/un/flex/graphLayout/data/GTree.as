@@ -26,7 +26,6 @@
 package org.un.flex.graphLayout.data {
 	
 	import flash.utils.Dictionary;
-	import mx.events.IndexChangedEvent;
 	
 	
 	/**
@@ -294,7 +293,7 @@ package org.un.flex.graphLayout.data {
 		/**
 		 * @inheritDoc
 		 * */ 
-		public function initTree():Dictionary {
+		public function initTree(walkingDirection:int = GraphWalkingDirectionsEnum.BOTH):Dictionary {
 			var queue:Array = new Array();
 			
 			/* we create this as a dummy parent node, but it should
@@ -330,8 +329,23 @@ package org.un.flex.graphLayout.data {
 				
 				// here we could check if we want the node
 				childcount = 0;
-				for(j=0;j < u.successors.length; ++j) {
-					v = u.successors[j];
+				var nodesToWalk : Array = null
+				switch(walkingDirection)
+				{
+					case GraphWalkingDirectionsEnum.FORWARD:
+						nodesToWalk = u.successors
+						break
+					case GraphWalkingDirectionsEnum.BACKWARD:
+						nodesToWalk = u.predecessors
+						break
+					case GraphWalkingDirectionsEnum.BOTH:
+						nodesToWalk = u.successors.concat(u.predecessors)
+						break
+					default:
+						throw Error("unknown graph walking direction")
+				}
+				for each(var adjacentNode : INode in nodesToWalk) {
+					v = adjacentNode
 					
 					/* here we check if the child vnode is visible
 					 * and if not, not take it into account */

@@ -24,20 +24,14 @@
  */
 package org.un.flex.graphLayout.layout {
 
-	import org.un.flex.graphLayout.visual.IVisualGraph;
-	import org.un.flex.graphLayout.data.IGraph;
-	import org.un.flex.graphLayout.data.Graph;
-	import org.un.flex.graphLayout.visual.IVisualNode;
-	import org.un.flex.graphLayout.data.IEdge;
-	import org.un.flex.graphLayout.data.INode;
-	import org.un.flex.graphLayout.visual.IVisualEdge;
-	import org.un.flex.graphLayout.data.IGTree;
-	import org.un.flex.utils.Geometry;
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;
-	import flash.events.MouseEvent;
+	
+	import org.un.flex.graphLayout.data.GraphWalkingDirectionsEnum;
+	import org.un.flex.graphLayout.data.INode;
+	import org.un.flex.graphLayout.visual.IVisualGraph;
+	import org.un.flex.graphLayout.visual.IVisualNode;
+	import org.un.flex.utils.Geometry;
 	
 	/**
 	 * This is an implementation of the 
@@ -127,7 +121,7 @@ package org.un.flex.graphLayout.layout {
 			
 					
 			/* establish the spanning tree, restricted to visible nodes */
-			_stree = _graph.getTree(_root,true);
+			_stree = _graph.getTree(_root,true,false,GraphWalkingDirectionsEnum.BOTH);
 
 			/* check if the root is visible, if not
 			 * this is an issue */

@@ -24,21 +24,13 @@
  */
 package org.un.flex.graphLayout.layout {
 
-	import org.un.flex.graphLayout.visual.IVisualGraph;
-	import flash.events.Event;
-	import org.un.flex.graphLayout.data.IGraph;
-	import org.un.flex.graphLayout.data.Graph;
-	import org.un.flex.graphLayout.visual.IVisualNode;
-	import org.un.flex.graphLayout.data.IEdge;
-	import org.un.flex.graphLayout.data.INode;
-	import org.un.flex.graphLayout.visual.IVisualEdge;
-	import org.un.flex.utils.Geometry;
-	import flash.utils.Dictionary;
-	import flash.events.MouseEvent;
-	import org.un.flex.graphLayout.data.IGTree;
 	import flash.geom.Point;
-	import flash.utils.Timer;
-	import flash.events.TimerEvent;
+	
+	import org.un.flex.graphLayout.data.GraphWalkingDirectionsEnum;
+	import org.un.flex.graphLayout.data.IGTree;
+	import org.un.flex.graphLayout.data.INode;
+	import org.un.flex.graphLayout.visual.IVisualGraph;
+	import org.un.flex.utils.Geometry;
 	
 	/**
 	 * This is an implementation of the generic radial
@@ -191,7 +183,7 @@ package org.un.flex.graphLayout.layout {
 			
 			/* establish the spanning tree, but have it restricted to
 			 * visible nodes */
-			_stree = _graph.getTree(_root, true);
+			_stree = _graph.getTree(_root, true, false, GraphWalkingDirectionsEnum.BOTH);
 			
 			/* calculate the relative width and the
 			 * new max Depth */
