@@ -221,7 +221,7 @@ package org.un.flex.graphLayout.data {
 		/**
 		 * @inheritDoc
 		 * */
-		public function getTree(n:INode, restr:Boolean = false, nocache:Boolean = false):IGTree {
+		public function getTree(n:INode,restr:Boolean = false, nocache:Boolean = false, walkingDirection:int = GraphWalkingDirectionsEnum.FORWARD):IGTree{
 			/* If nocache is set, we just return a new tree */
 			if(nocache) {
 				return new GTree(n,this,restr);
@@ -230,7 +230,7 @@ package org.un.flex.graphLayout.data {
 			if(!_treeMap.hasOwnProperty(n)) {
 				_treeMap[n] = new GTree(n,this,restr);
 				/* do the init now, not lazy */
-				(_treeMap[n] as IGTree).initTree();
+				(_treeMap[n] as IGTree).initTree(walkingDirection);
 			}
 			return (_treeMap[n] as IGTree);
 		}
