@@ -615,7 +615,7 @@ package org.un.flex.graphLayout.visual {
 					 * 3. Use this to set our properties for the nodes within the distance
 					 *    limit.
 					 */
-					setDistanceLimitedNodeIds(_graph.getTree(_currentRootVNode.node,false,GraphWalkingDirectionsEnum.BOTH).
+					setDistanceLimitedNodeIds(_graph.getTree(_currentRootVNode.node,false, false, GraphWalkingDirectionsEnum.BOTH).
 						getLimitedNodes(_maxVisibleDistance));
 					
 					/* now update all other visibility data structure
