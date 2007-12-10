@@ -40,7 +40,6 @@ package org.un.flex.graphLayout.visual {
 	import mx.events.EffectEvent;
 	import mx.utils.ObjectUtil;
 	
-	import org.un.flex.graphLayout.data.GraphWalkingDirectionsEnum;
 	import org.un.flex.graphLayout.data.IEdge;
 	import org.un.flex.graphLayout.data.IGraph;
 	import org.un.flex.graphLayout.data.INode;
@@ -615,7 +614,7 @@ package org.un.flex.graphLayout.visual {
 					 * 3. Use this to set our properties for the nodes within the distance
 					 *    limit.
 					 */
-					setDistanceLimitedNodeIds(_graph.getTree(_currentRootVNode.node,false, false, GraphWalkingDirectionsEnum.BOTH).
+					setDistanceLimitedNodeIds(_graph.getTree(_currentRootVNode.node).
 						getLimitedNodes(_maxVisibleDistance));
 					
 					/* now update all other visibility data structure
@@ -658,7 +657,7 @@ package org.un.flex.graphLayout.visual {
 						trace("No root selected, not creating limited graph");
 						return;
 					} else {
-						setDistanceLimitedNodeIds(_graph.getTree(_currentRootVNode.node,false,false,GraphWalkingDirectionsEnum.BOTH).
+						setDistanceLimitedNodeIds(_graph.getTree(_currentRootVNode.node).
 							getLimitedNodes(_maxVisibleDistance));
 						updateVisibility();
 					}
@@ -702,7 +701,7 @@ package org.un.flex.graphLayout.visual {
 				 * have changed the root, the spanning tree has changed
 				 * and thus the set of visible nodes */
 				if(_visibilityLimitActive) {
-					setDistanceLimitedNodeIds(_graph.getTree(_currentRootVNode.node,false,false,GraphWalkingDirectionsEnum.BOTH).
+					setDistanceLimitedNodeIds(_graph.getTree(_currentRootVNode.node).
 						getLimitedNodes(_maxVisibleDistance));
 					updateVisibility();
 				} else {
@@ -2052,7 +2051,7 @@ package org.un.flex.graphLayout.visual {
 				/* this is mapping in the tree that provides a parent
 				 * for each single node in the tree 
 				 * we need this to find the trace to the root */
-				treeparents = _graph.getTree(_currentRootVNode.node,false,false,GraphWalkingDirectionsEnum.BOTH).parents;
+				treeparents = _graph.getTree(_currentRootVNode.node).parents;
 				
 				for each(vn in _currentVNodeHistory) {
 					n = vn.node;		
@@ -2144,6 +2143,14 @@ package org.un.flex.graphLayout.visual {
 			var n:INode;
 			var e:IEdge;
 			
+			/* not sure if this is really, really needed, but
+			 * since similar code was added, I optimise it a bit.
+			 */
+			if(_graph == null) {
+				trace("setAllVisible() called, but graph is null");
+				return;
+			}
+			
 			/* since a layouter that uses timer based iterations
 			 * might find itself on a changing node set, we need
 			 * to stop/reset anything before altering the node
@@ -2156,17 +2163,17 @@ package org.un.flex.graphLayout.visual {
 			_visibleVNodes = new Dictionary;
 			_noVisibleVNodes = 0;
 			
-			if(_graph)
-				for each(n in _graph.nodes) {
-					setNodeVisibility(n.vnode, true);
-				}
+			
+			for each(n in _graph.nodes) {
+				setNodeVisibility(n.vnode, true);
+			}
 			
 			/* same for edges */
 			_visibleEdges = new Dictionary;
-			if(_graph)
-				for each(e in _graph.edges) {
-					_visibleEdges[e] = e;
-				}
+			
+			for each(e in _graph.edges) {
+				_visibleEdges[e] = e;
+			}
 			
 			/* maybe not XXX */
 			draw();
