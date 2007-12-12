@@ -249,6 +249,19 @@ package org.un.flex.graphLayout.layout {
 			return _siblingSpreadEnabled;
 		}
 
+		
+		public function get siblingSpreadDistance() : Number {
+			return _siblingSpreadDistance		
+		}
+		
+		public function set siblingSpreadDistance(distance : Number) : void {
+			_siblingSpreadDistance = distance
+		}
+
+		public function set honorNodeSize(honor : Boolean) : void {
+			_honorNodeSize = honor
+		}
+
 		public function set orientation(o:uint):void {
 			switch(o) {
 				case ORIENT_LEFT_RIGHT:
@@ -259,7 +272,8 @@ package org.un.flex.graphLayout.layout {
 					adjustCenter();
 					
 					/* do a redraw */
-					layoutPass();
+					if(_vgraph && _vgraph.currentRootVNode)
+						layoutPass();
 					break;
 				default:
 					throw Error("orientation:"+o+" not supported");

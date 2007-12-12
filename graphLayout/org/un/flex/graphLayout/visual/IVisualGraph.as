@@ -23,17 +23,16 @@
  * THE SOFTWARE.
  */
 package org.un.flex.graphLayout.visual {
-	import org.un.flex.graphLayout.data.IGraph;
-	import mx.core.UIComponent;
-	import mx.core.IUIComponent;
-	import flash.events.IEventDispatcher;
-	import flash.geom.Rectangle;
-	import mx.core.IFactory;
-	import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
-	import mx.core.IInvalidating;
 	import flash.geom.Point;
-	import flash.display.Graphics;
+	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
+	
+	import mx.core.IFactory;
+	import mx.core.IInvalidating;
+	import mx.core.IUIComponent;
+	
+	import org.un.flex.graphLayout.data.IGraph;
+	import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
 	
 	
 	/**
@@ -214,6 +213,13 @@ package org.un.flex.graphLayout.visual {
 		 * @private
 		 * */
 		function set maxVisibleDistance(md:int):void;
+		
+		/**
+		 * Scales the graph by some amount
+		 * */
+		function set scale(scale : Number) : void;
+		
+		function get scale() : Number;
 		
 		/**
 		 * Initializes the VisualGraph from its currently set Graph object,

@@ -40,6 +40,7 @@ package org.un.flex.graphLayout.visual {
 	import mx.events.EffectEvent;
 	import mx.utils.ObjectUtil;
 	
+	import org.un.flex.graphLayout.data.GraphWalkingDirectionsEnum;
 	import org.un.flex.graphLayout.data.IEdge;
 	import org.un.flex.graphLayout.data.IGraph;
 	import org.un.flex.graphLayout.data.INode;
@@ -192,6 +193,8 @@ package org.un.flex.graphLayout.visual {
          * Specify whether edge labels should be displayed or not
          * */
         private var _displayEdgeLabels:Boolean = true;
+        
+        private var _scale : Number = 1
         
         /* Spring Graph also allowed a specification of an IViewFactory
          * which is a custom implementation of a factory that returns
@@ -614,7 +617,7 @@ package org.un.flex.graphLayout.visual {
 					 * 3. Use this to set our properties for the nodes within the distance
 					 *    limit.
 					 */
-					setDistanceLimitedNodeIds(_graph.getTree(_currentRootVNode.node).
+					setDistanceLimitedNodeIds(_graph.getTree(_currentRootVNode.node,false, false, GraphWalkingDirectionsEnum.BOTH).
 						getLimitedNodes(_maxVisibleDistance));
 					
 					/* now update all other visibility data structure
@@ -657,7 +660,7 @@ package org.un.flex.graphLayout.visual {
 						trace("No root selected, not creating limited graph");
 						return;
 					} else {
-						setDistanceLimitedNodeIds(_graph.getTree(_currentRootVNode.node).
+						setDistanceLimitedNodeIds(_graph.getTree(_currentRootVNode.node,false,false,GraphWalkingDirectionsEnum.BOTH).
 							getLimitedNodes(_maxVisibleDistance));
 						updateVisibility();
 					}
@@ -701,7 +704,7 @@ package org.un.flex.graphLayout.visual {
 				 * have changed the root, the spanning tree has changed
 				 * and thus the set of visible nodes */
 				if(_visibilityLimitActive) {
-					setDistanceLimitedNodeIds(_graph.getTree(_currentRootVNode.node).
+					setDistanceLimitedNodeIds(_graph.getTree(_currentRootVNode.node,false,false,GraphWalkingDirectionsEnum.BOTH).
 						getLimitedNodes(_maxVisibleDistance));
 					updateVisibility();
 				} else {
@@ -720,6 +723,7 @@ package org.un.flex.graphLayout.visual {
 			return _showCurrentNodeHistory;
 		}
 
+		
 		/**
 		 * @private
 		 * */
@@ -738,6 +742,21 @@ package org.un.flex.graphLayout.visual {
 					}
 				}
 			}
+		}
+
+		public function set scale(s : Number) : void
+		{
+			const s0 : Number = scaleX
+			scaleX = s
+			scaleY = s
+			scroll(center.x * (1 - s / s0) / s, center.y * (1 - s / s0) / s)
+			refresh()
+			_scale = s
+		}
+		
+		public function get scale() : Number
+		{
+			return _scale
 		}
 
 		/**
@@ -1429,8 +1448,8 @@ package org.un.flex.graphLayout.visual {
 			}
 			
 			/* set initial x/y values */
-			mycomponent.x = _canvas.width / 2.0;
-			mycomponent.y = _canvas.height / 2.0;
+			mycomponent.x = origin.x + _canvas.width / 2.0;
+			mycomponent.y = origin.y + _canvas.height / 2.0;
 			
 			/* add event handlers for dragging and double click */			
 			mycomponent.doubleClickEnabled = true;
@@ -1728,14 +1747,15 @@ package org.un.flex.graphLayout.visual {
 					} else {
 						// lockCenter is true, ignore the mouse coordinates
 						// and use (0,0) instead as the point
+						//TODO: change to the components`s center instead
 						pt = ecomponent.localToGlobal(new Point(0,0));
 					}
 			
 					/* Save the offset values in the map 
 					 * so we can compute x and y correctly in case
 					 * we use lockCenter */
-					_drag_x_offsetMap[ecomponent] = pt.x - ecomponent.x;
-					_drag_y_offsetMap[ecomponent] = pt.y - ecomponent.y;
+					_drag_x_offsetMap[ecomponent] = pt.x / scaleX - ecomponent.x;
+					_drag_y_offsetMap[ecomponent] = pt.y / scaleY - ecomponent.y;
 			
 					/* now we would need to set the bounds
 					 * rectangle in _drag_boundsMap, but this is
@@ -1798,8 +1818,8 @@ package org.un.flex.graphLayout.visual {
 			/* update the coordinates with the current
 			 * event's stage coordinates (i.e. current mouse position),
 			 * modified by the lock-center offset */
-			sp.x = event.stageX - _drag_x_offsetMap[sp];
-			sp.y = event.stageY - _drag_y_offsetMap[sp];
+			sp.x = event.stageX / scaleX - _drag_x_offsetMap[sp];
+			sp.y = event.stageY / scaleY - _drag_y_offsetMap[sp];
 			
 			/* bounds code, currently unused 
 			if ( bounds != null ) {
@@ -1873,6 +1893,9 @@ package org.un.flex.graphLayout.visual {
 			deltaX = event.stageX - _dragCursorStartX;
 			deltaY = event.stageY - _dragCursorStartY;
 			 
+			deltaX /= scaleX
+			deltaY /= scaleY
+			
 			/* reset the origin for the next step */
 			_dragCursorStartX = event.stageX;
 			_dragCursorStartY = event.stageY;
@@ -1899,7 +1922,6 @@ package org.un.flex.graphLayout.visual {
 			var myvnode:IVisualNode;
 			
 			if(_backgroundDragInProgress) {
-				
 				/* if it was a background drag we stop it here */
 				_backgroundDragInProgress = false;
 				
@@ -2051,7 +2073,7 @@ package org.un.flex.graphLayout.visual {
 				/* this is mapping in the tree that provides a parent
 				 * for each single node in the tree 
 				 * we need this to find the trace to the root */
-				treeparents = _graph.getTree(_currentRootVNode.node).parents;
+				treeparents = _graph.getTree(_currentRootVNode.node,false,false,GraphWalkingDirectionsEnum.BOTH).parents;
 				
 				for each(vn in _currentVNodeHistory) {
 					n = vn.node;		
@@ -2143,14 +2165,6 @@ package org.un.flex.graphLayout.visual {
 			var n:INode;
 			var e:IEdge;
 			
-			/* not sure if this is really, really needed, but
-			 * since similar code was added, I optimise it a bit.
-			 */
-			if(_graph == null) {
-				trace("setAllVisible() called, but graph is null");
-				return;
-			}
-			
 			/* since a layouter that uses timer based iterations
 			 * might find itself on a changing node set, we need
 			 * to stop/reset anything before altering the node
@@ -2163,17 +2177,17 @@ package org.un.flex.graphLayout.visual {
 			_visibleVNodes = new Dictionary;
 			_noVisibleVNodes = 0;
 			
-			
-			for each(n in _graph.nodes) {
-				setNodeVisibility(n.vnode, true);
-			}
+			if(_graph)
+				for each(n in _graph.nodes) {
+					setNodeVisibility(n.vnode, true);
+				}
 			
 			/* same for edges */
 			_visibleEdges = new Dictionary;
-			
-			for each(e in _graph.edges) {
-				_visibleEdges[e] = e;
-			}
+			if(_graph)
+				for each(e in _graph.edges) {
+					_visibleEdges[e] = e;
+				}
 			
 			/* maybe not XXX */
 			draw();
