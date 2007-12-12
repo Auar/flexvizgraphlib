@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%"
+	xmlns="org.un.graphics.*"
+	xmlns:component="org.un.birdeye.report.components.*"
+	xmlns:ui="org.un.birdeye.ui.*" currentState="showCntrlPanel"
+	
+	>
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.HierarchicalData;
+		]]>
+	</mx:Script>
+	
+	<mx:Script source="ReportInterfaces.as" />
+	<mx:Script source="print/PrintReport.as" />
+
+	<mx:WipeDown id="wipeDown" duration="1000" />
+	<mx:WipeRight id="wipeRight" duration="1000" />
+	<mx:WipeLeft id="wipeLeft" duration="1000" />
+	<mx:Dissolve id="dissolveEff" />
+	<mx:Fade id="fadeEff" />
+		
+	<mx:VBox height="100%" width="100%" paddingLeft="5" paddingRight="5" >
+	
+		
+		
+	<mx:ApplicationControlBar id="cntrlBar" width="100%" height="35" >
+
+		<mx:HBox width="100%" >
+		<mx:Image source="@Embed(source='../images/ui/idea.png')" toolTip="Blah, blah" />
+		<mx:VRule height="25" />
+		<mx:CheckBox id="headerChkbx" label="Show Header" selected="false" toolTip="Select to show and print header" change="viewHeader(event)" />
+		<mx:CheckBox id="footerChkbx" label="Show Footer" selected="false" toolTip="Select to show and print footer" change="viewFooter(event)" />
+		<mx:CheckBox id="expandAllChkbx" label="Expand All" toolTip="Select to expand entire tree (may take awhile for large data sets)" selected="false" click="expandTree()" />
+		<mx:VRule height="25" />
+		<mx:Label text="Customize:" />
+		<mx:Button id="queryBtn" icon="@Embed(source='../images/ui/query.png')" toolTip="Query Builder" width="25" click="openQueryBuilderWindow(event);" />
+		<mx:Button id="formatBtn" icon="@Embed(source='../images/ui/format.png')" toolTip="Format Header" width="25" click="openHeaderFormatWindow(event);" />
+		<mx:Button id="colViewBtn" icon="@Embed(source='../images/ui/colhideshow.png')" toolTip="Hide/Show Columns" width="25" click="openHideShowWindow(event);" />
+		<mx:VRule height="25" />
+		<mx:Button id="printPreviewBtn" icon="@Embed(source='../images/ui/printpreview.png')" toggle="true" selected="false" toolTip="Print Preview" width="25" click="openPrintPreviewWindow(event);" />
+		</mx:HBox>
+	
+	</mx:ApplicationControlBar>
+
+<mx:HBox 
+        id="DivNavRB"
+        dropShadowEnabled="false" 
+        height="100%" width="100%"
+        paddingBottom="5"
+        verticalScrollPolicy="off"
+        horizontalGap="0">
+    
+
+
+<!-- Control Panel Sidebar: do vertical tab bar here -->
+<mx:HBox id="sideBar" width="17" height="100%" horizontalGap="0" >
+	
+<ui:Grip id="navGrip" 
+				width="17" height="100%" horizontalAlign="center"
+				gripTip="Show/Hide Control Panel" />
+
+<mx:Canvas id="sideBarPanel" borderStyle="solid" borderColor="#CCCCCC" backgroundColor="#FFFFFF" width="100%" height="100%" hideEffect="{wipeLeft}" showEffect="{wipeRight}" >
+<mx:Accordion id="sideBarVS" width="100%" height="100%"  >
+	<component:QueryBuilder label="Query Builder" width="100%" height="100%" />
+	<component:HeaderFormat label="Format Header" width="100%" height="100%" />	
+	<component:HideShowFields label="Hide/Show Fields" width="100%" height="100%" />
+	<component:PrintPreviewFormat label="Format for Print" width="100%" height="100%" />
+</mx:Accordion>
+</mx:Canvas>
+</mx:HBox>
+<!-- Toggle between interactive view and print preview -->
+<mx:ViewStack id="mainBody" width="100%" height="100%" >
+
+<!-- Main body for Advanced Data Grid -->    
+<mx:VBox id="reportPanel" width="100%" height="100%" hideEffect="{fadeEff}" >
+	
+	<!-- Header Bar -->
+	<mx:VBox id="header" visible="false" includeInLayout="false" width="100%" height="0" verticalScrollPolicy="off" horizontalAlign="center" backgroundColor="#FFFFFF" paddingBottom="5" paddingTop="5" borderStyle="solid" cornerRadius="5" borderColor="#CCCCCC" >
+	<mx:HBox width="100%" height="100%" >
+	<mx:Spacer width="8" />
+	<mx:VBox width="100" height="100%" horizontalAlign="center" verticalAlign="middle" >
+
+ 	<mx:Image id="lc" source="@Embed(source='../images/ui/earth.gif')" maintainAspectRatio="true" width="100%" height="100%"  />
+ 	
+ 	</mx:VBox>
+ 	<mx:VBox width="100%" horizontalAlign="center">
+ 	
+ 	<mx:TextInput editable="false" borderStyle="none" id="reportOrganization" htmlText="Organization Title" textAlign="center" width="100%" height="100%" />
+ 
+ 	<mx:TextInput editable="false" borderStyle="none" id="reportTitle" htmlText="Report Title" textAlign="center" width="100%" height="100%" />
+ 	<mx:TextInput editable="false" borderStyle="none" id="reportDate" htmlText="Date" textAlign="center" width="100%" height="100%" />
+	</mx:VBox>
+	<mx:VBox width="100" height="100%" horizontalAlign="center" verticalAlign="middle" borderStyle="solid" backgroundColor="#CCCCCC" cornerRadius="5" >
+	<mx:TextArea editable="false" borderStyle="none" backgroundColor="#CCCCCC" id="reportNotes" htmlText="Notes" textAlign="right" width="100%" height="100%" />
+	</mx:VBox>
+	<mx:Spacer width="8" />
+	</mx:HBox>	
+	</mx:VBox>
+	
+	
+	<mx:AdvancedDataGrid
+            id="adgReport"             
+            width="100%"
+            height="100%"
+            variableRowHeight="true"
+            wordWrap="true"  
+            selectionMode="multipleCells"
+            dataProvider="{new HierarchicalData(parentDocument.gTreeXML)}"
+            
+            >
+
+        <mx:columns>
+        	
+        	<mx:AdvancedDataGridColumn dataField="@name" headerText="Node" />
+            <mx:AdvancedDataGridColumn dataField="@description" headerText="Desc" />
+			
+			<mx:AdvancedDataGridColumn id="labelA" dataField="@nodeLabelA" headerText="Label A" visible="false" />
+			<mx:AdvancedDataGridColumn id="dataA" dataField="@nodeDataA" headerText="Data A" visible="false" />
+			<mx:AdvancedDataGridColumn id="labelB" dataField="@nodeLabelB" headerText="Label B" visible="false" />
+			<mx:AdvancedDataGridColumn id="dataB" dataField="@nodeDataB" headerText="Data B" visible="false" />
+			<mx:AdvancedDataGridColumn id="axisLabelA" dataField="@nodeAxisLabelA" headerText="Axis A" visible="false" />
+			<mx:AdvancedDataGridColumn id="axisDataA" dataField="@nodeAxisDataA" headerText="Axis A" visible="false" />
+			<mx:AdvancedDataGridColumn id="axisLabelB" dataField="@nodeAxisLabelB" headerText="Axis B" visible="false" />
+			<mx:AdvancedDataGridColumn id="axisDataB" dataField="@nodeAxisDataB" headerText="Axis B" visible="false" />
+			<mx:AdvancedDataGridColumn id="date" dataField="@nodeDate" headerText="Date" visible="false" />
+			
+         	
+			
+			</mx:columns>
+
+    </mx:AdvancedDataGrid>
+    
+    <!-- Footer Bar -->
+	<mx:HBox id="footer" visible="false" includeInLayout="false" width="100%" height="20" verticalScrollPolicy="off" horizontalAlign="center" verticalAlign="middle" backgroundColor="#FFFFFF" paddingBottom="5" paddingTop="5" borderStyle="solid" cornerRadius="5" borderColor="#CCCCCC" >
+	<mx:Spacer width="8" />
+	
+ 	<mx:TextInput editable="false" borderStyle="none" id="reportAuthor" htmlText="Author" textAlign="center" width="100%" height="100%" />
+ 	
+ 	<mx:Spacer width="100%" />
+ 	
+ 	<mx:TextInput editable="false" borderStyle="none" id="reportVersion" htmlText="Version" textAlign="center" width="100%" height="100%" />
+ 	
+	
+	</mx:HBox>	
+	
+	
+</mx:VBox>
+
+<!-- Print preview component -->
+    
+<mx:Panel  title="Print Preview" showEffect="{wipeDown}" hideEffect="{dissolveEff}" width="100%" height="100%">
+
+<mx:PrintAdvancedDataGrid id="printADG" source="{parentDocument.gapAnalysisReport}" variableRowHeight="true" sizeToPage="true" allowInteraction="true" width="100%" height="100%" />
+	
+</mx:Panel>
+
+</mx:ViewStack>
+    
+</mx:HBox>
+
+</mx:VBox>
+
+<mx:states>
+       <mx:State name="showCntrlPanel">
+			<mx:SetProperty target="{sideBar}" name="width" value="300"/>
+			<mx:SetStyle target="{DivNavRB}" name="horizontalGap" value="5"/>
+       </mx:State>        
+		<mx:State name="hideCntrlPanel">
+			<mx:SetProperty target="{sideBar}" name="width" value="17"/>
+			<mx:SetStyle target="{DivNavRB}" name="horizontalGap" value="0"/>
+		</mx:State>
+	</mx:states>
+	<mx:transitions>
+		<mx:Transition fromState="*" toState="*">
+			<mx:Resize target="{sideBar}" />
+		</mx:Transition>
+	</mx:transitions>
+
+</mx:Canvas>

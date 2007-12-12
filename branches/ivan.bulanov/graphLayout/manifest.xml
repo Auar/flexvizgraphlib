@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<componentPackage>
+
+<!--
+	URI http://www.adobe.com/2006/fc
+	namespace un
+	package org.un.flex.graphLayout
+-->
+	<component id="VisualGraph" class="org.un.flex.graphLayout.visual.VisualGraph"/>
+</componentPackage>

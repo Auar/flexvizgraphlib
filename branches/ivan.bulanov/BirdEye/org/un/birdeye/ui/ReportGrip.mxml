@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2003-2006 Adobe Macromedia Software LLC and its licensors.
+// All Rights Reserved.
+// The following is Sample Code and is subject to all restrictions on such code
+// as contained in the End User License Agreement accompanying this product.
+// If you have received this file from a source other than Adobe,
+// then your use, modification, or distribution of it requires
+// the prior written permission of Adobe.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="17" height="100%" 
+    horizontalAlign="center">
+    <mx:Script>
+        <![CDATA[
+        
+          [Bindable]
+           public var gripTip:String; 
+           
+           [Bindable]
+           public var gripIcon:Class;
+           
+        
+        public function navPanel(event:Event):void {
+        	
+        
+        if (cntrlPanelButton.selected==true) {
+        	parentDocument.currentState="hideSideBar";
+        } else parentDocument.currentState="showSideBar";
+        
+        }   
+           
+        ]]>
+    </mx:Script>
+
+    <mx:Button id="cntrlPanelButton" toolTip="{gripTip}" toggle="true" selected="false" width="100%" height="100%"
+    	click="navPanel(event);" upIcon="@Embed('../images/assets/grip.png')" downIcon="@Embed('../images/ui/funct.png')"
+    	 />
+    
+</mx:VBox>

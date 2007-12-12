@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties version="1">
+  <includeClasses>
+    <classEntry path="com.flexibleexperiments.primitiveIcons.BasePrimitive"/>
+    <classEntry path="com.flexibleexperiments.primitiveIcons.DrawUtils"/>
+    <classEntry path="com.flexibleexperiments.primitiveIcons.PrimitiveArc"/>
+    <classEntry path="com.flexibleexperiments.primitiveIcons.PrimitiveBurst"/>
+    <classEntry path="com.flexibleexperiments.primitiveIcons.PrimitiveCircle"/>
+    <classEntry path="com.flexibleexperiments.primitiveIcons.PrimitiveGear"/>
+    <classEntry path="com.flexibleexperiments.primitiveIcons.PrimitivePolygon"/>
+    <classEntry path="com.flexibleexperiments.primitiveIcons.PrimitiveRectangle"/>
+    <classEntry path="com.flexibleexperiments.primitiveIcons.PrimitiveReverseBurst"/>
+    <classEntry path="com.flexibleexperiments.primitiveIcons.PrimitiveStar"/>
+    <classEntry path="com.flexibleexperiments.primitiveIcons.PrimitiveWedge"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>

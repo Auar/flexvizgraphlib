@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%">
+	
+	
+	
+	
+	<mx:VBox>
+			<mx:Label text="SELECT * FROM "/>
+			<mx:TextInput id="txtTbl" text="treemap" />
+			<mx:Label text=" WHERE "/>
+			<mx:TextInput id="txtFld" />
+			<mx:Label text=" = "/>
+			<mx:TextInput id="txtVal" />
+			<mx:Button label="Execute" click="parentDocument.selectWhere(txtTbl.text, txtFld.text, txtVal.text)"/>
+	</mx:VBox>
+</mx:Canvas>

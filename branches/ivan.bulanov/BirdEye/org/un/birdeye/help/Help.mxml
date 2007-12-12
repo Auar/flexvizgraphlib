@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+ * The MIT License
+ *
+ * Copyright (c) 2007
+ * United Nations Office at Geneva
+ * Center for Visual Analytics
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ -->
+ 
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:ui="org.un.birdeye.ui.*"
+	width="100%" height="100%">
+
+<mx:Script>
+        <![CDATA[
+            import mx.collections.HierarchicalData;
+            import mx.collections.XMLListCollection;
+        ]]>
+    </mx:Script>
+
+
+<mx:XMLList id="tocData" >
+<contents title="Table of Contents" >
+	<topic title="About" url="app-resource:/org/un/birdeye/help/html/about.html" >
+		<topic title="UNOG Center for Visual Analytics" url="app-resource:/org/un/birdeye/help/html/unog-cva.html" />
+		<topic title="Technology Transfer" url="app-resource:/org/un/birdeye/help/html/techtrnsfr.html" />
+		<topic title="Credits" url="app-resource:/org/un/birdeye/help/html/credits.html" />
+		<topic title="Contacts" url="app-resource:/org/un/birdeye/help/html/contacts.html" />
+	</topic>
+	<topic title="Introduction" url="app-resource:/org/un/birdeye/help/html/introduction.html" >
+		<topic title="What is BirdEye?" url="app-resource:/org/un/birdeye/help/html/whatisbe.html" />
+		<topic title="Why use BirdEye?" url="app-resource:/org/un/birdeye/help/html/whyusebe.html" />
+		<topic title="Getting Started" url="app-resource:/org/un/birdeye/help/html/gettingstarted.html" />
+	</topic>
+	<topic title="Concepts" url="app-resource:/org/un/birdeye/help/html/concepts.html" >
+		<topic title="Visual Analytics" url="app-resource:/org/un/birdeye/help/html/va.html" />
+		<topic title="Graph Theory" url="app-resource:/org/un/birdeye/help/html/gt.html" />
+		<topic title="Data Graphics" url="app-resource:/org/un/birdeye/help/html/dg.html" />
+		<topic title="Visual Design" url="app-resource:/org/un/birdeye/help/html/vd.html" />
+	</topic>
+	<topic title="Visualization" url="app-resource:/org/un/birdeye/help/html/visualization.html" >
+		<topic title="Using the Visualize Component" url="app-resource:/org/un/birdeye/help/html/usingvc.html" />
+		<topic title="Control Panel" url="app-resource:/org/un/birdeye/help/html/vizcntrlpnl.html" />
+		<topic title="Search Panel" url="app-resource:/org/un/birdeye/help/html/vizsrchpnl.html" />
+		<topic title="Detail Panel" url="app-resource:/org/un/birdeye/help/html/vizdtlpnl.html" />
+		<topic title="Saving Graphs" url="app-resource:/org/un/birdeye/help/html/vizsvnggrphs.html" />
+		<topic title="User Interactivity" url="app-resource:/org/un/birdeye/help/html/vizui.html" />
+	</topic>
+	<topic title="Measure and Quantitative Analysis" url="app-resource:/org/un/birdeye/help/html/measure.html" >
+		<topic title="Using the Measure Component" url="app-resource:/org/un/birdeye/help/html/usingmc.html" />
+		<topic title="Creating a Chart" url="app-resource:/org/un/birdeye/help/html/crtngchrts.html" />
+		<topic title="User Interactivity" url="app-resource:/org/un/birdeye/help/html/measui.html" />
+	</topic>
+	<topic title="Recording and Data Entry" url="app-resource:/org/un/birdeye/help/html/record.html" >
+		<topic title="Using the Record Component" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Data Structure" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Creating a Node" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Adding Meta Data to a Node" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Creating a Link (Edge)" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Node Types" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Edge Types" url="app-resource:/org/un/birdeye/help/html/help.html" />
+	</topic>
+	<topic title="Report Making" url="app-resource:/org/un/birdeye/help/html/help.html" >
+		<topic title="Using the Report Component" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Filtering Data" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Adding a Header" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Adding a Footer" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Visibility of Fields" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Printing" url="app-resource:/org/un/birdeye/help/html/help.html" />
+	</topic>
+	<topic title="Case Studies" url="app-resource:/org/un/birdeye/help/html/help.html" >
+		<topic title="Visualization" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Measure" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Record" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Report" url="app-resource:/org/un/birdeye/help/html/help.html" />
+	</topic>
+	<topic title="Technicals" url="app-resource:/org/un/birdeye/help/html/help.html" >
+		<topic title="Installation" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Working with the Database" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Deployment" url="app-resource:/org/un/birdeye/help/html/help.html" />
+	</topic>
+	<topic title="Further Info and Support" url="app-resource:/org/un/birdeye/help/html/help.html" >
+		<topic title="Learn about Visual Analytics" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Feature Requests" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Customization" url="app-resource:/org/un/birdeye/help/html/help.html" />
+		<topic title="Contributing" url="app-resource:/org/un/birdeye/help/html/help.html" />
+	</topic>
+	<topic title="Print version of User Manual" url="app-resource:/org/un/birdeye/help/pdf/birdeyemanual.pdf" />
+</contents>
+</mx:XMLList>	
+	<!-- Effects -->
+	<mx:WipeLeft id="wipeLeft" duration="1000" />
+	<mx:WipeRight id="wipeRight" duration="1000" />
+	
+	<mx:HBox id="DivNavRB" width="100%" height="100%" paddingBottom="5" horizontalGap="5">
+		<mx:HBox id="sideBar" width="300" height="100%" horizontalGap="0" >
+	<ui:Grip id="navGrip" 
+				width="17" height="100%" horizontalAlign="center"
+				gripTip="Show/Hide Control Panel" />
+	<mx:VBox id="NavContainerRB" horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle" horizontalAlign="center" verticalGap="1" horizontalGap="0" width="100%" height="100%" hideEffect="{wipeLeft}" showEffect="{wipeRight}">
+	
+	<mx:Canvas label="Contents" borderStyle="solid" borderColor="#CCCCCC" height="100%" width="100%" >
+	
+	<mx:AdvancedDataGrid width="100%" height="100%" id="adgToc" displayDisclosureIcon="true"  
+        dataProvider="{new HierarchicalData(tocData)}"  
+        itemClick="html.location=adgToc.selectedItem.@url" 
+        >
+        <mx:columns>
+            <mx:AdvancedDataGridColumn dataField="@title" 
+                headerText="Contents" />
+        </mx:columns>
+    </mx:AdvancedDataGrid> 	
+		
+	</mx:Canvas>
+	
+	
+	</mx:VBox>
+	</mx:HBox>
+	
+	<mx:Canvas id="p1Cnvs" borderStyle="solid" borderColor="#CCCCCC" width="100%" height="100%"  >
+	<mx:VBox id="p1" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" >
+	
+	<mx:HTML id="html" location="app-resource:/org/un/birdeye/about/html/about.html" width="100%" height="100%" backgroundAlpha="0.6" alpha="0.6"  />
+ 
+    
+	</mx:VBox>
+	</mx:Canvas>	
+	</mx:HBox>
+
+	<mx:states>
+       <mx:State name="showCntrlPanel">
+			<mx:SetProperty target="{sideBar}" name="width" value="300"/>
+			<mx:SetStyle target="{DivNavRB}" name="horizontalGap" value="5"/>
+       </mx:State>        
+		<mx:State name="hideCntrlPanel">
+			<mx:SetProperty target="{sideBar}" name="width" value="17"/>
+			<mx:SetStyle target="{DivNavRB}" name="horizontalGap" value="0"/>
+		</mx:State>
+	</mx:states>
+	<mx:transitions>
+		<mx:Transition fromState="*" toState="*">
+			<mx:Resize target="{sideBar}" />
+		</mx:Transition>
+	</mx:transitions>
+
+	
+	
+	
+</mx:Canvas>

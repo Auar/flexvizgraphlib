@@ -1,0 +1,2039 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:ui="org.un.birdeye.ui.*"
+	xmlns:flexlib="http://code.google.com/p/flexlib/"
+	creationComplete="init();" >    
+	
+	<mx:XML id="myChart" source="Chart.xml" /> 
+  	<mx:Script source="Dashboard.as" />
+  	<mx:Script source="piano.as" />
+	
+	<mx:Script><![CDATA[
+		import mx.containers.Panel;
+	import org.un.birdeye.measure.view.Pod;
+	import mx.controls.sliderClasses.Slider;
+	//import mx.charts.chartClasses.ChartElement;
+	import mx.charts.chartClasses.CartesianChart;	
+	import mx.graphics.SolidColor;
+	import mx.graphics.Stroke;
+	import mx.controls.Alert;
+	import mx.collections.*;
+	import mx.charts.*;
+	import mx.charts.series.*;
+	import mx.charts.renderers.*;
+	import mx.charts.events.*;
+	import mx.controls.ColorPicker;
+	import mx.events.ColorPickerEvent;
+	import mx.controls.HRule;
+	import mx.controls.ColorPicker;
+	import mx.controls.Button;
+	import mx.controls.CheckBox;
+	import mx.controls.NumericStepper;
+	import mx.charts.chartClasses.Series;
+    import mx.charts.chartClasses.ChartBase;
+    import mx.charts.events.ChartItemEvent;
+    import mx.charts.ChartItem;
+    import mx.charts.series.items.*;
+    import mx.core.Container;
+
+    // Pod
+    import org.un.birdeye.measure.view.Pod;
+	import org.un.birdeye.measure.view.PodContentBase;
+    import org.un.birdeye.measure.managers.PodLayoutManager;
+    import org.un.birdeye.measure.events.LayoutChangeEvent;
+    // ILOG
+    import ilog.charts.RadarGridLines;
+	import ilog.charts.AngularAxis;
+	import ilog.maps.MapBase;
+    import ilog.maps.MapEvent;
+    import ilog.maps.MapFeature;
+    import ilog.maps.MapSymbol;
+    import ilog.charts.RadarChart;
+    import ilog.charts.series.RadarLineSeries;
+    import ilog.charts.series.*;
+    import ilog.treemap.TreeMap;
+	import ilog.maps.*
+	import ilog.charts3d.*;
+	import ilog.charts3d.series.*;
+	import ilog.charts3d.series.items.*;
+	import ilog.charts.series.items.*;
+	// Symbols lib
+    import com.flexibleexperiments.primitiveIcons.*;
+    
+    
+    // Public vars
+    public var myTreeData:XML = new XML();	
+    public var myData:XML = new XML();		
+	public var xmlData:XML = new XML();
+	public var xmlDataModif:XML = new XML();
+	public var arrAxis:Array = new Array();
+	public var arrTreeAxis:Array = new Array();
+	public var xField:String;
+	public var yField:String;
+	public var rField:String;
+	public var highField:String;
+	public var lowField:String;
+	public var openField:String;
+	public var closeField:String;
+	public var labelField:String;
+	public var weightField:String;
+	public var colorField:String;
+	public var dataField:String;
+	public var treeAreaField:String;
+	public var treeColorField:String;
+	public var treeLabelField:String;
+	public var treeColorSheme:String;
+	public var treeAlgo:String;
+	public var CategoryxField:String;
+	public var CategoryyField:String;
+	public var f:SolidColor;
+	public var s:Stroke;
+	public var slicedResults:Array;
+	public var dataList:XMLList;
+	public var dataListCollection:XMLListCollection;
+	public var dataSort:Sort;
+	public var numberOfSerie:Array=new Array();
+	public var num:int=1;
+	public var DisplayType:String;
+	public var minxValue:int;
+	public var maxxValue:int;
+	public var minyValue:int;
+	public var maxyValue:int;
+	public var cnvs:Canvas;
+	public var accordionIndex:int;
+	public var HBoxMinMaxx:HBox;
+	public var HBoxMinMaxy:HBox;
+	public var arrPods:Array=new Array();
+	public var firstPod:Pod = new Pod();
+	public var createNewPod:Boolean;
+	public var arrNewPod:Array=new Array();
+	public var numOfPiano:int;
+	public var pianoNumber:int;
+	public var blnSel:Boolean;
+	public var blnMultiSel:Boolean;
+	public var wjmtest:XML = new XML();
+		
+	public function ParseAxis(Axis:XML,arrDefAxis:Array):void { 
+		var AxisAttributes:XMLList = Axis.children().attributes(); 
+		var i:int = 0;
+		var n:String = "";
+		for each (var axisElements:XML in AxisAttributes) { 
+		n = axisElements.name();	
+  		if (n.substr(0,4) != "nodeName") {
+  			arrDefAxis[i]=n;
+  			i++
+			}
+		} 
+		arrDefAxis.sort();
+		removeDup(arrDefAxis);		
+	}
+	
+	public function LoadXML():void { 
+		dataList=xmlData.children();
+		dataListCollection=new XMLListCollection(dataList);
+		ParseAxis(xmlData,arrAxis);
+		ParseAxis(myTreeData,arrTreeAxis);
+		 numberItems=xmlData.children().length();
+				
+		//cnvs1_cbyAxis1.dataProvider=arrAxis;
+		
+		//création du 1er Pod
+		firstPod.addEventListener(FlexEvent.UPDATE_COMPLETE, onCreationCompletePod);
+		firstPod.id = "Pod1";
+		addPod(firstPod, 1, firstPod.id);
+		arrPods[1]=firstPod;
+		arrNewPod[1]=false;
+		refreshChart();
+	} 
+	
+
+	private function removeDup(a:Array):void
+	{
+	        for(var y:int=0;y<a.length;y++){
+	                for(var z:int=(y+1);z<=a.length;z++){
+	                        if(a[y]==a[z]){
+	                                a.splice(z,1)
+	                                z--
+	                        }
+	                }
+	        }
+	}
+	
+	private function init():void {
+		myTreeData =  parentDocument.gTreeXML;
+		xmlData = parentDocument.gDataXML;
+		wjmtest=parentDocument.gDataXML;
+		createPodManager();
+		numberOfSerie[1]=1;
+		LoadXML();	
+	}
+	
+	
+	public function addDefaultChildToCnvs(pianoCnvs:Object,canvasNum:int):void{
+		numberOfSerie[canvasNum]=1;
+		var lblChartType:Label=new Label();
+		lblChartType.id="cnvs"+canvasNum+"_lblChartType";
+		lblChartType.name="cnvs"+canvasNum+"_lblChartType";
+		lblChartType.x=2;
+		lblChartType.y=10;
+		lblChartType.text="Chart type :"
+		pianoCnvs.addChild(lblChartType);
+
+		var cbChartType:ComboBox=new ComboBox();
+		cbChartType.id="cnvs"+canvasNum+"_cbChartType";
+		cbChartType.name="cnvs"+canvasNum+"_cbChartType";
+		cbChartType.dataProvider=myChart.chart.@Type;
+		cbChartType.addEventListener(Event.CHANGE, changeTypeEvt); 
+		cbChartType.prompt="Select...";
+		cbChartType.x=73;
+		cbChartType.y=8;
+		cbChartType.width=160;
+		pianoCnvs.addChild(cbChartType);
+		
+		arrNewPod[canvasNum]=true;
+	}
+			
+	 
+	
+	public function FindMinMax(axe:String,status:String):void { 
+		accordionIndex=leftAccordion.selectedIndex+1
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
+		HBoxMinMaxx=HBox(cnvs.getChildByName("cnvs"+accordionIndex+"_HBoxMinMaxx"))
+		HBoxMinMaxy=HBox(cnvs.getChildByName("cnvs"+accordionIndex+"_HBoxMinMaxy"))
+		var AxisAttributes:XMLList = xmlData.children().attributes()
+		var arrValues:Array = new Array();
+		var i:int = 0;
+		var n:String = "";
+		var serieField:String
+		for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
+			if(axe=="x"){
+				serieField=ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis1")).selectedLabel.toString();
+			}else{
+    			serieField=ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
+			}
+			for each (var axisElements:XML in AxisAttributes) { 
+			
+				n = axisElements.name();	
+		  		if (n == serieField) {
+		  			arrValues[i]=int(axisElements.toXMLString());
+		  			i++
+				}
+			} 
+		}
+		
+		arrValues.sort(Array.NUMERIC);
+		
+		if(axe=="x"){
+			minxValue=arrValues[0];
+			maxxValue=arrValues[arrValues.length-1];
+			maxxSlideValue=int(arrValues[arrValues.length-1])
+			maxxSlideDefault=int(arrValues[arrValues.length-1]);	
+			flexlib.controls.HSlider(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_minMaxxSlider")).minimum=minxValue;
+			flexlib.controls.HSlider(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_minMaxxSlider")).maximum=maxxValue;
+			if(status=="Init"){
+				flexlib.controls.HSlider(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_minMaxxSlider")).values=[minxValue, maxxValue];
+			}
+		}else{
+			minyValue=arrValues[0];
+			maxyValue=arrValues[arrValues.length-1];
+			maxySlideValue=int(arrValues[arrValues.length-1])*2
+			maxySlideDefault=int(arrValues[arrValues.length-1]);
+			flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxySlider")).minimum=minyValue;
+			flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxySlider")).maximum=maxyValue;
+			if(status=="Init"){
+				flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxySlider")).values=[minyValue, maxyValue];
+			}
+		}
+	}
+    
+ private function xAxisTypeChange(event:Event):void{
+ 	accordionIndex=leftAccordion.selectedIndex+1
+	cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
+	HBoxMinMaxx=HBox(cnvs.getChildByName("cnvs"+accordionIndex+"_HBoxMinMaxx"))
+		if(event.target.selectedLabel.toString()=="Category"){
+    		Label(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_lblxMin1")).setStyle("color", 0xCCCCCC);
+    		Label(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_lblxMax1")).setStyle("color", 0xCCCCCC);
+    		Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblxInterval1")).setStyle("color", 0xCCCCCC);
+    		flexlib.controls.HSlider(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_minMaxxSlider")).setStyle("color", 0xCCCCCC);
+    		flexlib.controls.HSlider(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_minMaxxSlider")).alpha=0.3;
+    		NumericStepper(cnvs.getChildByName("cnvs"+accordionIndex+"_txtxInterval1")).setStyle("color", 0xCCCCCC);
+    		NumericStepper(cnvs.getChildByName("cnvs"+accordionIndex+"_txtxInterval1")).alpha=0.3;
+    	}else{
+    		Label(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_lblxMin1")).setStyle("color", 0x000000);
+    		Label(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_lblxMax1")).setStyle("color", 0x000000);
+    		Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblxInterval1")).setStyle("color", 0x000000);
+    		flexlib.controls.HSlider(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_minMaxxSlider")).setStyle("color", 0x000000);
+    		flexlib.controls.HSlider(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_minMaxxSlider")).alpha=1;
+    		NumericStepper(cnvs.getChildByName("cnvs"+accordionIndex+"_txtxInterval1")).setStyle("color", 0x000000);
+    		NumericStepper(cnvs.getChildByName("cnvs"+accordionIndex+"_txtxInterval1")).alpha=1;
+    		FindMinMax("x","Init");
+    	}
+    	refreshChart();
+    }
+    
+    
+	
+    private function yAxisTypeChange(event:Event):void{
+    	accordionIndex=leftAccordion.selectedIndex+1
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
+		HBoxMinMaxy=HBox(cnvs.getChildByName("cnvs"+accordionIndex+"_HBoxMinMaxy"))
+    	if(event.target.selectedLabel.toString()=="Category"){
+    		Label(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_lblyMin1")).setStyle("color", 0xCCCCCC);
+    		Label(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_lblyMax1")).setStyle("color", 0xCCCCCC);
+    		Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblyInterval1")).setStyle("color", 0xCCCCCC);
+    		flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxySlider")).setStyle("color", 0xCCCCCC);
+    		flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxySlider")).alpha=0.3;
+    		NumericStepper(cnvs.getChildByName("cnvs"+accordionIndex+"_txtyInterval1")).setStyle("color", 0xCCCCCC);
+    		NumericStepper(cnvs.getChildByName("cnvs"+accordionIndex+"_txtyInterval1")).alpha=0.3;
+    	}else{
+    		Label(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_lblyMin1")).setStyle("color", 0x000000);
+    		Label(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_lblyMax1")).setStyle("color", 0x000000);
+    		Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblyInterval1")).setStyle("color", 0x000000);
+    		flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxySlider")).setStyle("color", 0x000000);
+    		flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxySlider")).alpha=1;
+    		NumericStepper(cnvs.getChildByName("cnvs"+accordionIndex+"_txtyInterval1")).setStyle("color", 0x000000);
+    		NumericStepper(cnvs.getChildByName("cnvs"+accordionIndex+"_txtyInterval1")).alpha=1;
+    		FindMinMax("y","Init");
+    		
+    	}
+    	
+    	refreshChart();
+    }
+    
+    public function filterData():void{
+    	accordionIndex=leftAccordion.selectedIndex+1
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
+    	var strChart:String=ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()
+    	if(strChart!="TreeMap" && strChart!="GeoMap"){
+    	var NewXML:XML=new XML(xmlData);
+    	var NewDataList:XMLList=new XMLList();
+    	dataList=xmlData.children();
+    	var i:int=0
+    	for each(var node:XML in dataList) {
+    		var isMatch:int=0;
+    		for each(var aattributes:XML in node.attributes()){
+    			if (aattributes.name()==ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis1")).selectedLabel.toString()){
+    				isMatch++;
+    			}
+    		}
+    		if (isMatch==0){
+    			delete NewXML.children()[i];
+    			i--;
+    		}
+    		i++
+    	}
+    	NewDataList=NewXML.children();
+    	dataListCollection=new XMLListCollection(NewDataList);
+    	}
+    }
+    
+    public function refreshChart():void {
+    	accordionIndex=leftAccordion.selectedIndex+1
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
+    	var strChartType:String = ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()
+    	drawChart(strChartType);
+    }
+    
+     public function refreshChartEvent(event:Event):void {
+     	/*if (event.target.name.toString()=="cnvs1_cbyAxis1")
+     	{
+     		filterData();
+     	}*/
+     	accordionIndex=leftAccordion.selectedIndex+1
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
+    	var strChartType:String = ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()
+    	drawChart(strChartType);
+    }
+  
+    private function refreshCartChartEvent(event:Event):void {
+    	accordionIndex=leftAccordion.selectedIndex+1
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
+    	num=event.target.name.substr(17);
+    	if(event.target.selectedLabel.toString()=="Area" || event.target.selectedLabel.toString()=="Line")
+    	{
+    		if (num==1)
+				{
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblRadius"+num)).setStyle("color", 0xCCCCCC);
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblCatForm"+num)).setStyle("color", 0x000000);
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblxAxis"+num)).text="xAxis :";
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblyAxis"+num)).text="yAxis :";
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblOpenField"+num)).setStyle("color", 0xCCCCCC);
+    				Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblCloseField"+num)).setStyle("color", 0xCCCCCC);
+				}else{
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).alpha=0.3;
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).setStyle("color", 0xCCCCCC);
+				}
+				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num)).alpha=0.3;	
+	    		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num)).setStyle("color", 0xCCCCCC);	
+	    		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+num)).alpha=1;
+	    		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+num)).setStyle("color", 0x000000);
+	    		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num)).alpha=0.3;
+	    		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num)).setStyle("color", 0xCCCCCC);
+	    		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num)).alpha=0.3;
+	    		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num)).setStyle("color", 0xCCCCCC);
+    	}else if (event.target.selectedLabel.toString()=="Bubble"){
+    		if (num==1)
+			{
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblCatForm"+num)).setStyle("color", 0xCCCCCC);
+    				Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblRadius"+num)).setStyle("color", 0x000000);
+    				Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblxAxis"+num)).text="xAxis :";
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblyAxis"+num)).text="yAxis :";
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblOpenField"+num)).setStyle("color", 0xCCCCCC);
+    				Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblCloseField"+num)).setStyle("color", 0xCCCCCC);
+    		}else{
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).prompt="Select...";
+    				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).alpha=0.3;
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).setStyle("color", 0xCCCCCC);
+			}
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+num)).alpha=0.3;
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+num)).setStyle("color", 0xCCCCCC);
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num)).alpha=1;
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num)).setStyle("color", 0x000000);
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num)).alpha=0.3;
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num)).setStyle("color", 0xCCCCCC);
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num)).alpha=0.3;
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num)).setStyle("color", 0xCCCCCC);
+    	}else if (event.target.selectedLabel.toString()=="Candlestick" || event.target.selectedLabel.toString()=="HLOC"){
+    		if (num==1)
+			{
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblRadius"+num)).setStyle("color", 0xCCCCCC);
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblCatForm"+num)).setStyle("color", 0xCCCCCC);
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblxAxis"+num)).text="High Field :";
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblyAxis"+num)).text="Low Field :";
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblOpenField"+num)).setStyle("color", 0x000000);
+    				Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblCloseField"+num)).setStyle("color", 0x000000);
+    		}else{
+    				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).prompt="Low Field...";
+    				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).alpha=1;
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).setStyle("color", 0x000000);
+    		}
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num)).alpha=0.3;	
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num)).setStyle("color", 0xCCCCCC);	
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+num)).alpha=0.3;
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+num)).setStyle("color", 0xCCCCCC);
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num)).alpha=1;
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num)).setStyle("color", 0x000000);
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num)).alpha=1;
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num)).setStyle("color", 0x000000);
+    	}else{
+    		if (num==1)
+			{
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblCatForm"+num)).setStyle("color", 0xCCCCCC);
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblRadius"+num)).setStyle("color", 0xCCCCCC);
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblCatForm"+num)).setStyle("color", 0xCCCCCC);
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblxAxis"+num)).text="xAxis :";
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblyAxis"+num)).text="yAxis :";
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblOpenField"+num)).setStyle("color", 0xCCCCCC);
+    				Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblCloseField"+num)).setStyle("color", 0xCCCCCC);
+			}else{
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).prompt="Select...";
+    				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).alpha=0.3;
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).setStyle("color", 0xCCCCCC);
+			}
+				
+    		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+num)).alpha=0.3;
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+num)).setStyle("color", 0xCCCCCC);
+    		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num)).alpha=0.3;
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num)).setStyle("color", 0xCCCCCC);
+    		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+num)).alpha=0.3;
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+num)).setStyle("color", 0xCCCCCC);
+    		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num)).alpha=0.3;
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num)).setStyle("color", 0xCCCCCC);
+    		ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num)).alpha=0.3;
+			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num)).setStyle("color", 0xCCCCCC);
+    	}
+    	refreshChart();
+    }
+   
+	 public function radarSerieEvent(event:Event):void {
+     	accordionIndex=leftAccordion.selectedIndex+1
+			cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
+    	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
+  			if (event.target.selectedLabel.toString()=="Bubble"){
+					 if(num==1){
+  				 		Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblRadius"+num)).setStyle("color", 0x000000);
+					 }
+					 ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num)).setStyle("color", 0x000000);
+					 ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num)).alpha=1;
+  			}else{
+  				 if(num==1){
+					 	Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblRadius"+num)).setStyle("color", 0xCCCCCC);
+					 }
+					 ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num)).setStyle("color", 0xCCCCCC);
+					 ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num)).alpha=0.3;
+  			}
+			}
+    	refreshChart();
+    }
+	
+	public function refresh3DChartEvent(event:Event):void{
+		accordionIndex=leftAccordion.selectedIndex+1
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
+		HBoxMinMaxy=HBox(cnvs.getChildByName("cnvs"+accordionIndex+"_HBoxMinMaxy"))
+		for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
+    	if(event.target.selectedLabel.toString()=="Area" || event.target.selectedLabel.toString()=="Line")
+    	{
+    		if (num==1)
+				{
+  				 	Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblxAxis"+num)).text="xAxis :";
+  					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblForm"+num)).setStyle("color", 0x000000);
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblxAxisType"+num)).setStyle("color", 0x000000);
+  					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblyAxis"+num)).setStyle("color", 0x000000);
+  					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblyAxisType"+num)).setStyle("color", 0x000000);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType"+num)).alpha=1;
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType"+num)).setStyle("color", 0x000000);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType"+num)).selectedIndex=0;
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType"+num)).alpha=1;
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType"+num)).setStyle("color", 0x000000);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType"+num)).selectedIndex=0;
+					flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxxSlider")).setStyle("color", 0xCCCCCC);
+      				flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxxSlider")).alpha=0.3;
+  					flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxySlider")).setStyle("color", 0xCCCCCC);
+      				flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxySlider")).alpha=0.3;
+				}else{
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).prompt="Select...";
+				}
+				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbForm"+num)).alpha=1;
+    			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbForm"+num)).setStyle("color", 0x000000);
+    	}else if (event.target.selectedLabel.toString()=="Pie"){
+    		if (num==1)
+				{
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblForm"+num)).setStyle("color", 0xCCCCCC);
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblxAxis"+num)).text="Field :";
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblxAxisType"+num)).setStyle("color", 0xCCCCCC);
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblyAxis"+num)).setStyle("color", 0xCCCCCC);
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblyAxisType"+num)).setStyle("color", 0xCCCCCC);
+					flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxxSlider")).setStyle("color", 0xCCCCCC);
+    				flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxxSlider")).alpha=0.3;
+					flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxySlider")).setStyle("color", 0xCCCCCC);
+    				flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxySlider")).alpha=0.3;
+    		}else{
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).prompt="Select...";
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbForm"+num)).alpha=0.3;
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbForm"+num)).setStyle("color", 0xCCCCCC);
+				}
+			}else{
+    		if (num==1)
+				{
+				 	Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblxAxis"+num)).text="xAxis :";
+  					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblForm"+num)).setStyle("color", 0xCCCCCC);
+					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblxAxisType"+num)).setStyle("color", 0x000000);
+  					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblyAxis"+num)).setStyle("color", 0x000000);
+  					Label(cnvs.getChildByName("cnvs"+accordionIndex+"_lblyAxisType"+num)).setStyle("color", 0x000000);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType"+num)).alpha=1;
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType"+num)).setStyle("color", 0x000000);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType"+num)).selectedIndex=0;
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType"+num)).alpha=1;
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType"+num)).setStyle("color", 0x000000);
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType"+num)).selectedIndex=0;
+					flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxxSlider")).setStyle("color", 0xCCCCCC);
+      				flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxxSlider")).alpha=0.3;
+  					flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxySlider")).setStyle("color", 0xCCCCCC);
+      				flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxySlider")).alpha=0.3;
+				}else{
+					ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).prompt="Select...";
+				}	
+    			ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbForm"+num)).alpha=0.3;
+				ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbForm"+num)).setStyle("color", 0xCCCCCC);
+    	}
+		}
+    refreshChart();
+	}	
+	
+   public function createNextPod(num:int):void{
+   	if ((arrNewPod[num]==true) ){
+				var nextPod:Pod = new Pod();
+				nextPod.addEventListener(FlexEvent.UPDATE_COMPLETE, onCreationCompletePod);
+				nextPod.id = "Pod"+(num);
+				addPod(nextPod, num, nextPod.id);
+				arrPods[num]=nextPod;
+				arrNewPod[num]=false;
+				refreshChart();
+		}
+   }
+   
+    public function drawChart(strChartType:String):void {
+    	accordionIndex=leftAccordion.selectedIndex+1
+    	numOfPiano=leftAccordion.numChildren+1
+    	if(arrNewPod[accordionIndex]==true){
+    		pianoNumber=numOfPiano;
+    	}else{
+    		pianoNumber=accordionIndex;
+    	}
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
+		
+		if (myChart.chart.(@Type==strChartType).Properties.Property.(@name=="Axis").length() !=0){
+    		xField="@"+ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis1")).selectedLabel.toString();
+    		if(strChartType=="Radar"){
+    			FindMinMax("r","");
+    		}else{
+    			FindMinMax("x","");
+				FindMinMax("y","");
+    			xField="@"+ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis1")).selectedLabel.toString();
+    		}
+    	}
+    	if (myChart.chart.(@Type==strChartType).Properties.Property.(@name=="barTypes").length() !=0){
+    		DisplayType=ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbDisplay")).selectedLabel.toString();
+    		
+    	}
+		
+		
+    	switch (strChartType) { 
+		    case "Area" : 
+		    	drawAreaChart();
+		    	break; 
+		    case "Bar" : 
+		    	drawBarChart();
+		        break; 
+		    case "Bubble" : 
+		        drawBubbleChart();
+		        break; 
+		    case "Candlestick" : 
+		        drawCandlestickChart();
+		        break; 
+		    case "Column" : 
+		        drawColumnChart();
+		        break; 
+		    case "HighLowOpenClose" : 
+		        drawHLOCChart()
+		        break; 
+		    case "Line" : 
+		    	drawLineChart();
+		        break; 
+		    case "Pie" : 
+		        drawPieChart();
+		        break; 
+		    case "Plot" : 
+		        drawPlotChart();
+		        break;
+		    case "Radar" : 
+		        drawRadarChart();
+		        break;
+		    case "TreeMap" : 
+		        drawTreeMap();
+		        break;
+		    case "GeoMap" : 
+		        drawGeoMap();
+		        break; 
+		   case "Cartesian" : 
+		        drawCartesianChart();
+		        break; 
+			case "Area3D" : 
+		        drawArea3DChart();
+		        break;
+			case "Bar3D" : 
+		        drawBar3DChart();
+		        break; 
+			case "Column3D" : 
+		        drawColumn3DChart();
+		        break; 
+			case "Line3D" : 
+		        drawLine3DChart();
+		        break; 
+			case "Pie3D" : 
+		        drawPie3DChart();
+		        break;  
+		}
+	}
+    
+    public function createLegend(Chart:Object):void {
+    	accordionIndex=leftAccordion.selectedIndex+1
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
+    	var myLegend:Legend = new Legend();
+		myLegend.dataProvider = Chart;
+		myLegend.direction = "horizontal";
+		if(CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkLegend")).selected){
+			this.addChild(myLegend);
+		}
+	}
+	
+	public function createLegend2(Chart:Object, container:VBox):void {
+    	accordionIndex=leftAccordion.selectedIndex+1
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
+    	var myLegend:Legend = new Legend();
+		myLegend.dataProvider = Chart;
+		myLegend.direction = "horizontal";
+		if(CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkLegend")).selected){
+			container.addChild(myLegend);
+		}
+	}
+	
+	public function addGridLines(Chart:Object):void {
+		accordionIndex=leftAccordion.selectedIndex+1
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
+		var s:Stroke;
+		var sc:SolidColor;
+		if(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="Radar"){
+			var bge:ilog.charts.RadarGridLines=new ilog.charts.RadarGridLines();
+			bge.setStyle("direction", "both");
+			if(CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkGrid")).selected)
+	  		{
+	  			s = new Stroke(0x9BC4E2,1);
+				sc = new SolidColor(0x9BC4E2,1);
+	  			//bge.setStyle("angularFill", sc);
+	  			bge.setStyle("angularStroke",s);
+				//bge.setStyle("radialFill", sc);
+	  			bge.setStyle("radialStroke",s);
+	  						
+	  		}else{
+	  			s = new Stroke(0xFFFFFF,0);
+				sc = new SolidColor(0xFFFFFF,1);
+	  			bge.setStyle("angularFill", sc);
+	  			bge.setStyle("angularStroke",s);
+				bge.setStyle("radialFill", sc);
+	  			bge.setStyle("radialStroke",s);
+	  		}
+	  		Chart.backgroundElements =[bge];
+	 	}else if(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="Area3D" || ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="Bar3D" || ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="Column3D" || ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="Line3D"){
+	 		if(CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkGrid")).selected)
+	  		{
+		 		Chart.setStyle("showHorizontalGrid",true);
+				Chart.setStyle("showVerticalGrid",true);
+				Chart.setStyle("showDepthGrid",true);
+	  		}else{
+	  			Chart.setStyle("showHorizontalGrid",false);
+				Chart.setStyle("showVerticalGrid",false);
+				Chart.setStyle("showDepthGrid",false);
+	  		}
+		}else{
+			var bge1:GridLines;
+			bge1 = new GridLines();
+			bge1.setStyle("direction", "both");
+	  		if(CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkGrid")).selected)
+	  		{
+	  			s = new Stroke(0x9BC4E2,1);
+	  			bge1.setStyle("horizontalStroke", s);
+	  			bge1.setStyle("verticalStroke",s);
+	  						
+	  		}else{
+	  			s = new Stroke(0xFFFFFF,0);
+	  			bge1.setStyle("horizontalStroke", s);
+	  			bge1.setStyle("verticalStroke",s);
+	  		}
+	  		Chart.backgroundElements =[bge1];
+		}
+	}
+	
+	public function sortLabel(sField:String):void{
+		dataSort=new Sort();
+		dataSort.fields=[new SortField(sField,true)];
+		dataListCollection.sort=dataSort;
+		dataListCollection.refresh();
+	}
+	
+	public function setMinMaxInt(axis:Object,orientation:String):void{
+		accordionIndex=leftAccordion.selectedIndex+1
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
+		HBoxMinMaxx=HBox(cnvs.getChildByName("cnvs"+accordionIndex+"_HBoxMinMaxx"))
+		HBoxMinMaxy=HBox(cnvs.getChildByName("cnvs"+accordionIndex+"_HBoxMinMaxy"))
+		if(orientation=="h"){
+			if (flexlib.controls.HSlider(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_minMaxxSlider")).values[1]!=""){
+    			axis.maximum=flexlib.controls.HSlider(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_minMaxxSlider")).values[1];
+    		}
+    		if (flexlib.controls.HSlider(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_minMaxxSlider")).values[0]!=""){
+    			axis.minimum=flexlib.controls.HSlider(HBoxMinMaxx.getChildByName("cnvs"+accordionIndex+"_minMaxxSlider")).values[0];
+    		}
+    		if (NumericStepper(cnvs.getChildByName("cnvs"+accordionIndex+"_txtxInterval1")).value.toString()!=""){
+    			axis.interval=NumericStepper(cnvs.getChildByName("cnvs"+accordionIndex+"_txtxInterval1")).value.toString();
+    		}
+		}else{
+			if (flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxySlider")).values[1]!=""){
+    			axis.maximum=flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxySlider")).values[1];
+    		}
+    		if (flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxySlider")).values[0]!=""){
+    			axis.minimum=flexlib.controls.HSlider(HBoxMinMaxy.getChildByName("cnvs"+accordionIndex+"_minMaxySlider")).values[0];
+    		}
+    		if (NumericStepper(cnvs.getChildByName("cnvs"+accordionIndex+"_txtyInterval1")).value.toString()!=""){
+    			axis.interval=NumericStepper(cnvs.getChildByName("cnvs"+accordionIndex+"_txtyInterval1")).value.toString();
+    		}
+		}
+	}
+	
+	
+    public function setTypeAxis(Chart:Object,AxisType:String,axe:String):void { 
+    	switch (AxisType) { 
+		    case "Category" : 
+		    	var AxisCat:CategoryAxis = new CategoryAxis();
+		    	AxisCat.categoryField = xField;
+		    	sortLabel(xField);
+		    	AxisCat.dataProvider = dataListCollection;
+		    	
+		    	if(axe=="h"){
+		    		//AxisCat.categoryField=xField;//CategoryxField;
+					Chart.horizontalAxis = AxisCat;
+		    	}else if(axe=="v"){
+		    		//AxisCat.categoryField=yField;//CategoryyField;
+		    		//Chart.verticalAxis = AxisCat;
+		    	}
+		        break; 
+		    case "Linear" : 
+		    	var AxisLinear:LinearAxis = new LinearAxis();
+		    	setMinMaxInt(AxisLinear,axe);
+		    	if(axe=="h"){
+					Chart.horizontalAxis = AxisLinear;
+		    	}else if(axe=="v"){
+		    		Chart.verticalAxis = AxisLinear;
+		    	}else if(axe=="r"){
+		    		Chart.radialAxis = AxisLinear;
+		    	}
+		        break;
+			case "Log" : 
+		    	var AxisLog:LogAxis = new LogAxis();
+		    	setMinMaxInt(AxisLog,axe);
+		    	if(axe=="h"){
+					Chart.horizontalAxis = AxisLog;
+		    	}else if(axe=="v"){
+		    		Chart.verticalAxis = AxisLog;
+		    	}else if(axe=="r"){
+		    		Chart.radialAxis = AxisLog;
+					}
+		        break; 
+		    case "DateTime" : 
+		    	var AxisDateTime:DateTimeAxis = new DateTimeAxis();
+		    	setMinMaxInt(AxisDateTime,axe);
+		    	if(axe=="h"){
+					Chart.horizontalAxis = AxisDateTime;
+		    	}else if(axe=="v"){
+		    		Chart.verticalAxis = AxisDateTime;
+		    	}else if(axe=="r"){
+		    		Chart.radialAxis = AxisDateTime;
+					}
+		        break; 
+        }
+	}
+	
+	
+	
+	public function setSerie(serie:Object,chartType:String, syField:String, num:int):void{
+		accordionIndex=leftAccordion.selectedIndex+1
+		cnvs=Canvas(leftAccordion.getChildByName("piano"+accordionIndex))
+		if(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="Pie" || ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="Pie3D")
+		{
+			serie.field=syField;
+			serie.nameField=syField;
+			serie.setStyle("labelPosition", ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbLabelPosition")).selectedLabel.toString()); 
+			
+			serie.explodeRadius=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_PieExplode")).value//.12
+			serie.startAngle=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_PieAngle")).value;
+		}else if (ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="Candlestick" || ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="HighLowOpenClose"){
+			serie.openField=openField;
+			serie.closeField=closeField;
+			serie.highField=highField;
+			serie.lowField=lowField;
+		}else if (ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="Cartesian"){
+			if(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+num)).selectedLabel.toString()=="Candlestick" || ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+num)).selectedLabel.toString()=="HLOC"){
+				serie.openField=openField;
+				serie.closeField=closeField;
+				serie.highField=highField;
+				serie.lowField=lowField;
+			}else{
+				serie.xField=xField;
+				serie.yField=syField;
+				serie.displayName = syField.substring(1,syField.length);
+			}
+		}
+		else if (ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="Radar"){
+			serie.dataField=dataField;
+			serie.displayName=dataField.substring(1,dataField.length);
+		}else{
+			serie.xField=xField;
+			serie.yField=syField;
+			serie.displayName = syField.substring(1,syField.length);
+		}
+		
+		if (myChart.chart.(@Type==chartType).Properties.Property.(@name=="form").length() !=0)
+		{
+	  		if(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()=="Cartesian")
+	  			{
+	  				serie.setStyle('form', ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartForm"+num)).text)
+	  		}else{
+	  			serie.setStyle('form', ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbForm")).text);
+	  		}
+		}
+		
+		if (myChart.chart.(@Type==chartType).Properties.Property.(@name=="Fill").length() !=0)
+		{
+			f=new SolidColor(ColorPicker(cnvs.getChildByName("cnvs"+accordionIndex+"_cp"+num)).selectedColor,1);
+				s = new Stroke(ColorPicker(cnvs.getChildByName("cnvs"+accordionIndex+"_cp"+num)).selectedColor,1);
+				if(chartType=="Area"){
+					serie.setStyle('areaFill',f);
+				}else if(chartType=="Line"){
+					serie.setStyle('fill',f);
+					serie.setStyle('lineStroke',s);
+				}else if(chartType=="Candlestick"){
+					serie.setStyle('declineFill',f);
+					serie.setStyle('stroke',s);
+					serie.setStyle('boxStroke',s);
+				}else if(chartType=="HighLowOpenClose"){
+					serie.setStyle('openTickStroke',s);
+					serie.setStyle('stroke',s);
+					serie.setStyle('closeTickStroke',s);
+				}else if(chartType=="Radar"){
+					serie.setStyle('fill',f);
+					serie.setStyle('areaFill',f);
+					serie.setStyle('lineStroke',s);
+				}else if(chartType=="Area3D" || chartType=="Bar3D" || chartType=="Column3D" || chartType=="Line3D" || chartType=="Pie3D"){
+					serie.setStyle('fill',f);
+					serie.setStyle('stroke',s);
+				}else{
+					serie.setStyle('fill',f);
+				}
+		}
+	}
+	
+	public function resizeChart(Chart:Object):void{
+		Chart.percentHeight=(80*p1.height)/100;
+		Chart.percentWidth=(80*p1.width)/100;
+	}
+	
+     public function drawAreaChart():void {
+     	var chartVBox:VBox = new VBox();
+     	var myAreaSeries:Array=new Array();
+    	var myAreaChart:AreaChart;
+    	var AreaSerie1:AreaSeries;
+	    myAreaChart = new AreaChart();
+        myAreaChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
+        myAreaChart.dataProvider=dataListCollection;
+    	myAreaChart.percentWidth=100;
+    	myAreaChart.percentHeight=100;
+    	
+    	
+    	if (numberOfSerie[accordionIndex]>1){
+    		myAreaChart.type=DisplayType;
+    	}
+    	
+    	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
+    		AreaSerie1=new AreaSeries();
+    		yField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
+			setSerie(AreaSerie1,'Area',yField,num);
+			myAreaSeries.push(AreaSerie1);
+		}	
+		
+		setTypeAxis(myAreaChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType1")).text,"h");
+	   	setTypeAxis(myAreaChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");		
+		
+		myAreaChart.series = myAreaSeries;
+		myAreaChart.dataTipFunction=setDataTips;
+		resizeChart(chartVBox);
+		chartVBox.addChild(myAreaChart);
+		
+		var podContent:PodContentBase = new PodContentBase();
+		podContent.addChild(chartVBox);
+		createNextPod(accordionIndex);
+	  	
+	  	Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". Area";
+	  	createLegend2(myAreaChart, chartVBox);
+		addGridLines(myAreaChart);
+		}
+    
+    
+    private function drawBarChart():void {
+    	var chartVBox:VBox = new VBox();
+    	var myBarSeries:Array=new Array();
+	    var myBarChart:BarChart;
+        var barSeries1:BarSeries;
+        
+        myBarChart = new BarChart();
+        myBarChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
+        myBarChart.dataProvider=dataListCollection;
+        
+    	
+        if (numberOfSerie[accordionIndex]>1){
+    		myBarChart.type=DisplayType;
+    	}
+    	
+    	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
+    		barSeries1=new BarSeries();
+    		yField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
+			setSerie(barSeries1,'Bar',yField,num);
+			myBarSeries.push(barSeries1);
+		}
+		
+       setTypeAxis(myBarChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType1")).text,"h");
+	   setTypeAxis(myBarChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");	
+		
+		myBarChart.series = myBarSeries;
+		myBarChart.dataTipFunction=setDataTips;
+		resizeChart(myBarChart);
+		resizeChart(chartVBox);
+		chartVBox.addChild(myBarChart);
+		
+		var podContent:PodContentBase = new PodContentBase();
+		podContent.addChild(chartVBox);
+		createNextPod(accordionIndex);
+		Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". Bar";
+	  	createLegend2(myBarChart, chartVBox);
+	  	
+		addGridLines(myBarChart);
+    }
+    
+    private function drawBubbleChart():void {
+    	var chartVBox:VBox = new VBox();
+    	var myBubbleSeries:Array=new Array();
+	    var MyBubbleChart:BubbleChart;
+        var Bubbleseries1:BubbleSeries;
+     
+        MyBubbleChart = new BubbleChart();
+        MyBubbleChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
+        MyBubbleChart.dataProvider=dataListCollection;
+		
+		
+    	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
+    		Bubbleseries1=new BubbleSeries();
+    		yField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
+			rField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num)).selectedLabel.toString();
+			setSerie(Bubbleseries1,'Bubble',yField,num);
+			Bubbleseries1.radiusField=rField;
+			myBubbleSeries.push(Bubbleseries1);
+		}
+		
+	   setTypeAxis(MyBubbleChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType1")).text,"h");
+	   setTypeAxis(MyBubbleChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");
+	   
+	   MyBubbleChart.series = myBubbleSeries;
+	   MyBubbleChart.dataTipFunction=setDataTips;
+	   resizeChart(MyBubbleChart);
+	   resizeChart(chartVBox);
+	   chartVBox.addChild(MyBubbleChart);
+	
+	   var podContent:PodContentBase = new PodContentBase();
+	   podContent.addChild(chartVBox);
+	   createNextPod(accordionIndex);
+	   Pod(arrPods[accordionIndex]).removeAllChildren();
+  	   Pod(arrPods[accordionIndex]).addChild(podContent); 
+  	   Pod(arrPods[accordionIndex]).title= accordionIndex + ". Bubble";
+  	   createLegend2(MyBubbleChart, chartVBox);
+  	   addGridLines(MyBubbleChart);
+    }
+    
+    
+    private function drawCandlestickChart():void {
+    	var chartVBox:VBox = new VBox();
+    	var myCandlestickSeries:Array=new Array();
+	    var myCandlestickChart:CandlestickChart;
+        var CandlestickSeries1:CandlestickSeries;
+        
+        myCandlestickChart = new CandlestickChart();
+        myCandlestickChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
+        myCandlestickChart.dataProvider=dataListCollection;
+        
+       for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
+    		CandlestickSeries1=new CandlestickSeries();
+    		highField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).selectedLabel.toString();
+    		lowField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
+    		openField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num)).selectedLabel.toString();
+    		closeField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num)).selectedLabel.toString();
+			setSerie(CandlestickSeries1,'Candlestick',"",num);
+			myCandlestickSeries.push(CandlestickSeries1);
+		}
+		
+       setTypeAxis(myCandlestickChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType1")).text,"h");
+	   setTypeAxis(myCandlestickChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");
+		
+		myCandlestickChart.series = myCandlestickSeries;
+		//myCandlestickChart.dataTipFunction=setDataTips;
+		resizeChart(myCandlestickChart);
+		resizeChart(chartVBox);
+		chartVBox.addChild(myCandlestickChart);
+		
+		var podContent:PodContentBase = new PodContentBase();
+		podContent.addChild(chartVBox);
+		createNextPod(accordionIndex);
+		Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". Candlestick";
+	  	createLegend2(myCandlestickChart, chartVBox);  
+		addGridLines(myCandlestickChart);
+    }
+    
+    private function drawColumnChart():void {
+    	var chartVBox:VBox = new VBox();
+		var myColumnSeries:Array=new Array();
+	    var myColumnChart:ColumnChart;
+        var ColumnSeries1:ColumnSeries;
+        
+        myColumnChart = new ColumnChart();
+        myColumnChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
+        myColumnChart.dataProvider=dataListCollection;
+        
+        if (numberOfSerie[accordionIndex]>1){
+    		myColumnChart.type=DisplayType;
+    	}
+    	
+    	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
+    		ColumnSeries1=new ColumnSeries();
+    		yField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
+			setSerie(ColumnSeries1,'Column',yField,num);
+			myColumnSeries.push(ColumnSeries1);
+		}
+		
+       setTypeAxis(myColumnChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType1")).text,"h");
+	   setTypeAxis(myColumnChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");
+		
+		myColumnChart.series = myColumnSeries;
+		myColumnChart.dataTipFunction=setDataTips;
+		resizeChart(myColumnChart);
+		resizeChart(chartVBox);
+		chartVBox.addChild(myColumnChart);
+		
+		var podContent:PodContentBase = new PodContentBase();
+		podContent.addChild(chartVBox);
+		createNextPod(accordionIndex);
+		Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". Column";
+	  	createLegend2(myColumnChart, chartVBox);  
+		addGridLines(myColumnChart);
+    }
+    
+    private function drawHLOCChart():void {
+    	var chartVBox:VBox = new VBox();
+    	var myHLOCSeries:Array=new Array();
+	    var myHLOCChart:HLOCChart;
+        var HLOCSeries1:HLOCSeries;
+        
+        myHLOCChart = new HLOCChart();
+        myHLOCChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
+        myHLOCChart.dataProvider=dataListCollection;
+        
+    	
+    	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
+    		HLOCSeries1=new HLOCSeries();
+    		highField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).selectedLabel.toString();
+    		lowField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
+    		openField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num)).selectedLabel.toString();
+    		closeField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num)).selectedLabel.toString();
+			setSerie(HLOCSeries1,'Candlestick',"",num);
+			myHLOCSeries.push(HLOCSeries1);
+		}
+		
+       setTypeAxis(myHLOCChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType1")).text,"h");
+	   setTypeAxis(myHLOCChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");
+		
+		myHLOCChart.series = myHLOCSeries;
+		//myHLOCChart.dataTipFunction=setDataTips;
+		resizeChart(myHLOCChart);
+		resizeChart(chartVBox);
+		chartVBox.addChild(myHLOCChart);
+		
+		var podContent:PodContentBase = new PodContentBase();
+		podContent.addChild(chartVBox);
+		createNextPod(accordionIndex);
+		Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". HLOC";
+	  	createLegend2(myHLOCChart, chartVBox); 
+		addGridLines(myHLOCChart);
+    }
+    
+    private function drawLineChart():void {
+    	var chartVBox:VBox = new VBox();
+    	var myLineSeries:Array=new Array();
+		var MyLineChart:LineChart;
+		var LineSeries1:LineSeries;
+		
+		MyLineChart = new LineChart();
+        MyLineChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
+        MyLineChart.dataProvider=dataListCollection;
+    	
+    	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
+    		LineSeries1=new LineSeries();
+    		yField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
+			setSerie(LineSeries1,'Line',yField,num);
+			myLineSeries.push(LineSeries1);
+		}
+		
+       setTypeAxis(MyLineChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType1")).text,"h");
+	   setTypeAxis(MyLineChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");
+		
+		MyLineChart.series = myLineSeries;
+		MyLineChart.dataTipFunction=setDataTips;
+		resizeChart(MyLineChart);
+		resizeChart(chartVBox);
+		chartVBox.addChild(MyLineChart);
+		
+		var podContent:PodContentBase = new PodContentBase();
+		podContent.addChild(chartVBox);
+		createNextPod(accordionIndex);
+		Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". Line";
+	  	createLegend2(MyLineChart, chartVBox);
+		addGridLines(MyLineChart);
+    }
+
+    
+    private function drawPieChart():void {
+    	var chartVBox:VBox = new VBox();
+    	var myPieSeries:Array=new Array();
+		var MyPieChart:PieChart;
+		var PieSeries1:PieSeries;
+		
+		MyPieChart = new PieChart();
+        MyPieChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
+        MyPieChart.dataProvider=dataListCollection;
+        MyPieChart.percentHeight=100;
+        MyPieChart.percentWidth=100;
+    	
+    	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
+    		PieSeries1=new PieSeries();
+    		yField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
+			setSerie(PieSeries1,'Pie',yField,num);
+			myPieSeries.push(PieSeries1);
+		}
+		MyPieChart.setStyle("innerRadius", flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_PieDonuts")).value.toString()); 
+       	MyPieChart.series = myPieSeries;
+       	//MyPieChart.dataTipFunction=setDataTips;
+		resizeChart(MyPieChart);
+		resizeChart(chartVBox);
+		chartVBox.addChild(MyPieChart);
+		
+		var podContent:PodContentBase = new PodContentBase();
+	  	podContent.addChild(chartVBox);
+	  	createNextPod(accordionIndex);
+		Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". Pie";
+
+		createLegend2(MyPieChart, chartVBox);
+    }
+    
+    private function drawPlotChart():void {
+	    
+	    var chartVBox:VBox = new VBox();
+	    
+	    var myPlotSeries:Array=new Array();
+		var myPlotChart:PlotChart;
+        var PlotSeries1:PlotSeries;
+        myPlotChart = new PlotChart();
+        myPlotChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
+        myPlotChart.dataProvider=dataListCollection;
+        myPlotChart.percentHeight=100;
+        myPlotChart.percentWidth=100;
+        
+    	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
+    		PlotSeries1=new PlotSeries();
+    		yField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
+			setSerie(PlotSeries1,'Plot',yField,num);
+			myPlotSeries.push(PlotSeries1);
+		}
+		
+       setTypeAxis(myPlotChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType1")).text,"h");
+	   setTypeAxis(myPlotChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");
+	
+		myPlotChart.series = myPlotSeries;
+		myPlotChart.dataTipFunction=setDataTips;
+		resizeChart(myPlotChart);
+		resizeChart(chartVBox);
+		chartVBox.addChild(myPlotChart);
+					
+		var podContent:PodContentBase = new PodContentBase();
+	  	podContent.addChild(chartVBox);
+	  	createNextPod(accordionIndex);
+		Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". Plot";
+	  	
+		createLegend2(myPlotChart, chartVBox);   
+		addGridLines(myPlotChart); 
+    }
+       
+	// The following are ILOG Chart Components
+	    
+    private function drawRadarChart():void {
+		var chartVBox:VBox = new VBox();
+	    var myRadarSeries:Array=new Array();
+		var myRadarChart:RadarChart;
+        var angularAxis1:AngularAxis = new AngularAxis();
+       	
+       	angularAxis1.categoryField=xField;
+        
+		for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
+    		
+    		dataField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
+			
+			switch (ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadarSerie1")).selectedLabel.toString()) { 
+		    case "Bubble" : 
+				rField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num)).selectedLabel.toString();
+		    	var RadarBubbleSeries1:RadarBubbleSeries;
+        		RadarBubbleSeries1=new RadarBubbleSeries();
+				setSerie(RadarBubbleSeries1,'Radar',dataField,num);
+				RadarBubbleSeries1.radiusField=rField;
+				myRadarSeries.push(RadarBubbleSeries1);
+		    	break; 
+		    case "Column" : 
+		     	var RadarColumnSeries1:RadarColumnSeries;
+       			RadarColumnSeries1=new RadarColumnSeries();
+				setSerie(RadarColumnSeries1,'Radar',dataField,num);
+				myRadarSeries.push(RadarColumnSeries1);
+				break; 
+		    case "Line" :
+		    	var RadarLineSeries1:RadarLineSeries;
+        		RadarLineSeries1=new RadarLineSeries();
+				setSerie(RadarLineSeries1,'Radar',dataField,num);
+				myRadarSeries.push(RadarLineSeries1);
+		    	break; 
+		    case "Plot" :
+		    	var RadarPlotSeries1:RadarPlotSeries;
+		    	RadarPlotSeries1=new RadarPlotSeries();
+				setSerie(RadarPlotSeries1,'Radar',dataField,num);
+				myRadarSeries.push(RadarPlotSeries1);
+		    	break;
+		 }	
+		}
+		
+		myRadarChart = new RadarChart();
+        myRadarChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
+        myRadarChart.dataProvider=dataListCollection;
+        myRadarChart.percentHeight=100;
+        myRadarChart.percentWidth=100;
+        myRadarChart.angularAxis = angularAxis1;
+        myRadarChart.series = myRadarSeries; 
+        myRadarChart.dataTipFunction=setDataTips;
+       	setTypeAxis(myRadarChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"r");
+	
+		resizeChart(chartVBox);
+		chartVBox.addChild(myRadarChart);
+					
+		var podContent:PodContentBase = new PodContentBase();
+	  	podContent.addChild(chartVBox);
+		
+		createNextPod(accordionIndex);
+		Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". Radar";
+		
+		createLegend2(myRadarChart, chartVBox);   
+		addGridLines(myRadarChart);
+    	    			
+    }
+    
+    private function drawTreeMap():void {
+    	var myTreeMap:TreeMap = new TreeMap();
+	        
+	    myTreeMap = new TreeMap();
+        myTreeMap.dataProvider=new HierarchicalData(myTreeData);
+        var scBg:SolidColor;
+		var sctxtBg:SolidColor;
+		var scBc:SolidColor;
+				
+        treeAreaField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbAreaField1")).selectedLabel.toString();
+		treeColorField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbColorField1")).selectedLabel.toString();
+		treeLabelField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbLabelField1")).selectedLabel.toString();
+        if(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbAlgo1")).selectedLabel.toString()==""){
+        	treeAlgo="squarified";
+        }else{
+        	treeAlgo=ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbAlgo1")).selectedLabel.toString();
+        }
+        if(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbcolorSheme1")).selectedLabel.toString()==""){
+        	treeColorSheme="none"
+        }else{
+        	treeColorSheme=ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbcolorSheme1")).selectedLabel.toString();
+        }
+		blnSel=CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkSel")).selected;
+		blnMultiSel=CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkMultiSel")).selected;
+		
+		myTreeMap.algorithm=treeAlgo;
+        myTreeMap.areaField=treeAreaField;
+        myTreeMap.colorField=treeColorField;
+        myTreeMap.labelField=treeLabelField;
+        myTreeMap.allowSelection=blnSel;
+        myTreeMap.allowMultipleSelection=blnMultiSel;
+        myTreeMap.labelThreshold=2;
+        myTreeMap.setStyle('colorScheme', treeColorSheme);
+        myTreeMap.setStyle('topMarginProportion', 0.2);
+        myTreeMap.setStyle('backgroundColor', ColorPicker(cnvs.getChildByName("cnvs"+accordionIndex+"_cpBg")).selectedColor);
+        myTreeMap.setStyle('textBackgroundColor', ColorPicker(cnvs.getChildByName("cnvs"+accordionIndex+"_cptxtBg")).selectedColor);
+        myTreeMap.setStyle('borderColor', ColorPicker(cnvs.getChildByName("cnvs"+accordionIndex+"_cpBc")).selectedColor);
+		myTreeMap.setStyle('borderThickness', 1);
+	
+		resizeChart(myTreeMap);
+		
+		var podContent:PodContentBase = new PodContentBase();
+    	podContent.addChild(myTreeMap);
+			
+		createNextPod(accordionIndex);
+		Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". TreeMap";
+    }
+    
+    
+    
+    private function drawGeoMap():void {
+    	if(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbMap"))!=null){
+    		if(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbMap")).selectedLabel.toString()!=""){
+	    		var strTypeOfMap:String=ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbMap")).selectedLabel.toString()
+		    	var podContent:PodContentBase = new PodContentBase();
+		    	if(strTypeOfMap=="WorldCountries"){
+		    		var myWorldCountriesMap:WorldCountriesMap = new WorldCountriesMap();
+		  	  		resizeChart(myWorldCountriesMap);
+		  	  		podContent.addChild(myWorldCountriesMap);
+		    	} else if(strTypeOfMap=="AsiaPacific"){
+		    		var myAsiaPacificMap:AsiaPacificMap = new AsiaPacificMap();
+		    		resizeChart(myAsiaPacificMap);
+		    		podContent.addChild(myAsiaPacificMap);
+		    	} else if(strTypeOfMap=="America"){
+		    		var myAmericaMap:AmericasMap = new AmericasMap();
+		    		resizeChart(myAmericaMap);
+		    		podContent.addChild(myAmericaMap);
+		    	} else if(strTypeOfMap=="ContinentalEurope"){
+		    		var myContinentalEuropeMap:ContinentalEuropeMap = new ContinentalEuropeMap();
+		    		resizeChart(myContinentalEuropeMap);
+					podContent.addChild(myContinentalEuropeMap);
+		    	} else if(strTypeOfMap=="EuropeMiddleEastAfrica"){
+		    		var myEuropeMiddleEastAfricaMap:EuropeMiddleEastAfricaMap = new EuropeMiddleEastAfricaMap();
+		    		resizeChart(myEuropeMiddleEastAfricaMap);
+					podContent.addChild(myEuropeMiddleEastAfricaMap);
+		    	} else if(strTypeOfMap=="USStates"){
+		    		var myUSStatesMap:USStatesMap = new USStatesMap();
+		    		resizeChart(myUSStatesMap);
+					podContent.addChild(myUSStatesMap);
+		    	}
+		    	
+		       //myGeoMap.allowNavigation=true;
+		  	   //myGeoMap.zoomableSymbols=true;
+		  	  
+		  	   //myGeoMap.setStyle('backgroundFill', 0xFFFFFF);
+		  	   //myGeoMap.setStyle('fill', 0xFFFFFF);
+		  	   //myGeoMap.setStyle('highlightStroke', 0x000000);
+		  	   //myGeoMap.setStyle('stroke', 0x000000);
+		  	  
+		  	  // myGeoMap.percentHeight=100;
+		  	  // myGeoMap.percentWidth=100;
+		  	  
+		  	  createNextPod(accordionIndex);
+			  Pod(arrPods[accordionIndex]).removeAllChildren();
+			  Pod(arrPods[accordionIndex]).addChild(podContent); 
+			  Pod(arrPods[accordionIndex]).title= accordionIndex + ". GeoMap";
+		    	
+	    	}
+    	}
+    }
+	
+	
+	public function drawArea3DChart():void {
+     	var chartVBox:VBox = new VBox();
+     	var myAreaSeries:Array=new Array();
+    	var myAreaChart:AreaChart3D;
+    	var AreaSerie1:AreaSeries3D;
+	    myAreaChart = new AreaChart3D();
+        myAreaChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
+        myAreaChart.dataProvider=dataListCollection;
+    	myAreaChart.percentWidth=100;
+    	myAreaChart.percentHeight=100;
+    	
+    	
+    	if (numberOfSerie[accordionIndex]>1){
+    		myAreaChart.type=DisplayType;
+    	}
+    	
+    	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
+    		AreaSerie1=new AreaSeries3D();
+    		yField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
+			setSerie(AreaSerie1,'Area3D',yField,num);
+			myAreaSeries.push(AreaSerie1);
+		}	
+		myAreaChart.elevationAngle=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_Elevation")).value; 
+		myAreaChart.rotationAngle=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_Rotation")).value; 
+		myAreaChart.zoom=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_Zoom")).value; 
+		myAreaChart.depth=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_Depth")).value; 
+		myAreaChart.depthGap=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_DepthGap")).value; 
+		myAreaChart.lightLatitude=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_LightLatitude")).value; 
+		myAreaChart.lightLongitude=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_LightLongitude")).value; 
+		myAreaChart.ambientLight=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_AmbiantLight")).value;
+      	cnvs.verticalScrollPolicy="on";
+		setTypeAxis(myAreaChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType1")).text,"h");
+	   	setTypeAxis(myAreaChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");		
+		
+		myAreaChart.series = myAreaSeries;
+		myAreaChart.dataTipFunction=setDataTips;
+		resizeChart(chartVBox);
+		chartVBox.addChild(myAreaChart);
+		
+		var podContent:PodContentBase = new PodContentBase();
+		podContent.addChild(chartVBox);
+		createNextPod(accordionIndex);
+	  	
+	  	Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". Area 3D";
+	  	
+		createLegend2(myAreaChart, chartVBox);
+		addGridLines(myAreaChart);
+		}
+    
+    
+    private function drawBar3DChart():void {
+    	var chartVBox:VBox = new VBox();
+    	var myBarSeries:Array=new Array();
+	    var myBarChart:BarChart3D;
+        var barSeries1:BarSeries3D;
+        
+        myBarChart = new BarChart3D();
+        myBarChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
+        myBarChart.dataProvider=dataListCollection;
+        
+    	
+        if (numberOfSerie[accordionIndex]>1){
+    		myBarChart.type=DisplayType;
+    	}
+    	
+    	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
+    		barSeries1=new BarSeries3D();
+    		yField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
+			setSerie(barSeries1,'Bar3D',yField,num);
+			myBarSeries.push(barSeries1);
+		}
+		myBarChart.elevationAngle=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_Elevation")).value; 
+		myBarChart.rotationAngle=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_Rotation")).value; 
+		myBarChart.zoom=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_Zoom")).value; 
+		myBarChart.depth=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_Depth")).value; 
+		myBarChart.depthGap=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_DepthGap")).value; 
+		myBarChart.lightLatitude=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_LightLatitude")).value; 
+		myBarChart.lightLongitude=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_LightLongitude")).value; 
+		myBarChart.ambientLight=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_AmbiantLight")).value;
+      	
+		
+       	setTypeAxis(myBarChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType1")).text,"h");
+	   	setTypeAxis(myBarChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");	
+		
+		myBarChart.series = myBarSeries;
+		myBarChart.dataTipFunction=setDataTips;
+		resizeChart(myBarChart);
+		resizeChart(chartVBox);
+		chartVBox.addChild(myBarChart);
+		
+		var podContent:PodContentBase = new PodContentBase();
+		podContent.addChild(chartVBox);
+		createNextPod(accordionIndex);
+		Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". Bar 3D";
+	  	createLegend2(myBarChart, chartVBox);
+	  	
+		addGridLines(myBarChart);
+    }
+		
+		
+		private function drawColumn3DChart():void {
+    	var chartVBox:VBox = new VBox();
+		var myColumnSeries:Array=new Array();
+	    var myColumnChart:ColumnChart3D;
+        var ColumnSeries1:ColumnSeries3D;
+        
+        myColumnChart = new ColumnChart3D();
+        myColumnChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
+        myColumnChart.dataProvider=dataListCollection;
+        
+        if (numberOfSerie[accordionIndex]>1){
+    		myColumnChart.type=DisplayType;
+    	}
+    	
+    	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
+    		ColumnSeries1=new ColumnSeries3D();
+    		yField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
+			setSerie(ColumnSeries1,'Column3D',yField,num);
+			myColumnSeries.push(ColumnSeries1);
+		}
+		myColumnChart.elevationAngle=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_Elevation")).value; 
+		myColumnChart.rotationAngle=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_Rotation")).value; 
+		myColumnChart.zoom=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_Zoom")).value; 
+		myColumnChart.depth=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_Depth")).value; 
+		myColumnChart.depthGap=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_DepthGap")).value; 
+		myColumnChart.lightLatitude=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_LightLatitude")).value; 
+		myColumnChart.lightLongitude=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_LightLongitude")).value; 
+		myColumnChart.ambientLight=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_AmbiantLight")).value;
+      	
+		
+       setTypeAxis(myColumnChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType1")).text,"h");
+	   setTypeAxis(myColumnChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");
+		
+		myColumnChart.series = myColumnSeries;
+		myColumnChart.dataTipFunction=setDataTips;
+		resizeChart(myColumnChart);
+		resizeChart(chartVBox);
+		chartVBox.addChild(myColumnChart);
+		
+		var podContent:PodContentBase = new PodContentBase();
+		podContent.addChild(chartVBox);
+		createNextPod(accordionIndex);
+		Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". Column 3D";
+	  	createLegend2(myColumnChart, chartVBox);  
+		addGridLines(myColumnChart);
+    }
+		
+		
+		private function drawLine3DChart():void {
+    	var chartVBox:VBox = new VBox();
+    	var myLineSeries:Array=new Array();
+		var MyLineChart:LineChart3D;
+		var LineSeries1:LineSeries3D;
+		
+		MyLineChart = new LineChart3D();
+        MyLineChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
+        MyLineChart.dataProvider=dataListCollection;
+    	
+    	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
+    		LineSeries1=new LineSeries3D();
+    		yField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
+			setSerie(LineSeries1,'Line3D',yField,num);
+			myLineSeries.push(LineSeries1);
+		}
+		MyLineChart.elevationAngle=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_Elevation")).value; 
+		MyLineChart.rotationAngle=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_Rotation")).value; 
+		MyLineChart.zoom=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_Zoom")).value; 
+		MyLineChart.depth=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_Depth")).value; 
+		MyLineChart.depthGap=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_DepthGap")).value; 
+		MyLineChart.lightLatitude=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_LightLatitude")).value; 
+		MyLineChart.lightLongitude=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_LightLongitude")).value; 
+		MyLineChart.ambientLight=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_AmbiantLight")).value;
+      	
+		setTypeAxis(MyLineChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType1")).text,"h");
+	   	setTypeAxis(MyLineChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");
+		
+		MyLineChart.series = myLineSeries;
+		MyLineChart.dataTipFunction=setDataTips;
+		resizeChart(MyLineChart);
+		resizeChart(chartVBox);
+		chartVBox.addChild(MyLineChart);
+		
+		var podContent:PodContentBase = new PodContentBase();
+		podContent.addChild(chartVBox);
+		createNextPod(accordionIndex);
+		Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". Line 3D";
+	  	createLegend2(MyLineChart, chartVBox);
+		addGridLines(MyLineChart);
+    }
+    
+    
+	private function drawPie3DChart():void {
+		var chartVBox:VBox = new VBox();
+		var myPie3DSeries:Array=new Array();
+		var MyPie3DChart:PieChart3D;
+		var Pie3DSeries1:PieSeries3D;
+		
+		MyPie3DChart = new PieChart3D();
+        MyPie3DChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
+        MyPie3DChart.dataProvider=dataListCollection;
+        MyPie3DChart.percentHeight=100;
+        MyPie3DChart.percentWidth=100;
+    	
+    	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
+    		Pie3DSeries1=new PieSeries3D();
+    		yField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
+			if(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString()!=""){
+				setSerie(Pie3DSeries1,'Pie3D',yField,num);
+	    		myPie3DSeries.push(Pie3DSeries1);
+	   		}
+		}
+		
+		MyPie3DChart.elevationAngle=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_Elevation")).value; 
+		//MyPie3DChart.rotationAngle=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_Rotation")).value; 
+		MyPie3DChart.zoom=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_Zoom")).value; 
+		MyPie3DChart.depth=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_Depth")).value; 
+		MyPie3DChart.depthGap=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_DepthGap")).value; 
+		MyPie3DChart.lightLatitude=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_LightLatitude")).value; 
+		MyPie3DChart.lightLongitude=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_LightLongitude")).value; 
+		MyPie3DChart.ambientLight=flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_AmbiantLight")).value;
+      	MyPie3DChart.setStyle("innerRadius", flexlib.controls.HSlider(cnvs.getChildByName("cnvs"+accordionIndex+"_PieDonuts")).value); 
+  		
+		MyPie3DChart.series = myPie3DSeries;
+		resizeChart(MyPie3DChart);
+		resizeChart(chartVBox);
+		chartVBox.addChild(MyPie3DChart);
+	
+		var podContent:PodContentBase = new PodContentBase();
+	  	podContent.addChild(chartVBox);
+	  	createNextPod(accordionIndex);
+		Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". Pie 3D";
+
+		createLegend2(MyPie3DChart, chartVBox);
+		
+    }
+						
+		
+		
+		
+	// End ILOG Chart Components
+	
+   	private function drawCartesianChart():void{
+   		var chartVBox:VBox = new VBox();
+   		var myCartesianSeries:Array=new Array();
+    	var myCartesianChart:CartesianChart;
+    	
+    	myCartesianChart = new CartesianChart();
+        myCartesianChart.showDataTips = CheckBox(cnvs.getChildByName("cnvs"+accordionIndex+"_chkDataType")).selected;
+        myCartesianChart.dataProvider=dataListCollection;
+    	for (num=1; num<=numberOfSerie[accordionIndex]; num++) {
+			yField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
+				
+			switch (ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCartSerie"+num)).selectedLabel.toString()) { 
+		    case "Area" : 
+		    	var cartAreaSerie:AreaSeries;
+		    	cartAreaSerie=new AreaSeries();
+		    	setSerie(cartAreaSerie,'Area',yField,num);
+				myCartesianSeries.push(cartAreaSerie);
+		    	break; 
+		    case "Bar" : 
+		    	var cartBarSerie:BarSeries;
+		    	cartBarSerie=new BarSeries();
+		    	setSerie(cartBarSerie,'Bar',yField,num);
+				myCartesianSeries.push(cartBarSerie);
+		        break; 
+		    case "Bubble" : 
+		        var cartBubbleSerie:BubbleSeries;
+		    	cartBubbleSerie=new BubbleSeries();
+		    	rField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadius"+num)).selectedLabel.toString();
+		    	setSerie(cartBubbleSerie,'Bubble',yField,num);
+				cartBubbleSerie.radiusField=rField;
+				myCartesianSeries.push(cartBubbleSerie);
+		        break; 
+		    case "Candlestick" : 
+		        var cartCandlestickSerie:CandlestickSeries;
+		    	cartCandlestickSerie=new CandlestickSeries();
+		    	highField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).selectedLabel.toString();
+	    		lowField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
+	    		openField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num)).selectedLabel.toString();
+	    		closeField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num)).selectedLabel.toString();
+		    	setSerie(cartCandlestickSerie,'Candlestick',"",num);
+				myCartesianSeries.push(cartCandlestickSerie);
+		        break; 
+		    case "Column" : 
+		        var cartColumnSerie:ColumnSeries;
+		    	cartColumnSerie=new ColumnSeries();
+		    	setSerie(cartColumnSerie,'Column',yField,num);
+				myCartesianSeries.push(cartColumnSerie);
+		        break; 
+		    case "HLOC" : 
+		        var cartHLOCSerie:HLOCSeries;
+		    	cartHLOCSerie=new HLOCSeries();
+		    	highField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxis"+num)).selectedLabel.toString();
+	    		lowField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxis"+num)).selectedLabel.toString();
+	    		openField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbOpenField"+num)).selectedLabel.toString();
+	    		closeField="@"+  ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbCloseField"+num)).selectedLabel.toString();
+		    	setSerie(cartHLOCSerie,'HighLowOpenClose',yField,num);
+				myCartesianSeries.push(cartHLOCSerie);
+		        break; 
+		    case "Line" : 
+		    	var cartLineSerie:LineSeries;
+		    	cartLineSerie=new LineSeries();
+		    	setSerie(cartLineSerie,'Line',yField,num);
+				myCartesianSeries.push(cartLineSerie);
+		        break; 
+		    case "Plot" : 
+		        var cartPlotSerie:PlotSeries;
+		    	cartPlotSerie=new PlotSeries();
+		    	setSerie(cartPlotSerie,'Plot',yField,num);
+				myCartesianSeries.push(cartPlotSerie);
+		        break;
+		     
+		}
+	    		
+			}
+		
+		setTypeAxis(myCartesianChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbxAxisType1")).text,"h");
+	   	setTypeAxis(myCartesianChart,ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbyAxisType1")).text,"v");
+	   
+	   
+		myCartesianChart.series = myCartesianSeries;
+		resizeChart(myCartesianChart);
+		resizeChart(chartVBox);
+		chartVBox.addChild(myCartesianChart);
+		
+		var podContent:PodContentBase = new PodContentBase();
+		podContent.addChild(chartVBox);
+		createNextPod(accordionIndex);
+		Pod(arrPods[accordionIndex]).removeAllChildren();
+	  	Pod(arrPods[accordionIndex]).addChild(podContent); 
+	  	Pod(arrPods[accordionIndex]).title= accordionIndex + ". Cartesian";
+	  	createLegend2(myCartesianChart, chartVBox);  
+		addGridLines(myCartesianChart);
+   	}
+    
+    
+    public function sliceResults(): void {
+		
+		/*var minSlider:int=int(minMaxySlider.values[0])
+		var maxSlider:int=int(minMaxySlider.values[1])
+		var newRootXml:XML = <root/>;
+		
+		for (var i:int = 0; i < dataList.length(); i++) 
+		{ 
+			var eachProduct:XML = dataList[i];
+			
+			if((i>minSlider) && (i<maxSlider)){
+				Alert.show(eachProduct.toXMLString(), 'Alert Box',mx.controls.Alert.OK);
+				newRootXml.appendChild(eachProduct);
+			}
+		} 
+		dataList=newRootXml.children();
+		dataListCollection=new XMLListCollection(dataList);
+		dataListCollection.refresh();
+		//Alert.show(dataList.toString(), 'Alert Box',mx.controls.Alert.OK);
+		*/
+		refreshChart();
+    }
+    
+  /* function getDataTip(obj) {
+            var item=obj.hitData.item;
+            return "<b>"+item.month+"</b><br>Profit: "+item.profit+"<br>Expenses: "+item.expenses+"<br>Amount: "+item.amount;
+        }*/
+        
+        private function degrees_func(item:Number):String {
+                return item + String.fromCharCode(176);
+                
+            }
+            
+            public function setDataTips(e:HitData):String {
+            	var typeOfGraf:String=ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbChartType")).selectedLabel.toString()
+            	var SerieName:String;
+			   	var xValue:String;
+			   	var yValue:String;
+			   	var rValue:String;
+			   	var oValue:String;
+			   	var cValue:String;
+			   	var hValue:String;
+			   	var lValue:String;
+			   	var xName:String;
+			   	var yName:String;
+			   	var rName:String;
+			   	var oName:String;
+			   	var cName:String;
+			   	var hName:String;
+			   	var lName:String;
+			   	var result:String;
+			   	if(typeOfGraf=="Area"){
+			   		SerieName = AreaSeries(e.element).displayName.toString();
+				   	xValue = AreaSeriesItem(e.chartItem).xValue.toString();
+				   	yValue = AreaSeriesItem(e.chartItem).yValue.toString();
+				   	xName = AreaSeries(e.element).xField.toString();
+				   	yName = AreaSeries(e.element).yField.toString();
+				   	result="<b>"+SerieName +"</b><br>"+ xName.substring(1,xName.length) + " :" +xValue + "<br>" + yName.substring(1,yName.length) + " :" + yValue ;
+			   	}else if(typeOfGraf=="Bar"){
+			   		SerieName = BarSeries(e.element).displayName.toString();
+				   	xValue = BarSeriesItem(e.chartItem).xValue.toString();
+				   	yValue = BarSeriesItem(e.chartItem).yValue.toString();
+				   	xName = BarSeries(e.element).xField.toString();
+				   	yName = BarSeries(e.element).yField.toString();
+				   	result="<b>"+SerieName +"</b><br>"+ xName.substring(1,xName.length) + " :" +xValue + "<br>" + yName.substring(1,yName.length) + " :" + yValue ;
+			   	}else if(typeOfGraf=="Bubble"){
+			   		SerieName = BubbleSeries(e.element).displayName.toString();
+				   	xValue = BubbleSeriesItem(e.chartItem).xValue.toString();
+				   	yValue = BubbleSeriesItem(e.chartItem).yValue.toString();
+				   	rValue = BubbleSeriesItem(e.chartItem).zValue.toString();
+				   	xName = BubbleSeries(e.element).xField.toString();
+				   	yName = BubbleSeries(e.element).yField.toString();
+				   	rName = BubbleSeries(e.element).radiusField.toString();
+				   	result="<b>"+SerieName +"</b><br>"+ xName.substring(1,xName.length) + " :" +xValue + "<br>" + yName.substring(1,yName.length) + " :" + yValue + "<br>" + rName.substring(1,rName.length) + " :" + rValue;
+			   	}else if(typeOfGraf=="Candlestick"){
+			   		//SerieName = CandlestickSeries(e.element).displayName.toString();
+				   	//oValue = CandlestickseriesItem(e.chartItem).openValue.toString();
+				   	//cValue = CandlestickSeriesItem(e.chartItem).closeValue.toString();
+				   	//hValue = CandlestickSeriesItem(e.chartItem).highValue.toString();
+				   	//lValue = CandlestickSeriesItem(e.chartItem).lowValue.toString();
+				   	oName = CandlestickSeries(e.element).openField.toString();
+				   	cName = CandlestickSeries(e.element).closeField.toString();
+				   	hName = CandlestickSeries(e.element).highField.toString();
+				   	lName = CandlestickSeries(e.element).lowField.toString();
+				   	result="Open :"+ oName.substring(1,oName.length) //+ " :" +oValue + "<br>" + cName.substring(1,cName.length) + " :" + cValue + "<br>" + hName.substring(1,hName.length) + " :" + hValue + "<br>" + lName.substring(1,lName.length) + " :" + lValue ;
+			   	}else if(typeOfGraf=="Column"){
+			   		SerieName = ColumnSeries(e.element).displayName.toString();
+				   	xValue = ColumnSeriesItem(e.chartItem).xValue.toString();
+				   	yValue = ColumnSeriesItem(e.chartItem).yValue.toString();
+				   	xName = ColumnSeries(e.element).xField.toString();
+				   	yName = ColumnSeries(e.element).yField.toString();
+				   	result="<b>"+SerieName +"</b><br>"+ xName.substring(1,xName.length) + " :" +xValue + "<br>" + yName.substring(1,yName.length) + " :" + yValue ;
+			   	}else if(typeOfGraf=="HighLowOpenClose"){
+			   		SerieName = HLOCSeries(e.element).displayName.toString();
+			   		oValue = HLOCSeriesItem(e.chartItem).openValue.toString();
+				   	cValue = HLOCSeriesItem(e.chartItem).closeValue.toString();
+				   	hValue = HLOCSeriesItem(e.chartItem).highValue.toString();
+				   	lValue = HLOCSeriesItem(e.chartItem).lowValue.toString();
+				   	oName = HLOCSeries(e.element).openField.toString();
+				   	cName = HLOCSeries(e.element).closeField.toString();
+				   	hName = HLOCSeries(e.element).highField.toString();
+				   	lName = HLOCSeries(e.element).lowField.toString();
+				   	result="<b>"+SerieName +"</b><br>"+ oName.substring(1,oName.length) + " :" +oValue + "<br>" + cName.substring(1,cName.length) + " :" + cValue + "<br>" + hName.substring(1,hName.length) + " :" + hValue + "<br>" + lName.substring(1,lName.length) + " :" + lValue ;
+			   	}else if(typeOfGraf=="Line"){
+			   		SerieName = LineSeries(e.element).displayName.toString();
+				   	xValue = LineSeriesItem(e.chartItem).xValue.toString();
+				   	yValue = LineSeriesItem(e.chartItem).yValue.toString();
+				   	xName = LineSeries(e.element).xField.toString();
+				   	yName = LineSeries(e.element).yField.toString();
+				   	result="<b>"+SerieName +"</b><br>"+ xName.substring(1,xName.length) + " :" +xValue + "<br>" + yName.substring(1,yName.length) + " :" + yValue ;
+			   	}else if(typeOfGraf=="Pie"){
+			   		SerieName = PieSeries(e.element).displayName.toString();
+				   	xValue = PieSeriesItem(e.chartItem).value.toString();
+				   	xName = PieSeries(e.element).field.toString();
+				   	result="<b>"+SerieName +"</b><br>"+ xName.substring(1,xName.length) + " :" +xValue ;
+			   	}else if(typeOfGraf=="Plot"){
+			   		SerieName = PlotSeries(e.element).displayName.toString();
+				   	xValue = PlotSeriesItem(e.chartItem).xValue.toString();
+				   	yValue = PlotSeriesItem(e.chartItem).yValue.toString();
+				   	xName = PlotSeries(e.element).xField.toString();
+				   	yName = PlotSeries(e.element).yField.toString();
+				   	result="<b>"+SerieName +"</b><br>"+ xName.substring(1,xName.length) + " :" +xValue + "<br>" + yName.substring(1,yName.length) + " :" + yValue ;
+			   	}else if(typeOfGraf=="Area3D"){
+			   		SerieName = AreaSeries3D(e.element).displayName.toString();
+				   	xValue = AreaSeries3DItem(e.chartItem).xValue.toString();
+				   	yValue = AreaSeries3DItem(e.chartItem).yValue.toString();
+				   	xName = AreaSeries3D(e.element).xField.toString();
+				   	yName = AreaSeries3D(e.element).yField.toString();
+				   	result="<b>"+SerieName +"</b><br>"+ xName.substring(1,xName.length) + " :" +xValue + "<br>" + yName.substring(1,yName.length) + " :" + yValue ;
+			   	}else if(typeOfGraf=="Bar3D"){
+			   		SerieName = BarSeries3D(e.element).displayName.toString();
+				   	xValue = BarSeries3DItem(e.chartItem).xValue.toString();
+				   	yValue = BarSeries3DItem(e.chartItem).yValue.toString();
+				   	xName = BarSeries3D(e.element).xField.toString();
+				   	yName = BarSeries3D(e.element).yField.toString();
+				   	result="<b>"+SerieName +"</b><br>"+ xName.substring(1,xName.length) + " :" +xValue + "<br>" + yName.substring(1,yName.length) + " :" + yValue ;
+			   	}else if(typeOfGraf=="Column3D"){
+			   		SerieName = ColumnSeries3D(e.element).displayName.toString();
+				   	xValue = ColumnSeries3DItem(e.chartItem).xValue.toString();
+				   	yValue = ColumnSeries3DItem(e.chartItem).yValue.toString();
+				   	xName = ColumnSeries3D(e.element).xField.toString();
+				   	yName = ColumnSeries3D(e.element).yField.toString();
+				   	result="<b>"+SerieName +"</b><br>"+ xName.substring(1,xName.length) + " :" +xValue + "<br>" + yName.substring(1,yName.length) + " :" + yValue ;
+			   	}else if(typeOfGraf=="Line3D"){
+			   		SerieName = LineSeries3D(e.element).displayName.toString();
+				   	xValue = LineSeries3DItem(e.chartItem).xValue.toString();
+				   	yValue = LineSeries3DItem(e.chartItem).yValue.toString();
+				   	xName = LineSeries3D(e.element).xField.toString();
+				   	yName = LineSeries3D(e.element).yField.toString();
+				   	result="<b>"+SerieName +"</b><br>"+ xName.substring(1,xName.length) + " :" +xValue + "<br>" + yName.substring(1,yName.length) + " :" + yValue ;
+			   	}else if(typeOfGraf=="Radar"){
+			   		if(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadarSerie1")).selectedLabel.toString()=="Bubble"){
+			   			SerieName = RadarBubbleSeries(e.element).displayName.toString();
+					   	xValue = RadarBubbleSeriesItem(e.chartItem).categoryValue.toString();
+					   	yValue = RadarBubbleSeriesItem(e.chartItem).dataValue.toString();
+					   	rValue = RadarBubbleSeriesItem(e.chartItem).radiusValue.toString();
+					   	xName = RadarBubbleSeries(e.element).categoryField.toString();
+					   	yName = RadarBubbleSeries(e.element).dataField.toString();
+					   	rName = RadarBubbleSeries(e.element).radiusField.toString();
+					   	result="<b>"+SerieName +"</b><br>"+ xName.substring(1,xName.length) + " :" +xValue + "<br>" + yName.substring(1,yName.length) + " :" + yValue + "<br>" + rName.substring(1,rName.length) + " :" + rValue;
+				   	}else if(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadarSerie1")).selectedLabel.toString()=="Column"){
+			   			SerieName = RadarColumnSeries(e.element).displayName.toString();
+					   	xValue = RadarColumnSeriesItem(e.chartItem).categoryValue.toString();
+					   	yValue = RadarColumnSeriesItem(e.chartItem).dataValue.toString();
+					   	xName = RadarColumnSeries(e.element).categoryField.toString();
+					   	yName = RadarColumnSeries(e.element).dataField.toString();
+					   	result="<b>"+SerieName +"</b><br>"+ xName.substring(1,xName.length) + " :" +xValue + "<br>" + yName.substring(1,yName.length) + " :" + yValue ;
+				   	}else if(ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadarSerie1")).selectedLabel.toString()=="Line"){
+			   			SerieName = RadarLineSeries(e.element).displayName.toString();
+					   	xValue = RadarLineSeriesItem(e.chartItem).categoryValue.toString();
+					   	yValue = RadarLineSeriesItem(e.chartItem).dataValue.toString();
+					   	xName = RadarLineSeries(e.element).categoryField.toString();
+					   	yName = RadarLineSeries(e.element).dataField.toString();
+					   	result="<b>"+SerieName +"</b><br>"+ xName.substring(1,xName.length) + " :" +xValue + "<br>" + yName.substring(1,yName.length) + " :" + yValue ;
+			   		}else if (ComboBox(cnvs.getChildByName("cnvs"+accordionIndex+"_cbRadarSerie1")).selectedLabel.toString()=="Plot"){
+			   			SerieName = RadarPlotSeries(e.element).displayName.toString();
+					   	xValue = RadarPlotSeriesItem(e.chartItem).categoryValue.toString();
+					   	yValue = RadarPlotSeriesItem(e.chartItem).dataValue.toString();
+					   	xName = RadarPlotSeries(e.element).categoryField.toString();
+					   	yName = RadarPlotSeries(e.element).dataField.toString();
+					   	result="<b>"+SerieName +"</b><br>"+ xName.substring(1,xName.length) + " :" +xValue + "<br>" + yName.substring(1,yName.length) + " :" + yValue ;
+			   		}
+			   	}
+			   	return result
+		   }
+
+   
+
+]]>
+</mx:Script>
+
+	<!-- Effects -->
+	<mx:WipeLeft id="wipeLeft" duration="1000" />
+	<mx:WipeRight id="wipeRight" duration="1000" />
+	
+	<mx:Number id="numberItems"/>
+	<mx:Number id="maxxSlideValue"/>
+	<mx:Number id="maxxSlideDefault"/>
+	<mx:Number id="maxySlideValue"/>
+	<mx:Number id="maxySlideDefault"/>
+	<mx:HBox id="DivNavRB" width="100%" height="100%" paddingBottom="5" horizontalGap="5" y="1" x="0">
+		<mx:HBox id="sideBar" width="300" height="100%" horizontalGap="0" >
+	<ui:Grip id="navGrip" 
+				width="17" height="100%" horizontalAlign="center"
+				gripTip="Show/Hide Control Panel" />
+	<mx:VBox id="NavContainerRB" horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle" horizontalAlign="center" verticalGap="1" horizontalGap="0" width="100%" height="100%" hideEffect="{wipeLeft}" showEffect="{wipeRight}">
+	<mx:Accordion id="leftAccordion" headerRenderer="org.un.birdeye.measure.renderers.HeaderRenderer" paddingBottom="5" paddingRight="5" paddingTop="5" paddingLeft="5" width="100%" height="100%" creationPolicy="all"  >
+					
+	<mx:Canvas id="piano1" height="100%" width="100%" label="Chart Builder 1"  >
+		<mx:Label id="cnvs1_lblChartType" name="cnvs1_lblChartType" x="2" y="10" text="Chart type :"/>
+		<mx:ComboBox id="cnvs1_cbChartType" name="cnvs1_cbChartType" dataProvider="{myChart.chart.@Type}" change="changeTypeEvt(event);" prompt="Select..."   x="73" y="8"  width="160"/>
+		<mx:ComboBox x="73" y="186" id="cnvs1_cbxAxis1" name="cnvs1_cbxAxis1" change="refreshChartEvent(event);" visible="false"/>
+			
+			<mx:ComboBox x="73" y="268" name="cnvs1_cbyAxis1" id="cnvs1_cbyAxis1" change="refreshChartEvent(event);" visible="false"/>
+			<mx:HBox name="cnvs1_HBoxMinMaxx" id="cnvs1_HBoxMinMaxx" width="100%" x="4" y="248" visible="false" >
+		<flexlib:HSlider  id="cnvs1_minMaxxSlider" name="cnvs1_minMaxxSlider" 
+							trackHighlightSkin="flexlib.skins.SliderThumbHighlightSkin"
+							allowTrackClick="true" allowThumbOverlap="true" 
+							liveDragging="true" 
+							showDataTip="true"  dataTipPlacement="bottom" dataTipOffset="3"
+							showTrackHighlight="true"
+							thumbCount="2"  width="100%" change="refreshChartEvent(event);"
+							snapInterval=".1" visible="false"  maximum="{maxxSlideValue}" 
+							values="{[0, maxxSlideDefault]}"
+							
+						/>
+		</mx:HBox>
+		
+		
+		<mx:HBox name="cnvs1_HBoxMinMaxy" id="cnvs1_HBoxMinMaxy" width="100%" x="4" y="345"  visible="false">
+		<flexlib:HSlider  id="cnvs1_minMaxySlider" 
+							name="cnvs1_minMaxySlider"
+							trackHighlightSkin="flexlib.skins.SliderThumbHighlightSkin"
+							allowTrackClick="true" allowThumbOverlap="true" 
+							liveDragging="true" 
+							showDataTip="true"  dataTipPlacement="bottom" dataTipOffset="3"
+							showTrackHighlight="true"
+							thumbCount="2"  width="100%" change="refreshChartEvent(event);"
+							snapInterval=".1" visible="false" minimum="0" maximum="{maxySlideValue}" 
+							values="{[0, maxySlideDefault]}"
+							
+						/>
+		</mx:HBox>
+		
+	</mx:Canvas>
+	
+	</mx:Accordion>
+	</mx:VBox>
+	</mx:HBox>
+	
+	<mx:Canvas id="p1" borderStyle="solid" borderColor="#CCCCCC" width="100%" height="100%" 
+		horizontalScrollPolicy="off" verticalScrollPolicy="off" 
+		  >
+	
+	</mx:Canvas>
+	</mx:HBox>
+
+<mx:states>
+       <mx:State name="showCntrlPanel">
+			<mx:SetProperty target="{sideBar}" name="width" value="300"/>
+			<mx:SetStyle target="{DivNavRB}" name="horizontalGap" value="5"/>
+       </mx:State>        
+		<mx:State name="hideCntrlPanel">
+			<mx:SetProperty target="{sideBar}" name="width" value="17"/>
+			<mx:SetStyle target="{DivNavRB}" name="horizontalGap" value="0"/>
+		</mx:State>
+	</mx:states>
+	<mx:transitions>
+		<mx:Transition fromState="*" toState="*">
+			<mx:Resize target="{sideBar}" />
+		</mx:Transition>
+	</mx:transitions>
+
+
+</mx:Canvas>

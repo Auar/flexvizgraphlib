@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flexLibProperties version="1">
+<includeClasses>
+<classEntry path="org.un.flex.graphLayout.data.Edge"/>
+<classEntry path="org.un.flex.graphLayout.data.GTree"/>
+<classEntry path="org.un.flex.graphLayout.data.Graph"/>
+<classEntry path="org.un.flex.graphLayout.data.GraphWalkingDirectionsEnum"/>
+<classEntry path="org.un.flex.graphLayout.data.IDataItem"/>
+<classEntry path="org.un.flex.graphLayout.data.IEdge"/>
+<classEntry path="org.un.flex.graphLayout.data.IGTree"/>
+<classEntry path="org.un.flex.graphLayout.data.IGraph"/>
+<classEntry path="org.un.flex.graphLayout.data.INode"/>
+<classEntry path="org.un.flex.graphLayout.data.Node"/>
+<classEntry path="org.un.flex.graphLayout.layout.AnimatedBaseLayouter"/>
+<classEntry path="org.un.flex.graphLayout.layout.BaseLayoutDrawing"/>
+<classEntry path="org.un.flex.graphLayout.layout.BaseLayouter"/>
+<classEntry path="org.un.flex.graphLayout.layout.CircularLayouter"/>
+<classEntry path="org.un.flex.graphLayout.layout.ConcentricRadialLayoutDrawing"/>
+<classEntry path="org.un.flex.graphLayout.layout.ConcentricRadialLayouter"/>
+<classEntry path="org.un.flex.graphLayout.layout.DirectPlacementLayouter"/>
+<classEntry path="org.un.flex.graphLayout.layout.ForceDirectedLayouter"/>
+<classEntry path="org.un.flex.graphLayout.layout.HierarchicalLayoutDrawing"/>
+<classEntry path="org.un.flex.graphLayout.layout.HierarchicalLayouter"/>
+<classEntry path="org.un.flex.graphLayout.layout.ILayoutAlgorithm"/>
+<classEntry path="org.un.flex.graphLayout.layout.ISOMLayouter"/>
+<classEntry path="org.un.flex.graphLayout.layout.IterativeBaseLayouter"/>
+<classEntry path="org.un.flex.graphLayout.layout.ParentCenteredDrawingModel"/>
+<classEntry path="org.un.flex.graphLayout.layout.ParentCenteredRadialLayouter"/>
+<classEntry path="org.un.flex.graphLayout.layout.PhylloTreeDrawingModel"/>
+<classEntry path="org.un.flex.graphLayout.layout.PhylloTreeLayouter"/>
+<classEntry path="org.un.flex.graphLayout.layout.SpringForceDirectedLayouter"/>
+<classEntry path="org.un.flex.graphLayout.visual.DefaultEdgeRenderer"/>
+<classEntry path="org.un.flex.graphLayout.visual.DirectedEdgeRenderer"/>
+<classEntry path="org.un.flex.graphLayout.visual.FlowEdgeRenderer"/>
+<classEntry path="org.un.flex.graphLayout.visual.IEdgeRenderer"/>
+<classEntry path="org.un.flex.graphLayout.visual.IVisualEdge"/>
+<classEntry path="org.un.flex.graphLayout.visual.IVisualGraph"/>
+<classEntry path="org.un.flex.graphLayout.visual.IVisualItem"/>
+<classEntry path="org.un.flex.graphLayout.visual.IVisualNode"/>
+<classEntry path="org.un.flex.graphLayout.visual.OrthogonalEdgeRenderer"/>
+<classEntry path="org.un.flex.graphLayout.visual.VisualEdge"/>
+<classEntry path="org.un.flex.graphLayout.visual.VisualGraph"/>
+<classEntry path="org.un.flex.graphLayout.visual.VisualNode"/>
+<classEntry path="org.un.flex.utils.Geometry"/>
+<classEntry path="org.un.flex.utils.events.VGraphEvent"/>
+<classEntry path="org.un.flex.utils.events.VNodeMouseEvent"/>
+</includeClasses>
+<includeResources/>
+<namespaceManifests/>
+</flexLibProperties>

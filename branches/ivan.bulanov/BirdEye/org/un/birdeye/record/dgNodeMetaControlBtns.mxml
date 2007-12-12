@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" horizontalAlign="center">
+
+<mx:Script>
+	<![CDATA[
+	import mx.collections.ArrayCollection;
+	
+	private function viewRecord(e:Event):void
+	{
+		parentDocument.nodeMetaControl.selectedIndex = 1;
+		parentDocument.nodeMetaModule.nodemetavs.selectedIndex = 0;
+		
+	}
+	
+	private function editRecord(e:Event):void
+	{
+		
+		parentDocument.nodeMetaControl.selectedIndex = 1;
+		parentDocument.nodeMetaModule.nodemetavs.selectedIndex = 1;  // flip to "edit" canvas of module viewstack
+		}
+		
+	]]>
+</mx:Script>
+
+	<mx:Button toolTip="Click to view record" icon="@Embed(source='../images/ui/view.png')" width="30" click="viewRecord(event);" />
+	<mx:Button toolTip="Click to edit record" icon="@Embed(source='../images/ui/edit.png')" width="30" click="editRecord(event);" />
+	<mx:Button toolTip="Click to delete record" icon="@Embed(source='../images/ui/delete.png')" width="30" click="editRecord(event);"/>
+	
+</mx:HBox>
