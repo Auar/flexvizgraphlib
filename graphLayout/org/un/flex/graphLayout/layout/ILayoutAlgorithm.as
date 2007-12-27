@@ -148,10 +148,33 @@ package org.un.flex.graphLayout.layout {
 		function dragEvent(event:MouseEvent, vn:IVisualNode):void;
 		
 		/**
+		 * Notifies the layouter of a node dragging-in-process event, in case
+		 * it wants to react to that in special way.
+		 * */
+		function dragContinue(event:MouseEvent, vn:IVisualNode):void;
+		
+		/**
 		 * Notifies the layouter of a node drop event, in case
 		 * it wants to react to that in special way.
 		 * */
 		function dropEvent(event:MouseEvent, vn:IVisualNode):void;
 
+		/**
+		 * Notifies the layouter of a backgroung drag event, in case
+		 * it wants to react to that in special way.
+		 * */
+		function bgDragEvent(event:MouseEvent):void;
+		
+		/**
+		 * Notifies the layouter of a background drag-in-process event, in case
+		 * it wants to react to that in special way.
+		 * */
+		function bgDragContinue(event:MouseEvent):void;
+		
+		/**
+		 * Notifies the layouter of a background drop event, in case
+		 * it wants to react to that in special way.
+		 * */
+		function bgDropEvent(event:MouseEvent):void;
 	}
 }

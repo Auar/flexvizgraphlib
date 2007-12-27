@@ -32,6 +32,7 @@ package org.un.flex.graphLayout.layout {
 	import org.un.flex.graphLayout.data.INode;
 	import org.un.flex.graphLayout.data.Graph;
 	import org.un.flex.utils.Geometry;
+	import org.un.flex.utils.GraphicUtils;
 	import flash.events.Event;
 	import flash.geom.Point;
 	import flash.utils.Timer;
@@ -313,7 +314,7 @@ package org.un.flex.graphLayout.layout {
 				stepPhi = currPhi + deltaPhi;
 				
 				/* check if we are already done or not */
-				if(!equal(currPoint, _currentDrawing.getRelCartCoordinates(n))) {
+				if(!GraphicUtils.equal(currPoint, _currentDrawing.getRelCartCoordinates(n))) {
 					cyclefinished = false;
 				}
 				
@@ -394,7 +395,7 @@ package org.un.flex.graphLayout.layout {
 				}
 
 				/* check if we are already done or not */
-				if(!equal(currPoint, targetPoint)) {
+				if(!GraphicUtils.equal(currPoint, targetPoint)) {
 					cyclefinished = false;
 				}
 
@@ -482,13 +483,5 @@ package org.un.flex.graphLayout.layout {
 			startAnimation();
 		}
 		
-		/**
-		 * @internal
-		 * Function that tests if two points are equal within tolerance
-		 * The current tolerance limit is (1, 1)
-		 */
-		private function equal(p1:Point, p2:Point):Boolean {
-			return (Math.abs(p1.x - p2.x) <= 1) && (Math.abs(p1.y - p2.y) <= 1);
-		}
 	}
 }

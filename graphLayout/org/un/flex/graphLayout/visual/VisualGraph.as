@@ -166,6 +166,18 @@ package org.un.flex.graphLayout.visual {
 		 * we need this property.
 		 * */
         private var _backgroundDragInProgress:Boolean = false;
+				
+		/**
+		 * To enable/disable scrolling while background is being
+		 * dragged 
+		 * */
+    private var _scrollBackgroundInDrag:Boolean = true;
+		
+		/**
+		 * To enable/disable movement while node is being
+		 * dragged 
+		 * */
+    private var _moveNodeInDrag:Boolean = true;
 
 		/* Rendering */
 
@@ -713,6 +725,13 @@ package org.un.flex.graphLayout.visual {
 			}
 		}		
 
+		public function set scrollBackgroundInDrag(f:Boolean):void {
+			_scrollBackgroundInDrag = f;
+		}
+		
+		public function set moveNodeInDrag(f:Boolean):void {
+			_moveNodeInDrag = f;
+		}
 		/**
 		 * @inheritDoc
 		 * */
@@ -1434,8 +1453,9 @@ package org.un.flex.graphLayout.visual {
 			
 			/* add event handlers for dragging and double click */			
 			mycomponent.doubleClickEnabled = true;
-			mycomponent.addEventListener(MouseEvent.DOUBLE_CLICK,nodeDoubleClick);
+			mycomponent.addEventListener(MouseEvent.DOUBLE_CLICK, nodeDoubleClick);
 			mycomponent.addEventListener(MouseEvent.MOUSE_DOWN,nodeMouseDown);
+			mycomponent.addEventListener(MouseEvent.MOUSE_UP, dragEnd);
 
 			/* add the component to its parent component */
 			_canvas.addChild(mycomponent);
@@ -1633,16 +1653,13 @@ package org.un.flex.graphLayout.visual {
 			
 			//trace("double click!");
 			
-			/* if the node was dragged, we notify the 
-			 * layouter of the drop event */
-			_layouter.dropEvent(e,vnode);
-			
 			/* Now we change the root node, we go through
 			 * our public setter method to get all associated
 			 * updates done. */
 			this.currentRootVNode = vnode;
 			
 			//trace("currentVNode:"+this.currentRootVNode.id);
+			
 		}
 
 		/**
@@ -1757,7 +1774,7 @@ package org.un.flex.graphLayout.visual {
 					ecomponent.stage.addEventListener(MouseEvent.MOUSE_MOVE, handleDrag);
 			
 					/* also register a drop event listener */
-					ecomponent.stage.addEventListener(MouseEvent.MOUSE_UP, dragEnd);
+					// ecomponent.stage.addEventListener(MouseEvent.MOUSE_UP, dragEnd);
 					
 					/* and inform the layouter about the dragEvent */
 					_layouter.dragEvent(event, evnode);
@@ -1776,6 +1793,7 @@ package org.un.flex.graphLayout.visual {
 		 * @param event The MouseMove event that has been triggered.
 		 */
 		private function handleDrag(event:MouseEvent):void {
+			var myvnode:IVisualNode;
 			var sp:UIComponent;
 			
 			//var bounds:Rectangle;
@@ -1794,31 +1812,36 @@ package org.un.flex.graphLayout.visual {
 			/* bounds are not implemented:
 			bounds = _drag_boundsMap[sp];
 			*/
-			
-			/* update the coordinates with the current
-			 * event's stage coordinates (i.e. current mouse position),
-			 * modified by the lock-center offset */
-			sp.x = event.stageX - _drag_x_offsetMap[sp];
-			sp.y = event.stageY - _drag_y_offsetMap[sp];
-			
-			/* bounds code, currently unused 
-			if ( bounds != null ) {
-				if ( sp.x < bounds.left ) {
-					sp.x = bounds.left;
-				} else if ( sp.x > bounds.right ) {
-					sp.x = bounds.right;
-				}	
-				if ( sp.y < bounds.top ) {
-					sp.y = bounds.top;	
-				} else if ( sp.y > bounds.bottom ) {
-					sp.y = bounds.bottom;	
+			if (_moveNodeInDrag) {
+				/* update the coordinates with the current
+				 * event's stage coordinates (i.e. current mouse position),
+				 * modified by the lock-center offset */
+				sp.x = event.stageX - _drag_x_offsetMap[sp];
+				sp.y = event.stageY - _drag_y_offsetMap[sp];
+				
+				/* bounds code, currently unused 
+				if ( bounds != null ) {
+					if ( sp.x < bounds.left ) {
+						sp.x = bounds.left;
+					} else if ( sp.x > bounds.right ) {
+						sp.x = bounds.right;
+					}	
+					if ( sp.y < bounds.top ) {
+						sp.y = bounds.top;	
+					} else if ( sp.y > bounds.bottom ) {
+						sp.y = bounds.bottom;	
+					}
 				}
+				*/
 			}
-			*/
+			
+			/* and inform the layouter about the dragEvent */
+			myvnode = _viewToVNodeMap[_dragComponent];
+			_layouter.dragContinue(event, myvnode);
 			
 			/* make sure flashplayer does an update after the event */
 			refresh();
-			event.updateAfterEvent();
+			event.updateAfterEvent();			
 		}
 
 		/**
@@ -1837,8 +1860,7 @@ package org.un.flex.graphLayout.visual {
 				trace("Animation in progress, drag attempt ignored");
 				return;
 			}
-		
-		
+			
 			/* this should be the canvas, i.e. "this" */
 			mycomponent = (event.currentTarget as UIComponent);
 			
@@ -1851,10 +1873,13 @@ package org.un.flex.graphLayout.visual {
 			_backgroundDragInProgress = true;
 			_dragCursorStartX = event.stageX;
 			_dragCursorStartY = event.stageY;
-
+			
 			/* register the backgroundDrag listener to react to
 			 * the mouse movements */
-			mycomponent.addEventListener(MouseEvent.MOUSE_MOVE,backgroundDragContinue);
+			mycomponent.addEventListener(MouseEvent.MOUSE_MOVE, backgroundDragContinue);
+			
+			/* and inform the layouter about the dragEvent */
+			_layouter.bgDragEvent(event);
 		}
 		
 		/**
@@ -1867,18 +1892,22 @@ package org.un.flex.graphLayout.visual {
 			var deltaX:Number;
 			var deltaY:Number;
 			
-			/* compute the movement offset of this move by
-			 * subtracting the current mouse position from
-			 * the last mouse position */
-			deltaX = event.stageX - _dragCursorStartX;
-			deltaY = event.stageY - _dragCursorStartY;
+			if (_scrollBackgroundInDrag) {
+				/* compute the movement offset of this move by
+				 * subtracting the current mouse position from
+				 * the last mouse position */
+				deltaX = event.stageX - _dragCursorStartX;
+				deltaY = event.stageY - _dragCursorStartY;
 			 
-			/* reset the origin for the next step */
+				/* scroll all objects by this offset */
+				scroll(deltaX, deltaY);
+			}
+			/* and inform the layouter about the dragEvent */
+			_layouter.bgDragContinue(event);
+			
+			/* reset the drag start point for the next step */
 			_dragCursorStartX = event.stageX;
 			_dragCursorStartY = event.stageY;
-			
-			/* scroll all objects by this offset */
-			scroll(deltaX, deltaY);
 			
 			/* make sure edges are redrawn */
 			//_drawingSurface.invalidateDisplayList();
@@ -1914,7 +1943,10 @@ package org.un.flex.graphLayout.visual {
 				
 				/* unregister event handler */				
 				myback.removeEventListener(MouseEvent.MOUSE_MOVE,backgroundDragContinue);
-				myback.removeEventListener(MouseEvent.MOUSE_MOVE,dragEnd);
+				// myback.removeEventListener(MouseEvent.MOUSE_MOVE,dragEnd);
+				
+				/* and inform the layouter about the dropEvent */
+				_layouter.bgDropEvent(event);
 				
 			} else {
 				
@@ -1930,7 +1962,7 @@ package org.un.flex.graphLayout.visual {
 				}
 				
 				/* remove the event listeners */
-				mycomp.stage.removeEventListener(MouseEvent.MOUSE_DOWN, dragEnd);
+				//mycomp.stage.removeEventListener(MouseEvent.MOUSE_DOWN, dragEnd);
 				mycomp.stage.removeEventListener(MouseEvent.MOUSE_MOVE, handleDrag);
 				
 				/* get the associated VNode to notify the layouter */

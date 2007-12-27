@@ -119,7 +119,7 @@ package org.un.flex.graphLayout.layout {
 		/**
 		 * @inheritDoc
 		 * */
-		public function resetAll():void {			
+		public function resetAll():void {
 			_layoutChanged = true;
 		}
 
@@ -201,8 +201,7 @@ package org.un.flex.graphLayout.layout {
 			 * correct value. */
 			return false;
 		}
-
-
+		
 		/**
 		 * This is a NOP in the BaseLayouter class and always returns true.
 		 * 
@@ -233,7 +232,39 @@ package org.un.flex.graphLayout.layout {
 		 * This is a NOP for this layouter.
 		 * @inheritDoc
 		 * */
+		public function dragContinue(event:MouseEvent, vn:IVisualNode):void {
+			/* NOP */
+		}
+		
+		/**
+		 * This is a NOP for this layouter.
+		 * @inheritDoc
+		 * */
 		public function dropEvent(event:MouseEvent, vn:IVisualNode):void {
+			/* NOP */
+		}
+		
+		/**
+		 * This is a NOP for this layouter.
+		 * @inheritDoc
+		 * */
+		public function bgDragEvent(event:MouseEvent):void {
+			/* NOP */
+		}
+
+		/**
+		 * This is a NOP for this layouter.
+		 * @inheritDoc
+		 * */
+		public function bgDragContinue(event:MouseEvent):void {
+			/* NOP */
+		}
+		
+		/**
+		 * This is a NOP for this layouter.
+		 * @inheritDoc
+		 * */
+		public function bgDropEvent(event:MouseEvent):void {
 			/* NOP */
 		}
 		
