@@ -31,6 +31,7 @@ package org.un.flex.graphLayout.layout {
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
+	import org.un.flex.utils.StopWatch;
 	
 	import mx.core.UIComponent;
 	/**
@@ -64,6 +65,8 @@ package org.un.flex.graphLayout.layout {
 		* ********************************************/
 		/* the timer object */
 		private var _timer:Timer = null;
+		private var _stopWatch:StopWatch = new StopWatch();
+		private var _timerDelay:Number = _TIMERDELAY;
 		
 		/* for dragging and dropping */
 		protected var _dragNode:IVisualNode = null;
@@ -159,7 +162,7 @@ package org.un.flex.graphLayout.layout {
 			
 			/* Evaluate end condition */
 			if (!isStable()) {
-				
+				_stopWatch.startTimer();
 				// Step 1: Retrieve old coordinates from vNodes
 				/* basically, refresh coordinates from their 'view' UI components */
 				for each(vn in _vgraph.visibleVNodes) {
@@ -182,11 +185,17 @@ package org.un.flex.graphLayout.layout {
 				}
 				
 				// Step 4: Indicate that the layout has changed
-				_layoutChanged = true;
-				_vgraph.dispatchEvent(new Event("vgraphChanged"));
+				_vgraph.refresh();
+				//_vgraph.redrawEdges();
+				//_layoutChanged = true;
+				//_vgraph.dispatchEvent(new Event("vgraphChanged"));
 				
 				// Step 5: Re-start the Timer
+				_timerDelay = _stopWatch.stopTimer();
+				//trace("Iteration computation time = " + _timerDelay);
 				restartTimer();
+			} else {
+				trace("Achieved steady node state, terminating iterations...");
 			}
 			
 			/* return always true for now */
@@ -202,12 +211,13 @@ package org.un.flex.graphLayout.layout {
 		private function restartTimer():void {
 			/* if timer is not initialized, create a new timer */
 			if(_timer == null) {
-				_timer = new Timer(_TIMERDELAY, _TIMERREPCOUNT);
+				_timer = new Timer(_timerDelay, _TIMERREPCOUNT);
 				_timer.addEventListener(TimerEvent.TIMER_COMPLETE, timerFired);
 			} else {
 				_timer.stop();
 				_timer.reset();
 			}
+			//if (_timerDelay > _TIMERDELAY) _timer.delay = _timerDelay + 10;
 			_timer.start();
 		}
 		

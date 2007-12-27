@@ -25,7 +25,6 @@
 package org.un.flex.utils {
 	import flash.geom.Point;
 	
-	
 	/**
 	 * This is a class to provide some static functions
 	 * to help with angles and geometry.
@@ -161,5 +160,46 @@ package org.un.flex.utils {
 			return (a * Math.PI / 180);
 		}
 		
+		/**
+		 * Returns sine hyperbolic function:
+		 * <code>sinh(x) = 0.5*(e^x-e^(-x))</code>.
+		 * @param x
+		 * @return
+		 */
+    public static function sinh(x:Number):Number {
+    	var expX:Number = Math.exp(x);
+			return 0.5 * (expX - 1/expX);
+    }
+		
+		/**
+		 * Returns cosine hyperbolic function:
+		 * <code>cosh(x) = 0.5*(e^x+e^(-x))</code>.
+		 * @param x
+		 * @return
+		 */
+    public static function cosh(x:Number):Number {
+    	var expX:Number = Math.exp(x);
+			return 0.5 * (expX + 1/expX);
+    }
+		
+		/**
+		 * Returns inverse of the sine hyperbolic function:
+		 * <code>arsinh(x) = ln(x+sqrt(x^2+1))</code>.
+		 * @param x
+		 * @return
+		 */
+    public static function arsinh(x:Number):Number {
+			return Math.log(x + Math.sqrt(x * x + 1));
+    }
+		
+		/**
+	   * Returns inverse of the sine hyperbolic function:
+		 * <code>arcosh(x) = ln(x+sqrt(x^2-1))</code>.
+		 * @param x
+		 * @return
+		 */
+    public static function arcosh(x:Number):Number {
+		  return Math.log(x + Math.sqrt(x * x - 1));
+    }
 	}
 }
