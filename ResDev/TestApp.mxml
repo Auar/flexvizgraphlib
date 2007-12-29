@@ -57,6 +57,10 @@
 			import org.un.flex.graphLayout.layout.ConcentricRadialLayouter;
 			import org.un.flex.graphLayout.layout.ForceDirectedLayouter;
 			import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
+			
+			import org.un.flex.graphLayout.layout.ISOMLayouter;
+			import org.un.flex.graphLayout.layout.Hyperbolic2DLayouter;
+			
 			import org.un.flex.graphLayout.layout.ParentCenteredRadialLayouter;
 			import org.un.flex.graphLayout.layout.PhylloTreeLayouter;
 			import org.un.flex.graphLayout.layout.HierarchicalLayouter;
@@ -65,6 +69,13 @@
 			import org.un.flex.graphLayout.visual.IVisualGraph;
 			import org.un.flex.graphLayout.visual.VisualNode;
 			import org.un.flex.graphLayout.visual.VisualGraph;
+			
+			import org.un.flex.graphLayout.visual.DefaultEdgeRenderer;
+			import org.un.flex.graphLayout.visual.HyperbolicEdgeRenderer;
+			import org.un.flex.graphLayout.visual.IEdgeRenderer;
+			import org.un.flex.graphLayout.visual.FlowEdgeRenderer;
+			import org.un.flex.graphLayout.visual.DirectedEdgeRenderer;
+			import org.un.flex.graphLayout.visual.OrthogonalEdgeRenderer;
 			
 			import org.un.flex.unComponentToolbox.renderers.PrimitiveIconRenderer;
 			import org.un.flex.unComponentToolbox.icons.EmbeddedIcons;
@@ -76,13 +87,18 @@
 			private var prevNode:IVisualNode;
 			private var startRoot:IVisualNode;
 			private var itemCount:int = 0;
-
+			private var absoluteScaling:Boolean = true;
 			private var initDone:Boolean = false;
 
 			private var currentLayouterType:String = "";
 
 			private var rootNodeHistory:Array;
 			private var currentHistoryIndex:uint;
+			
+			private var prevSliderVal:Number;
+			
+			private var directedEdgeRenderer:IEdgeRenderer = new DirectedEdgeRenderer;
+			private var defaultEdgeRenderer:IEdgeRenderer = new DefaultEdgeRenderer;
 
 			//[Bindable]
 			//private var hiddenItems:Array = [];
@@ -107,6 +123,7 @@
 				SixDegreesExternalData.send();
 				//initData(['Node','Edge','fromID','toID']);
 				leftAccordion.selectedIndex = 0;
+				
 			}
 			
 			private function handleHTTPResult(xmlNames:Array, event:ResultEvent):void {
@@ -135,7 +152,6 @@
 				/* set the graph in the VGraph object, this automatically
 				 * initializes the VGraph items */
 				vgraph.graph = graph;
-
 				
 				/* set the visibility limit options, default 2 */
 				maxDistanceFromCurrent.value = 2;
@@ -203,7 +219,7 @@
 				/* create and set the layouter */
 				if(layouter != null) {
 					layouter.resetAll(); // to kill any timers
-				} 
+				}
 				switch(currentLayouterType) {
 					case "ConcentricRadial":
 						layouter = new ConcentricRadialLayouter(vgraph);
@@ -299,6 +315,25 @@
 						siblingSpread.includeInLayout = false;
 						orientationSelector.includeInLayout = false;
 						break;
+					case "ISOM":
+						layouter = new ISOMLayouter(vgraph);
+						layouter.linkLength = linkLength.value; //not used
+						bslider.visible = false;
+						bsliderlabel.visible = false;		
+						phidial.visible = false;
+						phidiallabel.visible = false;
+						dampCheck.visible = false;
+						siblingSpread.visible = false;
+						orientationSelector.visible = false;
+						
+						bslider.includeInLayout = false;
+						bsliderlabel.includeInLayout = false;
+						dampCheck.includeInLayout = false;		
+						phidial.includeInLayout = false;
+						phidiallabel.includeInLayout = false;
+						siblingSpread.includeInLayout = false;
+						orientationSelector.includeInLayout = false;
+						break;
 					case "Hierarchical":
 						layouter = new HierarchicalLayouter(vgraph);
 						(layouter as HierarchicalLayouter).breadth = bslider.value;
@@ -319,6 +354,25 @@
 						siblingSpread.includeInLayout = true;
 						orientationSelector.includeInLayout = true;
 						break;
+					case "Hyperbolic":
+						layouter = new Hyperbolic2DLayouter(vgraph);
+						layouter.linkLength = linkLength.value; //not used
+						bslider.visible = false;
+						bsliderlabel.visible = false;		
+						phidial.visible = false;
+						phidiallabel.visible = false;
+						dampCheck.visible = false;
+						siblingSpread.visible = false;
+						orientationSelector.visible = false;
+						
+						bslider.includeInLayout = false;
+						bsliderlabel.includeInLayout = false;
+						dampCheck.includeInLayout = false;		
+						phidial.includeInLayout = false;
+						phidiallabel.includeInLayout = false;
+						siblingSpread.includeInLayout = false;
+						orientationSelector.includeInLayout = false;
+						break;
 					default:
 						layouter = new ConcentricRadialLayouter(vgraph);
 						phidial.visible = false;
@@ -338,6 +392,20 @@
 						orientationSelector.includeInLayout = false;
 				}
 				vgraph.layouter = layouter;
+				if (layouter is Hyperbolic2DLayouter) {
+					/* set the hyperbolic edge renderer type */
+					vgraph.edgeRenderer = new HyperbolicEdgeRenderer((layouter as Hyperbolic2DLayouter).projector);
+					vgraph.scrollBackgroundInDrag = false;
+					vgraph.moveNodeInDrag = false;
+					absoluteScaling = false;
+				} else {
+					/* set the directed edge renderer type */
+					vgraph.edgeRenderer = directedEdgeRenderer;
+					vgraph.scrollBackgroundInDrag = true;
+					vgraph.moveNodeInDrag = true;
+					absoluteScaling = true;
+					updateScale();
+				}
 				layouter.autoFitEnabled = autoFit.selected;
 			}
 			
@@ -375,11 +443,17 @@
 				
 				children = vgraph.getChildren();
 				for each(child in children) {
-					if(child is PrimitiveIconRenderer) {
-						child.scaleX = scaleSlider.value;
-						child.scaleY = scaleSlider.value;
+					if (child is PrimitiveIconRenderer) {
+						if (absoluteScaling) {
+							child.scaleX = scaleSlider.value;
+							child.scaleY = scaleSlider.value;
+						} else {
+							child.scaleX *= scaleSlider.value / prevSliderVal;
+							child.scaleY *= scaleSlider.value / prevSliderVal;
+						}
 					}
 				}
+				prevSliderVal = scaleSlider.value;
 				layouter.layoutChanged = true;
 				vgraph.draw();
 			}
@@ -659,6 +733,9 @@
 										<mx:String>PhylloTree</mx:String>
 										<mx:String>Hierarchical</mx:String>								
 										<mx:String>Circular</mx:String>
+										<mx:String>ForceDirected</mx:String>										
+										<mx:String>Hyperbolic</mx:String>
+										<mx:String>ISOM</mx:String>
 									</mx:ArrayCollection>
 								</mx:ComboBox>	
 							</mx:HBox>
