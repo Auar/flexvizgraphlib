@@ -70,6 +70,7 @@
 			import org.un.flex.graphLayout.visual.VisualNode;
 			import org.un.flex.graphLayout.visual.VisualGraph;
 			
+			import org.un.flex.graphLayout.visual.CircularEdgeRenderer;
 			import org.un.flex.graphLayout.visual.DefaultEdgeRenderer;
 			import org.un.flex.graphLayout.visual.HyperbolicEdgeRenderer;
 			import org.un.flex.graphLayout.visual.IEdgeRenderer;
@@ -398,6 +399,14 @@
 					vgraph.scrollBackgroundInDrag = false;
 					vgraph.moveNodeInDrag = false;
 					absoluteScaling = false;
+				} else if (layouter is CircularLayouter) {
+					/* set the hyperbolic edge renderer type */
+					vgraph.edgeRenderer = directedEdgeRenderer;
+					vgraph.edgeRenderer = new CircularEdgeRenderer();
+					vgraph.scrollBackgroundInDrag = false;
+					vgraph.moveNodeInDrag = false;
+					absoluteScaling = true;
+					updateScale();
 				} else {
 					/* set the directed edge renderer type */
 					vgraph.edgeRenderer = directedEdgeRenderer;
