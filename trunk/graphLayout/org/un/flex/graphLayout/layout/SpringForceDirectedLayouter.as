@@ -447,7 +447,7 @@ package org.un.flex.graphLayout.layout {
 				vCoverage = (viewbounds.right - viewbounds.left) / _vgraph.width;
 				coverage = Math.max(hCoverage, vCoverage);
 				
-				trace("FD af Coverage:"+coverage);
+				//trace("FD af Coverage:"+coverage);
 				
 				if((_prevCoverage > 0) && (coverage > 0)) {
 					
@@ -464,7 +464,7 @@ package org.un.flex.graphLayout.layout {
 						deltaCoverage = coverage - _prevCoverage;
 						targetDelta = missingCoverage * 0.2 // why?
 						
-						trace("FD af deltaCov:"+deltaCoverage+" targetDelta:"+targetDelta);
+						//trace("FD af deltaCov:"+deltaCoverage+" targetDelta:"+targetDelta);
 						
 						/* impose limits */
 						if(targetDelta < -0.05) {
