@@ -481,6 +481,7 @@ package org.un.flex.graphLayout.layout {
 		private function animTimerFired(event:TimerEvent = null):void {
 			//trace("Timer fired!");
 			startAnimation();
+			//event.updateAfterEvent();
 		}
 		
 	}

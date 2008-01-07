@@ -226,6 +226,7 @@ package org.un.flex.graphLayout.layout {
 		 * */
 		public function dragEvent(event:MouseEvent, vn:IVisualNode):void {
 			/* NOP */
+			// trace("Node: " + vn.node.stringid + " started DRAG");
 		}
 		
 		/**
@@ -234,6 +235,7 @@ package org.un.flex.graphLayout.layout {
 		 * */
 		public function dragContinue(event:MouseEvent, vn:IVisualNode):void {
 			/* NOP */
+			// trace("Node: " + vn.node.stringid + " being DRAGGED...");
 		}
 		
 		/**
@@ -242,6 +244,7 @@ package org.un.flex.graphLayout.layout {
 		 * */
 		public function dropEvent(event:MouseEvent, vn:IVisualNode):void {
 			/* NOP */
+			// trace("Node: " + vn.node.stringid + " DROPPED");
 		}
 		
 		/**
@@ -250,6 +253,7 @@ package org.un.flex.graphLayout.layout {
 		 * */
 		public function bgDragEvent(event:MouseEvent):void {
 			/* NOP */
+			//trace("Canvas started DRAG");
 		}
 
 		/**
@@ -258,6 +262,7 @@ package org.un.flex.graphLayout.layout {
 		 * */
 		public function bgDragContinue(event:MouseEvent):void {
 			/* NOP */
+			//trace("Canvas being DRAGGED...");
 		}
 		
 		/**
@@ -266,6 +271,7 @@ package org.un.flex.graphLayout.layout {
 		 * */
 		public function bgDropEvent(event:MouseEvent):void {
 			/* NOP */
+			//trace("Canvas DROPPED");
 		}
 		
 		/**

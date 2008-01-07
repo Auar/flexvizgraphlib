@@ -1124,7 +1124,7 @@ package org.un.flex.graphLayout.visual {
 			/* call the original function */
 			super.updateDisplayList(unscaledWidth,unscaledHeight);
 			
-			/* now add our part */
+			/* now add part to redraw edges */
 			if(_layouter && _layouter.layoutChanged) {
 				redrawEdges();
 				/* reset the flag */
@@ -1516,6 +1516,7 @@ package org.un.flex.graphLayout.visual {
 				/* remove event mouse listeners */
 				component.removeEventListener(MouseEvent.DOUBLE_CLICK,nodeDoubleClick);
 				component.removeEventListener(MouseEvent.MOUSE_DOWN,nodeMouseDown);
+				component.removeEventListener(MouseEvent.MOUSE_UP, dragEnd);
 				
 				/* get the associated VNode and remove the view from it
 				 * and also remove the map entry */

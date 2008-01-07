@@ -113,11 +113,8 @@ package org.un.flex.graphLayout.layout {
 			/* we have to make sure, that what we want
 			 * to drag is actually a UIComponent, i.e. 
 			 * part of our nodes, if not we do nothing. */
-			//trace("layouter received a drag event");
 			if(event.currentTarget is UIComponent) {
 				_dragNode = vn;
-			  refreshInit();
-			  layoutIteration();
 			}
 		}
 		
@@ -128,8 +125,6 @@ package org.un.flex.graphLayout.layout {
 		 * */
 		override public function dropEvent(event:MouseEvent, vn:IVisualNode):void {
 			_dragNode = null;
-			refreshInit();
-			layoutIteration();
 		}
 
 		/**
@@ -184,11 +179,10 @@ package org.un.flex.graphLayout.layout {
 					vn.commit();
 				}
 				
-				// Step 4: Indicate that the layout has changed
-				_vgraph.refresh();
-				//_vgraph.redrawEdges();
-				//_layoutChanged = true;
-				//_vgraph.dispatchEvent(new Event("vgraphChanged"));
+				// Step 4: Update node position, redraw edges and sent update to the UI */
+				_layoutChanged = true;
+				_vgraph.redrawEdges();
+				_vgraph.dispatchEvent(new Event("vgraphChanged"));
 				
 				// Step 5: Re-start the Timer
 				_timerDelay = _stopWatch.stopTimer();
@@ -228,6 +222,7 @@ package org.un.flex.graphLayout.layout {
 		private function timerFired(event:TimerEvent = null):void {
 			/* repeat the calculation */
 			layoutIteration();
+			event.updateAfterEvent();
 		}
 		
 		/**
