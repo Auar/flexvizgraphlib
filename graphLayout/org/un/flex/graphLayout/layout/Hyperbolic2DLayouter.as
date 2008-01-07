@@ -101,6 +101,7 @@ package org.un.flex.graphLayout.layout {
 		
 		// TEMPORARY VARIABLES - to speed-up computations
 		private var t_v1:ComplexVector = new ComplexVector();
+		private var t_v2:ComplexVector = new ComplexVector();
 		private var t_isom1:IIsometry;
 		
 		// ANIMATION VARIABLES
@@ -133,6 +134,8 @@ package org.un.flex.graphLayout.layout {
 		* ********************************************/
 		public function Hyperbolic2DLayouter(vg:IVisualGraph = null):void {
 			super(vg);
+			resetAll();
+			
 			_model = new PoincareModel();
 			_projector = new PoincareProjector(_model);
 			t_isom1 = _model.getIdentity();
@@ -142,14 +145,13 @@ package org.un.flex.graphLayout.layout {
 			_repulsingForce = 0.05; //0.05
 			_repulsingForceCutOff = 5; //5
 			
-			resetAll();
 		}
 		
 		/**
 		 * @inheritDoc
 		 * */
 		override public function resetAll():void {
-			super.resetAll();
+			super.resetAll(); // calls refreshInit()
 			
 			// reset all data caches
 			_nodeIndex = null;
@@ -159,12 +161,11 @@ package org.un.flex.graphLayout.layout {
 			_distances = null;
 			_gradient = null;
 			_previousGradient = null;
-			refreshInit();
-			
-			_layoutChanged = true;
-			
 		}
 		
+		/**
+		 * @inheritDoc
+		 * */
 		override public function refreshInit():void {
 			// reset all local variables
 			_gradientNorm2 = 0;
@@ -176,15 +177,15 @@ package org.un.flex.graphLayout.layout {
 		/*********************************************
 		* Layout Methods - Computations
 		* ********************************************/
-		/**
-		 */
+		
+		/* Terminating condition for the layout */
 		override protected function isStable():Boolean {
 			return (_stepWidth < 0.00001)
 			    || (_energy < 0.01)
 					|| (Math.abs((_energy - _lastEnergy) / _energy) < 0.0001 );
 		}
-		/**
-		 */
+		
+		/* Calculation step of the layout */
 		override protected function calculateLayout():void {
 			var allVisVNodes:Dictionary = _vgraph.visibleVNodes;
 			var vn:IVisualNode;
@@ -311,12 +312,20 @@ package org.un.flex.graphLayout.layout {
 			for (k = 0; k < _nodeIndex.length; k++) {
  				// Use Projector to map Complex Points to 2D display
 				newNodePos = _projector.project(_nodePositions[k] as IPoint, _vgraph as DisplayObject);
+				// DEBUG - CHECK:
+				if (isNaN(newNodePos.x)) {
+					trace ("HyperbolicLayout: Projected position for " + (_nodeIndex[k] as VisualNode).node.stringid + " = " + newNodePos);
+					trace ("  Node Position in Model = " + (_nodePositions[k] as IPoint).toString());
+				}
 				(_nodeIndex[k] as VisualNode).x = newNodePos.x;
 				(_nodeIndex[k] as VisualNode).y = newNodePos.y;
+				
  				// Scaling of visual components at points
 				newNodeScale = _projector.getScale(_nodePositions[k] as IPoint);
+				
 				(_nodeIndex[k] as VisualNode).view.scaleX = newNodeScale.x;
 				(_nodeIndex[k] as VisualNode).view.scaleY = newNodeScale.y;
+				
 				// Commit the position changes if UI needs to be updated
 				if (updateNodeUI) (_nodeIndex[k] as VisualNode).commit();
 			}
@@ -339,11 +348,15 @@ package org.un.flex.graphLayout.layout {
 					_nodePositions[k] = temp;
 					/*
 					trace( (_nodeIndex[k] as VisualNode).node.stringid 
-					    + ": Randomly setting node position to " + _nodePositions[k] );
+					    + ": Randomly set position to " + _nodePositions[k] );
 					*/
 				} else {
 					_nodePositions[k] = _projector.unProject(oldNodePos, _vgraph as DisplayObject, true);
 				}
+				// DEBUG - CHECK:
+				if (isNaN((_nodePositions[k] as ComplexNumber).real)) 
+					trace("HyperbolicLayout: " + (_nodeIndex[k] as VisualNode).node.stringid 
+					    + ": Node position set to " + _nodePositions[k] );
 			}
 		}
 		
@@ -353,9 +366,9 @@ package org.un.flex.graphLayout.layout {
 			var j:int;
 			for (i=0; i < _nodeIndex.length; i++)
 				for (j=i+1; j < _nodeIndex.length; j++)
-					energy = energy + getWeight((_nodeIndex[j] as IVisualNode).node,
-					                            (_nodeIndex[i] as IVisualNode).node,
-																			getDistance(i, j));
+					energy += getWeight((_nodeIndex[j] as IVisualNode).node,
+															(_nodeIndex[i] as IVisualNode).node,
+															getDistance(i, j));
 			return energy;
 		}
 		
@@ -367,7 +380,9 @@ package org.un.flex.graphLayout.layout {
 				for (j=i+1; j < _nodeIndex.length; j++) {
 				  _distances[i][j] = _model.distP((position[i] as IPoint), 
 																					(position[j] as IPoint));
-					//trace("Distance for (" + i + ", " + j + ") is = " + _distances[i][j]);
+					//DEBUG - CHECK:
+					if ((_distances[i][j] <= 1e-10) || isNaN(_distances[i][j]))
+						trace("HyperbolicLayout: Distance for (" + i + ", " + j + ") is = " + _distances[i][j]);
 				}
 		}
 		
@@ -386,17 +401,28 @@ package org.un.flex.graphLayout.layout {
 			var k:int;
 			for (k = 0; k < _nodeIndex.length; k++) {
 				(gradient[k] as ComplexVector).scale(0);
-				for (i = 0; i < _nodeIndex.length; i++) {
-					if (k == i) continue;
-					w = getWeightDerivative((_nodeIndex[k] as IVisualNode).node,
-					                        (_nodeIndex[i] as IVisualNode).node,
-																	getDistance(i, k));
-					if (Math.abs(w) > 0.001) {
-						_model.distanceGradientV(position[k] as IPoint,
-																		 position[i] as IPoint, t_v1);
-						(t_v1.dir as ComplexNumber).multiplyF(w);
-						((gradient[k] as ComplexVector).dir as ComplexNumber).addC(t_v1.dir as ComplexNumber);
-					}
+				for (i = 0; i < _nodeIndex.length; i++)
+					if (k != i) {
+						w = getWeightDerivative((_nodeIndex[k] as IVisualNode).node,
+																		(_nodeIndex[i] as IVisualNode).node,
+																		getDistance(k, i));
+						if (Math.abs(w) > 0.001) {
+							_model.distanceGradientV(position[k] as IPoint,
+																			 position[i] as IPoint, t_v2);
+							
+							//DEBUG - CHECK:
+							if (isNaN((t_v2.dir as ComplexNumber).real)) {
+								trace( "Hyperbolic2DLayouter: [k = " + k + "] [i = " + i + "] Gradient vector between nodes " 
+									 + (_nodeIndex[k] as VisualNode).node.stringid + " & "
+									 + (_nodeIndex[i] as VisualNode).node.stringid 
+									 + " is: " + t_v2 );
+								trace( "  Positions are " 
+									 + (position[k] as IPoint) + " & "
+									 + (position[i] as IPoint));
+							}
+							(t_v2.dir as ComplexNumber).multiplyF(w);
+							((gradient[k] as ComplexVector).dir as ComplexNumber).addC(t_v2.dir as ComplexNumber);
+						}
 				}
 				nodeNorm2 = _model.length2(gradient[k] as IVector);
 				norm2 += nodeNorm2;
@@ -504,6 +530,9 @@ package org.un.flex.graphLayout.layout {
 		/*********************************************
 		* Mouse Event Handling Methods
 		* ********************************************/
+		/**
+		 * @inheritDoc
+		 */
 		override public function dropEvent(event:MouseEvent, vn:IVisualNode):void {
 			/* Activated in three cases:
 			 * 1: Node Drag/Drop: No action - disabled in VisualGraph
@@ -517,11 +546,18 @@ package org.un.flex.graphLayout.layout {
 			startAnimation();
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override public function bgDragEvent(event:MouseEvent):void {
 			//trace("Canvas started DRAG");
 			_dragStartX = event.localX;
 			_dragStartY = event.localY;
 		}
+		
+		/**
+		 * @inheritDoc
+		 */
 		override public function bgDragContinue(event:MouseEvent):void {
 			//trace("Canvas being DRAGGED...");
 			
@@ -551,6 +587,9 @@ package org.un.flex.graphLayout.layout {
   /************************************************
 	 * Helper Methods - Node Animation, Misc.
 	 ************************************************/
+		/**
+		 * @inheritDoc
+		 */
 		public function get projector():IProjector {
 			return _projector;
 		}
@@ -618,6 +657,7 @@ package org.un.flex.graphLayout.layout {
 		private function animTimerFired(event:TimerEvent = null):void {
 			//trace("Timer fired!");
 			animate();
+			//event.updateAfterEvent();
 		}
 	}
 }

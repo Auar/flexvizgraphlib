@@ -428,14 +428,19 @@
 					infoText.text = vgraph.currentRootVNode.data.@name;
 				}
 				
-				linkLength.value = layouter.linkLength;
-				
-				if(layouter is HierarchicalLayouter) {
-					bslider.value = (layouter as HierarchicalLayouter).breadth;
-				
+				if(layouter != null) {
+					linkLength.value = layouter.linkLength;
+					if(layouter is HierarchicalLayouter) {
+						bslider.value = (layouter as HierarchicalLayouter).breadth;
+					}
+					if(layouter is CircularLayouter) {
+						phidial.value = (layouter as CircularLayouter).phi;
+					}
 				}
 				
-				novisnodeslabel.text = vgraph.noVisibleVNodes.toString();
+				if(vgraph != null) {
+					novisnodeslabel.text = vgraph.noVisibleVNodes.toString();
+				}
 			}
 			
 			/* we visually indicate the available/unavailable status of the back/forward buttons
@@ -578,7 +583,7 @@
 
 			private function changeMaxDistance():void {
 				vgraph.maxVisibleDistance = maxDistanceFromCurrent.value;
-				vgraph.draw();
+				//vgraph.draw();
 			}
 
 			private function changeShowHistory():void {

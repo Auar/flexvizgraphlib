@@ -120,13 +120,12 @@ package org.un.flex.graphLayout.layout {
 	 
     public function ISOMLayouter(vg:IVisualGraph = null):void {
 			super(vg);
-			initialize();
+			resetAll();
     }
     
     override public function resetAll():void {
 			super.resetAll();
 			initialize();
-			_layoutChanged = true;
 		}
 		
 		// OPTIONAL: Create a UI for setting parameters

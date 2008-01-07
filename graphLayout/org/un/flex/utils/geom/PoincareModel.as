@@ -46,7 +46,7 @@ package org.un.flex.utils.geom {
 	public class PoincareModel extends BaseModel {
 		
 		// TEMPORARY VARIABLES - to speed-up computations
-		protected var t_v1:ComplexVector = new ComplexVector();
+		private var t_v1:ComplexVector = new ComplexVector();
 		
 		/**
 		 * Constructor for the Poincare Model
@@ -266,9 +266,17 @@ package org.un.flex.utils.geom {
 			
 			t_isom1.applyToPoint(t_z1);
 			
+			var length:Number = 2 * (t_z1 as ComplexNumber).norm();
+			/*
 			var length:Number = 2 * Math.sqrt(
 					(t_z1 as ComplexNumber).real * (t_z1 as ComplexNumber).real  
 			 +  (t_z1 as ComplexNumber).imag * (t_z1 as ComplexNumber).imag );
+			*/
+			// DEBUG - CHECK:
+			if (length == 0.0) {
+				trace("PoincareModel: Gradient Vector not defined...");
+				trace("  Positions are " + base + " & " + z);
+			}
 			
 			(t_v1.base as ComplexNumber).real = 0;
 			(t_v1.base as ComplexNumber).imag = 0;
