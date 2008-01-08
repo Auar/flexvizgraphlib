@@ -24,8 +24,11 @@
  */
 package org.un.flex.graphLayout.visual
 {
-	import org.un.flex.graphLayout.data.INode;
+	import flash.events.IEventDispatcher;
+	import flash.events.Event;
 	import mx.core.UIComponent;
+	
+	import org.un.flex.graphLayout.data.INode;
 	
 	/**
 	 * The VisualNode to be used in the Graph.
@@ -65,6 +68,16 @@ package org.un.flex.graphLayout.visual
 		 * this will be applied during the commit() method
 		 * and will be reversed during refresh() */
 		private var _centered:Boolean;
+		
+		/*
+		 * A layouter can optionally set an orientation angle 
+		 * paramter in the node. Right now we hardcode this as
+		 * one single parameter. If we need more in the future,
+		 * we can replace this by a hash with multiple keys.
+		 * This parameter may be accessed by the nodeRenderer for instance.
+		 * The value is in degrees.
+		 */
+		private var _orientAngle:Number = 0;
 		
 		
 		/**
@@ -280,6 +293,20 @@ package org.un.flex.graphLayout.visual
 	
 		/**
 		 * @inheritDoc
+		 * */
+		public function get orientAngle():Number {
+			return _orientAngle;
+		}
+	
+		/**
+		 * @private
+		 * */
+		public function set orientAngle(oa:Number):void {
+			_orientAngle = oa;
+		}
+	
+		/**
+		 * @inheritDoc
 		 * */			
 		public function commit():void {
 			/* if we have the centered orientation we apply
@@ -291,6 +318,18 @@ package org.un.flex.graphLayout.visual
 				this.viewX = _x;
 				this.viewY = _y;
 			}
+		
+			/* here would be the logical place to initiate
+			 * the rotation of the nodes the best way to do this
+			 * in order to keep the interface clean is to add
+			 * an event listener in the IconRenderer and just send
+			 * the event here, this means of course that the IconRenderer
+			 * must be also an IEventDispatcher */
+			if(this.data is IEventDispatcher) {
+				(this.data as IEventDispatcher).dispatchEvent(new Event("NodeUpdated"));
+			}
+			
+		
 		}
 		
 

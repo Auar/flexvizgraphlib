@@ -148,6 +148,21 @@ package org.un.flex.graphLayout.visual {
 		function get moveable():Boolean;
 
 		/**
+		 * A layouter can optionally set an orientation angle 
+		 * paramter in the node. Right now we hardcode this as
+		 * one single parameter. If we need more in the future,
+		 * we can replace this by a hash with multiple keys.
+		 * This parameter may be accessed by the nodeRenderer for instance.
+		 * The value is in degrees.
+		 * */
+		function get orientAngle():Number;
+
+		/**
+		 * @private
+		 * */
+		function set orientAngle(oa:Number):void;
+
+		/**
 		 * This method updates the internal coordinates of the
 		 * visual node with the current coordinates of the visual node's
 		 * view (i.e. it's current real coordinates).
