@@ -548,6 +548,10 @@ package org.un.flex.graphLayout.layout {
 				
 				//trace("CSL: current radius:"+r);
 				_currentDrawing.setPolarCoordinates(cn, r, theta1+(nfrac*dtheta)+(cfrac*dtheta2));
+				
+				/* set the orientation in the visual node */
+				cn.vnode.orientAngle = theta1+(nfrac*dtheta)+(cfrac*dtheta2);
+				
 				nfrac += cfrac;	
 			}
 		}

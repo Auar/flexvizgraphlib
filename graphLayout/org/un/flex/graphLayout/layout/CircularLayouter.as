@@ -209,13 +209,16 @@ package org.un.flex.graphLayout.layout {
 				
 				/* position only visible nodes */
 				if(vn.isVisible) {
-        	phi = _phi + (360 * i) / nn;
+        			phi = _phi + (360 * i) / nn;
 					phi = Geometry.normaliseAngleDeg(phi);
 					
 					/* set the values */
 					ni = vn.node;
 					_currentDrawing.setPolarCoordinates(ni, _radius, phi);
 					//trace("CircularLayouter: node set to (r, phi) = " + _radius + ", " + phi);
+				
+					/* set the orientation into the visual node */
+					vn.orientAngle = phi;
 				}
 				i += 1;
 			}
