@@ -4,6 +4,7 @@ package org.un.birdeye.visualize.renderers {
 	
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.events.EventDispatcher;
 	
 	import mx.containers.VBox;
 	import mx.controls.Image;
@@ -13,7 +14,7 @@ package org.un.birdeye.visualize.renderers {
 	import mx.events.FlexEvent;
 	
 	import org.un.birdeye.GlobalParams;
-	import org.un.birdeye.images.EmbeddedIcons;
+	import org.un.flex.graphLayout.visual.IVisualNode;
 	
 	/**
 	 * This _image displays the graph nodes as
@@ -28,9 +29,19 @@ package org.un.birdeye.visualize.renderers {
 		public function PrimitiveIconRenderer() {
 			super();
 			this.addEventListener(FlexEvent.CREATION_COMPLETE,initComponent);
-			
+			this.addEventListener("NodeUpdated",rotateIcon);
 		}
-			
+		
+		/**
+		 * This method rotates the current icon according to the
+		 * orientation value in the associated visualnode (if present).
+		 * It may need to be triggered on any chance of that value...
+		 * */
+		public function rotateIcon():void {
+			if(this.data is IVisualNode) {
+				this.rotation = (this.data as IVisualNode).orientAngle;
+			}
+		}
 		
 		private function getDetails(e:Event):void {
 			// trace("Show Details");
