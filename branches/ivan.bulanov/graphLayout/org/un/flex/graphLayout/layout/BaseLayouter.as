@@ -113,13 +113,14 @@ package org.un.flex.graphLayout.layout {
 			}
 			
 			/* this is required to smooth the animation */
+			// BUG: _vgraph may be null
 			_vgraph.addEventListener("forceRedrawEvent",forceRedraw);
 		}
 
 		/**
 		 * @inheritDoc
 		 * */
-		public function resetAll():void {			
+		public function resetAll():void {
 			_layoutChanged = true;
 		}
 
@@ -201,8 +202,7 @@ package org.un.flex.graphLayout.layout {
 			 * correct value. */
 			return false;
 		}
-
-
+		
 		/**
 		 * This is a NOP in the BaseLayouter class and always returns true.
 		 * 
@@ -227,6 +227,16 @@ package org.un.flex.graphLayout.layout {
 		 * */
 		public function dragEvent(event:MouseEvent, vn:IVisualNode):void {
 			/* NOP */
+			// trace("Node: " + vn.node.stringid + " started DRAG");
+		}
+		
+		/**
+		 * This is a NOP for this layouter.
+		 * @inheritDoc
+		 * */
+		public function dragContinue(event:MouseEvent, vn:IVisualNode):void {
+			/* NOP */
+			// trace("Node: " + vn.node.stringid + " being DRAGGED...");
 		}
 		
 		/**
@@ -235,6 +245,34 @@ package org.un.flex.graphLayout.layout {
 		 * */
 		public function dropEvent(event:MouseEvent, vn:IVisualNode):void {
 			/* NOP */
+			// trace("Node: " + vn.node.stringid + " DROPPED");
+		}
+		
+		/**
+		 * This is a NOP for this layouter.
+		 * @inheritDoc
+		 * */
+		public function bgDragEvent(event:MouseEvent):void {
+			/* NOP */
+			//trace("Canvas started DRAG");
+		}
+
+		/**
+		 * This is a NOP for this layouter.
+		 * @inheritDoc
+		 * */
+		public function bgDragContinue(event:MouseEvent):void {
+			/* NOP */
+			//trace("Canvas being DRAGGED...");
+		}
+		
+		/**
+		 * This is a NOP for this layouter.
+		 * @inheritDoc
+		 * */
+		public function bgDropEvent(event:MouseEvent):void {
+			/* NOP */
+			//trace("Canvas DROPPED");
 		}
 		
 		/**

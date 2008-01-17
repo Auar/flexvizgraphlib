@@ -33,6 +33,7 @@ package org.un.flex.graphLayout.layout {
 	import org.un.flex.graphLayout.data.INode;
 	import org.un.flex.graphLayout.visual.IVisualEdge;
 	import org.un.flex.graphLayout.data.IGTree;
+	import org.un.flex.graphLayout.visual.VisualGraph;
 	import org.un.flex.utils.Geometry;
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
@@ -70,16 +71,20 @@ package org.un.flex.graphLayout.layout {
 			animationType = ANIM_RADIAL; // inherited
 			_currentDrawing = null;
 			
+			/* Reset the origin */
+			(vg as VisualGraph).origin.x = 0;
+			(vg as VisualGraph).origin.y = 0;
+			
 			initDrawing();
 		}
 
 		/**
 		 * @inheritDoc
 		 * */
-		override public function resetAll():void {			
-			
+		override public function resetAll():void {
 			super.resetAll();
 			initDrawing();
+			_layoutChanged = true;			
 		}
 
 		/**
@@ -126,6 +131,7 @@ package org.un.flex.graphLayout.layout {
 			/* start the animation, does also the commit */
 			startAnimation();		
 		
+			//_vgraph.refresh();
 			_layoutChanged = true;
 			return true;
 		}
@@ -203,14 +209,16 @@ package org.un.flex.graphLayout.layout {
 				
 				/* position only visible nodes */
 				if(vn.isVisible) {
-        	//phi = _phi + (2.0 * Math.PI * i) / nn;
-        	phi = _phi + (360 * i) / nn;
+        			phi = _phi + (360 * i) / nn;
 					phi = Geometry.normaliseAngleDeg(phi);
 					
 					/* set the values */
 					ni = vn.node;
 					_currentDrawing.setPolarCoordinates(ni, _radius, phi);
 					//trace("CircularLayouter: node set to (r, phi) = " + _radius + ", " + phi);
+				
+					/* set the orientation into the visual node */
+					vn.orientAngle = phi;
 				}
 				i += 1;
 			}
@@ -224,7 +232,7 @@ package org.un.flex.graphLayout.layout {
 		 * Do all the calculations required for autoFit
 		 * */
 		private function calculateAutoFit():void {
-			_radius = (Math.min(_vgraph.width,_vgraph.height) - DEFAULT_MARGIN) / 2;
+			_radius = Math.min(_vgraph.width,_vgraph.height) / 2.0 - DEFAULT_MARGIN;
 		}
 	}
 }
