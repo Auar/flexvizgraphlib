@@ -78,7 +78,7 @@ package org.un.flex.graphLayout.layout {
 		 * This is a maximum (neutral) length of a hypothetical spring.
 		 * For a spring force expression Del_F = k (x - x_0), this corresponds to x_0
 		 */
-		private const _MAX_EDGE_LENGTH:int = 100;
+		private const _MAX_NODE_SEPARATION:int = 500;
 		
 		/**
 		 * @internal
@@ -96,31 +96,28 @@ package org.un.flex.graphLayout.layout {
 		
 		/**
 		 * @internal
-		 * The unit charge on the nodes. The total charge is computed
-		 * by taking typical dimensions of the node (width + height) as 
-		 * a proxy; i.e., larger nodes have higher charge
-		 */
-		private const _UNIT_CHARGE_CONSTANT:Number = 0.07;
-		
-		/**
-		 * @internal
 		 * The rigidity constant of a spring. The actual _rigidity could be 
 		 * a function and perhaps use this as a coefficient (LATER)
 		 */
-		private const _RIGIDITY_CONSTANT:Number = 0.05;
+		private const _RIGIDITY_CONSTANT:Number = 0.0007;
 		
 		/**
 		 * @internal
-		 * The repulsion constant of the (electrical) force field. As with
-		 * the rigidity constant, this may be dynamically changed (LATER)
+		 * The max repulsion constant of the (electrical) force field.
 		 */
-		private const _REPULSION_CONSTANT:Number = 0.05;
+		private const _MAX_REPULSION:Number = 100;
 
+		/**
+		 * @internal
+		 * The min repulsion constant of the (electrical) force field.
+		 */
+		private const _MIN_REPULSION:Number = 1;
+		
 		/**
 		 * @internal
 		 * The maximum distance in pixels, that a node is allowed
 		 * to move during one layout cycle */
-		private const _MOVEPIXELLIMIT:int = 30;
+		private const _MOVEPIXELLIMIT:int = 100;
 		
 		/**
 		 * @internal
@@ -144,44 +141,54 @@ package org.un.flex.graphLayout.layout {
 		 * 1.0 (no damping) */
 		private var _damper:Number = 1.0;
 		
-		/* max motion keeps track of the fastest moving nodes
-		 * to see if the graph stabilises */
-		private var _maxMotion:Number = 0.0;
-		private var _maxMotionTmp:Number = 0.0;
-		private var _lastMaxMotion:Number = 0.0;
-		
-		/* new variables for debugging */
-		private var _maxSpringMotion:Number = 0.0;
-		private var _maxRepulsiveMotion:Number = 0.0;
-		
-		/* this is used during motion limiting */
-		private var _motionRatio:Number = 0.0;
-		
 		/* cutoff limit for max motion */
-		private var _motionLimit:Number = 0.005;
+		private var _motionLimit:Number;
 		
 		/* a constant with a similar effect as damping
 		 * low means things go slow, too high will cause oscillation */
-		private var _rigidity:Number = _RIGIDITY_CONSTANT;
-		private var _newRigidity:Number = _RIGIDITY_CONSTANT;
+		private var _rigidity:Number;
+		private var _newRigidity:Number;
 		
 		/* this is a global adjustement factor for the repulsion
-		 * it's access MAY be controlled by the linkLength access
-		 * methods. For now, we control _springLength instead */
+		 * it's access is controlled by the linkLength access
+		 * methods. */
 		private var _repulsionFactor:Number;
-		private var _prevRepulsionFactor:Number;
 
-		/* this is a global factor that determines the 
-		 * neutral length of the springs/rubberbands
-		 * */
-		private var _springLength:Number = _MIN_NODE_SEPARATION;
+		/*********************************************
+		* Variables
+		* ********************************************/
+		
+		/* max motion keeps track of the fastest moving nodes
+		 * to see if the graph stabilises */
+		private var _maxMotion:Number = 0.0;
+		private var _lastMaxMotion:Number = 0.0;
+		
+		/* this is used during motion limiting */
+		private var _motionRatio:Number;
 		
 		/* required for this specific 
 		 * autofit implementation */
-		private var _prevCoverage:Number = 0;
-
+		private var _coverage:Number;
+		
 		/*********************************************
-		* Members
+		* Temporary Variables - For faster computation
+		* ********************************************/
+		
+		/* for debugging */
+		private var t_maxSpringMotion:Number = 0.0;
+		private var t_maxRepulsiveMotion:Number = 0.0;
+		
+		/* for iterating/traversing caches */
+		private var t_edge:IEdge;
+		private var t_ve:IVisualEdge;
+		private var t_vn1:IVisualNode;
+		private var t_vn2:IVisualNode;
+		
+		/* for calculations */
+		private var t_dx:Number, t_dy:Number, t_vx:Number, t_vy:Number;
+		private var t_distanceMoved:Number;
+		/*********************************************
+		* Members - Misc
 		* ********************************************/
 		
 		/* general setting whether to activate damping or not */
@@ -190,12 +197,6 @@ package org.un.flex.graphLayout.layout {
 		/* current viewing bounds of the graph */
 		private var _viewbounds:Rectangle;
 
-		/* each node has it's own repulsion value, which is
-		 * kept in this map. The values are calculated on the fly
-		 * using updateRepulsion()
-		 * keys are VisualNodes, values are Numbers */
-		private var _repulsionMap:Dictionary;
-		
 		/* for each node we keep a 'delta' value for its
 		 * coordinates. */
 		private var _deltaPositions:Dictionary;
@@ -205,13 +206,13 @@ package org.un.flex.graphLayout.layout {
 		 * */
 		public function ForceDirectedLayouter(vg:IVisualGraph = null):void {
 			super(vg);
+			resetAll();
 			
-			_repulsionMap = new Dictionary;
-			_deltaPositions = new Dictionary;
-		
-			_repulsionFactor = _UNIT_CHARGE_CONSTANT;
-			_prevRepulsionFactor = 0.0;
-			//trace("Spring Motion\tRepulsive Motion\tMax Motion\tMotioRatio\tDamper");
+			// Initialize Parameters
+			_motionLimit = 0.01;
+			_repulsionFactor = _MAX_REPULSION / 10;
+			_rigidity = _RIGIDITY_CONSTANT;
+			_newRigidity = _RIGIDITY_CONSTANT;
 		}
 
 		/**
@@ -221,28 +222,8 @@ package org.un.flex.graphLayout.layout {
 		 * as it constantly updates the layout (using the timer).
 		 * */
 		override public function resetAll():void {
-			super.resetAll();
-			
-			/* already reset in refreshInit() called in super.resetAll() */
-			//_damper = 1.0;
-			
-			_maxMotion = 0.0;
-			_maxMotionTmp = 0.0;
-			_lastMaxMotion = 0.0;
-		
-			_motionRatio = 0.0;
-			_dampingActive = true;
-			_motionLimit = 0.01;
-			
-			_rigidity = _RIGIDITY_CONSTANT;
-			_newRigidity = _RIGIDITY_CONSTANT;
-
+			super.resetAll(); // calls refreshInit()
 			_deltaPositions = new Dictionary;
-			_repulsionMap = new Dictionary;
-			_repulsionFactor = _UNIT_CHARGE_CONSTANT;
-			_prevRepulsionFactor = 0.0;
-			_prevCoverage = 0;
-			_layoutChanged = true;
 		}
 
 		/**
@@ -251,6 +232,12 @@ package org.un.flex.graphLayout.layout {
 		 * */
 		override public function refreshInit():void {
 			resetDamperValue();
+			
+			_maxMotion = 0.0;
+			_lastMaxMotion = 0.0;
+			_motionRatio = 0.0;
+			
+			_coverage = 0;
 		}
 		
 		/**
@@ -258,23 +245,22 @@ package org.un.flex.graphLayout.layout {
 		 * */
 		override public function set linkLength(f:Number):void {
 			/*
-			* Two separate intents govern the value of springlength
+			* Two separate intents govern the value of repulsion factor
 			*  1. Auto-fit - expand/ contract the graph
 			*  2. Setting linkLength to a given value
-			* In force-directed layout, both should not control the spring length simultaneously
+			* In force-directed layout, both should not control this simultaneously
 			*/
 			if (!_autoFitEnabled) {
-				_springLength = Math.max(_MIN_NODE_SEPARATION, Math.min(f, _MAX_EDGE_LENGTH));
-				//trace("Set springLength:" + _springLength);
+				_repulsionFactor = Math.max(_MIN_REPULSION, Math.min(f, _MAX_REPULSION));
+				refreshInit();
 			}
-			layoutIteration();
 		}
 		
 		/**
 		 * @private
 		 * */
 		override public function get linkLength():Number {
-			return _springLength;
+			return _repulsionFactor;
 		}
 
 
@@ -322,47 +308,35 @@ package org.un.flex.graphLayout.layout {
 			_damper = 1.0;
 		}
 		
-		/**
-		 * Stabilises the graph gently by setting the damper
-		 * to a low value.
-		 * */
-		private function stopMotion():void {
-			_dampingActive = true;
-			if(_damper > 0.3) {
-				_damper = 0.3;
-			} else {
-				/* this stops all movement, until the damper is reset */
-				_damper = 0.0;
-			}
-		}
-		
-		/**
-		 * @internal
-		 * experimental code with the motionThreshold
-		 * may be eliminated.
-		 * */
-		private function set motionThreshold(t:Number):void {
-			_motionLimit = t;
-			_layoutChanged = true;
-		}
-
-		/**
-		 * @private
-		 * similarly experimental, do not expose it right now.
-		 * */
-		private function get motionThreshold():Number {
-			return _motionLimit;
-		}
-		
 		/*********************************************
 		* Layout Methods - Computational Methods
 		* ********************************************/
 		
 		/* Calculation step of the layout */
 		override protected function calculateLayout():void {
-			/* call the relax method to pull on the edges */
-			calculateForces();
 			
+			/* Calculate forces and update node positions, which
+			 * calls the following four methods to work on the layout:
+			 * */
+			for(var i:int=0; i < _RELAXPASSES; ++i) {
+			 	//1. Apply spring force, which pulls on the edges.
+				applySpringForce();
+			 
+				//2. Apply repulsion force, which moves every node away from each other.
+				applyRepulsion();
+				
+			  //3. Actually move the nodes respecting some constraints.
+				moveNodes();
+			  
+				//4. Adjust node drag settings - not to be confused with UI Drag-Drop
+				adjustDrag();
+			}
+			
+			/* 5. update rigidity, it may have been set new */
+			if(_rigidity != _newRigidity) {
+				_rigidity = _newRigidity;
+			}
+			/* 6. update repulsion and scroll, if autoFit is enabled */
 			if(_autoFitEnabled) {
 				adjustRepulsion();
 				scrollToFit();
@@ -379,134 +353,54 @@ package org.un.flex.graphLayout.layout {
 		* ********************************************/
 		/**
 		 * @internal
-		 * This is another wrapper function around several
-		 * layout calculation steps.
-		 * 1. It updates the repulsion value of each node.
-		 * 2. It calls relaxEdges which pulls on the edges.
-		 * 3. It works on each node to separate them by their size and taking the repulsion into account
-		 * 4. It actually starts moving the nodes (but keeping some constraints).
-		 * */
-		private function calculateForces():void {
-			
-			var visVNodes:Dictionary;
-			var vn:IVisualNode;
-			var node:INode;
-			
-			/* work on all currently visible VNodes */
-			visVNodes = _vgraph.visibleVNodes;
-			for each(vn in visVNodes) {
-				//trace("relax for each node: updating repulsion for: "+node.id);
-				
-				if(!vn.isVisible) {
-					throw Error("Received invisible node while working on visible vnodes only");
-				}
-				/* first update each nodes repulsion value */
-				updateRepulsion(vn);
-			}
-			
-			/* now call the three methods to work on the layout
-			 * so many times, as required and preset in the constant value */
-			for(var i:int=0; i < _RELAXPASSES; ++i) {
-				//trace("relaxEdges,applyRepulsion,moveNodes, pass: "+i);
-				applySpringForce();
-				applyRepulsion();		
-				moveNodes();
-				adjustDrag();
-			}
-			
-			/* update rigidity, it may have been set new */
-			if(_rigidity != _newRigidity) {
-				_rigidity = _newRigidity;
-			}
-		}
-
-		/**
-		 * @internal
 		 * This method tenses up the edges and pulls the nodes
 		 * closer. In order to optimize, it should only work on
 		 * "visible" edges, i.e. edges for which both nodes
 		 * are visible.
 		 */
 		private function applySpringForce():void {
-			/* we need IEdges first */
-			var edge:IEdge;
-			var visEdges:Dictionary = _vgraph.visibleEdges;
+			t_maxSpringMotion = 0.0;
 			
-			_maxSpringMotion = 0.0;
-			
-			for each(edge in visEdges) {
+			/* we need IEdges first */			
+			for each(t_edge in _vgraph.visibleEdges) {
 				/* now work on the edge */
-				applySpringOnEdge(edge);
-			}
-		}
-		
-		/**
-		 * @internal
-		 * This methods works on each edge and tries to pull it
-		 * together. It depends on the current edge length and
-		 * the general rigidity of edges.
-		 * @param e The edge which should be pulled together.
-		 * */
-		private function applySpringOnEdge(e:IEdge):void {
-			
-			var vedge:IVisualEdge = e.vedge;
-			var vnode1:IVisualNode = e.node1.vnode;
-			var vnode2:IVisualNode = e.node2.vnode;
+				t_ve = t_edge.vedge;
+				t_vn1 = t_edge.node1.vnode;
+				t_vn2 = t_edge.node2.vnode;
 
-			/* all nodes attached to the edge should be visible, 
-			 * so we assert here that it is true */
-			if(!vnode1.isVisible || !vnode2.isVisible) {
-				throw Error("At least one node of the edge is not visible but it should be!");
+				/* all nodes attached to the edge should be visible, 
+				 * so we assert here that it is true */
+				if(!t_vn1.isVisible || !t_vn2.isVisible) {
+					throw Error("At least one node of the edge is not visible but it should be!");
+				}
+				
+				t_vx = t_vn2.x - t_vn1.x;
+				t_vy = t_vn2.y - t_vn1.y;
+				
+				/* calculate the actual length of the edge */
+				var edgelength:Number = Math.sqrt((t_vx * t_vx)+(t_vy * t_vy));
+				
+				/* apply the rigidity to make the edge tighter */
+				t_dx = t_vx * _rigidity * edgelength;
+				t_dy = t_vy * _rigidity * edgelength;
+				
+				/* update the motion value */
+				t_distanceMoved = Math.sqrt(t_dx*t_dx + t_dy*t_dy);
+				t_maxSpringMotion = Math.max(t_distanceMoved, t_maxSpringMotion);
+				
+				if(_deltaPositions[t_vn1] == null) {
+					_deltaPositions[t_vn1] = new Point(0,0);
+				}
+				if(_deltaPositions[t_vn2] == null) {
+					_deltaPositions[t_vn2] = new Point(0,0);
+				}
+				
+				/* apply the position offset, add for vnode 1 */
+				(_deltaPositions[t_vn1] as Point).offset(t_dx, t_dy);
+				
+				/* apply the position offset, subtract for vnode 2*/
+				(_deltaPositions[t_vn2] as Point).offset(-t_dx, -t_dy);
 			}
-			
-			/* beware, that this 'x' is not the x from the
-			 * the UIComponent (view) but the attribute
-			 * from the VisualNode */			
-			var vx:Number = vnode2.x - vnode1.x; 
-			var vy:Number = vnode2.y - vnode1.y;
-			
-			/* calculate the actual length of the edge */
-			var edgelength:Number = Math.sqrt((vx * vx)+(vy * vy));
-			
-			/* calculate the average node side length of the two nodes */
-			var linkLength:Number = Math.max((vnode1.view.width + vnode1.view.height + vnode2.view.width + vnode2.view.height) / 2.0,
-																       (MINIMUM_NODE_HEIGHT + MINIMUM_NODE_WIDTH));
-			//trace("edgelength:" + edgelength + "  linklength:" + linkLength);
-			
-			//var vx1:Number = vnode1.viewX - vnode2.viewX;
-			//var vy1:Number = vnode1.viewY - vnode2.viewY;
-			//var linkLength:Number = Math.sqrt(vx1*vx1 + vy1*vy1);
-			var delta:Number = Math.max(0,edgelength - _springLength);
-			
-			/* apply the rigidity to make the edge tighter */
-			var dx:Number = vx * _rigidity * delta / linkLength;
-			var dy:Number = vy * _rigidity * delta / linkLength;
-			
-			//trace("Spring Force > dx:"+dx+" dy:"+dy+" edgelength:"+edgelength+" linklen:"+linkLength);
-			/* update the motion value */
-			var distanceMoved:Number = Math.sqrt(dx*dx + dy*dy);
-			_maxSpringMotion = Math.max(distanceMoved, _maxSpringMotion);
-			
-			if(_deltaPositions[vnode1] == null) {
-				_deltaPositions[vnode1] = new Point(0,0);
-			}
-			if(_deltaPositions[vnode2] == null) {
-				_deltaPositions[vnode2] = new Point(0,0);
-			}
-			
-			/* apply the position offset, add for vnode 1 */
-			(_deltaPositions[vnode1] as Point).offset(dx, dy);
-			
-			/* subtract for vnode */
-			(_deltaPositions[vnode2] as Point).offset(-dx, -dy);
-			
-			/*
-			trace("pullEdges2 dx:"+dx+" dy:"+dy+" edgelength:"+edgelength);
-			trace("pullEdges3 node: "+vnode1.id+" has dx:"+vnode1.dx+" dy:"+vnode1.dy+" x:"+vnode1.x+
-					" y:"+vnode1.y+" viewX:"+vnode1.viewX+" viewY:"+vnode1.viewY+" repulsion:"+_repulsionMap[vnode1]);
-			trace("pullEdges3 node: "+vnode2.id+" has dx:"+vnode2.dx+" dy:"+vnode2.dy+" x:"+vnode2.x+
-				" y:"+vnode2.y+" viewX:"+vnode2.viewX+" viewY:"+vnode2.viewY+" repulsion:"+_repulsionMap[vnode2]);
-			*/
 		}
 
 		/**
@@ -516,90 +410,51 @@ package org.un.flex.graphLayout.layout {
 		 * (and consequently avoid their labels from overlapping).
 		 * */
 		private function applyRepulsion():void {
-
-			var allVisVNodes:Dictionary = _vgraph.visibleVNodes;
-			var vn_i:IVisualNode;
-			var vn_j:IVisualNode;
-			
-			_maxRepulsiveMotion = 0.0;
-			
-			for each(vn_i in allVisVNodes) {
-				if(!vn_i.isVisible) {
+			t_maxRepulsiveMotion = 0.0;
+			for each(t_vn1 in _vgraph.visibleVNodes) {
+				if(!t_vn1.isVisible) {
 					throw Error("Received invisible node while working on visible vnodes only");
 				}
-				for each(vn_j in allVisVNodes) {
-					if(!vn_j.isVisible) {
+				for each(t_vn2 in _vgraph.visibleVNodes) {
+					if(!t_vn2.isVisible) {
 						throw Error("Received invisible node while working on visible vnodes only");
 					}
-					if(vn_i != vn_j) {
-						/* call the actual code to apply the repulsion 
-						 * between two nodes */
-						applyNodeRepulsion(vn_i, vn_j);
+					if(t_vn1 != t_vn2) {
+						t_dx = 0;
+						t_dy = 0;
+						t_vx = t_vn1.x - t_vn2.x;
+						t_vy = t_vn1.y - t_vn2.y;
+						var lenSquare:Number = (t_vx * t_vx) + (t_vy * t_vy);
+						var minSquareDistance:Number = _MIN_NODE_SEPARATION * _MIN_NODE_SEPARATION;
+						
+						if (lenSquare < minSquareDistance) {
+							lenSquare = minSquareDistance;
+						}
+						/* Compute the repulsion force */
+						var repforce:Number = _repulsionFactor / lenSquare;
+						
+						t_dx = t_vx * repforce;
+						t_dy = t_vy * repforce;
+						
+						t_distanceMoved = Math.sqrt(t_dx * t_dx + t_dy * t_dy);
+						t_maxRepulsiveMotion = Math.max(t_distanceMoved, t_maxRepulsiveMotion);
+						
+						/* init if not existing */
+						if(_deltaPositions[t_vn1] == null) {
+							_deltaPositions[t_vn1] = new Point(0,0);
+						}
+						if(_deltaPositions[t_vn2] == null) {
+							_deltaPositions[t_vn2] = new Point(0,0);
+						}
+						
+						/* add to vn1 */
+						(_deltaPositions[t_vn1] as Point).offset(t_dx, t_dy);
+						
+						/* subtract from vn2 */
+						(_deltaPositions[t_vn2] as Point).offset(-t_dx, -t_dy);
 					}
 				}
 			}
-		}
-		
-		/**
-		 * @internal
-		 * This method actually applies the repulsion between any
-		 * two visible nodes and adjustes their target coordinates
-		 * accordingly. If two nodes would be on the same spot
-		 * it also modifies their current coordinates to move them
-		 * apart.
-		 * @param vn1 The first node of the node pair to apply the repulsion.
-		 * @param vn2 The second node of the node pair to apply the repulsion.
-		 * */
-		private function applyNodeRepulsion(vn1:IVisualNode, vn2:IVisualNode):void {
-			
-			var dx:Number = 0;
-			var dy:Number = 0;
-			
-			var vx:Number = vn1.x - vn2.x;
-			var vy:Number = vn1.y - vn2.y;
-			var lenSquare:Number = (vx * vx) + (vy * vy);
-			var minSquareDistance:Number = _MIN_NODE_SEPARATION * _MIN_NODE_SEPARATION;
-			
-			if (lenSquare < minSquareDistance) {
-				lenSquare = minSquareDistance;
-			}
-			/* get the repulsion number for each node
-			 * if for some reason we did not have it initialised 
-			 * assert the repulsion map has an entry for each node */
-			if(_repulsionMap[vn1] == null || _repulsionMap[vn2] == null) {
-				throw Error("repulsionMap for a node not initialised");
-			}
-			/* Compute the repulsion force */
-			var repforce:Number = _REPULSION_CONSTANT * _repulsionMap[vn1] * _repulsionMap[vn2] / lenSquare;
-			
-			dx = vx * repforce;
-			dy = vy * repforce;
-						
-			//if(lenSquare < 360000) {
-			///* if the nodes are too far, i.e. more than 600x600
-			 //* we apply a special factor to prevent them from flying away */
-				//dx /= lenSquare;
-				//dy /= lenSquare;
-			//}
-				
-			var distanceMoved:Number = Math.sqrt(dx*dx + dy*dy);
-			_maxRepulsiveMotion = Math.max(distanceMoved, _maxRepulsiveMotion);
-			
-			/* init if not existing */
-			if(_deltaPositions[vn1] == null) {
-				_deltaPositions[vn1] = new Point(0,0);
-			}
-			if(_deltaPositions[vn2] == null) {
-				_deltaPositions[vn2] = new Point(0,0);
-			}
-			
-			/* add to vn1 */
-			(_deltaPositions[vn1] as Point).offset(dx, dy);
-			
-			/* subtract from vn2 */
-			(_deltaPositions[vn2] as Point).offset(-dx, -dy);
-				
-			//trace("applyRepulsion4: dx:"+dx+" dy:"+dy+" v1.dx:"+vn1.dx+" v1.dy:"+vn1.dy+" v2.dx:"+vn2.dx+" v2.dy:"+vn2.dy);
 		}
 		
 		/*********************************************
@@ -613,9 +468,6 @@ package org.un.flex.graphLayout.layout {
 		 * */
 		private function scrollToFit():void {
 			
-			var scrollX:Number;
-			var scrollY:Number;
-			
 			/* the viewbounds describe the current bounding box of
 			 * all nodes */
 			if(_viewbounds) {
@@ -625,16 +477,16 @@ package org.un.flex.graphLayout.layout {
 				   (_viewbounds.bottom > _vgraph.height) ||
 				   (_viewbounds.right > _vgraph.width)) {
 					
-					scrollX = (_vgraph.width / 2) - (_viewbounds.x + (_viewbounds.width / 2));
-					scrollY = (_vgraph.height / 2) - (_viewbounds.y + (_viewbounds.height / 2));
+					t_dx = (_vgraph.width / 2) - (_viewbounds.x + (_viewbounds.width / 2));
+					t_dy = (_vgraph.height / 2) - (_viewbounds.y + (_viewbounds.height / 2));
 					
 				  /* limit to _SCROLL_STEP pixels at a time */
-					scrollX = Math.max(-_SCROLL_STEP, Math.min(scrollX, _SCROLL_STEP))
-					scrollY = Math.max(-_SCROLL_STEP, Math.min(scrollY, _SCROLL_STEP))
+					t_dx = Math.max(-_SCROLL_STEP, Math.min(t_dx, _SCROLL_STEP))
+					t_dy = Math.max(-_SCROLL_STEP, Math.min(t_dy, _SCROLL_STEP))
 					
 					/* now scroll */
-					if((scrollX != 0) || (scrollY != 0)) {
-						_vgraph.scroll(scrollX, scrollY);
+					if((t_dx != 0) || (t_dy != 0)) {
+						_vgraph.scroll(t_dx, t_dy);
 						_layoutChanged = true;
 					}
 				}
@@ -649,102 +501,50 @@ package org.un.flex.graphLayout.layout {
 		 * if the motionLimit things are not used....
 		 * */
 		private function moveNodes():void {
-			
-			var visVNodes:Dictionary = _vgraph.visibleVNodes;
-			var vn:IVisualNode;
-			
 			_lastMaxMotion = _maxMotion; // save last maxMotion
-			_maxMotionTmp = 0.0;
+			_maxMotion = 0.0;
 			
 			/* again work on all visible nodes */
-			for each(vn in visVNodes) {
-				if(!vn.isVisible) {
+			for each(t_vn1 in _vgraph.visibleVNodes) {
+				if(!t_vn1.isVisible) {
 					throw Error("Received invisible node while working on visible vnodes only");
 				}
 				/* work on the target coordinates of the node */
-				modifyNodeTarget(vn);
-			}
-
-			/* maxMotionTmp will be updated during the function 
-			 * calls above, so we can use it here */
-			_maxMotion = _maxMotionTmp;
-		}
-		
-		/**
-		 * @internal
-		 * This moves an indiviual node.
-		 * It takes the destination coordinates
-		 * in each node dx/dy, applies the damper, makes sure the
-		 * node does not travel too far and calculates the distance
-		 * it will move.
-		 * @param vn The node which should be moved.
-		 * */
-		private function modifyNodeTarget(vn:IVisualNode):void {
-			
-			var dx:Number;
-			var dy:Number;
-			var distanceMoved:Number;
-			
-			/* again, the node should be visible, so we break if it
-			 * is not
-			 * XXX these checks are currently quite redundant, but
-			 * at this maturity level of the code, it may not hurt.
-			 * If the code proves to be very stable, some of these may
-			 * be removed */
-			if(!vn.isVisible) {
-				throw Error("Node is not visible but should be!");
-			}
-			
-			/* this should not really happen */
-			if(_deltaPositions[vn] == null) {
-				_deltaPositions[vn] = new Point(0,0);
-			}
-			
-			dx = (_deltaPositions[vn] as Point).x;
-			dy = (_deltaPositions[vn] as Point).y;
-			
-			//trace("modifyNodeTarget1 for "+vn.id+" dx:"+dx+" dy:"+dy+" damper:"+_damper);
+				/* this should not really happen */
+				if(_deltaPositions[t_vn1] == null) {
+					_deltaPositions[t_vn1] = new Point(0,0);
+				}
 				
-			/* apply the damper now to slow things down and stabilise
-			 * the movement. The lower the damper the lower the movement
-			 * 0.0 means no movement 1.0 means no damping */
-			if(_dampingActive 
-			   //&& _damper > 0
-				) {
-				dx = dx * _damper;
-				dy = dy * _damper;
+				t_dx = (_deltaPositions[t_vn1] as Point).x;
+				t_dy = (_deltaPositions[t_vn1] as Point).y;
+				
+				/* apply the damper now to slow things down and stabilise
+				 * the movement. The lower the damper the lower the movement
+				 * 0.0 means no movement 1.0 means no damping */
+				if(_dampingActive) {
+					t_dx = t_dx * _damper;
+					t_dy = t_dy * _damper;
+				}
+					
+				/* reapply the value to the node attribite and half the movement
+				 * again.
+				 * This slows things down more, but don't stop but keep some momentum
+				 * in moving nodes, to avoid a problem if some nodes are
+				 * already very slow */
+				(_deltaPositions[t_vn1] as Point).x = t_dx / 2.0;
+				(_deltaPositions[t_vn1] as Point).y = t_dy / 2.0;
+				
+				/* how far did the node move? */
+				t_distanceMoved = Math.sqrt(t_dx*t_dx * t_dy*t_dy);
+					
+				/* move the node, but only if it is not currently dragged! */
+				if(t_vn1.moveable && t_vn1 != _dragNode) {
+					t_vn1.x = t_vn1.x + Math.max(-_MOVEPIXELLIMIT, Math.min(_MOVEPIXELLIMIT, t_dx));
+					t_vn1.y = t_vn1.y + Math.max(-_MOVEPIXELLIMIT, Math.min(_MOVEPIXELLIMIT, t_dy));
+				}
+				/* update the max motion value */
+				_maxMotion = Math.max(t_distanceMoved, _maxMotion);
 			}
-				
-			/* reapply the value to the node attribite and half the movement
-			 * again.
-			 * This slows things down more, but don't stop but keep some momentum
-			 * in moving nodes, to avoid a problem if some nodes are
-			 * already very slow */
-			_deltaPositions[vn] = new Point(dx / 2.0, dy / 2.0);
-			
-			//trace("modifyNodeTarget2 for "+vn.id+" dx:"+dx+" dy:"+dy+" damper:"+_damper);
-				
-			/* how far did the node move? */
-			distanceMoved = Math.sqrt(dx*dx * dy*dy);
-				
-			//trace("modifyNodeTarget3 for "+vn.id+" distanceMoved:"+distanceMoved);
-				
-			/*
-			trace("modifyNodeTarget4 for "+vn.id+" moveable:"+vn.moveable.toString());
-			if(_dragNode != null) {
-				trace(" dragnode:"+_dragNode.id);
-			}
-			*/
-			
-			/* move the node, but only if it is not currently dragged! */
-			if(vn.moveable && vn != _dragNode) {
-				//trace("modifyNodeTarget5 for "+vn.id+" vnx:"+vn.x+" vny:"+vn.y);
-				vn.x = vn.x + Math.max(-_MOVEPIXELLIMIT, Math.min(_MOVEPIXELLIMIT, dx));
-				vn.y = vn.y + Math.max(-_MOVEPIXELLIMIT, Math.min(_MOVEPIXELLIMIT, dy));
-				//trace("modifyNodeTarget6 for "+vn.id+" vnx:"+vn.x+" vny:"+vn.y);
-			}
-			/* update the motion value */
-			_maxMotionTmp = Math.max(distanceMoved,_maxMotionTmp);
 		}
 
 		/*********************************************
@@ -753,18 +553,13 @@ package org.un.flex.graphLayout.layout {
 		
 		/**
 		 * @internal
-		 * This method calculates and adjusts the neutral _spring 
-		 * length, in order for the graph to
+		 * This method calculates and adjusts the repulsion
+		 * factor, in order for the graph to
 		 * fit into ~ 90 % of the available space.
-		 * */
+		 **/
 		private function adjustRepulsion():void {
 			
-			var hCoverage:Number;
-			var vCoverage:Number;
-			var coverage:Number;
-			var missingCoverage:Number;
 			var deltaCoverage:Number;
-			var targetDelta:Number;
 			
 			// TO-DO: Should it be called here or with actual scrolling? How often?
 			/* bounding box of nodes */
@@ -776,48 +571,24 @@ package org.un.flex.graphLayout.layout {
 				
 				/* using the viewbounds the current percentage in coverage can be
 				 * calculated */
-				hCoverage = (_viewbounds.bottom - _viewbounds.top) / _vgraph.height;
-				vCoverage = (_viewbounds.right - _viewbounds.left) / _vgraph.width;
-				coverage = Math.max(hCoverage, vCoverage);
+				_coverage = Math.max((_viewbounds.bottom - _viewbounds.top) / _vgraph.height,
+														 (_viewbounds.right - _viewbounds.left) / _vgraph.width );
 				
-				//trace("FD af Coverage:" + coverage + " repulsionFactor:" + _repulsionFactor);
+				/* calculate the delta coverage */
+				deltaCoverage = _AUTOFITCOVERAGE - _coverage;
 				
-				if((_prevCoverage > 0) && (coverage > 0)) {
+				if(Math.abs(deltaCoverage) > _AUTOFITCOVERTOLERANCE) {//not within tolerance limit 
+					/* compute target change - Similar to proportional gain controller */
+					deltaCoverage *= _MAX_REPULSION * 0.1;
 					
-					/* calculate the missing coverage and if we are
-					 * within the tolerance limit */
-					missingCoverage = _AUTOFITCOVERAGE - coverage;
-					
-					if(Math.abs(missingCoverage) > _AUTOFITCOVERTOLERANCE) {
-						/* We are still more away than the tolerance.
-						 * Check how much we changed
-						 * from last pass, positive result means
-						 * we are still expanding, negative means
-						 * we are contracting */
-						deltaCoverage = coverage - _prevCoverage;
-						targetDelta = missingCoverage * 0.2 // why?
-						
-						//trace("FD af deltaCov:"+deltaCoverage+" targetDelta:"+targetDelta + "Old Spring Length:" + _springLength);
-						
-						/* impose limits */
-						targetDelta = Math.max(-0.05, Math.min(0.05, targetDelta));
-
-						if(deltaCoverage < targetDelta) {
-							/* expansion too slow, increase springLength */
-							_springLength = Math.min(_springLength + 1, _MAX_EDGE_LENGTH);
-						} else {
-							/* expansion too fast, decrease springLength*/
-							_springLength = Math.max(_springLength - 1, _MIN_NODE_SEPARATION);
-						}
-						//trace("New Spring Length:"+_springLength);
-					}
+					/* change only if substantial */
+					if (Math.abs(deltaCoverage) > 1.0)
+						_repulsionFactor = Math.max(_MIN_REPULSION, 
+																				Math.min(_repulsionFactor + deltaCoverage, 
+																								 _MAX_REPULSION) );
 				}
-				_prevCoverage = coverage;
-				
-				//if(_prevRepulsionFactor != _repulsionFactor) {
-					//_prevRepulsionFactor = _repulsionFactor;
-				//}
 			}
+			//trace("FD af Coverage:" + _coverage + " repulsionFactor:" + _repulsionFactor);
 		}
 
 		/**
@@ -835,8 +606,8 @@ package org.un.flex.graphLayout.layout {
 				_motionRatio = 0.0;
 			}
 			/*
-			trace(_maxSpringMotion + "\t"
-					+ _maxRepulsiveMotion + "\t"
+			trace(t_maxSpringMotion + "\t"
+					+ t_maxRepulsiveMotion + "\t"
 					+ _maxMotion + "\t"
 					+ _motionRatio + "\t"
 			    + _damper);
@@ -872,31 +643,26 @@ package org.un.flex.graphLayout.layout {
 				}
 			}
 		}
-
-		/**
-		 * @internal
-		 * Updates the new repulsion value for the given node.
-		 * @param vn The node to update its repulsion.
-		 * */
-		private function updateRepulsion(vn:IVisualNode):void {
-			
-			var newrep:Number;
-			
-			if(!vn.isVisible) {
-				throw Error("Received invisible node while working on visible vnodes only");
-			}
-			
-			/* maybe another factor was once multiplied with this.... */
-			newrep = (vn.view.width + vn.view.height) * _repulsionFactor;
-			
-			if(newrep == 0) {
-				newrep = _repulsionFactor;
-			}
-			
-			/* update the value in the map */
-			_repulsionMap[vn] = newrep;	
 		
-			//trace("updated repulsion for node:"+vn.id+" to:"+newrep);
+		/*********************************************
+		* Mouse Event Handling Methods
+		* ********************************************/
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function dragContinue(event:MouseEvent, vn:IVisualNode):void{
+			super.dragContinue(event, vn);
+			refreshInit();
+			layoutPass();
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function dropEvent(event:MouseEvent, vn:IVisualNode):void {
+			super.dropEvent(event, vn);
+			layoutPass();
 		}
 	}
 }
