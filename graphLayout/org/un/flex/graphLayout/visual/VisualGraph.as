@@ -1580,8 +1580,9 @@ package org.un.flex.graphLayout.visual {
 			
 			/* add the component to its parent component
 			 * this can create problems, we have to see where we
-			 * check for all children */
-			_canvas.addChild(mycomponent);
+			 * check for all children
+			 * Add after the edges layer, but below all other elements such as nodes */
+			_canvas.addChildAt(mycomponent, 1);
 			
 			/* register it the view in the vnode and the mapping */
 			/*
