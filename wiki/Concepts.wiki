@@ -1,5 +1,4 @@
 #summary Visualization and graph related concepts.
-#labels Featured
 
 === Terminology ===
 
