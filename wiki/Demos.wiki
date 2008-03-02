@@ -3,6 +3,6 @@
 
 === Layout Explorer ===
 
-  * [http://flexvizgraphlib.googlecode.com/files/VisualGraphDemo-20080924.swf Demo 1]
-  * Updated September 24, 2007
+  * [http://flexvizgraphlib.googlecode.com/svn/trunk/vgExplorer/bin/VGExplorer.html Demo 1]
+  * Updated March 2, 2008
  
