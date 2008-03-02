@@ -3,16 +3,4 @@
 
 = Details =
 
-Ok, we've published the source of our demo application. You can access it
-[http://flexvizgraphlib.googlecode.com/svn/trunk/RelationNavigatorDemo/bin/srcview/index.html here] using the source-viewer (also provides download) and of course through
-the SVN repository.
-
-In order for the Demo application to build and run, you also need to download
-a small library package (2 SWC files) which is available
-[http://flexvizgraphlib.googlecode.com/files/demosupportlibs.zip here] in
-the download section.
-
-There is a lot of AS code in the demo application to handle
-the various layouters, etc. The heart is the [http://flexvizgraphlib.googlecode.com/svn/trunk/graphLayout/asdoc-output/index.html?org/un/flex/graphLayout/visual/VisualGraph.html&org/un/flex/graphLayout/visual/class-list.html VisualGraph]
-component, which is (as being derived from Canvas) a UIComponent
-that can just be easily included in the layout.
+We've set up a folder of example applications to demonstrate use of the library.  Check out the vgExplorer directory from the SVN source repository.
