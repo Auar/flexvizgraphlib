@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*" 
+	xmlns:local="org.un.cava.birdeye.visualize.renderers.primitives.*" creationComplete="setNodeCircle()"
+	>
+	<!-- This a basic circle itemRenderer for a node.
+		 The color is by a given xml parameter 
+		 Drop shadow and zoom filters are applied
+		 -->
+	
+	<mx:Zoom id="zoomAll" zoomWidthTo="2" zoomHeightTo="2" zoomWidthFrom="1" zoomHeightFrom="1"  />
+	
+	<mx:VBox verticalAlign="bottom" horizontalAlign="center" verticalGap="0" >
+	<mx:Spacer height="11" />
+	<local:Circle id="circle" toolTip="{this.data.data.@name}"
+			rollOver="doZoom(event)"
+            rollOut="doZoom(event)"
+            click="getDetails(event)"
+            />
+	<mx:Text id="nodeText" text="{this.data.data.@name}" width="75" height="11" textAlign="center" fontSize="10" />
+	</mx:VBox>
+	
+	<mx:Script>
+		<![CDATA[
+			
+			import flash.filters.*;
+			import org.un.cava.birdeye.utils.GlobalParams;
+  
+     		private var nodeDropShadowFilter:DropShadowFilter;
+			
+			private function setNodeCircle():void {
+			
+			var nodeColor:int = this.data.data.@nodeColor;
+			
+			circle.color=nodeColor;
+			circle.width=10;
+			circle.height=10;
+			
+			if (GlobalParams.visualNodeLabel.selected==true){
+				nodeText.visible=true
+			} else {
+				nodeText.visible=false
+			}
+			
+			// Apply the drop shadow filter to the circle.
+			createFilters();
+			
+			}
+			
+			private function createFilters():void {
+        
+        	nodeDropShadowFilter = new DropShadowFilter(4, 45, 
+            0x666666, 0.8, 8, 8, 0.65, 1, false, false);
+
+        	applyFilters();
+     		
+     		}
+  
+     		private function applyFilters():void {
+        	circle.filters = [nodeDropShadowFilter];
+            }
+
+			private function doZoom(event:MouseEvent):void {
+                if (zoomAll.isPlaying) {
+                    zoomAll.reverse();
+                }
+                else {
+                    // If this is a ROLL_OUT event, play the effect backwards. 
+                    // If this is a ROLL_OVER event, play the effect forwards.
+                    zoomAll.play([event.target], event.type == MouseEvent.ROLL_OUT ? true : false);
+                }
+            }
+            
+            private function getDetails(e:Event):void {
+			// trace("Show Details");
+			
+			if(GlobalParams.visualLeftAccordion != null) {
+				GlobalParams.visualLeftAccordion.selectedIndex = 2;
+			}
+			if(GlobalParams.visualDetailTitle != null) {
+				GlobalParams.visualDetailTitle.text = this.data.data.@name;
+			}
+			if(GlobalParams.visualDetailDesc != null) {
+				GlobalParams.visualDetailDesc.text = this.data.data.@desc;
+			}
+		}
+
+			
+		]]>
+	</mx:Script>	
+</mx:Canvas>

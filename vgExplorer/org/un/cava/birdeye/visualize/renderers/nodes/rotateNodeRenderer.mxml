@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*" 
+	xmlns:local="org.un.cava.birdeye.visualize.renderers.primitives.*"
+	creationComplete="setNodeRotation()" verticalAlign="middle" horizontalAlign="center"
+	>
+	
+	<!-- This component is the itemRenderer for a single atom.
+		 An atomview is just a circle with a label on top.
+		 The color and size are set when we are given a particular atom to represent. -->
+	
+	<mx:VBox id="node" >
+	<local:Rectangle id="rectangle" color="{this.data.data.@nodeColor}" nheight="10" nwidth="{this.data.data.@nodeSize}" toolTip="{this.data.data.@name}"/>
+	<mx:Spacer width="5" />	
+	</mx:VBox>
+	
+	<mx:Script>
+		<![CDATA[
+		import org.un.flex.graphLayout.visual.IVisualNode;
+			
+			public function setNodeRotation():void {
+			
+			if(this.data is IVisualNode) {
+				this.rotation = (this.data as IVisualNode).orientAngle;
+			}
+			
+			}
+			
+		]]>
+	</mx:Script>	
+</mx:VBox>
