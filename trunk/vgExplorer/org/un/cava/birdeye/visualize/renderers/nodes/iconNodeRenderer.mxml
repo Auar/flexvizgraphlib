@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*" 
+	creationComplete="setNodeImg()"
+	>
+	
+<!-- This a basic icon itemRenderer for a node. 
+Images are sourced by directory path and file name.
+
+Based on icons by Paul Davey aka Mattahan (http://mattahan.deviantart.com/). All rights reserved.
+-->
+	
+	<mx:Resize heightFrom="32" widthFrom="32" heightTo="64" widthTo="64" id="zoomAll" />
+	
+	<mx:VBox verticalAlign="middle" horizontalAlign="center" horizontalGap="0" >
+	<mx:Image id="img" source="{this.data.data.@nodeIcon}" toolTip="{this.data.data.@name}"
+			rollOver="doZoom(event)"
+            rollOut="doZoom(event)"
+            click="getDetails(event)"
+            />
+    <mx:Text id="nodeText" text="{this.data.data.@name}" width="50" visible="false" fontSize="10" height="11" textAlign="center" />       
+	</mx:VBox>
+	
+	<mx:Script>
+		<![CDATA[
+			
+			import org.un.cava.birdeye.utils.GlobalParams;
+			import org.un.cava.birdeye.assets.EmbeddedIcons;
+			import flash.filters.*;
+  			private var nodeDropShadowFilter:DropShadowFilter;
+  			
+     		private function setNodeImg():void {
+			
+			img.width=32;
+			img.height=32;
+			
+			if (GlobalParams.visualNodeLabel.selected==true){
+				nodeText.visible=true
+			} else {
+				nodeText.visible=false
+			}
+			
+			// Apply the drop shadow filter to the circle.
+			createFilters();
+			
+			}
+			
+			private function createFilters():void {
+        
+        	nodeDropShadowFilter = new DropShadowFilter(4, 45, 
+            0x666666, 0.8, 8, 8, 0.65, 1, false, false);
+
+        	applyFilters();
+     		
+     		}
+  
+     		private function applyFilters():void {
+        	img.filters = [nodeDropShadowFilter];
+            }
+
+			private function doZoom(event:MouseEvent):void {
+                if (zoomAll.isPlaying) {
+                    zoomAll.reverse();
+                }
+                else {
+                    // If this is a ROLL_OUT event, play the effect backwards. 
+                    // If this is a ROLL_OVER event, play the effect forwards.
+                    zoomAll.play([event.target], event.type == MouseEvent.ROLL_OUT ? true : false);
+                }
+            }
+            
+            private function getDetails(e:Event):void {
+			// trace("Show Details");
+			
+			if(GlobalParams.visualLeftAccordion != null) {
+				GlobalParams.visualLeftAccordion.selectedIndex = 2;
+			}
+			if(GlobalParams.visualDetailTitle != null) {
+				GlobalParams.visualDetailTitle.text = this.data.data.@name;
+			}
+			if(GlobalParams.visualDetailDesc != null) {
+				GlobalParams.visualDetailDesc.text = this.data.data.@desc;
+			}
+		}
+
+			
+		]]>
+	</mx:Script>	
+</mx:Canvas>

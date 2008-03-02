@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+ * The MIT License
+ *
+ * Copyright (c) 2008
+ * United Nations Office at Geneva
+ * Center for Advanced Visual Analytics
+ * http://cava.unog.ch
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ -->
+
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:vg="http://www.adobe.com/2006/fc"
+	xmlns:un="org.un.flex.graphLayout.visual.*"
+	xmlns:containers="flexlib.containers.*" 
+    xmlns:controls="flexlib.controls.*" xmlns:degrafa="com.degrafa.*"
+    xmlns:paint="com.degrafa.paint.*" xmlns:geometry="com.degrafa.geometry.*"
+    xmlns:flexlib="http://code.google.com/p/flexlib/" layout="vertical"
+	creationComplete="init();" width="100%" height="100%" >
+
+	<mx:Script>
+		<![CDATA[
+
+       		import org.un.flex.graphLayout.data.INode;
+			import org.un.flex.graphLayout.data.IGraph;
+			import org.un.flex.graphLayout.data.Graph;			
+			import org.un.flex.graphLayout.visual.VisualNode;
+			import org.un.flex.graphLayout.visual.IVisualNode;
+			import org.un.flex.graphLayout.visual.IVisualGraph;
+			import org.un.flex.graphLayout.visual.IEdgeRenderer;
+			import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
+			import org.un.flex.graphLayout.layout.ConcentricRadialLayouter;
+			import org.un.flex.graphLayout.visual.DefaultEdgeRenderer;
+			import org.un.flex.graphLayout.visual.VisualGraph;
+			import org.un.cava.birdeye.visualize.renderers.nodes.wfbNodeRenderer;
+			import org.un.cava.birdeye.visualize.renderers.edges.wfbEdgeRenderer;
+			import org.un.cava.birdeye.utils.GlobalParams;
+
+			private var graph:IGraph;
+			private var layouter:ILayoutAlgorithm;
+			private var selectedEdgeRenderer:IEdgeRenderer;
+			private var startRoot:IVisualNode;
+			private var itemCount:int = 0;
+			private var initDone:Boolean = false;
+			private var xmlNames:Array;
+
+			/* Init function, initiates the HTTP
+			 * request. All further initalisation is done
+			 * in the event handler for the HTTP Service */
+
+			private function init():void {
+				
+				initData(['Node','Edge','fromID','toID']);
+				
+				/* register some components with the global param static class */
+				GlobalParams.visualShade = shade;
+				GlobalParams.visualDetailContinent = detailContinent;
+				GlobalParams.visualDetailCountry = detailCountry;
+				GlobalParams.visualDetailCapital = detailCapital;
+				GlobalParams.visualDetailGovernment = detailGovernment;
+				GlobalParams.visualDetailDoI = detailDoI;
+				GlobalParams.visualDetailGDP = detailGDP;
+				GlobalParams.visualDetailInflation = detailInflation;
+				GlobalParams.visualDetailIM = detailIM;
+				GlobalParams.visualDetailPopGrowth = detailPopGrowth;
+				GlobalParams.visualDetailPop = detailPop;
+											
+			}
+			
+			/**
+			 * event handler for HTTPService, does all the remaining required
+			 * initialisation */
+			private function initData(xN:Array):void {
+				
+				xmlNames = xN;
+				
+				/* init a graph object with the XML data */
+				graph = new org.un.flex.graphLayout.data.Graph("XMLAsDocsGraph",false,xmldata,xmlNames);
+				
+				/* set the graph in the VGraph object, this automatically
+				 * initializes the VGraph items */
+				vgraph.graph = graph;
+
+				/* set the default layouter type */
+				layouter = new ConcentricRadialLayouter(vgraph);
+				
+				vgraph.layouter = layouter;
+				
+				/* set autofit */
+				layouter.autoFitEnabled = true;
+				
+				/* set the layouter */
+				vgraph.edgeRenderer = new DefaultEdgeRenderer;
+				
+				/* set the visibility limit options, default 2 */
+				vgraph.maxVisibleDistance = 1;
+				
+				/* select a root node, most layouters requires a root node */
+				startRoot = graph.nodeByStringId("1").vnode;
+						
+				/* set if edge labels should be displayed */
+				vgraph.displayEdgeLabels = true;
+
+				/* the following kicks it off .... */
+				vgraph.currentRootVNode = startRoot;
+				initDone = true;
+			}
+				
+ 			/**
+ 			 * handle a resize event, but only do anything if the init was
+ 			 * done
+ 			 */
+ 			private function handleResize():void {
+ 				if(initDone) {
+ 					vgraph.draw();
+ 					
+ 				}
+ 			}
+ 		
+		]]>
+	</mx:Script>					
+
+	<mx:Style source="org/un/cava/birdeye/style/css/main.css" />
+	
+	<mx:VBox id="main" width="90%" height="100%" verticalAlign="middle" horizontalAlign="center" borderColor="#CCCCCC" paddingBottom="5" horizontalGap="5">
+	
+	<mx:ApplicationControlBar width="100%" height="50" >
+		<mx:HBox width="100%" height="100%" verticalAlign="middle" horizontalAlign="center" >
+			
+			<mx:Text text="CIA World Fact Book Explorer" fontSize="14" fontWeight="bold" />
+			<mx:Spacer width="100%" />
+			
+			<mx:Text text="Show NodeType:" fontWeight="bold" />
+			<mx:Button label="Languages" toolTip="Languages" toggle="true" />
+			
+			<mx:Text text="Show EdgeType:" fontWeight="bold" />
+			<mx:Button label="Border Relations" toolTip="Border Relations" toggle="true" />
+			
+			<mx:Text text="Node Style:" fontWeight="bold" />
+			<mx:ComboBox >
+				<mx:ArrayCollection>
+					<mx:String>Icon</mx:String>
+					<mx:String>Primitive</mx:String>
+					<mx:String>Size by Parameter</mx:String>
+				</mx:ArrayCollection>
+			</mx:ComboBox>
+			
+			<mx:Text text="Size by:" fontWeight="bold" />
+			<mx:ComboBox >
+				<mx:ArrayCollection>
+					<mx:String>GDP</mx:String>
+					<mx:String>Inflation</mx:String>
+					<mx:String>Infant mortality</mx:String>
+					<mx:String>Population Growth</mx:String>
+					<mx:String>Population</mx:String>
+					<mx:String>Total Area</mx:String>
+				</mx:ArrayCollection>
+			</mx:ComboBox>
+			
+			
+		</mx:HBox>
+	</mx:ApplicationControlBar>
+	
+	
+	
+		<!-- Graph Panel -->
+		<mx:Canvas id="graphCnvs" width="100%" height="100%"  >		
+			<un:VisualGraph id="vgraph" width="100%" height="100%" 
+				paddingBottom="5" left="0" right="0" top="0" bottom="0" backgroundColor="#FFFFFF" alpha="1"
+				itemRenderer="org.un.cava.birdeye.visualize.renderers.nodes.wfbNodeRenderer" 
+				edgeLabelRenderer="org.un.cava.birdeye.visualize.renderers.edges.wfbEdgeRenderer"
+				resize="handleResize()"
+				visibilityLimitActive="true"
+				>
+			</un:VisualGraph>
+		
+		<!-- Window shade -->
+		<mx:VBox width="250" height="100%" right="25"
+        verticalAlign="top" horizontalAlign="right">
+        
+    
+    	<containers:WindowShade id="shade" opened="false" width="100%"
+        openIcon="{null}" closeIcon="{null}" 
+        paddingTop="0" headerLocation="bottom">
+        
+        <containers:headerRenderer>
+            <mx:Component>
+                
+                <flexlib:CanvasButton width="100%" height="20" skin="mx.skins.ProgrammaticSkin">
+                    
+                    <mx:Script>
+                    <![CDATA[
+                        import flexlib.containers.WindowShade;
+                    ]]>
+                    </mx:Script>
+                    
+                    <mx:Box width="100%" horizontalAlign="center">
+                        <degrafa:Surface width="80">    
+                            <degrafa:GeometryGroup>
+                         
+                              <geometry:EllipticalArc closureType="pie" 
+                                  arc="180" startAngle="-180" width="80" height="35" y="-18">
+                                  
+                                <geometry:fill>
+                                    <paint:GradientFill angle="90">
+                                        <paint:GradientStop color="#333333" />
+                                        <paint:GradientStop color="#999999" />
+                                    </paint:GradientFill>
+                                   </geometry:fill>
+                              </geometry:EllipticalArc>
+                    
+                                <geometry:Polygon>
+                                    <geometry:data>40,5 35,13 45,13</geometry:data>
+                                    <geometry:stroke>
+                                        <paint:SolidStroke color="#333333" alpha="{WindowShade(parent).opened ? 1 : 0}" weight="1" />
+                                    </geometry:stroke>
+                                    <geometry:fill>
+                                        <paint:SolidFill color="#ffffff" alpha="{WindowShade(parent).opened ? 1 : 0}" />
+                                    </geometry:fill>
+                                </geometry:Polygon>
+                                
+                                <geometry:Polygon>
+                                    <geometry:data>40,13 35,5 45,5</geometry:data>
+                                    <geometry:stroke>
+                                        <paint:SolidStroke color="#333333" alpha="{WindowShade(parent).opened ? 0 : 1}" weight="1" />
+                                    </geometry:stroke>
+                                    <geometry:fill>
+                                        <paint:SolidFill color="#ffffff" alpha="{WindowShade(parent).opened ? 0 : 1}" />
+                                    </geometry:fill>
+                                </geometry:Polygon>
+                                
+                            </degrafa:GeometryGroup> 
+                        </degrafa:Surface>
+                    </mx:Box>
+                </flexlib:CanvasButton>
+            </mx:Component>
+        </containers:headerRenderer>
+        
+        <mx:Canvas width="100%" height="600" cornerRadius="24" >
+            <mx:VBox width="100%" height="100%">
+				<mx:VBox width="100%" height="100%" paddingLeft="5" paddingRight="5" paddingBottom="5" id="myVBox" borderColor="#666666" borderThickness="1" cornerRadius="5" borderStyle="solid" backgroundColor="#CCCCCC" backgroundAlpha=".2" >
+				<mx:Label text="Continent" fontWeight="bold" />
+				<mx:Text id="detailContinent" width="100%" text="" />	
+				<mx:Label text="Country" fontWeight="bold" />
+				<mx:Text id="detailCountry" width="100%" text="" />
+				<mx:Label text="Capital" fontWeight="bold" />
+				<mx:Text id="detailCapital" width="100%" text="" />
+				<mx:Label text="Government" fontWeight="bold" />
+				<mx:Text id="detailGovernment" width="100%" text="" />
+				<mx:Label text="Date of Independence" fontWeight="bold" />
+				<mx:Text id="detailDoI" width="100%" text="" />
+				<mx:Label text="GDP Total" fontWeight="bold" />
+				<mx:Text id="detailGDP" width="100%" text="" />
+				<mx:Label text="Inflation" fontWeight="bold" />
+				<mx:Text id="detailInflation" width="100%" text="" />
+				<mx:Label text="Infant Mortality" fontWeight="bold" />
+				<mx:Text id="detailIM" width="100%" text="" />
+				<mx:Label text="Population Growth" fontWeight="bold" />
+				<mx:Text id="detailPopGrowth" width="100%" text="" />
+				<mx:Label text="Population (Total)" fontWeight="bold" />
+				<mx:Text id="detailPop" width="100%" text="" />
+				
+				</mx:VBox>
+			</mx:VBox>
+        </mx:Canvas>
+        
+        <containers:filters>
+            <mx:DropShadowFilter alpha=".3" angle="90" />
+        </containers:filters>
+    </containers:WindowShade>
+    
+    </mx:VBox>
+		</mx:Canvas>
+		<!-- End of Graph Panel -->
+	</mx:VBox>
+
+<mx:XML id="xmldata" source="data/CIAWorldFactBook.xml" />
+
+</mx:Application>

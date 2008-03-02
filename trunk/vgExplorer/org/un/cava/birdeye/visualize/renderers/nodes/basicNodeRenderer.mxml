@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*" 
+	xmlns:local="org.un.cava.birdeye.visualize.renderers.primitives.*" 
+	creationComplete="setNodeCircle()"
+	>
+
+	<!-- This a basic circle itemRenderer for a node.
+		 The color is by a given xml parameter -->
+	
+	<mx:VBox verticalAlign="bottom" horizontalAlign="center" verticalGap="0" >
+	<mx:Spacer height="11" />
+	<local:Circle id="circle" toolTip="{this.data.data.@name}"
+			click="getDetails(event)"
+            />
+    <mx:Text id="nodeText" text="{this.data.data.@name}" width="75" height="11" textAlign="center" fontSize="10" />
+	</mx:VBox>
+	
+	<mx:Script>
+		<![CDATA[
+			
+			import org.un.cava.birdeye.utils.GlobalParams;
+  		
+			private function setNodeCircle():void {
+			
+			var nodeColor:int = this.data.data.@nodeColor;
+			
+			circle.color=nodeColor;
+			circle.width=10;
+			circle.height=10;
+			
+			if (GlobalParams.visualNodeLabel.selected==true){
+				nodeText.visible=true
+			} else {
+				nodeText.visible=false
+			}
+			
+			}
+			           
+            private function getDetails(e:Event):void {
+			// trace("Show Details");
+			
+			if(GlobalParams.visualLeftAccordion != null) {
+				GlobalParams.visualLeftAccordion.selectedIndex = 2;
+			}
+			if(GlobalParams.visualDetailTitle != null) {
+				GlobalParams.visualDetailTitle.text = this.data.data.@name;
+			}
+			if(GlobalParams.visualDetailDesc != null) {
+				GlobalParams.visualDetailDesc.text = this.data.data.@desc;
+			}
+		}
+
+			
+		]]>
+	</mx:Script>	
+</mx:Canvas>
