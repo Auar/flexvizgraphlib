@@ -1988,7 +1988,11 @@ package org.un.flex.graphLayout.visual {
 				
 				/* remove the event listeners */
 				//mycomp.stage.removeEventListener(MouseEvent.MOUSE_DOWN, dragEnd);
-				mycomp.stage.removeEventListener(MouseEvent.MOUSE_MOVE, handleDrag);
+				// HACK: I have to check the stage because there are eventual components not added to the display list
+				if (mycomp.stage != null)
+				{
+					mycomp.stage.removeEventListener(MouseEvent.MOUSE_MOVE, handleDrag);
+				}
 				
 				/* get the associated VNode to notify the layouter */
 				myvnode = _viewToVNodeMap[mycomp];
