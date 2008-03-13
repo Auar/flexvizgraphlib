@@ -239,7 +239,7 @@ package org.un.flex.graphLayout.layout {
 			 * to drag is actually a UIComponent, i.e. 
 			 * part of our nodes, if not we do nothing. */
 			//trace("layouter received a drag event");
-			if(vn.rawview is UIComponent) {
+			if(event.currentTarget is UIComponent) {
 				_dragNode = vn;
 			}
 		}

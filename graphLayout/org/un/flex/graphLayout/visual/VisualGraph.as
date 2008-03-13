@@ -33,13 +33,11 @@ package org.un.flex.graphLayout.visual {
 	
 	import mx.containers.Canvas;
 	import mx.controls.Label;
-	import mx.core.Container;
 	import mx.core.IDataRenderer;
 	import mx.core.IFactory;
 	import mx.core.UIComponent;
 	import mx.effects.Effect;
 	import mx.events.EffectEvent;
-	import mx.events.FlexEvent;
 	import mx.utils.ObjectUtil;
 	
 	import org.un.flex.graphLayout.data.GraphWalkingDirectionsEnum;
@@ -1474,40 +1472,9 @@ package org.un.flex.graphLayout.visual {
 			
 			/* add event handlers for dragging and double click */			
 			mycomponent.doubleClickEnabled = true;
-			if(mycomponent is Container)
-			{
-				mycomponent.addEventListener(FlexEvent.CREATION_COMPLETE,
-					function(e : Event) : void
-					{
-						for each(var child : EventDispatcher in (mycomponent as Container).getChildren())
-						{
-							child.addEventListener(MouseEvent.DOUBLE_CLICK,
-								function(e : MouseEvent) : void
-								{
-									nodeDoubleClick(mycomponent)
-								})
-								
-							child.addEventListener(MouseEvent.MOUSE_DOWN,
-								function(e : MouseEvent) : void
-								{
-									nodeMouseDown(mycomponent)
-									e.stopImmediatePropagation()
-								})
-								
-							child.addEventListener(MouseEvent.MOUSE_UP,
-								function(e : MouseEvent) : void
-								{
-									dragEnd(e)
-								})
-						}
-					})
-			}
-			else
-			{
-				mycomponent.addEventListener(MouseEvent.DOUBLE_CLICK, nodeDoubleClick);
-				mycomponent.addEventListener(MouseEvent.MOUSE_DOWN,nodeMouseDown);
-				mycomponent.addEventListener(MouseEvent.MOUSE_UP, dragEnd);
-			}
+			mycomponent.addEventListener(MouseEvent.DOUBLE_CLICK, nodeDoubleClick);
+			mycomponent.addEventListener(MouseEvent.MOUSE_DOWN,nodeMouseDown);
+			mycomponent.addEventListener(MouseEvent.MOUSE_UP, dragEnd);
 
 			/* add the component to its parent component */
 			_canvas.addChild(mycomponent);
@@ -1693,11 +1660,27 @@ package org.un.flex.graphLayout.visual {
 		 * sets a new root node.
 		 * @param e The corresponding event.
 		 * */
-		private function nodeDoubleClick(component : UIComponent):void {
+		private function nodeDoubleClick(e:MouseEvent):void {
+			var comp:UIComponent;
+			var vnode:IVisualNode;
+			
+			/* get the view object that was klicked on (actually
+			 * the one that has the event handler registered, which
+			 * is the VNode's view */
+			comp = (e.currentTarget as UIComponent);
+			
+			/* get the associated VNode */
+			vnode = lookupNode(comp);
+			
+			//trace("double click!");
+			
 			/* Now we change the root node, we go through
 			 * our public setter method to get all associated
 			 * updates done. */
-			this.currentRootVNode = lookupNode(component)
+			this.currentRootVNode = vnode;
+			
+			//trace("currentVNode:"+this.currentRootVNode.id);
+			
 		}
 
 		/**
@@ -1710,23 +1693,23 @@ package org.un.flex.graphLayout.visual {
 		 * 2. Starts a drag operation of this node.
 		 * @param e The associated event.
 		 * */
-		private function nodeMouseDown(component : UIComponent):void {
-			highlightNode(component);
-			dragBegin(component);
+		private function nodeMouseDown(e:MouseEvent):void {
+			highlightNode(e);
+			dragBegin(e);
 		}
 		/**
 		 * Highlight a node that was target of the passed
 		 * event by making it the distinguished node.
 		 * @param event The Mouse event that was triggered by click.
 		 * */
-		private function highlightNode(component : UIComponent):void {
+		private function highlightNode(event:MouseEvent):void {
 			var comp:UIComponent;
 			var vnode:IVisualNode;
 			
 			/* get the view object that was klicked on (actually
 			 * the one that has the event handler registered, which
 			 * is the VNode's view */
-			comp = component
+			comp = (event.currentTarget as UIComponent);
 			
 			/* get the associated VNode */
 			vnode = lookupNode(comp);
@@ -1750,11 +1733,13 @@ package org.un.flex.graphLayout.visual {
 		 * @param event The MouseEvent that was triggered by clicking on the node.
 		 * @see handleDrag()
 		 * */
-		private function dragBegin(component : UIComponent):void {
+		private function dragBegin(event:MouseEvent):void {
 			
 			var ecomponent:UIComponent;
 			var evnode:IVisualNode;
 			var pt:Point;
+			
+			//trace("DragBegin was called...");
 			
 			/* if there is an animation in progress, we ignore
 			 * the drag attempt */
@@ -1764,12 +1749,15 @@ package org.un.flex.graphLayout.visual {
 			}
 			
 			/* make sure we get the right component */
-			if(component is UIComponent) {
+			if(event.currentTarget is UIComponent) {
 				
-				ecomponent = component
+				ecomponent = (event.currentTarget as UIComponent);
 				
 				/* get the associated VNode of the view */
 				evnode = _viewToVNodeMap[ecomponent];
+				
+				/* stop propagation to prevent a concurrent backgroundDrag */
+				event.stopImmediatePropagation();
 				
 				if(evnode != null) {
 					if(!dragLockCenter) {
@@ -1811,8 +1799,7 @@ package org.un.flex.graphLayout.visual {
 					// ecomponent.stage.addEventListener(MouseEvent.MOUSE_UP, dragEnd);
 					
 					/* and inform the layouter about the dragEvent */
-					//OMFG!!!
-					_layouter.dragEvent(null, evnode);
+					_layouter.dragEvent(event, evnode);
 				} else {
 					throw Error("Event Component was not in the viewToVNode Map");
 				}
@@ -1960,7 +1947,7 @@ package org.un.flex.graphLayout.visual {
 		 * and unregisters the current dragged node.
 		 * @param event The triggered event.
 		 * */
-		private function dragEnd(event : MouseEvent, component : UIComponent = null):void {
+		private function dragEnd(event:MouseEvent):void {
 			
 			var mycomp:UIComponent;
 			var myback:DisplayObject;

@@ -113,7 +113,7 @@ package org.un.flex.graphLayout.layout {
 			/* we have to make sure, that what we want
 			 * to drag is actually a UIComponent, i.e. 
 			 * part of our nodes, if not we do nothing. */
-			if(vn.rawview is UIComponent) {
+			if(event.currentTarget is UIComponent) {
 				_dragNode = vn;
 			}
 		}
