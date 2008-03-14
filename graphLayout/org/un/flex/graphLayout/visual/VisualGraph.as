@@ -726,7 +726,28 @@ package org.un.flex.graphLayout.visual {
 					draw();
 				}
 			}
-		}		
+		}
+		
+		/**
+		 * @inheritDoc
+		 * */
+		[Bindable]
+		public function get distinguishedNode():IVisualNode {
+			return _distinguishedNode;
+		}
+		/**
+		 * @private
+		 * */
+		public function set distinguishedNode(vn:IVisualNode):void {
+			/* check for a change */
+			if(_distinguishedNode != vn) {
+				
+				/* apply the change */
+				_distinguishedNode = vn;
+				
+				// Probably, force redrawing
+			}
+		}
 
 		public function set scrollBackgroundInDrag(f:Boolean):void {
 			_scrollBackgroundInDrag = f;
@@ -1716,13 +1737,23 @@ package org.un.flex.graphLayout.visual {
 			
 			
 			
-			if(vnode) {				
+			if(vnode) {
+				var oldDistComponent:UIComponent;
+				if (_distinguishedNode) {
+					oldDistComponent = _distinguishedNode.view;
+				}
 				/* set the node as distinguished */
 				_distinguishedNode = vnode;
 				
 				/* make sure the edges are redrawn so that
 				 * the changed color is shown */
-				refresh();
+				/* refresh doen't work */ 
+				//refresh();
+				/* required to change the style of nodes */
+				_distinguishedNode.view.invalidateProperties();
+				if (oldDistComponent) {
+					oldDistComponent.invalidateProperties();
+				}
 			}
 		}
 		
