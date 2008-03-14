@@ -187,6 +187,18 @@ package org.un.flex.graphLayout.visual {
 		function set currentRootVNode(vn:IVisualNode):void;
 		
 		/**
+		 * Set or get the distinguished node (or highlighted node). Setting
+		 * this property will result in a redraw of the graph to reflect
+		 * the change (if it was actually a change).
+		 * */
+		function get distinguishedNode():IVisualNode;
+
+		/**
+		 * @private
+		 * */
+		function set distinguishedNode(vn:IVisualNode):void;
+		
+		/**
 		 * Specifies if any visibility limits should be active
 		 * or not. If not active, always all nodes are visible.
 		 * If you have many nodes, this could have a severe
