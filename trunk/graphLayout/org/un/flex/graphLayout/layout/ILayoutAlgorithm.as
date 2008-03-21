@@ -23,11 +23,11 @@
  * THE SOFTWARE.
  */
 package org.un.flex.graphLayout.layout {
-	import org.un.flex.graphLayout.visual.IVisualGraph;
-	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import org.un.flex.graphLayout.visual.IVisualNode;
+	
 	import org.un.flex.graphLayout.data.IGraph;
+	import org.un.flex.graphLayout.visual.IVisualGraph;
+	import org.un.flex.graphLayout.visual.IVisualNode;
 	
 	
 	/**
@@ -115,6 +115,20 @@ package org.un.flex.graphLayout.layout {
 		 * might be disabled
 		 * */
 		function get animInProgress():Boolean;
+		
+		
+		/**
+		 * If set to true, animation is disabled and direct
+		 * node location setting occurs (instantaneously).
+		 * @default false
+		 * */
+		function set disableAnimation(d:Boolean):void;
+		
+		/**
+		 * @private
+		 * */
+		function get disableAnimation():Boolean;
+		
 		
 		/**
 		 * This should reset all parameters of the layouter,

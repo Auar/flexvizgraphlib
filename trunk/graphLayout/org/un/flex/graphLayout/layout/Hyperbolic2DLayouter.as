@@ -54,7 +54,7 @@ package org.un.flex.graphLayout.layout {
 	 * (1) scrolling while background drag, and <br>
 	 * (2) node drag-drop<br>
 	 * should be turned-off in <code>VisualGraph</code>. 
-   * <hr>
+	 * <hr>
 	 * The implementation is a rewrite of Jens Kanschik's Hypergraph
 	 * implementation in Java. However, apart from the general idea 
 	 * and some variable names, this code improves on hypergraph 
@@ -67,6 +67,9 @@ package org.un.flex.graphLayout.layout {
 	 * (c) Nitin Lamba, 2007.
 	 * 
 	 * @author Nitin Lamba
+	 * 
+	 * XXX TODO: Needs to honor the '_disableAnimation' protected variable
+	 * if possible XXX
 	 */
 
 	public class Hyperbolic2DLayouter extends IterativeBaseLayouter implements ILayoutAlgorithm {
