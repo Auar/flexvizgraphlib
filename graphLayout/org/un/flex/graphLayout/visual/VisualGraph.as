@@ -1091,8 +1091,19 @@ package org.un.flex.graphLayout.visual {
 			 * invalidate display list */
 			refresh();
 			
+			/* we need to do some sanity checks, e.g. if the canvas window
+			 * size was reduced to 0 or linklength 0 or similar things,
+			 * the layouter might crash */
+			
+			
 			/* then force a layout pass in the layouter */
-			if(_layouter && _currentRootVNode && (_graph.noNodes > 0)) {
+			if(_layouter && 
+				_currentRootVNode &&
+				(_graph.noNodes > 0) &&
+				(this.width > 0) &&
+				(this.height > 0) &&
+				(_layouter.linkLength > 0)
+				) {
 				_layouter.layoutPass();
 			}
 			
