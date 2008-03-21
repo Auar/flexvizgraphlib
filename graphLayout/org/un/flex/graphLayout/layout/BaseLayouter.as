@@ -61,6 +61,13 @@ package org.un.flex.graphLayout.layout {
 		public static const DEFAULT_MARGIN:Number = 30;
 		
 		/**
+		 * If set to true, animation is disabled and direct
+		 * node location setting occurs (instantaneously).
+		 * @default false
+		 * */
+		protected var _disableAnimation:Boolean = false;
+		
+		/**
 		 * All layouters need access to the VisualGraph.
 		 * */
 		protected var _vgraph:IVisualGraph = null;
@@ -200,6 +207,20 @@ package org.un.flex.graphLayout.layout {
 			 * though needs to override this to always return the
 			 * correct value. */
 			return false;
+		}
+		
+		/**
+		 * @inheritDoc
+		 * */
+		public function set disableAnimation(d:Boolean):void {
+			_disableAnimation = d;
+		};
+		
+		/**
+		 * @private
+		 * */
+		public function get disableAnimation():Boolean {
+			return _disableAnimation;
 		}
 		
 		/**

@@ -24,20 +24,16 @@
  */
 package org.un.flex.graphLayout.layout {
 
-	import org.un.flex.graphLayout.visual.IVisualGraph;
-	import org.un.flex.graphLayout.data.IGraph;
-	import org.un.flex.graphLayout.data.IGTree;
-	import flash.events.MouseEvent;
-	import org.un.flex.graphLayout.visual.IVisualNode;
+	import flash.events.TimerEvent;
+	import flash.geom.Point;
+	import flash.utils.Dictionary;
+	import flash.utils.Timer;
+	
 	import org.un.flex.graphLayout.data.INode;
-	import org.un.flex.graphLayout.data.Graph;
+	import org.un.flex.graphLayout.visual.IVisualGraph;
+	import org.un.flex.graphLayout.visual.IVisualNode;
 	import org.un.flex.utils.Geometry;
 	import org.un.flex.utils.GraphicUtils;
-	import flash.events.Event;
-	import flash.geom.Point;
-	import flash.utils.Timer;
-	import flash.utils.Dictionary;
-	import flash.events.TimerEvent;
 	
 	/**
 	 * This subclass to the BaseLayouter encapsulates the methods
@@ -148,7 +144,9 @@ package org.un.flex.graphLayout.layout {
 		/**
 		 * Access to the type of animation, currently supported
 		 * type is:
-		 * ANIM_RADIAL which does interpolation of polar coordinates.
+		 * ANIM_RADIAL which does interpolation of polar coordinates and
+		 * ANIM_STRAIGHT which interpolates cartesian coordinates.
+		 * @param type ANIM RADIAL or ANIM_STRAIGHT
 		 * */
 		protected function set animationType(type:int):void {
 			_animationType = type;
@@ -189,20 +187,26 @@ package org.un.flex.graphLayout.layout {
 		 * */
 		protected function startAnimation():void {
 			var cyclefinished:Boolean;
-			/* indicate an animation in progress */
-			_animInProgress = true;
-			 
-			switch(_animationType) {
-				case ANIM_RADIAL:
-					cyclefinished = interpolatePolarCoords();
-					break;
-				case ANIM_STRAIGHT:	
-					cyclefinished = interpolateCartCoords();
-					break;
-				default:
-					trace("Illegal animation Type, default to ANIM_RADIAL");
-					cyclefinished = interpolatePolarCoords();
-					break;
+			
+			if(!_disableAnimation) {
+			
+				/* indicate an animation in progress */
+				_animInProgress = true;
+				 
+				switch(_animationType) {
+					case ANIM_RADIAL:
+						cyclefinished = interpolatePolarCoords();
+						break;
+					case ANIM_STRAIGHT:	
+						cyclefinished = interpolateCartCoords();
+						break;
+					default:
+						trace("Illegal animation Type, default to ANIM_RADIAL");
+						cyclefinished = interpolatePolarCoords();
+						break;
+				}
+			} else {
+				cyclefinished = setCoords();
 			}
 			
 			/* make sure the edges are redrawn */
@@ -380,7 +384,7 @@ package org.un.flex.graphLayout.layout {
 				
 				n = vn.node;
 
-				/* get relative target coordinates in polar form */
+				/* get relative target coordinates in cartesian form */
 				targetPoint = _currentDrawing.getRelCartCoordinates(n);
 
 				/* when we get the current values, we have to make sure
@@ -420,6 +424,52 @@ package org.un.flex.graphLayout.layout {
 				vn.commit();
 			}
 			return cyclefinished;
+		}
+		
+		/**
+		 * Directly sets the target coordinates not animating anything.
+		 * Will be used if the disableAnimation flag is set.
+		 * */
+		protected function setCoords():Boolean {
+			var visVNodes:Dictionary;
+			var vn:IVisualNode;
+			var n:INode;
+			var i:int;
+			var targetPoint:Point;
+			
+
+			/* careful for invisible nodes, the values are not
+			 * calculated (obviously), so we need to make sure
+			 * to exclude them */
+			visVNodes = _vgraph.visibleVNodes;
+			for each(vn in visVNodes) {
+				
+				/* should be visible otherwise somethings wrong */
+				if(!vn.isVisible) {
+					throw Error("received invisible vnode from list of visible vnodes");
+				}
+				
+				n = vn.node;
+
+				/* get relative target coordinates in cartesian form */
+				targetPoint = _currentDrawing.getRelCartCoordinates(n);
+				
+				/* adjust the origin */
+				targetPoint = targetPoint.add(_currentDrawing.originOffset);
+				
+				/* here we may need to add the center offset */
+				if(_currentDrawing.centeredLayout) {
+					targetPoint = targetPoint.add(_currentDrawing.centerOffset);
+				}
+								
+				/* set into the vnode */
+				vn.x = targetPoint.x;
+				vn.y = targetPoint.y;
+				
+				/* commit, i.e. move the node */
+				vn.commit();
+			}
+			return true;
 		}
 		
 		/**
