@@ -90,13 +90,15 @@ package org.un.flex.graphLayout.visual {
 			g.lineTo(toX, toY);
 			g.endFill();
 			
+			/* this should really go elsewhere */
 			if(displayLabel) {
 				vedge.labelView.x = midX - (vedge.labelView.width / 2.0);
 				vedge.labelView.y = midY - (vedge.labelView.height / 2.0);
 				/* the following should rather be done during
 				 * the EdgeRendererFactory setting, we leave it
 				 * here only for the default "Label" */
-				if(vedge.labelView is Label) {
+				if(vedge.labelView is Label &&
+					(vedge.data != null)) {
 					(vedge.labelView as Label).text = vedge.data.@association;
 				}
 				//g.drawCircle(midX,midY,10);
