@@ -752,8 +752,12 @@
  			 */
  			private function handleResize():void {
  				if(initDone) {
- 					vgraph.draw();
- 					
+ 					/* it can happen that the linklength is reduced to 0
+ 					 * in this case we reset it */
+ 					if(layouter.linkLength == 0) {
+ 						layouter.linkLength = 100; // current default
+ 					}
+ 					vgraph.draw();	
  				}
  			}
  
