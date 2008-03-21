@@ -4,7 +4,7 @@
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="../../../../../style.css" type="text/css" media="screen">
 <link rel="stylesheet" href="../../../../../print.css" type="text/css" media="print">
-<meta content="VisualGraph,org.un.flex.graphLayout.visual.VisualGraph,addItemEffect,dragLockCenter,newNodesDefaultVisible,removeItemEffect,center,currentRootSID,currentRootVNode,layouter,maxVisibleDistance,noVisibleVNodes,origin,showHistory,visibilityLimitActive,visibleEdges,visibleVNodes,displayEdgeLabels,edgeLabelRenderer,edgeRenderer,graph,itemRenderer,calcNodesBoundingBox,clearHistory,createNode,draw,initFromGraph,linkNodes,redrawEdges,refresh,removeNode,scroll,unlinkNodes,updateDisplayList" name="keywords">
+<meta content="VisualGraph,org.un.flex.graphLayout.visual.VisualGraph,addItemEffect,dragLockCenter,newNodesDefaultVisible,removeItemEffect,center,currentRootSID,currentRootVNode,layouter,maxVisibleDistance,noVisibleVNodes,origin,showHistory,visibilityLimitActive,visibleEdges,visibleVNodes,displayEdgeLabels,edgeLabelRenderer,edgeRenderer,graph,itemRenderer,moveNodeInDrag,scrollBackgroundInDrag,calcNodesBoundingBox,clearHistory,createNode,draw,initFromGraph,linkNodes,redrawEdges,refresh,removeNode,scroll,unlinkNodes,updateDisplayList" name="keywords">
 <title>org.un.flex.graphLayout.visual.VisualGraph</title>
 </head>
 <body>
@@ -151,6 +151,10 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 </td><td class="summaryTableOwnerCol">VisualGraph</td>
 </tr>
 <tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#moveNodeInDrag">moveNodeInDrag</a> : Boolean<div class="summaryTableDescription">[write-only]</div>
+</td><td class="summaryTableOwnerCol">VisualGraph</td>
+</tr>
+<tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#newNodesDefaultVisible">newNodesDefaultVisible</a> : Boolean = false<div class="summaryTableDescription">
    Default visibility setting for new nodes.</div>
 </td><td class="summaryTableOwnerCol">VisualGraph</td>
@@ -172,6 +176,10 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#removeItemEffect">removeItemEffect</a> : Effect<div class="summaryTableDescription">
    If set, this effect will be applied if a view
    is removed (e.g.</div>
+</td><td class="summaryTableOwnerCol">VisualGraph</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#scrollBackgroundInDrag">scrollBackgroundInDrag</a> : Boolean<div class="summaryTableDescription">[write-only]</div>
 </td><td class="summaryTableOwnerCol">VisualGraph</td>
 </tr>
 <tr class="">
@@ -581,6 +589,18 @@ showHideInherited();
 <code>&nbsp;&nbsp;&nbsp;&nbsp;public function set maxVisibleDistance(value:int):void</code>
 <br>
 </div>
+<a name="moveNodeInDrag"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">moveNodeInDrag</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>moveNodeInDrag:Boolean</code>&nbsp;&nbsp;[write-only]<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set moveNodeInDrag(value:Boolean):void</code>
+<br>
+</div>
 <a name="newNodesDefaultVisible"></a>
 <table cellspacing="0" cellpadding="0" class="detailHeader">
 <tr>
@@ -637,6 +657,18 @@ showHideInherited();
    is removed (e.g. a node becomes invisible or
    is removed).
    </p></div>
+<a name="scrollBackgroundInDrag"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">scrollBackgroundInDrag</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>scrollBackgroundInDrag:Boolean</code>&nbsp;&nbsp;[write-only]<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set scrollBackgroundInDrag(value:Boolean):void</code>
+<br>
+</div>
 <a name="showHistory"></a>
 <table cellspacing="0" cellpadding="0" class="detailHeader">
 <tr>
