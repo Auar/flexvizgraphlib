@@ -118,7 +118,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("In
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
-<a class="signatureLink" href="#getTree()">getTree</a>(n:<a href="INode.html">INode</a>, restr:Boolean = false, nocache:Boolean = false):<a href="../data/IGTree.html">IGTree</a>
+<a class="signatureLink" href="#getTree()">getTree</a>(n:<a href="INode.html">INode</a>, restr:Boolean = false, nocache:Boolean = false, walkingDirection:int):<a href="../data/IGTree.html">IGTree</a>
 </div>
 <div class="summaryTableDescription">
    returns the current BFS tree of the graph, rooted in the given node,
@@ -384,7 +384,7 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public function getTree(n:<a href="INode.html">INode</a>, restr:Boolean = false, nocache:Boolean = false):<a href="../data/IGTree.html">IGTree</a></code><p>
+<code>public function getTree(n:<a href="INode.html">INode</a>, restr:Boolean = false, nocache:Boolean = false, walkingDirection:int):<a href="../data/IGTree.html">IGTree</a></code><p>
    returns the current BFS tree of the graph, rooted in the given node,
    optionally the tree is restricted to only contain currently visible
    nodes. 
@@ -411,6 +411,15 @@ showHideInherited();
 </tr>
 <tr>
 <td width="20px"></td><td><code><span class="label">nocache</span>:Boolean</code> (default = <code>false</code>)<code></code> &mdash; If set, always a new tree will be created and returned and the cache will be untouched.
+   </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">walkingDirection</span>:int</code> &mdash; The direction in which the graph must be walked to create the spanning tree.
+            The value of GraphWalkingDirectionsEnum.FORWARD is the default and it represents the old (buggy) functionality.
+            GraphWalkingDirectionsEnum.BOTH is the current (proper) functionality.
    </td>
 </tr>
 </table>
