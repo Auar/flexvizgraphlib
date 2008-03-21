@@ -424,11 +424,12 @@ package org.un.flex.graphLayout.data {
 				 * this was more complicated than I thought and I am
 				 * not tooo happy with this way...
 				 * also it might not always find the edge if graph is non-directional
-				 * as most graphs are. The edge found could be the other way round
+				 * as most graphs are. The edge found could be the other way round.
+				 * Have to use the "othernode()" method here.
 				 */
 				var outedges:Array = node1.outEdges;
 				for each (var edge:Edge in outedges) {
-					if(edge.node1 == node2 || edge.node2 == node2) {
+					if(edge.othernode(node1) == node2) {
 						retEdge = edge;
 						break;
 					}
