@@ -1818,12 +1818,15 @@ package org.un.flex.graphLayout.visual {
 			}
 			
 			/* this should be the canvas, i.e. "this" */
-			mycomponent = (event.currentTarget as UIComponent);
+			//mycomponent = (event.currentTarget as UIComponent);
+			mycomponent = (this as UIComponent);
 			
 			/* check for validity */
+			/* not needed any more 
 			if(mycomponent == null) {
 				throw Error("Got backgroundDragBegin without UIComponent target!");
 			}
+			*/
 			
 			/* set the progress flag and save the starting coordinates */
 			_backgroundDragInProgress = true;
@@ -1889,13 +1892,25 @@ package org.un.flex.graphLayout.visual {
 				_backgroundDragInProgress = false;
 				
 				/* get the background drag object, which is usually
-				 * the canvas */
-				myback = (event.currentTarget as DisplayObject);
+				 * the canvasm so we just set it to this */
+				//myback = (event.currentTarget as DisplayObject);
+				myback = (this as DisplayObject);
+				
+				/*
+				if(myback == (this as DisplayObject)) {
+					trace("we found ourselves as the background object GREAT");
+				} else {
+					trace("we got something else as the background, HMPF");
+				}
+				*/
+				
+				/* no longer needed
 				if(myback == null) {
 					/* this can happen if we let go of the button
-					 * outside of the window */
+					 * outside of the window *
 					trace("dragEnd: background drop event target was no DisplayObject but "+event.currentTarget.toString());
 				}
+				*/
 				
 				/* unregister event handler */				
 				myback.removeEventListener(MouseEvent.MOUSE_MOVE,backgroundDragContinue);
