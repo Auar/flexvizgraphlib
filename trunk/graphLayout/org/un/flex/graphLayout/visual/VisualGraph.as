@@ -171,13 +171,13 @@ package org.un.flex.graphLayout.visual {
 		 * To enable/disable scrolling while background is being
 		 * dragged 
 		 * */
-    private var _scrollBackgroundInDrag:Boolean = true;
+		private var _scrollBackgroundInDrag:Boolean = true;
 		
 		/**
 		 * To enable/disable movement while node is being
 		 * dragged 
 		 * */
-    private var _moveNodeInDrag:Boolean = true;
+		private var _moveNodeInDrag:Boolean = true;
 
 		/* Rendering */
 
@@ -322,15 +322,6 @@ package org.un.flex.graphLayout.visual {
 		 * Typically the root node is selected by double-click.
 		 * */
 		private var _currentRootVNode:IVisualNode = null;
-				
-		/**
-		 * There is currently a "distinguished" node, which is
-		 * different from the root node. The distinguished node is
-		 * selected by single-click. The current effect of having
-		 * a distinguished node, is that it's attached edges are
-		 * drawn in a different colour. This may be changed.
-		 * */
-		private var _distinguishedNode:IVisualNode = null;
 	
 		/**
 		 * This hash keeps track of all the past root VNodes
@@ -1364,17 +1355,6 @@ package org.un.flex.graphLayout.visual {
 					throw Error("One of the nodes of the checked edge is not visible, but should be!");
 				}
 				
-				/* XXX THIS DOES CURRENTLY NO LONGER WORK
-				 * The following controls the colouring but this should
-				 * be optimised and handled more flexible */
-				/*
-				if(vn1 == _distinguishedNode || vn2 == _distinguishedNode) {
-					distinguished = true;
-				} else {
-					distinguished = false;
-				}
-				*/
-
 				/* now check if we should display edge labels, and if so
 				 * create an edge view to display the label, if it is not
 				 * there already */
@@ -1385,12 +1365,9 @@ package org.un.flex.graphLayout.visual {
 					}
 				}
 
-
 				/* Change: we do not pass the nodes or the vnodes, but the
 				 * edge. The reason is that the edge can have properties
-				 * assigned with it that affect the drawing. Right now we 
-				 * pass the fact if this is a 'distinguished' edge and leave
-				 * the color choice up to the edgerenderer */
+				 * assigned with it that affect the drawing. */
 				drawEdge(edge);
 			}
 			// we are done, so we reset the indicator
@@ -1676,45 +1653,12 @@ package org.un.flex.graphLayout.visual {
 
 		/**
 		 * This is the event handler for a single click 
-		 * event. Currently does two things:
-		 * 1. It highlights the node that
-		 *    was clicked on (highlight in terms of making it
-		 *    a distinguished node, which changes the colours
-		 *    of its associated edges).
-		 * 2. Starts a drag operation of this node.
+		 * event. Currently does only one thing:
+		 * - Starts a drag operation of this node.
 		 * @param e The associated event.
 		 * */
 		private function nodeMouseDown(e:MouseEvent):void {
-			highlightNode(e);
 			dragBegin(e);
-		}
-		/**
-		 * Highlight a node that was target of the passed
-		 * event by making it the distinguished node.
-		 * @param event The Mouse event that was triggered by click.
-		 * */
-		private function highlightNode(event:MouseEvent):void {
-			var comp:UIComponent;
-			var vnode:IVisualNode;
-			
-			/* get the view object that was klicked on (actually
-			 * the one that has the event handler registered, which
-			 * is the VNode's view */
-			comp = (event.currentTarget as UIComponent);
-			
-			/* get the associated VNode */
-			vnode = lookupNode(comp);
-			
-			
-			
-			if(vnode) {				
-				/* set the node as distinguished */
-				_distinguishedNode = vnode;
-				
-				/* make sure the edges are redrawn so that
-				 * the changed color is shown */
-				refresh();
-			}
 		}
 		
 		/**
