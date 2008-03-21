@@ -58,7 +58,7 @@
 			import org.un.flex.graphLayout.visual.IVisualNode;
 			import org.un.flex.graphLayout.visual.IVisualGraph;
 			import org.un.flex.graphLayout.visual.IEdgeRenderer;
-			import org.un.flex.graphLayout.visual.INodeRenderer;
+			//import org.un.flex.graphLayout.visual.INodeRenderer;
 			import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
 			// Layout classes
 			import org.un.flex.graphLayout.layout.ConcentricRadialLayouter;
@@ -116,7 +116,7 @@
 			private var rootNodeHistory:Array;
 			private var currentHistoryIndex:uint;
 			private var xmlNames:Array;
-
+			
 			// Public Variables */
 			
 			/* array collection to hold the XML data in order
@@ -294,6 +294,13 @@
 				
 				/* kick it off */
 				vgraph.draw();
+			}
+			
+			private function toggleAnimation():void {
+				if(layouter != null) {
+					layouter.resetAll(); // to kill any timers
+					layouter.disableAnimation = disableAnim.selected;
+				}
 			}
 			
 			private function setLayouter():void {
@@ -482,7 +489,7 @@
 				}
 
 				layouter.autoFitEnabled = autoFit.selected;
-				
+				layouter.disableAnimation = disableAnim.selected;
 			}
 			
 		
@@ -1030,6 +1037,8 @@
 									id="autoFit" label="AutoFit" click="updateAutoFit()" />
 								<mx:CheckBox selected="false" id="showHistory" label="History" toolTip="Select will retain visibility of all nodes visited"
 									click="changeShowHistory()" />
+								<mx:CheckBox selected="false" id="disableAnim" label="Disable Animations" toolTip="If checked, animations are bypassed."
+									click="toggleAnimation()" />
 							</mx:HBox>
 							</mx:VBox>
 							</flexlib:WindowShade>
