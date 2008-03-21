@@ -43,7 +43,7 @@ package org.un.cava.birdeye.visualize.renderers.nodes {
 				GlobalParams.visualDetailTitle.text = this.data.data.@name;
 			}
 			if(GlobalParams.visualDetailDesc != null) {
-				GlobalParams.visualDetailDesc.text = this.data.data.@description;
+				GlobalParams.visualDetailDesc.text = this.data.data.@desc;
 			}
 		}
 		
