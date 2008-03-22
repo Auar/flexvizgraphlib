@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:local="org.un.cava.birdeye.components.ui.controls.layouterControls.*"
+	width="97%"
+	horizontalAlign="center"
+	paddingLeft="5"
+	paddingRight="5"
+	paddingBottom="5"
+	paddingTop="5"
+	borderColor="#666666"
+	borderThickness="1"
+	cornerRadius="5"
+	borderStyle="solid"
+	backgroundColor="#CCCCCC"
+	backgroundAlpha=".2"
+	creationComplete="registerComplete()"
+	 >
+	
+	<local:OrientationSelector id="orientSel" />
+	<local:NodeSpacing id="nodeSpacing" />
+	<local:SiblingSpread id="sibSpread" />
+	
+	<mx:Script>
+		<![CDATA[
+			import org.un.cava.birdeye.utils.GlobalParams;
+			import org.un.flex.graphLayout.layout.HierarchicalLayouter;
+
+			/* to be set if creation was complete */
+			private var _complete:Boolean = false;
+
+
+			/**
+			 * When enabling or disabling this component, we also
+			 * perform some specific tasks.
+			 * Attention do completely disable interaction
+			 * there is also the mouseEnabled property.
+			 * 
+			 * @inheritDoc
+			 * */
+			override public function set enabled(e:Boolean):void {
+				
+				/* only do this if creation was complete including children */
+				if(_complete) {
+					/* disable children */
+					orientSel.enabled = e;
+					nodeSpacing.enabled = e;
+					sibSpread.enabled = e;
+				}
+				
+				/* do it for the super class */
+				super.enabled = e;
+				
+				/* if disabled remove from view and vice versa */
+				this.visible = e;
+				this.includeInLayout = e;
+			}
+			
+			/**
+			 * This method applies the current values of all controls to
+			 * the layouter set in GlobalParams
+			 * */
+			public function applyValues():void {
+				var layouter:HierarchicalLayouter;
+				
+				if(GlobalParams.layouter == null) {
+					trace("GP layouter is null, doing nothing");
+					return;
+				}
+				
+				if(!GlobalParams.layouter is HierarchicalLayouter) {
+					trace("GP layouter is not hierarchical, cannot apply values");
+					return;
+				}
+				
+				layouter = GlobalParams.layouter as HierarchicalLayouter;
+				layouter.breadth = nodeSpacing.bslider.value;
+				layouter.enableSiblingSpread = sibSpread.selected;
+				//layouter.orientation can crash....
+			}
+			
+			/**
+			 * This method refreshed the current values of all controls with
+			 * those of the layouter set in GlobalParams
+			 * */
+			public function refreshValues():void {
+				var layouter:HierarchicalLayouter;
+				
+				if(GlobalParams.layouter == null) {
+					trace("GP layouter is null, doing nothing");
+					return;
+				}
+				
+				if(!GlobalParams.layouter is HierarchicalLayouter) {
+					trace("GP layouter is not hierarchical, cannot apply values");
+					return;
+				}
+				
+				layouter = GlobalParams.layouter as HierarchicalLayouter;
+				
+				nodeSpacing.bslider.value = layouter.breadth;
+				sibSpread.selected = layouter.enableSiblingSpread;
+				//layouter.orientation can crash....
+			}
+			
+			/**
+			 * register that we are complete
+			 * */
+			private function registerComplete():void {
+				_complete = true;
+			}
+		]]>
+	</mx:Script>
+</mx:VBox>
