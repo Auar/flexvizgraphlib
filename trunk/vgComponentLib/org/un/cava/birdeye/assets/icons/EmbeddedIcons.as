@@ -60,6 +60,8 @@ package org.un.cava.birdeye.assets.icons {
 		[Embed(source="nodes/center.png")]
 	 	static public var centerIcon:Class; 	
 	 	
+	 	/* hnnnnngl, variables may not start with numbers
+	 	 * or use them at all, I am not changing that for now 
 	 	[Bindable]
 		[Embed(source="nodes/2.png")]
 	 	static public var 02Icon:Class; 
@@ -235,7 +237,7 @@ package org.un.cava.birdeye.assets.icons {
 	 	[Bindable]
 		[Embed(source="nodes/45.png")]
 	 	static public var 45Icon:Class;	 	
-	 	
+	 	*/
 
 	 	// Edges
 	 	
