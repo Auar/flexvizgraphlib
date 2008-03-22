@@ -14,7 +14,6 @@
 		<mx:String>Right-Left</mx:String>
 	</mx:ArrayCollection>
 	
-	
 	<mx:Script>	
 		<![CDATA[
 			import org.un.cava.birdeye.utils.GlobalParams;
@@ -42,7 +41,11 @@
 				super.enabled = e;
 			}
 			
-			private function setOrientation():void {
+			/**
+			 * Set the orientation value in the layouter
+			 * according to the current selected value
+			 * */
+			public function setOrientation():void {
 				
 				var or:String;
 				var hlayouter:HierarchicalLayouter;
@@ -95,5 +98,4 @@
 			}
 		]]>
 	</mx:Script>
-	
 </mx:ComboBox>

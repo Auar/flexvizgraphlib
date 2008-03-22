@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml">
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+	creationComplete="registerComplete()"
+	>
 	
 	<mx:Label
 		id="bsliderlabel"
@@ -27,6 +29,9 @@
 			import org.un.flex.graphLayout.visual.IVisualGraph;
 			import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
 			
+			/* to be set if creation was complete */
+			private var _complete:Boolean = false;
+			
 			/**
 			 * When enabling or disabling this component, we also
 			 * perform some specific tasks.
@@ -36,12 +41,14 @@
 			 * @inheritDoc
 			 * */
 			override public function set enabled(e:Boolean):void {
-				if(e == true) {
-					bsliderlabel.setStyle("color",0x000000);
-					bslider.alpha=1;
-				} else {
-					bsliderlabel.setStyle("color",0xCCCCCC);
-					bslider.alpha=0.3;
+				if(_complete) {
+					if(e == true) {
+						bsliderlabel.setStyle("color",0x000000);
+						bslider.alpha=1;
+					} else {
+						bsliderlabel.setStyle("color",0xCCCCCC);
+						bslider.alpha=0.3;
+					}
 				}
 				/* call superclass (VBox) */
 				super.enabled = e;
@@ -75,7 +82,13 @@
 				} else {
 					trace("NodeSpacing changed, but no valid vgraph in GlobalParams, not redrawing!");
 				}
-			}	
+			}
+			/**
+			 * register that we are complete
+			 * */
+			private function registerComplete():void {
+				_complete = true;
+			}
 		]]>
 	</mx:Script>
 	

@@ -1,12 +1,15 @@
 package org.un.cava.birdeye.utils {
 	
 	import flexlib.containers.WindowShade;
-	import mx.controls.Image;
+	
 	import mx.containers.Accordion;
 	import mx.controls.CheckBox;
+	import mx.controls.Text;
 	import mx.controls.TextArea;
 	import mx.controls.VSlider;
-	import mx.controls.Text;
+	
+	import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
+	import org.un.flex.graphLayout.visual.IVisualGraph;
 	
 	
 	/**
@@ -16,6 +19,13 @@ package org.un.cava.birdeye.utils {
 	 * parentApplication (and other issues)
 	 * */
 	public class GlobalParams {
+		
+		/**
+		 * Core objects for VisualGraph
+		 * */
+		public static var layouter:ILayoutAlgorithm;
+		public static var vgraph:IVisualGraph;
+			
 		
 		/** 
 		 * zoom factor for rendered items */
