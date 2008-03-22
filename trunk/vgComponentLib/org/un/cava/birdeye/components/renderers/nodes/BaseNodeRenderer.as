@@ -5,31 +5,24 @@ package org.un.cava.birdeye.components.renderers.nodes {
 	import flash.events.MouseEvent;
 	
 	import mx.containers.VBox;
-	import mx.controls.Image;
+	import mx.controls.Label;
 	import mx.controls.LinkButton;
 	import mx.controls.Spacer;
 	import mx.core.IDataRenderer;
-	import mx.core.UIComponent;
 	import mx.events.FlexEvent;
 	
-	import org.un.cava.birdeye.assets.icons.EmbeddedIcons;
-	import org.un.cava.birdeye.assets.icons.primitives.Circle;
-	import org.un.cava.birdeye.assets.icons.primitives.Rectangle;
 	import org.un.cava.birdeye.utils.GlobalParams;
 	
 	/**
 	 * This _image displays the graph nodes as
 	 * primitive icon or as embedded image
 	 * */
-	public class NodeRenderer extends VBox {
+	public class BaseNodeRenderer extends VBox {
 	
-		/* this is the actual image object */
-		private var _imageObject:UIComponent;
-		
 		/**
 		 * Base Constructor
 		 * */
-		public function NodeRenderer() {
+		public function BaseNodeRenderer() {
 			super();
 			this.addEventListener(FlexEvent.CREATION_COMPLETE,initComponent);
 		}
@@ -45,7 +38,7 @@ package org.un.cava.birdeye.components.renderers.nodes {
 		 * definition.
 		 * @param e The event that this handler was triggered from. Unused.
 		 * */
-		private function getDetails(e:Event):void {
+		protected function getDetails(e:Event):void {
 			// trace("Show Details");
 			
 			/* check if we have a data object */
@@ -106,12 +99,32 @@ package org.un.cava.birdeye.components.renderers.nodes {
 		/**
 		 * Full initialisation of the renderer component, triggered
 		 * after reception of the creation complete event.
+		 * This method should be overriden by NodeRenderers
+		 * which are more specific.
 		 * @param e the creation complete event (unused).
 		 * */
-		private function initComponent(e:Event):void {
+		override protected function initComponent(e:Event):void {
+			
+			/* initialize the upper part of the renderer */
+			initTopPart();
+			
+			/* in between could be other components added
+			 * like images */
+			 
+			/* now the link button */
+			initLinkButton();
+			
+			/* and the label */
+			initLabel();
+		}
+
+		/**
+		 * This method initialises the "upper" part of
+		 * the rencerer and the general parts,
+		 * i.e. title, tooltip, spacer */
+		protected function initTopPart():void {
 			
 			var spacer:Spacer;
-			var lb:LinkButton;
 			
 			/* set id so it is accessible from MXML */
 			this.id = "detailView";
@@ -136,14 +149,16 @@ package org.un.cava.birdeye.components.renderers.nodes {
 			spacer.id = "makeimgalign";
 			spacer.height = 18;
 			this.addChild(spacer);
+		}
+
+		/**
+		 * this methods initialises and adds a 
+		 * link button to the renderer
+		 * */
+		protected function initLinkButton():void {
 			
-			/* create the Image component */
-			createImageComponent();
+			var lb:LinkButton;
 			
-			/* add the image component */
-			this.addChild(_imageObject);
-		
-			/* and the linkbutton */
 			lb = new LinkButton();
 			lb.id = "viewDetails";
 			
@@ -161,71 +176,33 @@ package org.un.cava.birdeye.components.renderers.nodes {
 			
 			this.addChild(lb);
 		}
-
-
-		private function createImageComponent():void {
-			
-			/* again attributes are pulled from XML */
-			var type:String = this.data.data.@nodeClass;
-			var size:int = this.data.data.@nodeSize;
-			var color:int = this.data.data.@nodeColor;
-			
-			/* first create the image object node */
-			switch(type) {
-		    	
-				case "earth":
-				case "tree":
-				case "leaf":
-					setImageNode(type);
-			        break;
-			    	
-			    /* maybe we want degrafa objects here? */
-			    
-			    
-		    	case "rectangle":
-					_imageObject = new Rectangle();
-					_imageObject.setStyle("color", color);
-					_imageObject.width=size;
-					_imageObject.height=size;
-					break;
-
-				case "circle":
-					_imageObject = new Circle();
-					_imageObject.setStyle("color", color);
-					_imageObject.width=size;
-					_imageObject.height=size;
-					break;
-
-				default:
-			        // trace("Out of range");
-			        _imageObject.setStyle("color", color);
-			        break;
-			}
-			/* for any _imageObject */
-			_imageObject.toolTip = this.data.data.@name;
-			_imageObject.scaleX = GlobalParams.scaleFactor;
-			_imageObject.scaleY = GlobalParams.scaleFactor;
-		}
 		
-		private function setImageNode(type:String):void {
-			_imageObject = new Image();
-			_imageObject.width = 32;
-			_imageObject.height = 32;	
-			switch(type) {
-				case "earth":
-		    		(_imageObject as Image).source = EmbeddedIcons.earthIcon;
-		        	break;
-		        case "tree":
-		    		(_imageObject as Image).source = EmbeddedIcons.treeIcon;
-		        	break;
-		        case "leaf":
-			    	(_imageObject as Image).source = EmbeddedIcons.leafIcon;
-			        break;
-			    default:
-					trace("Illegal type for image node:"+type+" setting to leaf icon");
-					(_imageObject as Image).source = EmbeddedIcons.leafIcon;
-					break;
+		/**
+		 * this methods initialises and adds a label
+		 * with visible text, if the node is selected
+		 * */
+		protected function initLabel():void {
+			var ll:Label;
+			
+			ll = new Label();
+			ll.id = "nodeLabel";
+			/* again we should do checks here */
+			ll.text = this.data.data.@name;
+			/* some hardcoded values for now */
+			ll.width = 75;
+			ll.height = 11;
+			ll.setStyle("textAlign","center");
+			ll.setStyle("fontSize",10);
+			
+			this.addChild(ll);
+			
+			/* not sure yet how to incoroporate this
+			if (GlobalParams.visualNodeLabel.selected==true){
+				nodeText.visible=true
+			} else {
+				nodeText.visible=false
 			}
+			*/
 		}
 	}
 }
