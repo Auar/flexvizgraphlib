@@ -1,4 +1,4 @@
-package org.un.cava.birdeye.assets {
+package org.un.cava.birdeye.assets.icons {
 	
 	import mx.core.ClassFactory;
 	
