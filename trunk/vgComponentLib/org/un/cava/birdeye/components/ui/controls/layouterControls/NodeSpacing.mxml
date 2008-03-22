@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml">
+	
+	<mx:Label
+		id="bsliderlabel"
+		toolTip="Change the node spacing in Hierarchical"
+		text="Hierarchical Node Spacing"
+		fontSize="9" 
+		textAlign="center"
+		/>
+		
+	<mx:HSlider
+		tickInterval="20"
+		width="95%"
+		id="bslider"
+		value="160"
+		minimum="0"
+		maximum="200"
+		liveDragging="true"
+		change="updateNodeSpacing()"
+		/>
+	
+	<mx:Script>
+		<![CDATA[
+			import org.un.cava.birdeye.utils.GlobalParams;
+			import org.un.flex.graphLayout.layout.HierarchicalLayouter;
+			import org.un.flex.graphLayout.visual.IVisualGraph;
+			import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
+			
+			/**
+			 * When enabling or disabling this component, we also
+			 * perform some specific tasks.
+			 * Attention do completely disable interaction
+			 * there is also the mouseEnabled property.
+			 * 
+			 * @inheritDoc
+			 * */
+			override public function set enabled(e:Boolean):void {
+				if(e == true) {
+					bsliderlabel.setStyle("color",0x000000);
+					bslider.alpha=1;
+				} else {
+					bsliderlabel.setStyle("color",0xCCCCCC);
+					bslider.alpha=0.3;
+				}
+				/* call superclass (VBox) */
+				super.enabled = e;
+			}
+						
+			private function updateNodeSpacing():void {
+				
+				var hlayouter:HierarchicalLayouter;
+				var vgraph:IVisualGraph = GlobalParams.vgraph;
+				
+				/* check if we have a layouter at all */
+				if(GlobalParams.layouter == null) {
+					trace("Cannot update NodeSpacing on null layouter");
+					return;
+				}
+				
+				/* check if it is a supported layouter (currently Hierarchical only) */
+				if(!GlobalParams.layouter is HierarchicalLayouter) {
+					trace("NodeSpacing is only available in HierarchicalLayouter");
+					return;
+				}
+				
+				/* set the local layouter reference */
+				hlayouter = GlobalParams.layouter as HierarchicalLayouter;
+				
+				hlayouter.breadth = bslider.value;
+				hlayouter.layoutChanged = true;
+				
+				if(vgraph != null) {
+					vgraph.draw();
+				} else {
+					trace("NodeSpacing changed, but no valid vgraph in GlobalParams, not redrawing!");
+				}
+			}	
+		]]>
+	</mx:Script>
+	
+	
+</mx:VBox>
