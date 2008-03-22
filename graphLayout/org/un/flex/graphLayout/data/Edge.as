@@ -23,6 +23,8 @@
  * THE SOFTWARE.
  */
 package org.un.flex.graphLayout.data {
+	
+	import mx.core.IDataRenderer;
 	import org.un.flex.graphLayout.visual.IVisualEdge;
 	
 	
@@ -35,7 +37,7 @@ package org.un.flex.graphLayout.data {
 	 * @see Node
 	 * @see IVisualEdge
 	 * */
-	public class Edge implements IEdge {
+	public class Edge implements IEdge, IDataRenderer {
 		
 		/** 
 		 * attributes

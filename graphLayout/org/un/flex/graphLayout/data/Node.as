@@ -23,6 +23,8 @@
  * THE SOFTWARE.
  */
 package org.un.flex.graphLayout.data {
+	
+	import mx.core.IDataRenderer;
 	import org.un.flex.graphLayout.visual.IVisualNode;
 	
 	
@@ -32,7 +34,7 @@ package org.un.flex.graphLayout.data {
 	 * non-directional edges. A node has an id, a String id
 	 * and may be associated with a visual node.
 	 * */
-	public class Node implements INode {
+	public class Node implements INode, IDataRenderer {
 	
 		/**
 		 * @internal

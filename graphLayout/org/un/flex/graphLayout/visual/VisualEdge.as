@@ -24,8 +24,10 @@
  */
 package org.un.flex.graphLayout.visual {
 	
-	import org.un.flex.graphLayout.data.IEdge;
+	import mx.core.IDataRenderer;
 	import mx.core.UIComponent;
+	
+	import org.un.flex.graphLayout.data.IEdge;
 	
 	/**
 	 * A visual edge is just a representation of a graph edge
@@ -34,7 +36,7 @@ package org.un.flex.graphLayout.visual {
 	 * and a data object to support it's drawing features.
 	 * There is a small possibility that this class will be removed.
 	 * */
-	public class VisualEdge implements IVisualEdge {
+	public class VisualEdge implements IVisualEdge, IDataRenderer {
 		
 		/* internal id of the edge */
 		private var _id:int;
