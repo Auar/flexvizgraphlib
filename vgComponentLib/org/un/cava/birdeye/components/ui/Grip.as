@@ -1,4 +1,4 @@
-package org.un.cava.birdeye.ui {
+package org.un.cava.birdeye.components.ui {
 	
 	import mx.containers.VBox;
 	import mx.controls.Button;

@@ -1,13 +1,20 @@
-package org.un.cava.birdeye.visualize.renderers.nodes {
+package org.un.cava.birdeye.components.renderers.nodes {
 	
 	// Flash classes
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	
 	import mx.containers.VBox;
+	import mx.controls.Image;
+	import mx.controls.LinkButton;
+	import mx.controls.Spacer;
 	import mx.core.IDataRenderer;
 	import mx.core.UIComponent;
 	import mx.events.FlexEvent;
 	
+	import org.un.cava.birdeye.assets.icons.EmbeddedIcons;
+	import org.un.cava.birdeye.assets.icons.primitives.Circle;
+	import org.un.cava.birdeye.assets.icons.primitives.Rectangle;
 	import org.un.cava.birdeye.utils.GlobalParams;
 	
 	/**
