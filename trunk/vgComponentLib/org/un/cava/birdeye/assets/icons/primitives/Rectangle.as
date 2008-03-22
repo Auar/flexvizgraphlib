@@ -64,7 +64,7 @@ package org.un.cava.birdeye.assets.icons.primitives
 		 * height already).
 		 * @param h The height of the rectangle in pixel.
 		 * */
-		public function set recHeighth(h:int): void {
+		public function set recHeight(h:int): void {
 			_height = h;
 			invalidateDisplayList(); 
 		}

@@ -103,7 +103,7 @@ package org.un.cava.birdeye.components.renderers.nodes {
 		 * which are more specific.
 		 * @param e the creation complete event (unused).
 		 * */
-		override protected function initComponent(e:Event):void {
+		protected function initComponent(e:Event):void {
 			
 			/* initialize the upper part of the renderer */
 			initTopPart();
