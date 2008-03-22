@@ -11,7 +11,7 @@ package org.un.cava.birdeye.components.renderers.nodes {
 	import org.un.cava.birdeye.assets.icons.EmbeddedIcons;
 	import org.un.cava.birdeye.assets.icons.primitives.Circle;
 	import org.un.cava.birdeye.assets.icons.primitives.Rectangle;
-
+	import org.un.cava.birdeye.utils.GlobalParams;
 	
 	/**
 	 * This _image displays the graph nodes as
