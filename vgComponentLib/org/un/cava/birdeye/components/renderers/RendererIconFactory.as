@@ -76,6 +76,11 @@ package org.un.cava.birdeye.components.renderers {
 		 * object. Right now this uses very basic code, however,
 		 * the Degrafa library would also offer this kind of stuff,
 		 * so we need to investigate how we could make use of that.
+		 * @param name The name of the desired primitive shape.
+		 * @param size The size, which is either side length of rectangle or
+		 * radius of circle.
+		 * @param color The color of the shape.
+		 * @returns The UIComponent representing the shape.
 		 * */
 		public static function getPrimitiveIcon(name:String, size:int, color:int):UIComponent {
 		
@@ -106,6 +111,9 @@ package org.un.cava.birdeye.components.renderers {
 		/**
 		 * returns an image object with the source set
 		 * to the url provided.
+		 * @param url The URL string where to access the image.
+		 * @param size The size, the image will be renderered as a square.
+		 * @returns The Image object of the icon.
 		 * */
 		public static function getUrlbasedIcon(url:String,size:int):Image {
 			var img:Image = new Image();
@@ -119,6 +127,9 @@ package org.un.cava.birdeye.components.renderers {
 		 * just for the sake of the uniformity of the
 		 * interface, we also provide a method to get an embedded icon,
 		 * however this is directly passed to EmbeddedIcons.
+		 * @param name The descriptive name of the embedded icon.
+		 * @param size The size of the icon, it will render as square.
+		 * @returns The image object of the embedded icon.
 		 * */
 		public static function getEmbeddedIcon(name:String,size:int):Image {
 			return EmbeddedIcons.generateImage(name,size);
