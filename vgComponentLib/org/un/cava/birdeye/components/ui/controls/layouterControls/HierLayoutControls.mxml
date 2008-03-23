@@ -2,7 +2,7 @@
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
 	xmlns:local="org.un.cava.birdeye.components.ui.controls.layouterControls.*"
 	width="97%"
-	horizontalAlign="center"
+	horizontalAlign="left"
 	paddingLeft="5"
 	paddingRight="5"
 	paddingBottom="5"

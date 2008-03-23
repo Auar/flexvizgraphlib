@@ -5,9 +5,10 @@
 	color="#CCCCCC"
 	prompt="Select the orientation"
 	toolTip="Select the orientation of the layout"
+	creationComplete="initData()"
 	change="setOrientation()" >
 	
-	<mx:ArrayCollection>
+	<mx:ArrayCollection id="orvalues">
 		<mx:String>Top Down</mx:String>
 		<mx:String>Bottom Up</mx:String>
 		<mx:String>Left-Right</mx:String>
@@ -96,6 +97,16 @@
 					trace("orientation changed, but no valid vgraph in GlobalParams, not redrawing!");
 				}
 			}
+			
+			/**
+			 * initialise the selection data.
+			 * It is a bit unclear, why this seems to be necessary.
+			 * */
+			private function initData():void {
+				this.dataProvider = orvalues;
+			}
+			
+			
 		]]>
 	</mx:Script>
 </mx:ComboBox>
