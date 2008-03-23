@@ -1,12 +1,10 @@
 package org.un.cava.birdeye.components.renderers.nodes {
 	
 	import flash.events.Event;
-	
-	import mx.effects.Zoom;
-	
+	import mx.core.UIComponent;
 	import org.un.cava.birdeye.utils.GlobalParams;
-	import org.un.cava.birdeye.assets.icons.primitives.Circle;
-	
+	import org.un.cava.birdeye.components.renderers.RendererIconFactory;
+		
 	/**
 	 * Renderer for data from the CIA World Factbook
 	 * */
@@ -24,7 +22,7 @@ package org.un.cava.birdeye.components.renderers.nodes {
 		 * */
 		override protected function initComponent(e:Event):void {
 			
-			var cc:Circle;
+			var cc:UIComponent;
 			
 			/* initialize the upper part of the renderer */
 			initTopPart();
@@ -85,36 +83,36 @@ package org.un.cava.birdeye.components.renderers.nodes {
 		 * and add it do this object
 		 * @returns the circle, may be useful for derived classes 
 		 * */
-		private function addCircle():Circle {
+		private function addCircle():UIComponent {
 			
-			var cc:Circle = new Circle();
+			var cc:UIComponent;
+			var co:int; 
 			var nodeType:String = this.data.data.@nodeType; // needs check
 
-			cc.id = "circle";
-			cc.toolTip = this.data.data.@name; // needs check
-			cc.width = 10;
-			cc.height = 10;
-			
 			switch(nodeType) {
 				case "center":
-					cc.color = 0x333333;
+					co = 0x333333;
 					break;
 				case "continent":
-					cc.color = 0x999999;
+					co = 0x999999;
 					break;
 				case "country":
-					cc.color = 0x228b22;
+					co = 0x228b22;
 					break;
 				case "language":
-					cc.color = 0x9932cc;
+					co = 0x9932cc;
 					break;
 				case "ocean":
-					cc.color = 0x4682b4;
+					co = 0x4682b4;
 					break;
 				default:
-					cc.color = 0x333333;
+					co = 0x333333;
 					break;
 			}
+			
+			/* add a primitive circle with the selected color */
+			cc = RendererIconFactory.createIcon("primitive::circle",10,co);
+			cc.toolTip = this.data.data.@name; // needs check	
 			this.addChild(cc);
 			return cc;
 		}

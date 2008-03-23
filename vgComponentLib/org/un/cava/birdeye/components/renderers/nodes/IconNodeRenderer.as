@@ -2,10 +2,9 @@ package org.un.cava.birdeye.components.renderers.nodes {
 	
 	import flash.events.Event;
 	
-	import mx.controls.Image;
-	import mx.effects.Resize;
+	import mx.core.UIComponent;
 	
-	import org.un.cava.birdeye.assets.icons.primitives.Circle;
+	import org.un.cava.birdeye.components.renderers.RendererIconFactory;
 	
 	/**
 	 * This a basic icon itemRenderer for a node. 
@@ -28,14 +27,17 @@ package org.un.cava.birdeye.components.renderers.nodes {
 		 * */
 		override protected function initComponent(e:Event):void {
 			
-			var img:Image;
-			
+			var img:UIComponent;
+
 			/* initialize the upper part of the renderer */
 			initTopPart();
 			
-			/* add a simple circle as in the base class */
-			img = addImage();
-			
+			/* add an icon as specified in the XML, this should
+			 * be checked */
+			img = RendererIconFactory.createIcon(this.data.data.@nodeIcon,32);
+			img.toolTip = this.data.data.@name; // needs check
+			this.addChild(img);
+						
 			/* now add the filters to the circle */
 			reffects.addDSFilters(img);
 			 
@@ -57,24 +59,5 @@ package org.un.cava.birdeye.components.renderers.nodes {
 			_zoom.heightTo = 64;
 		}
 		*/
-	
-	
-		/**
-		 * create an Image initialised from XML
-		 * and add it do this object
-		 * @returns the image, may be useful for derived classes 
-		 * */
-		private function addImage():Image {
-			
-			var img:Image = new Image();
-			
-			img.id = "img";
-			img.source = this.data.data.@nodeIcon; // needs check!!
-			img.toolTip = this.data.data.@name; // needs check
-			img.width = 32;
-			img.height = 32;
-			this.addChild(img);
-			return img;
-		}
 	}
 }
