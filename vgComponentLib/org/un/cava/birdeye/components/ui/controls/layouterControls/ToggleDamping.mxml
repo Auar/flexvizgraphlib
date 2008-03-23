@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:CheckBox
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	selected="true"
+	label="Damping"
+	toolTip="Enable/Disable damping"
+	click="changeDamping()" >
+	
+	
+	<mx:Script>
+		<![CDATA[
+			
+			import org.un.cava.birdeye.utils.GlobalParams;
+			import org.un.flex.graphLayout.layout.ForceDirectedLayouter;
+			import org.un.flex.graphLayout.visual.IVisualGraph;
+			import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
+			
+			/**
+			 * When enabling or disabling this component, we also
+			 * perform some specific tasks.
+			 * Attention do completely disable interaction
+			 * there is also the mouseEnabled property.
+			 * 
+			 * @inheritDoc
+			 * */
+			override public function set enabled(e:Boolean):void {
+				if(e == true) {
+					this.setStyle("color",0x000000);
+					this.alpha=1;
+				} else {
+					this.setStyle("color",0xCCCCCC);
+					this.alpha=0.3;
+				}
+				/* call superclass (Checkbox) */
+				super.enabled = e;
+			}
+			
+			private function changeDamping():void {
+				
+				var flayouter:ForceDirectedLayouter;
+				var vgraph:IVisualGraph = GlobalParams.vgraph;
+				
+				/* check if we have a layouter at all */
+				if(GlobalParams.layouter == null) {
+					trace("Cannot enable damping on null layouter");
+					return;
+				}
+				
+				/* check if it is a supported layouter (currently ForceDirected only) */
+				if(!GlobalParams.layouter is ForceDirectedLayouter) {
+					trace("Damping is only available in ForceDirectedLayouter");
+					return;
+				}
+				
+				/* set the local layouter reference */
+				flayouter = GlobalParams.layouter as ForceDirectedLayouter;
+				flayouter.dampingActive = this.selected;
+				
+				if(vgraph != null) {
+					vgraph.draw();
+				} else {
+					trace("Damping changed, but no valid vgraph in GlobalParams, not redrawing!");
+				}
+			}		
+		]]>
+	</mx:Script>
+	
+</mx:CheckBox>

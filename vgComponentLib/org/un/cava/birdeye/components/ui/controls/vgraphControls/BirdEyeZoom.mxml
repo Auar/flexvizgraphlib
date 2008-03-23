@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox 
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	creationComplete="registerComplete()"
+	>
+	
+	<mx:Label
+		toolTip="Use this control to height of birdeye view."
+		text="Birdeye Zoom"
+		fontSize="9" 
+		textAlign="center"
+		/>
+		
+	<mx:HBox width="95%">
+		<mx:Button
+			id="minusZoom"
+			icon="{EmbeddedIcons.zoomoutIcon}"
+			cornerRadius="5"
+			click="bzoom.value=bzoom.value-.10;updateVScale();"
+			/>		
+		<mx:HSlider
+			tickInterval=".25"
+			width="95%"
+			id="bzoom"
+			value="1"
+			minimum=".25"
+			maximum="2"
+			liveDragging="true"
+			change="updateVScale()"
+			/>
+		<mx:Button
+			id="plusZoom"
+			icon="{EmbeddedIcons.zoomoutIcon}"
+			cornerRadius="5"
+			click="bzoom.value=bzoom.value+.10;updateVScale();"
+			/>	
+	</mx:HBox>
+
+	<mx:Script>
+		<![CDATA[
+			import org.un.cava.birdeye.utils.GlobalParams;
+			import org.un.flex.graphLayout.visual.IVisualGraph;
+			import org.un.cava.birdeye.assets.icons.EmbeddedIcons;
+			
+			/* to be set if creation was complete */
+			private var _complete:Boolean = false;
+			
+			/* update the linklength, this indicator always
+ 			 * goes from 0 to 100, depending on the layouter
+ 			 * this is translated to something meaningful */		
+			private function updateVScale():void {
+				
+				var vgraph:IVisualGraph = GlobalParams.vgraph;
+				
+				if(vgraph != null) {
+					vgraph.scaleX = bzoom.value;
+					vgraph.scaleY = bzoom.value;
+				} else {
+					trace("BirdEyeZoom NOT changed, no valid vgraph in GlobalParams, not redrawing!");
+				}
+			}
+			/**
+			 * register that we are complete
+			 * */
+			private function registerComplete():void {
+				_complete = true;
+			}
+		]]>
+	</mx:Script>
+</mx:VBox>

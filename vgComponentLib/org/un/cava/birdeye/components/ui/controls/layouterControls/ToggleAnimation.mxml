@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:CheckBox
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	selected="false"
+	label="Disable Animations"
+	toolTip="If checked, animations are bypassed."
+	click="toggleAnimation()" >
+	
+	<mx:Script>
+		<![CDATA[
+			
+			import org.un.cava.birdeye.utils.GlobalParams;
+			import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
+			
+			private function toggleAnimation():void {
+				
+				var layouter:ILayoutAlgorithm;
+				
+				/* check if we have a layouter at all */
+				if(GlobalParams.layouter == null) {
+					trace("Cannot enable toggleAnimation on null layouter");
+					return;
+				}
+				
+				/* set the local layouter reference */
+				layouter = GlobalParams.layouter;
+				layouter.resetAll(); // to kill any timers
+				layouter.disableAnimation = this.selected;
+			}
+		]]>
+	</mx:Script>
+</mx:CheckBox>

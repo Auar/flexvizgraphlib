@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:CheckBox
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	selected="false"
+	label="History"
+	toolTip="Select will retain visibility of all nodes visited."
+	click="updateShowHistory()" >
+	
+	<mx:Script>
+		<![CDATA[
+			
+			import org.un.cava.birdeye.utils.GlobalParams;
+			import org.un.flex.graphLayout.visual.IVisualGraph;
+			
+			
+			private function updateShowHistory():void {
+				
+				var vgraph:IVisualGraph = GlobalParams.vgraph;
+				
+				if(vgraph != null) {
+					vgraph.showHistory = this.selected;
+					vgraph.draw();
+				} else {
+					trace("History NOT changed, no valid vgraph in GlobalParams, not redrawing!");
+				}
+			}		
+		]]>
+	</mx:Script>
+</mx:CheckBox>
