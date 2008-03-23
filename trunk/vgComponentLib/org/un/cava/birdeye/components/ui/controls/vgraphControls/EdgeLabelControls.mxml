@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:local="org.un.cava.birdeye.components.ui.controls.vgraphControls.*"
+	width="97%"
+	horizontalAlign="left"
+	paddingLeft="5"
+	paddingRight="5"
+	paddingBottom="5"
+	paddingTop="5"
+	borderColor="#666666"
+	borderThickness="1"
+	cornerRadius="5"
+	borderStyle="solid"
+	backgroundColor="#CCCCCC"
+	backgroundAlpha=".2"
+	creationComplete="registerComplete()"
+	 >
+	
+	<local:EdgeLabelSelector id="elselector" />
+	<local:ToggleEdgeLabels id="eltoggle" />
+	
+	<mx:Script>
+		<![CDATA[
+			import org.un.cava.birdeye.utils.GlobalParams;
+			import org.un.flex.graphLayout.layout.HierarchicalLayouter;
+
+			/* to be set if creation was complete */
+			private var _complete:Boolean = false;
+
+
+			/**
+			 * When enabling or disabling this component, we also
+			 * perform some specific tasks.
+			 * Attention do completely disable interaction
+			 * there is also the mouseEnabled property.
+			 * 
+			 * @inheritDoc
+			 * */
+			override public function set enabled(e:Boolean):void {
+				
+				/* only do this if creation was complete including children */
+				if(_complete) {
+					/* disable children */
+					elselector.enabled = e;
+					eltoggle.enabled = e;
+				}
+				
+				/* do it for the super class */
+				super.enabled = e;
+				
+				/* if disabled remove from view and vice versa */
+				this.visible = e;
+				this.includeInLayout = e;
+			}
+			
+			/**
+			 * This method applies the current values of all controls to
+			 * the layouter set in GlobalParams
+			 * */
+			public function applyValues():void {
+				elselector.changeEdgeLabelRenderer();
+				eltoggle.updateShowEdgeLabels();
+			}
+			
+			/**
+			 * This method refreshed the current values of all controls with
+			 * those of the layouter set in GlobalParams
+			 * */
+			public function refreshValues():void {
+				/* cannot do it easily for edgeLabelRendererSelector
+				 * deferred until required */
+				 
+				if(GlobalParams.vgraph) {
+					eltoggle.selected = GlobalParams.vgraph.displayEdgeLabels;
+				} else {
+					trace("cannot refresh ToggleEdgeLabels, vgraph ref in GlobalParams is invalid");
+				}
+			}
+			
+			/**
+			 * register that we are complete
+			 * */
+			private function registerComplete():void {
+				_complete = true;
+			}
+		]]>
+	</mx:Script>
+</mx:VBox>
