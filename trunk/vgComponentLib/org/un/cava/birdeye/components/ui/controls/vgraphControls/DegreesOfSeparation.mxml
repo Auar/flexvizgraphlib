@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" >
+	
+	<mx:Label
+		toolTip="Use this control to specify visible link distance"
+		text="Degrees of Separation"
+		fontSize="9" 
+		textAlign="center"
+		/>
+		
+	<mx:HSlider
+		tickInterval="1"
+		width="95%"
+		id="degreesOfSep"
+		value="2"
+		minimum="1"
+		maximum="10"
+		liveDragging="true"
+		snapInterval="1"
+		change="updateMaxVisDist()"
+		/>
+	
+	<mx:Script>
+		<![CDATA[
+			import org.un.cava.birdeye.utils.GlobalParams;
+			import org.un.flex.graphLayout.visual.IVisualGraph;
+
+			/* to be set if creation was complete */
+			private var _complete:Boolean = false;
+						
+			private function updateMaxVisDist():void {
+				
+				var vgraph:IVisualGraph = GlobalParams.vgraph;
+				if(vgraph != null) {
+					vgraph.maxVisibleDistance = degreesOfSep.value;
+					vgraph.draw();
+				} else {
+					trace("DegreeOfSeparation NOT changed, no valid vgraph in GlobalParams, not redrawing!");
+				}
+			}
+		]]>
+	</mx:Script>
+</mx:VBox>

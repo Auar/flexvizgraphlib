@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml">
+	
+	<mx:Label
+		id="phidiallabel"
+		toolTip="This control changes the geometric angle of ParentCentered and PhylloTree Layouts"
+		text="Layout Angle"
+		fontSize="9"
+		textAlign="center" />
+		
+	<mx:HSlider
+		tickInterval="30"
+		width="95%"
+		id="phidial"
+		value="160"
+		minimum="-360"
+		maximum="360"
+		liveDragging="true"
+		change="updatePhi()" />
+
+
+	<mx:Script>
+		<![CDATA[
+			import org.un.flex.graphLayout.visual.IVisualGraph;
+			import org.un.cava.birdeye.utils.GlobalParams;
+			import org.un.flex.graphLayout.layout.IAngularLayouter;
+			
+			/* to be set if creation was complete */
+			private var _complete:Boolean = false;
+			
+			/**
+			 * When enabling or disabling this component, we also
+			 * perform some specific tasks.
+			 * Attention do completely disable interaction
+			 * there is also the mouseEnabled property.
+			 * 
+			 * @inheritDoc
+			 * */
+			override public function set enabled(e:Boolean):void {
+				if(_complete) {
+					if(e == true) {
+						phidiallabel.setStyle("color",0x000000);
+						phidial.alpha=1;
+					} else {
+						phidiallabel.setStyle("color",0xCCCCCC);
+						phidial.alpha=0.3;
+					}
+				}
+				/* call superclass (VBox) */
+				super.enabled = e;
+			}
+						
+			/**
+			 * update the layouter with the selected value
+			 * The 'phi' angular value is support by selected
+			 * layouters, currently ParentCentered and PhylloTree.
+			 * */
+			private function updatePhi():void {
+				
+				var alayouter:IAngularLayouter;
+				var vgraph:IVisualGraph = GlobalParams.vgraph;
+				
+				/* check if we have a layouter at all */
+				if(GlobalParams.layouter == null) {
+					trace("Cannot update Phi on null layouter");
+					return;
+				}
+				
+				/* check if it is a supported layouter (currently angulars only) */
+				if(!GlobalParams.layouter is IAngularLayouter) {
+					trace("Phi is only available in IAngularLayouter");
+					return;
+				}
+				
+				alayouter = GlobalParams.layouter as IAngularLayouter;
+				alayouter.phi = phidial.value;
+				alayouter.layoutChanged = true;
+
+				/* consider removing this from all these controls */				
+				if(vgraph != null) {
+					vgraph.draw();
+				} else {
+					trace("Phi changed, but no valid vgraph in GlobalParams, not redrawing!");
+				}
+			}
+			/**
+			 * register that we are complete
+			 * */
+			private function registerComplete():void {
+				_complete = true;
+			}			
+		]]>
+	</mx:Script>
+
+</mx:VBox>

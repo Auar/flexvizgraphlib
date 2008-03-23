@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:CheckBox
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	selected="true"
+	label="AutoFit"
+	toolTip="Select to restrict graph to boundaries of current view space.  Graph will autofit its size so that all nodes are visible."
+	click="updateAutoFit()" >
+	
+	<mx:Script>
+		<![CDATA[
+			
+			import org.un.cava.birdeye.utils.GlobalParams;
+			import org.un.flex.graphLayout.visual.IVisualGraph;
+			import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
+			
+			/**
+			 * ATTENTION: autoFitting has an impact on other layouter
+			 * specific controls, we should somehow inform those controls
+			 * possibly by sending an event 
+			 * */
+			
+			private function updateAutoFit():void {
+				
+				var layouter:ILayoutAlgorithm;
+				var vgraph:IVisualGraph = GlobalParams.vgraph;
+				
+				/* check if we have a layouter at all */
+				if(GlobalParams.layouter == null) {
+					trace("Cannot enable autofit on null layouter");
+					return;
+				}
+				
+				/* set the local layouter reference */
+				layouter = GlobalParams.layouter;
+				layouter.autoFitEnabled = this.selected;
+				
+				if(vgraph != null) {
+					vgraph.draw();
+				} else {
+					trace("AutoFit changed, but no valid vgraph in GlobalParams, not redrawing!");
+				}
+			}		
+		]]>
+	</mx:Script>
+</mx:CheckBox>

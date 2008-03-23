@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox 
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	creationComplete="registerComplete()"
+	>
+	
+	<mx:Label
+		id="lllabel"
+		toolTip="Use this control to length of links. Used when AutoFit is disabled."
+		text="Link Length"
+		fontSize="9" 
+		textAlign="center"
+		/>
+		
+	<mx:HBox width="95%">
+		<mx:Button
+			id="minusLinkLength"
+			icon="{EmbeddedIcons.zoomoutIcon}"
+			cornerRadius="5"
+			click="linkLength.value=linkLength.value-25;updateLinkLength();"
+			/>		
+		<mx:HSlider
+			tickInterval="25"
+			width="95%"
+			id="linkLength"
+			value="100"
+			minimum="0"
+			maximum="600"
+			liveDragging="true"
+			change="updateLinkLength()"
+			/>
+		<mx:Button
+			id="plusLinkLength"
+			icon="{EmbeddedIcons.zoomoutIcon}"
+			cornerRadius="5"
+			click="linkLength.value=linkLength.value+25;updateLinkLength();"
+			/>	
+	</mx:HBox>
+	
+	
+	
+	<mx:Script>
+		<![CDATA[
+			import org.un.cava.birdeye.utils.GlobalParams;
+			import org.un.flex.graphLayout.visual.IVisualGraph;
+			import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
+			import org.un.cava.birdeye.assets.icons.EmbeddedIcons;
+			
+			/* to be set if creation was complete */
+			private var _complete:Boolean = false;
+			
+			/**
+			 * When enabling or disabling this component, we also
+			 * perform some specific tasks.
+			 * Attention do completely disable interaction
+			 * there is also the mouseEnabled property.
+			 * 
+			 * @inheritDoc
+			 * */
+			override public function set enabled(e:Boolean):void {
+				if(_complete) {
+					if(e == true) {
+						lllabel.setStyle("color",0x000000);
+						linkLength.alpha=1;
+					} else {
+						lllabel.setStyle("color",0xCCCCCC);
+						linkLength.alpha=0.3;
+					}
+				}
+				/* call superclass (VBox) */
+				super.enabled = e;
+			}
+			
+			/* update the linklength, this indicator always
+ 			 * goes from 0 to 100, depending on the layouter
+ 			 * this is translated to something meaningful */		
+			private function updateLinkLength():void {
+				
+				var layouter:ILayoutAlgorithm;
+				var vgraph:IVisualGraph = GlobalParams.vgraph;
+				
+				/* check if we have a layouter at all */
+				if(GlobalParams.layouter == null) {
+					trace("Cannot update LinkLength on null layouter");
+					return;
+				}
+				
+				/* set the local layouter reference */
+				layouter = GlobalParams.layouter;
+				layouter.linkLength = linkLength.value;
+			
+				if(vgraph != null) {
+					vgraph.draw();
+				} else {
+					trace("LinkLength changed, but no valid vgraph in GlobalParams, not redrawing!");
+				}
+			}
+			/**
+			 * register that we are complete
+			 * */
+			private function registerComplete():void {
+				_complete = true;
+			}
+		]]>
+	</mx:Script>
+</mx:VBox>
