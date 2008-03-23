@@ -217,7 +217,7 @@ package org.un.flex.graphLayout.layout {
 
 			/* check if we ran out of anim cycles, but are not finished */
 			if (cyclefinished) {
-				trace("Achieved final node positions, terminating animation...");
+				//trace("Achieved final node positions, terminating animation...");
 				_animInProgress = false;
 			} else if(_animStep >= _ANIMATIONSTEPS) {
 				trace("Exceeded animation steps, setting nodes to final positions...");
