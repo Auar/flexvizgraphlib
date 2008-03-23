@@ -12,7 +12,10 @@
 			import org.un.cava.birdeye.utils.GlobalParams;
 			import org.un.flex.graphLayout.visual.IVisualGraph;
 			
-			
+			/**
+			 * toggles to show previously visited root nodes
+			 * (root node history)
+			 * */
 			private function updateShowHistory():void {
 				
 				var vgraph:IVisualGraph = GlobalParams.vgraph;

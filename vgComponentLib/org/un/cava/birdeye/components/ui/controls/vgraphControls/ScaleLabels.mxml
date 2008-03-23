@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox 
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	creationComplete="registerComplete()"
+	>
+	
+	<mx:Label
+		toolTip="Use this control to increase/decrease text/icon size."
+		text="Scaling"
+		fontSize="9" 
+		textAlign="center"
+		/>
+		
+	<mx:HBox width="95%">
+		<mx:Button
+			id="minusScale"
+			icon="{EmbeddedIcons.zoomoutIcon}"
+			cornerRadius="5"
+			click="scaleSlider.value=scaleSlider.value-.1; updateScale();"
+			/>		
+		<mx:HSlider
+			tickInterval=".25"
+			width="95%"
+			id="scaleSlider"
+			value="1"
+			minimum=".5"
+			maximum="2.0"
+			snapInterval=".1"
+			liveDragging="true"
+			change="updateScale()"
+			/>
+		<mx:Button
+			id="plusScale"
+			icon="{EmbeddedIcons.zoomoutIcon}"
+			cornerRadius="5"
+			click="scaleSlider.value=scaleSlider.value+.1; updateScale();"
+			/>	
+	</mx:HBox>
+
+	<mx:Script>
+		<![CDATA[
+			import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
+			import mx.core.Container;
+			import mx.core.UIComponent;
+			import org.un.cava.birdeye.utils.GlobalParams;
+			import org.un.flex.graphLayout.visual.IVisualGraph;
+			import org.un.cava.birdeye.assets.icons.EmbeddedIcons;
+			
+			/* to be set if creation was complete */
+			private var _complete:Boolean = false;
+			
+			/**
+			 * this updates the scale factor in all children of the vgraph
+			 * */	
+			private function updateScale():void {
+				
+				/* we need the VGraph object in its capacity as a Container */
+				var vgraph:Container = (GlobalParams.vgraph as Container);
+				var children:Array;
+				var child:UIComponent;
+
+				var layouter:ILayoutAlgorithm = GlobalParams.layouter;
+
+				if(vgraph != null) {		
+					/* update the global parameter */
+					GlobalParams.scaleFactor = scaleSlider.value;
+					
+					children = vgraph.getChildren();
+					for each(child in children) {
+						child.scaleX = scaleSlider.value;
+						child.scaleY = scaleSlider.value;
+					}
+					
+					/* check if we have a layouter at all */
+					if(layouter != null) {
+						layouter.layoutChanged = true;
+					} else {
+						trace("Cannot notify null layouter of layout change due to scaling.");
+					}
+	
+					/* a bit ugly, but we need the polymorphism here, since the
+					 * IVisualGraph interface does not contain all the Container
+					 * methods. Our object of course does! */
+					(vgraph as IVisualGraph).draw(); // do we need this? 
+					
+				} else {
+					trace("Scale NOT changed, no valid vgraph in GlobalParams, not redrawing!");
+				}
+			}
+			/**
+			 * register that we are complete
+			 * */
+			private function registerComplete():void {
+				_complete = true;
+			}
+		]]>
+	</mx:Script>
+</mx:VBox>

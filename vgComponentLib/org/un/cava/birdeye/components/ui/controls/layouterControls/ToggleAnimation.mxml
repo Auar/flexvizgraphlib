@@ -12,6 +12,10 @@
 			import org.un.cava.birdeye.utils.GlobalParams;
 			import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
 			
+			/**
+			 * toggles if we want smooth animation (enabled per default)
+			 * or not, as a feature of most layouters.
+			 * */
 			private function toggleAnimation():void {
 				
 				var layouter:ILayoutAlgorithm;

@@ -53,7 +53,11 @@
 				/* call superclass (VBox) */
 				super.enabled = e;
 			}
-						
+			
+			/**
+			 * updates the node spacing distance in the hierarchical
+			 * layouter.
+			 * */ 
 			private function updateNodeSpacing():void {
 				
 				var hlayouter:HierarchicalLayouter;

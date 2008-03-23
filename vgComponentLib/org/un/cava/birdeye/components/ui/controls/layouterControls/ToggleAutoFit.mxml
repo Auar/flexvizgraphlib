@@ -19,6 +19,9 @@
 			 * possibly by sending an event 
 			 * */
 			
+			/**
+			 * toggles the autoFit capability of most layouters.
+			 * */
 			private function updateAutoFit():void {
 				
 				var layouter:ILayoutAlgorithm;
