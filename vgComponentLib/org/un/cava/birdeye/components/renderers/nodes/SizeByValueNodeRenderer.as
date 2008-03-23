@@ -18,9 +18,10 @@ package org.un.cava.birdeye.components.renderers.nodes {
 			
 			super(); // ensures that _zoom is already initialised
 			
-			/* we want a different zoom factor here */
-			(_zoom as Zoom).zoomHeightTo = 1.3;
-			(_zoom as Zoom).zoomWidthTo = 1.3;
+			/* we want a different zoom factor here in the
+			 * renderer */
+			(reffects.effect as Zoom).zoomHeightTo = 1.3;
+			(reffects.effect as Zoom).zoomWidthTo = 1.3;
 		}
 	
 		/**
@@ -37,7 +38,7 @@ package org.un.cava.birdeye.components.renderers.nodes {
 			cc = addCircle();
 			
 			/* now add the filters to the circle */
-			addDSFilters(cc);
+			reffects.addDSFilters(cc);
 			 
 			/* now the link button */
 			initLinkButton();

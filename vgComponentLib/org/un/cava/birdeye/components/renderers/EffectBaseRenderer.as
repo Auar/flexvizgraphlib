@@ -1,4 +1,4 @@
-package org.un.cava.birdeye.components.renderers.nodes {
+package org.un.cava.birdeye.components.renderers {
 	
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -7,26 +7,24 @@ package org.un.cava.birdeye.components.renderers.nodes {
 	import mx.core.UIComponent;
 	import mx.effects.Zoom;
 	
-	import org.un.cava.birdeye.components.renderers.RendererEffects;
-	
 	/**
-	 * This renderer extends the very simple NodeRenderer
-	 * with the effects from the RendererEffects class
+	 * This renderer extends the very simple one by
+	 * having an instance of the RendererEffects
+	 * available.
 	 * */
-	public class EffectBaseNodeRenderer extends BaseNodeRenderer {
+	public class EffectBaseRenderer extends BaseRenderer {
 		
 		/* the effect to be used, default is zoom, so we call it
 		 * like that */
 		protected var reffects:RendererEffects;
 		
 		/**
-		 * Default constructor, inits the effect
-		 * */
-		public function EffectBaseNodeRenderer() {
+		 * Default constructor, inits the zoom effect */
+		public function EffectBaseRenderer() {
 			super();
 			reffects = new RendererEffects();
 		}
-
+	
 		/**
 		 * @inheritDoc
 		 * */
