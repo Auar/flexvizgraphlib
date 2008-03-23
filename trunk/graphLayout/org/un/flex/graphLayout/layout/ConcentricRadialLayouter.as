@@ -26,7 +26,6 @@ package org.un.flex.graphLayout.layout {
 
 	import flash.geom.Point;
 	
-	import org.un.flex.graphLayout.data.GraphWalkingDirectionsEnum;
 	import org.un.flex.graphLayout.data.IGTree;
 	import org.un.flex.graphLayout.data.INode;
 	import org.un.flex.graphLayout.visual.IVisualGraph;
@@ -185,7 +184,7 @@ package org.un.flex.graphLayout.layout {
 			
 			/* establish the spanning tree, but have it restricted to
 			 * visible nodes */
-			_stree = _graph.getTree(_root, true, false, GraphWalkingDirectionsEnum.BOTH);
+			_stree = _graph.getTree(_root, true, false);
 			
 			/* calculate the relative width and the
 			 * new max Depth */

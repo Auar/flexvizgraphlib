@@ -27,7 +27,6 @@ package org.un.flex.graphLayout.layout {
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
 	
-	import org.un.flex.graphLayout.data.GraphWalkingDirectionsEnum;
 	import org.un.flex.graphLayout.data.INode;
 	import org.un.flex.graphLayout.visual.IVisualGraph;
 	import org.un.flex.graphLayout.visual.IVisualNode;
@@ -171,7 +170,7 @@ package org.un.flex.graphLayout.layout {
 					
 			/* establish the spanning tree */
 			//_graph.purgeTrees();
-			_stree = _graph.getTree(_root,true,false,GraphWalkingDirectionsEnum.BOTH);
+			_stree = _graph.getTree(_root,true,false);
 
 			/* check if the root is visible, if not
 			 * this is an issue */
