@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:CheckBox
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	selected="true"
+	label="Edge Labels"
+	toolTip="Select to show edge labels."
+	click="updateShowEdgeLabels()" >
+	
+	<mx:Script>
+		<![CDATA[
+			
+			import org.un.cava.birdeye.utils.GlobalParams;
+			import org.un.flex.graphLayout.visual.IVisualGraph;
+			
+			/**
+			 * toggles to show edge labels or not
+			 * */
+			private function updateShowEdgeLabels():void {
+				
+				var vgraph:IVisualGraph = GlobalParams.vgraph;
+				
+				if(vgraph != null) {
+					vgraph.displayEdgeLabels = this.selected;
+					/* XXX THIS MAY REQUIRE A FULL REFRESH TO BE VERIFIED AND IMPLEMENTED */
+					vgraph.draw();
+				} else {
+					trace("Show EdgeLabels not toggled, no valid vgraph in GlobalParams, not redrawing!");
+				}
+			}		
+		]]>
+	</mx:Script>
+</mx:CheckBox>
