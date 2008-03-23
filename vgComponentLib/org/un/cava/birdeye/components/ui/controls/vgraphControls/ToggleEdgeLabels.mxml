@@ -15,7 +15,7 @@
 			/**
 			 * toggles to show edge labels or not
 			 * */
-			private function updateShowEdgeLabels():void {
+			public function updateShowEdgeLabels():void {
 				
 				var vgraph:IVisualGraph = GlobalParams.vgraph;
 				

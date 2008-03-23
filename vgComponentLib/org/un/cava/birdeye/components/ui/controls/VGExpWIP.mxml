@@ -551,13 +551,6 @@
 				}
 			}
  
- 
-
- 			
- 			private function displayEdgeLabels():void {
- 				vgraph.displayEdgeLabels = delCheckBox.selected;
- 				refresh();
- 			}
 
  			/**
  			 * handle a resize event, but only do anything if the init was
@@ -774,13 +767,7 @@
 												<mx:String>Belzier</mx:String>
 											</mx:ArrayCollection>
 									</mx:ComboBox>
-									<mx:HBox width="100%" >
-									
-									
-										<mx:CheckBox selected="true" toolTip="Select to show edge labels."
-												id="delCheckBox" label="Edge Labels" change="displayEdgeLabels()" />
-									
-									</mx:HBox>
+	
 								</mx:VBox>
 							</flexlib:WindowShade>
 							
