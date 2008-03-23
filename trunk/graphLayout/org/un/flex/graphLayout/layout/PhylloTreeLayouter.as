@@ -40,7 +40,9 @@ package org.un.flex.graphLayout.layout {
 	 * a sea-shell like structure.
 	 * @see org.un.flex.graphLayout.layout.ParentCenteredRadialLayouter
 	 * */
-	public class PhylloTreeLayouter extends AnimatedBaseLayouter implements ILayoutAlgorithm {
+	public class PhylloTreeLayouter
+		extends AnimatedBaseLayouter 
+		implements IAngularLayouter {
 		
 		/* if we change phi we cannot set it directly
 		 * in the drawing mode, because we throw it away
