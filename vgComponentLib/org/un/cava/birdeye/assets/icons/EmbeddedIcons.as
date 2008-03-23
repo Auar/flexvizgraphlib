@@ -457,7 +457,7 @@ package org.un.cava.birdeye.assets.icons {
 					img.source = EmbeddedIcons.leafIcon;
 					break;
 			}
-			return null;
+			return img;
 	 	}
 	}
 }
