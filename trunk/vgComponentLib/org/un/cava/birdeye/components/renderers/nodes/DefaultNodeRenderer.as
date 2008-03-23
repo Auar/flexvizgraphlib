@@ -53,9 +53,6 @@ package org.un.cava.birdeye.components.renderers.nodes {
 			 
 			/* now the link button */
 			initLinkButton();
-			
-			/* and the label */
-			initLabel();
 		}
 	}
 }
