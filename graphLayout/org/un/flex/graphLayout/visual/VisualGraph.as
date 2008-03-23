@@ -766,7 +766,7 @@ package org.un.flex.graphLayout.visual {
 			/* create the vnode from the node */
 			for each(node in _graph.nodes) {
 				this.createVNode(node);
-				trace("created VNode for node:"+node.id);
+				//trace("created VNode for node:"+node.id);
 			}
 			
 			/* we also create the edge objects, since they
