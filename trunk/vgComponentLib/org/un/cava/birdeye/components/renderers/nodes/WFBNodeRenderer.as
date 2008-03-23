@@ -33,7 +33,7 @@ package org.un.cava.birdeye.components.renderers.nodes {
 			cc = addCircle();
 			
 			/* now add the filters to the circle */
-			addDSFilters(cc);
+			reffects.addDSFilters(cc);
 			 
 			/* now the link button */
 			initLinkButton();
