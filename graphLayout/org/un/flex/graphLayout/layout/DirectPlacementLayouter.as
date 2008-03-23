@@ -93,11 +93,13 @@ package org.un.flex.graphLayout.layout {
 			//trace("layoutPass called");
 			
 			if(!_vgraph) {
-				throw Error("No Vgraph set in PCRLayouter, aborting");
+				trace("No Vgraph set in DPLayouter, aborting");
+				return false;
 			}
 			
 			if(!_vgraph.currentRootVNode) {
-				throw Error("This Layouter always requires a root node!");
+				trace("This Layouter always requires a root node!");
+				return false;
 			}
 			
 			/* nothing to do if we have no nodes */
@@ -193,13 +195,15 @@ package org.un.flex.graphLayout.layout {
 				if((vn.data as XML).attribute("x").length() > 0) {
 					node_x = Number(vn.data.@x);
 				} else {
-					throw Error("Node:"+vn.id+" associated XML object does not have x attribute");
+					trace("Node:"+vn.id+" associated XML object does not have x attribute, => 0.0");
+					node_x = 0.0;
 				}
 				
 				if((vn.data as XML).attribute("y").length() > 0) {
 					node_y = Number(vn.data.@y);
 				} else {
-					throw Error("Node:"+vn.id+" associated XML object does not have y attribute");
+					trace("Node:"+vn.id+" associated XML object does not have y attribute, => 0.0");
+					node_y = 0.0;
 				}
 				
 				//trace("using rel width:"+_relativeWidth+" rh:"+_relativeHeight);
