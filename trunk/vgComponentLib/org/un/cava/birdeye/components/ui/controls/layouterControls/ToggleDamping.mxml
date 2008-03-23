@@ -35,6 +35,9 @@
 				super.enabled = e;
 			}
 			
+			/**
+			 * toggles the damping feature of the ForceDirected Layouter
+			 * */
 			private function changeDamping():void {
 				
 				var flayouter:ForceDirectedLayouter;

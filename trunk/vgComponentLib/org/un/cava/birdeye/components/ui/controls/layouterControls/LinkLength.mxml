@@ -71,9 +71,11 @@
 				super.enabled = e;
 			}
 			
-			/* update the linklength, this indicator always
+			/** 
+			 * update the linklength, this indicator always
  			 * goes from 0 to 100, depending on the layouter
- 			 * this is translated to something meaningful */		
+ 			 * this is translated to something meaningful
+ 			 * */		
 			private function updateLinkLength():void {
 				
 				var layouter:ILayoutAlgorithm;

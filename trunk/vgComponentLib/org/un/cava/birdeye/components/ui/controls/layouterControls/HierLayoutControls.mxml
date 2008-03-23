@@ -18,7 +18,7 @@
 	
 	<local:OrientationSelector id="orientSel" />
 	<local:NodeSpacing id="nodeSpacing" />
-	<local:SiblingSpread id="sibSpread" />
+	<local:ToggleSiblingSpread id="sibSpread" />
 	
 	<mx:Script>
 		<![CDATA[

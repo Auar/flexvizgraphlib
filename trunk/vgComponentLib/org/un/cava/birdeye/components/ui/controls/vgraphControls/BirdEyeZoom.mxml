@@ -45,9 +45,7 @@
 			/* to be set if creation was complete */
 			private var _complete:Boolean = false;
 			
-			/* update the linklength, this indicator always
- 			 * goes from 0 to 100, depending on the layouter
- 			 * this is translated to something meaningful */		
+			/* update the scale of the VGraph, thus creating a BirdEye zoom effect */		
 			private function updateVScale():void {
 				
 				var vgraph:IVisualGraph = GlobalParams.vgraph;

@@ -28,6 +28,10 @@
 			/* to be set if creation was complete */
 			private var _complete:Boolean = false;
 						
+			/**
+			 * updates the visible degree of separation (i.e.
+			 * nodes visible from the root node).
+			 * */
 			private function updateMaxVisDist():void {
 				
 				var vgraph:IVisualGraph = GlobalParams.vgraph;
