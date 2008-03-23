@@ -147,11 +147,13 @@ package org.un.flex.graphLayout.layout {
 			//trace("layoutPass called");
 			
 			if(!_vgraph) {
-				throw Error("No Vgraph set in ConcentricRadialLayouter, aborting");
+				trace("No Vgraph set in ConcentricRadialLayouter, aborting");
+				return false;
 			}
 			
 			if(!_vgraph.currentRootVNode) {
-				throw Error("This Layouter always requires a root node!");
+				trace("This Layouter always requires a root node!");
+				return false;
 			}
 			
 			/* nothing to do if we have no nodes */

@@ -96,7 +96,8 @@ package org.un.flex.graphLayout.layout {
 			//trace("layoutPass called");
 			
 			if(!_vgraph) {
-				throw Error("No Vgraph set in CircularLayouter, aborting...");
+				trace("No Vgraph set in CircularLayouter, aborting...");
+				return false;
 			}
 			
 			/* nothing to do if we have no nodes */

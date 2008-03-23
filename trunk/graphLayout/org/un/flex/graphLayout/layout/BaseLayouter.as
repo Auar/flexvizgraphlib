@@ -139,7 +139,7 @@ package org.un.flex.graphLayout.layout {
 				_vgraph = vg;
 				_graph = _vgraph.graph;
 			} else {
-				throw Error("vgraph was already set in layouter");
+				trace("vgraph was already set in layouter");
 			}
 		}
 		

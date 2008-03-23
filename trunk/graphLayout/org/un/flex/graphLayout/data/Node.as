@@ -91,7 +91,7 @@ package org.un.flex.graphLayout.data {
 			/* the IN coming edge, so this means we are the TO
 			 * node and the other must be the from Node */
 			if(e.othernode(this) == null) {
-				throw new Error("Edge:"+e.id+" has no fromNode");
+				throw Error("Edge:"+e.id+" has no fromNode");
 			}
 			_predecessors.unshift(e.othernode(this));
 			_inEdges.unshift(e);
@@ -103,7 +103,7 @@ package org.un.flex.graphLayout.data {
 		public function addOutEdge(e:IEdge):void {
 			/* same story here */
 			if(e.othernode(this) == null) {
-				throw new Error("Edge:"+e.id+" has no toNode");
+				throw Error("Edge:"+e.id+" has no toNode");
 			}
 			//trace("added successor node:"+e.othernode(this).id+" to node:"+_id);
 			_successors.unshift(e.othernode(this));

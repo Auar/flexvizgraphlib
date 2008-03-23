@@ -103,11 +103,13 @@ package org.un.flex.graphLayout.layout {
 			//trace("layoutPass called");
 			
 			if(!_vgraph) {
-				throw Error("No Vgraph set in PCRLayouter, aborting");
+				trace("No Vgraph set in PhylloLayouter, aborting");
+				return false;
 			}
 			
 			if(!_vgraph.currentRootVNode) {
-				throw Error("This Layouter always requires a root node!");
+				trace("This Layouter always requires a root node!");
+				return false;
 			}
 			
 			/* nothing to do if we have no nodes */
@@ -148,7 +150,8 @@ package org.un.flex.graphLayout.layout {
 			/* check if the root is visible, if not
 			 * this is an issue */
 			if(!_root.vnode.isVisible) {
-				throw Error("Invisible root node, this is probably due to wrong initialisation of nodes or wrong defaults");
+				trace("Invisible root node, this is probably due to wrong initialisation of nodes or wrong defaults");
+				return false;
 			}
 
 			/* push the root into the array */

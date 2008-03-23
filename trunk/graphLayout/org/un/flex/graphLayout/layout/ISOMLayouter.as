@@ -28,7 +28,7 @@ package org.un.flex.graphLayout.layout {
 	import flash.utils.Dictionary;
 	
 	import org.un.flex.graphLayout.visual.IVisualGraph;
-  import org.un.flex.graphLayout.visual.IVisualNode;
+  	import org.un.flex.graphLayout.visual.IVisualNode;
 	import org.un.flex.graphLayout.data.INode;
 	
 /**
