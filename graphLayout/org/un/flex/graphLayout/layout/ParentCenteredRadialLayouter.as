@@ -40,7 +40,9 @@ package org.un.flex.graphLayout.layout {
 	 * Andy Pavlo, Christopher Homan and Jon Schull. It is not
 	 * yet working perfectly. 
 	 * */
-	public class ParentCenteredRadialLayouter extends AnimatedBaseLayouter implements ILayoutAlgorithm {
+	public class ParentCenteredRadialLayouter
+		extends AnimatedBaseLayouter
+		implements IAngularLayouter {
 		
 		/* if we change phi we cannot set it directly
 		 * in the drawing mode, because we throw it away
