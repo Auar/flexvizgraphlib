@@ -41,7 +41,7 @@ package org.un.flex.graphLayout.data {
 	 * </p>
 	 * */
 	public class GTree implements IGTree {
-		
+			
 		private var _graph:IGraph;
 		private var _root:INode;
 
@@ -294,7 +294,10 @@ package org.un.flex.graphLayout.data {
 		/**
 		 * @inheritDoc
 		 * */ 
-		public function initTree(walkingDirection:int = GraphWalkingDirectionsEnum.FORWARD):Dictionary {
+		public function initTree():Dictionary {
+			
+			var walkingDirection:int = _graph.walkingDirection;
+			
 			var queue:Array = new Array();
 			
 			/* we create this as a dummy parent node, but it should
@@ -333,13 +336,13 @@ package org.un.flex.graphLayout.data {
 				var nodesToWalk : Array = null
 				switch(walkingDirection)
 				{
-					case GraphWalkingDirectionsEnum.FORWARD:
+					case Graph.WALK_FORWARD:
 						nodesToWalk = u.successors
 						break
-					case GraphWalkingDirectionsEnum.BACKWARD:
+					case Graph.WALK_BACKWARDS:
 						nodesToWalk = u.predecessors
 						break
-					case GraphWalkingDirectionsEnum.BOTH:
+					case Graph.WALK_BOTH:
 						nodesToWalk = u.successors.concat(u.predecessors)
 						break
 					default:

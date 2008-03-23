@@ -24,8 +24,6 @@
  */
 
 package org.un.flex.graphLayout.data {
-
-	import org.un.flex.graphLayout.data.GraphWalkingDirectionsEnum;
 	
 	/**
 	 * Interface to the Graph datastructure class
@@ -63,6 +61,29 @@ package org.un.flex.graphLayout.data {
 		 * Indicator if the graph is directional or not.
 		 * */
 		function get isDirectional():Boolean;
+
+		/**
+		 * This determines the walking direction when building
+		 * a spanning tree. Possible values are
+		 * Graph.WALK_FORWARD
+		 * Graph.WALK_BACKWARDS
+		 * Graph.WALK_BOTH
+		 * All make only sense in a directional graph.
+		 * Forward means we follow edges in its regular direction
+		 * from the root node.
+		 * Backwards means, we follow edges back from the root
+		 * node (e.g. the root is a sink with multiple sources)
+		 * Both obviously means both.
+		 * 
+		 * This property will be queried by GTree to determine the
+		 * walking direction set.
+		 * */
+		function set walkingDirection(d:int):void;
+
+		/**
+		 * @private
+		 * */
+		function get walkingDirection():int;
 
 		/**
 		 * A lookup to find a node by it's string id.
@@ -142,7 +163,7 @@ package org.un.flex.graphLayout.data {
 		 * 						   GraphWalkingDirectionsEnum.BOTH is the current (proper) functionality.
 		 * @return The a GTree object that contains the tree.
 		 * */
-		function getTree(n:INode,restr:Boolean = false, nocache:Boolean = false, walkingDirection:int = GraphWalkingDirectionsEnum.FORWARD):IGTree;
+		function getTree(n:INode,restr:Boolean = false, nocache:Boolean = false):IGTree;
 		
 		/**
 		 * Under certain circumstances all cached trees need

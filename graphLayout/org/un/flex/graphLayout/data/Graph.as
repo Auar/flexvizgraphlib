@@ -61,6 +61,23 @@ package org.un.flex.graphLayout.data {
 		public static const DEFAULTNAME_TOID:String = "toID";
 		
 		/**
+		 * If building a spanning tree, walk only forward.
+		 * (This is the default)
+		 * */
+		public static const WALK_FORWARD:int = 0;
+		
+		/**
+		 * If building a spanning tree, walk only backwards.
+		 * */
+		public static const WALK_BACKWARDS:int = 1;
+		
+		/**
+		 * If building a spanning tree, walk only both
+		 * directions
+		 * */
+		public static const WALK_BOTH:int = 2;		
+		
+		/**
 		 * @internal
 		 * attributes of a graph
 		 * */
@@ -74,6 +91,10 @@ package org.un.flex.graphLayout.data {
 		
 		/* indicator if the graph is directional or not */
 		private var _directional:Boolean;
+		/* if directional we could have a walking direction for the
+		 * spanning tree */
+		private var _walkingDirection:int = WALK_FORWARD;
+
 		
 		/** 
 		 * @internal
@@ -196,6 +217,20 @@ package org.un.flex.graphLayout.data {
 		public function get noEdges():int {
 			return _numberOfEdges;
 		}
+		
+		/**
+		 * @inheritDoc
+		 * */
+		public function set walkingDirection(d:int):void {
+			_walkingDirection = d;
+		}
+	
+		/**
+		 * @private
+		 * */
+		public function get walkingDirection():int {
+			return _walkingDirection;
+		}
 	
 		/**
 		 * @inheritDoc
@@ -222,7 +257,7 @@ package org.un.flex.graphLayout.data {
 		/**
 		 * @inheritDoc
 		 * */
-		public function getTree(n:INode,restr:Boolean = false, nocache:Boolean = false, walkingDirection:int = GraphWalkingDirectionsEnum.FORWARD):IGTree{
+		public function getTree(n:INode,restr:Boolean = false, nocache:Boolean = false):IGTree{
 			/* If nocache is set, we just return a new tree */
 			if(nocache) {
 				return new GTree(n,this,restr);
@@ -231,7 +266,7 @@ package org.un.flex.graphLayout.data {
 			if(!_treeMap.hasOwnProperty(n)) {
 				_treeMap[n] = new GTree(n,this,restr);
 				/* do the init now, not lazy */
-				(_treeMap[n] as IGTree).initTree(walkingDirection);
+				(_treeMap[n] as IGTree).initTree();
 			}
 			return (_treeMap[n] as IGTree);
 		}
