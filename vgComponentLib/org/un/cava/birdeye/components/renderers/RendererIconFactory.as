@@ -114,6 +114,15 @@ package org.un.cava.birdeye.components.renderers {
 			img.source = url;
 			return img;
 		}
+		
+		/**
+		 * just for the sake of the uniformity of the
+		 * interface, we also provide a method to get an embedded icon,
+		 * however this is directly passed to EmbeddedIcons.
+		 * */
+		public static function getEmbeddedIcon(name:String,size:int):Image {
+			return EmbeddedIcons.generateImage(name,size);
+		}
 	}
 }
 
