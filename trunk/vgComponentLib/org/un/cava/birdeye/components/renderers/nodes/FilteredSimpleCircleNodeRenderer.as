@@ -1,13 +1,10 @@
 package org.un.cava.birdeye.components.renderers.nodes {
 	
 	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.filters.DropShadowFilter;
 	
 	import mx.core.UIComponent;
-	import mx.effects.Zoom;
 	
-	import org.un.cava.birdeye.assets.icons.primitives.Circle;
+	import org.un.cava.birdeye.components.renderers.RendererIconFactory;
 	
 	/**
 	 * Other version of the simple circle with zoom and dropshadowfilter
@@ -27,13 +24,16 @@ package org.un.cava.birdeye.components.renderers.nodes {
 		 * */
 		override protected function initComponent(e:Event):void {
 			
-			var cc:Circle;
+			var cc:UIComponent;
 			
 			/* initialize the upper part of the renderer */
 			initTopPart();
 			
-			/* add a simple circle as in the base class */
-			cc = addPlainCircle();
+			/* add a primitive circle
+			 * as well the XML should be checked before */
+			cc = RendererIconFactory.createIcon("primitive::circle",10,this.data.data.@nodeColor);
+			cc.toolTip = this.data.data.@name; // needs check
+			this.addChild(cc);
 			
 			/* now add the filters to the circle */
 			reffects.addDSFilters(cc);
@@ -41,24 +41,5 @@ package org.un.cava.birdeye.components.renderers.nodes {
 			/* now the link button */
 			initLinkButton();
 		}
-	
-		/**
-		 * create a UIComponent with a cimple circle
-		 * and add it do this object
-		 * @returns the circle, may be useful for derived classes 
-		 * */
-		private function addPlainCircle():Circle {
-			
-			var cc:Circle = new Circle();
-			
-			cc.id = "circle";
-			cc.toolTip = this.data.data.@name; // needs check
-			cc.color = this.data.data.@nodeColor; // here too
-			cc.width = 10;
-			cc.height = 10;
-			this.addChild(cc);
-			return cc;
-		}
-
 	}
 }
