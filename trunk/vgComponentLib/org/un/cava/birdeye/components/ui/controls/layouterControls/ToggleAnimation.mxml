@@ -44,7 +44,7 @@
 			 * toggles if we want smooth animation (enabled per default)
 			 * or not, as a feature of most layouters.
 			 * */
-			private function toggleAnimation():void {
+			public function toggleAnimation():void {
 				
 				var layouter:ILayoutAlgorithm;
 				
@@ -59,6 +59,23 @@
 				layouter.resetAll(); // to kill any timers
 				layouter.disableAnimation = this.selected;
 			}
+			
+			/**
+			 * This refreshes the current value of the
+			 * checkbox with the value in the layouter.
+			 * */
+			public function refreshAnimCheckbox():void {
+				var layouter:ILayoutAlgorithm;
+				
+				/* check if we have a layouter at all */
+				if(GlobalParams.layouter == null) {
+					trace("Cannot update Anim checkbox from null layouter");
+					return;
+				}
+				/* refresh the value */
+				this.selected = GlobalParams.layouter.disableAnimation;
+			}
+			
 		]]>
 	</mx:Script>
 </mx:CheckBox>

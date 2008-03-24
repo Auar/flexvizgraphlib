@@ -100,11 +100,11 @@
 			}
 			
 			/** 
-			 * update the linklength, this indicator always
+			 * Update the linklength, this indicator always
  			 * goes from 0 to 100, depending on the layouter
- 			 * this is translated to something meaningful
+ 			 * this is translated to something meaningful.
  			 * */		
-			private function updateLinkLength():void {
+			public function updateLinkLength():void {
 				
 				var layouter:ILayoutAlgorithm;
 				var vgraph:IVisualGraph = GlobalParams.vgraph;
@@ -125,6 +125,23 @@
 					trace("LinkLength changed, but no valid vgraph in GlobalParams, not redrawing!");
 				}
 			}
+			
+			/**
+			 * This refreshes the current slider setting to
+			 * the value from the current layouter.
+			 * */
+			public function refreshSlider():void {
+				var layouter:ILayoutAlgorithm;
+				
+				/* check if we have a layouter at all */
+				if(GlobalParams.layouter == null) {
+					trace("Cannot update LinkLength on null layouter");
+					return;
+				}
+				/* refresh the value */
+				linkLength.value = GlobalParams.layouter.linkLength;
+			}
+			
 			/**
 			 * register that we are complete
 			 * */

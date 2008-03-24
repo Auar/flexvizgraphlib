@@ -66,7 +66,7 @@
 			/**
 			 * toggles the damping feature of the ForceDirected Layouter
 			 * */
-			private function changeDamping():void {
+			public function changeDamping():void {
 				
 				var flayouter:ForceDirectedLayouter;
 				var vgraph:IVisualGraph = GlobalParams.vgraph;
@@ -92,7 +92,31 @@
 				} else {
 					trace("Damping changed, but no valid vgraph in GlobalParams, not redrawing!");
 				}
-			}		
+			}
+			
+			/**
+			 * This refreshes the current value of the
+			 * checkbox with the value in the layouter.
+			 * */
+			public function refreshDampingCheckbox():void {
+				var flayouter:ForceDirectedLayouter;
+				
+				/* check if we have a layouter at all */
+				if(GlobalParams.layouter == null) {
+					trace("Cannot refresh damping from null layouter");
+					return;
+				}
+				
+				/* check if it is a supported layouter (currently ForceDirected only) */
+				if(!GlobalParams.layouter is ForceDirectedLayouter) {
+					trace("Damping is only available in ForceDirectedLayouter");
+					return;
+				}
+				
+				/* set the local layouter reference */
+				flayouter = GlobalParams.layouter as ForceDirectedLayouter;
+				this.selected = flayouter.dampingActive;
+			}	
 		]]>
 	</mx:Script>
 	
