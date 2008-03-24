@@ -60,7 +60,7 @@
 			 * updates the visible degree of separation (i.e.
 			 * nodes visible from the root node).
 			 * */
-			private function updateMaxVisDist():void {
+			public function updateMaxVisDist():void {
 				
 				var vgraph:IVisualGraph = GlobalParams.vgraph;
 				if(vgraph != null) {
@@ -70,6 +70,21 @@
 					trace("DegreeOfSeparation NOT changed, no valid vgraph in GlobalParams, not redrawing!");
 				}
 			}
+			
+			/**
+			 * refreshes the component slider from the value
+			 * from VisualGraph object.
+			 * */
+			public function refreshMaxVisDist():void {
+				
+				var vgraph:IVisualGraph = GlobalParams.vgraph;
+				if(vgraph != null) {
+					degreesOfSep.value = vgraph.maxVisibleDistance;
+				} else {
+					trace("DegreeOfSeparation NOT refreshed, no valid vgraph in GlobalParams!");
+				}
+			}
+			
 		]]>
 	</mx:Script>
 </mx:VBox>

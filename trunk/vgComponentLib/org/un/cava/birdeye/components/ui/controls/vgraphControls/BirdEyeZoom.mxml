@@ -74,7 +74,7 @@
 			private var _complete:Boolean = false;
 			
 			/* update the scale of the VGraph, thus creating a BirdEye zoom effect */		
-			private function updateVScale():void {
+			public function updateVScale():void {
 				
 				var vgraph:IVisualGraph = GlobalParams.vgraph;
 				
@@ -85,6 +85,19 @@
 					trace("BirdEyeZoom NOT changed, no valid vgraph in GlobalParams, not redrawing!");
 				}
 			}
+			
+			/* refresh the slider from the scaleX value */
+			public function refreshVScale():void {
+				
+				var vgraph:IVisualGraph = GlobalParams.vgraph;
+				
+				if(vgraph != null) {
+					bzoom.value = vgraph.scaleX;
+				} else {
+					trace("BirdEyeZoom slider NOT refreshed, no valid vgraph in GlobalParams, not redrawing!");
+				}
+			}
+			
 			/**
 			 * register that we are complete
 			 * */
