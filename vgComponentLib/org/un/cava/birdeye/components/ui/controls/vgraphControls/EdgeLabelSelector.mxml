@@ -44,6 +44,7 @@
 	
 	<mx:Script>	
 		<![CDATA[
+			import mx.utils.ObjectUtil;
 			import org.un.cava.birdeye.utils.GlobalParams;
 			import org.un.flex.graphLayout.visual.IVisualGraph;
 			import org.un.cava.birdeye.components.renderers.edgeLabels.DefaultEdgeLabelRenderer;
@@ -93,7 +94,7 @@
 							vgraph.edgeLabelRenderer = new ClassFactory(WFBEdgeLabelRenderer);
 							break;
 						default:
-							trace("Illegal orientation selected:"+elr);
+							trace("Illegal EdgeLabelRenderer selected:"+elr);
 							vgraph.edgeLabelRenderer = new ClassFactory(DefaultEdgeLabelRenderer);
 							break;
 					}
@@ -102,6 +103,35 @@
 					vgraph.draw();
 				} else {
 					trace("EdgeLabelRenderer NOT CHANGED, no valid vgraph in GlobalParams, not redrawing!");
+				}
+			}
+			
+			/**
+			 * Refresh the selector with the current EdgeLabelRenderer.
+			 * */
+			public function refreshSelector():void {
+				
+
+				var vgraph:IVisualGraph = GlobalParams.vgraph;
+				
+				if(vgraph != null) {
+					switch(ObjectUtil.getClassInfo(vgraph.edgeLabelRenderer).name) {
+						case "DefaultEdgeLabelRenderer":
+							this.selectedIndex = 0;
+							break;
+						case "BaseEdgeLabelRenderer":
+							this.selectedIndex = 1;
+							break;
+						case "WFBEdgeLabelRenderer":
+							this.selectedIndex = 2;
+							break;
+						default:
+							trace("Illegal ELR class received:"+
+								ObjectUtil.getClassInfo(vgraph.edgeLabelRenderer).name);
+							break;
+					}
+				} else {
+					trace("EdgeLabelRenderer NOT refreshed, no valid vgraph in GlobalParams!");
 				}
 			}
 			
