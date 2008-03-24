@@ -100,16 +100,16 @@
 					
 				switch(or) {
 					case "Top Down":
-						hlayouter.orientation = hlayouter.ORIENT_TOP_DOWN;
+						hlayouter.orientation = HierarchicalLayouter.ORIENT_TOP_DOWN;
 						break;
 					case "Bottom Up":
-						hlayouter.orientation = hlayouter.ORIENT_BOTTOM_UP;
+						hlayouter.orientation = HierarchicalLayouter.ORIENT_BOTTOM_UP;
 						break;
 					case "Left-Right":
-						hlayouter.orientation = hlayouter.ORIENT_LEFT_RIGHT;
+						hlayouter.orientation = HierarchicalLayouter.ORIENT_LEFT_RIGHT;
 						break;
 					case "Right-Left":
-						hlayouter.orientation = hlayouter.ORIENT_RIGHT_LEFT;
+						hlayouter.orientation = HierarchicalLayouter.ORIENT_RIGHT_LEFT;
 						break;
 					default:
 						trace("Illegal orientation selected:"+or);
@@ -125,6 +125,55 @@
 					trace("orientation changed, but no valid vgraph in GlobalParams, not redrawing!");
 				}
 			}
+			
+			/**
+			 * refresh the current selection with the actual
+			 * setting of the layouter
+			 * */
+			public function refreshSelection():void {
+				var hlayouter:HierarchicalLayouter;
+				
+				/* check if we have a layouter at all */
+				if(GlobalParams.layouter == null) {
+					trace("Cannot refresh orientation from null layouter");
+					return;
+				}
+				
+				/* check if it is a supported layouter (currently Hierarchical only) */
+				if(!GlobalParams.layouter is HierarchicalLayouter) {
+					trace("Orientation selection is only available in HierarchicalLayouter");
+					return;
+				}
+				
+				/* set the local layouter reference */
+				hlayouter = GlobalParams.layouter as HierarchicalLayouter;
+				
+				/* not 100% sure if the index values are correct, i.e.
+				 * count from 0 upwards (or if they rather start at 1)
+				 * the Flex 3 docs are inconclusive here.
+				 */
+				switch(hlayouter.orientation) {
+					case HierarchicalLayouter.ORIENT_TOP_DOWN:
+						this.selectedIndex = 0;
+						break;
+					case HierarchicalLayouter.ORIENT_BOTTOM_UP:
+						this.selectedIndex = 1;
+						break;
+					case HierarchicalLayouter.ORIENT_LEFT_RIGHT:
+						this.selectedIndex = 2;
+						break;
+					case HierarchicalLayouter.ORIENT_RIGHT_LEFT:
+						this.selectedIndex = 3;
+						break;
+					default:
+						trace("Illegal orientation value received from hlayouter:"+
+							hlayouter.orientation);
+						return;
+						break;
+				}
+				
+			}
+			
 			
 			/**
 			 * initialise the selection data.

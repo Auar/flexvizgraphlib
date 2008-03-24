@@ -86,7 +86,7 @@
 			 * updates the node spacing distance in the hierarchical
 			 * layouter.
 			 * */ 
-			private function updateNodeSpacing():void {
+			public function updateNodeSpacing():void {
 				
 				var hlayouter:HierarchicalLayouter;
 				var vgraph:IVisualGraph = GlobalParams.vgraph;
@@ -115,6 +115,31 @@
 					trace("NodeSpacing changed, but no valid vgraph in GlobalParams, not redrawing!");
 				}
 			}
+			
+			/**
+			 * This refreshes the current slider setting to
+			 * the value from the current layouter.
+			 * */
+			public function refreshSlider():void {
+				var hlayouter:HierarchicalLayouter;
+				
+				/* check if we have a layouter at all */
+				if(GlobalParams.layouter == null) {
+					trace("Cannot update NodeSpacing on null layouter");
+					return;
+				}
+				
+				/* check if it is a supported layouter (currently Hierarchical only) */
+				if(!GlobalParams.layouter is HierarchicalLayouter) {
+					trace("NodeSpacing is only available in HierarchicalLayouter");
+					return;
+				}
+				
+				/* refresh the bslider */
+				hlayouter = GlobalParams.layouter as HierarchicalLayouter;
+				bslider.value = hlayouter.breadth;
+			}
+			
 			/**
 			 * register that we are complete
 			 * */

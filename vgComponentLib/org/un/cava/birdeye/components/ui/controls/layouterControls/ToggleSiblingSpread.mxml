@@ -64,7 +64,7 @@
 			 * toggles the sibling spread feature in the
 			 * hierarchical layouter
 			 * */
-			private function updateSiblingSpread():void {
+			public function updateSiblingSpread():void {
 				
 				var hlayouter:HierarchicalLayouter;
 				var vgraph:IVisualGraph = GlobalParams.vgraph;
@@ -92,6 +92,31 @@
 				} else {
 					trace("SiblingSpread changed, but no valid vgraph in GlobalParams, not redrawing!");
 				}
+			}
+			
+			/**
+			 * This refreshes the current value of the
+			 * checkbox with the value in the layouter.
+			 * */
+			public function refreshCheckbox():void {
+				
+				var hlayouter:HierarchicalLayouter;
+				
+				/* check if we have a layouter at all */
+				if(GlobalParams.layouter == null) {
+					trace("Cannot refresh siblingSpread from null layouter");
+					return;
+				}
+				
+				/* check if it is a supported layouter (currently Hierarchical only) */
+				if(!GlobalParams.layouter is HierarchicalLayouter) {
+					trace("SiblingSpread is only available in HierarchicalLayouter");
+					return;
+				}
+				
+				/* set the local layouter reference */
+				hlayouter = GlobalParams.layouter as HierarchicalLayouter;
+				this.selected = hlayouter.enableSiblingSpread;
 			}
 		]]>
 	</mx:Script>

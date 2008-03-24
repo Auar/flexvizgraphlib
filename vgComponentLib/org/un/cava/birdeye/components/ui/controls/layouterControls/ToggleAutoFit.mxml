@@ -50,7 +50,7 @@
 			/**
 			 * toggles the autoFit capability of most layouters.
 			 * */
-			private function updateAutoFit():void {
+			public function updateAutoFit():void {
 				
 				var layouter:ILayoutAlgorithm;
 				var vgraph:IVisualGraph = GlobalParams.vgraph;
@@ -70,7 +70,23 @@
 				} else {
 					trace("AutoFit changed, but no valid vgraph in GlobalParams, not redrawing!");
 				}
-			}		
+			}
+			
+			/**
+			 * This refreshes the current value of the
+			 * checkbox with the value in the layouter.
+			 * */
+			public function refreshAFCheckbox():void {
+				var layouter:ILayoutAlgorithm;
+				
+				/* check if we have a layouter at all */
+				if(GlobalParams.layouter == null) {
+					trace("Cannot update AutoFit checkbox from null layouter");
+					return;
+				}
+				/* refresh the value */
+				this.selected = GlobalParams.layouter.autoFitEnabled;
+			}	
 		]]>
 	</mx:Script>
 </mx:CheckBox>
