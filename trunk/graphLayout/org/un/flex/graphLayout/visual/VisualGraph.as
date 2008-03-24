@@ -482,10 +482,24 @@ package org.un.flex.graphLayout.visual {
 		}
 		
 		/**
+		 * @private
+		 * */
+		public function get itemRenderer():IFactory {
+			return _itemRendererFactory;
+		}
+		
+		
+		/**
 		 * @inheritDoc
 		 * */
 		public function set edgeRenderer(er:IEdgeRenderer):void {
 			_edgeRenderer = er;
+		}
+		/**
+		 * @private
+		 * */
+		public function get edgeRenderer():IEdgeRenderer {
+			return _edgeRenderer;
 		}
 
 		/**
@@ -494,6 +508,14 @@ package org.un.flex.graphLayout.visual {
 		public function set edgeLabelRenderer(elr:IFactory):void {
 			_edgeLabelRendererFactory = elr;
 		}
+		
+		/**
+		 * @private
+		 * */
+		public function get edgeLabelRenderer():IFactory {
+			return _edgeLabelRendererFactory;
+		}
+		
 
 		/**
 		 * @inheritDoc
