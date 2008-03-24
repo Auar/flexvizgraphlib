@@ -44,25 +44,25 @@ package org.un.flex.graphLayout.layout {
 		 * Set the orientation to this to result in a
 		 * left to right layout.
 		 * */
-		public const ORIENT_LEFT_RIGHT:uint = 0;
+		public static const ORIENT_LEFT_RIGHT:uint = 0;
 
 		/**
 		 * Set the orientation to this to result in a
 		 * right to left layout.
 		 * */		
-		public const ORIENT_RIGHT_LEFT:uint = 1;
+		public static const ORIENT_RIGHT_LEFT:uint = 1;
 		
 		/**
 		 * Set the orientation to this to result in a
 		 * top down layout.
 		 * */
-		public const ORIENT_TOP_DOWN:uint = 2;
+		public static const ORIENT_TOP_DOWN:uint = 2;
 		
 		/**
 		 * Set the orientation to this to result in a
 		 * bottom up layout.
 		 * */
-		public const ORIENT_BOTTOM_UP:uint = 3;
+		public static const ORIENT_BOTTOM_UP:uint = 3;
 		
 		/* this holds the data for the Hierarchical layout drawing */
 		private var _currentDrawing:HierarchicalLayoutDrawing;
@@ -251,6 +251,17 @@ package org.un.flex.graphLayout.layout {
 			return _siblingSpreadEnabled;
 		}
 
+		/**
+		 * Set the orientation for the hierarchical
+		 * layouter. Available values are provided through
+		 * defined constants. Use one of:
+		 * HierarchicalLayouter.ORIENT_TOP_DOWN
+		 * HierarchicalLayouter.ORIENT_BOTTOM_UP
+		 * HierarchicalLayouter.ORIENT_LEFT_RIGHT
+		 * HierarchicalLayouter.ORIENT_RIGHT_LEFT
+		 * 
+		 * @param o The orientation value, one of the above.
+		 * */
 		public function set orientation(o:uint):void {
 			switch(o) {
 				case ORIENT_LEFT_RIGHT:
@@ -266,6 +277,13 @@ package org.un.flex.graphLayout.layout {
 				default:
 					trace("orientation:"+o+" not supported");
 			}
+		}
+		
+		/**
+		 * @private
+		 * */
+		public function get orientation():uint {
+			return _orientation;
 		}
 		
 		/* private methods */
