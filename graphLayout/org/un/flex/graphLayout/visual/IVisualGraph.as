@@ -23,17 +23,16 @@
  * THE SOFTWARE.
  */
 package org.un.flex.graphLayout.visual {
-	import org.un.flex.graphLayout.data.IGraph;
-	import mx.core.UIComponent;
-	import mx.core.IUIComponent;
-	import flash.events.IEventDispatcher;
-	import flash.geom.Rectangle;
-	import mx.core.IFactory;
-	import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
-	import mx.core.IInvalidating;
 	import flash.geom.Point;
-	import flash.display.Graphics;
+	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
+	
+	import mx.core.IFactory;
+	import mx.core.IInvalidating;
+	import mx.core.IUIComponent;
+	
+	import org.un.flex.graphLayout.data.IGraph;
+	import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
 	
 	
 	/**
@@ -86,12 +85,22 @@ package org.un.flex.graphLayout.visual {
 		function set itemRenderer(ifac:IFactory):void;
 		
 		/**
+		 * @private
+		 * */
+		function get itemRenderer():IFactory;
+		
+		
+		/**
 		 * Allow the provision of an EdgeRenderer to
 		 * allow drawing of edges in a customised way.
 		 * The edgeRenderer has to implement the IEdgeRenderer interface.
 		 * */
 		function set edgeRenderer(er:IEdgeRenderer):void;
 		
+		/**
+		 * @private
+		 * */
+		function get edgeRenderer():IEdgeRenderer;
 		
 		/**
 		 * Allow to provide an EdgeLabelRenderer in order to
@@ -99,6 +108,11 @@ package org.un.flex.graphLayout.visual {
 		 * UIComponents.
 		 * */
 		function set edgeLabelRenderer(elr:IFactory):void;
+		
+		/**
+		 * @private
+		 * */
+		function get edgeLabelRenderer():IFactory;
 		
 		/**
 		 * Specify whether to display edge labels or not.
