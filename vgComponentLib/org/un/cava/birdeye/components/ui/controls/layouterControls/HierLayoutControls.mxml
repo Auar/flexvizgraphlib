@@ -100,10 +100,21 @@
 					return;
 				}
 				
+				/* this is a direct version, but less transparent */
 				layouter = GlobalParams.layouter as HierarchicalLayouter;
 				layouter.breadth = nodeSpacing.bslider.value;
 				layouter.enableSiblingSpread = sibSpread.selected;
 				//layouter.orientation can crash....
+				
+				/* the following would use the update methods provided
+				 * the layouter is not done, since the calling of that
+				 * might call vgraph.draw() which could result in a crash....
+				 * have to investigate ... XXX */
+				/*
+				orientSel.setOrientation();
+				nodeSpacing.updateNodeSpacing();
+				sibSpread.updateSiblingSpread();
+				*/
 			}
 			
 			/**
@@ -125,9 +136,19 @@
 				
 				layouter = GlobalParams.layouter as HierarchicalLayouter;
 				
+				/* again this is using a bypass method
+				 * and not considering the orientation
+				 */
 				nodeSpacing.bslider.value = layouter.breadth;
 				sibSpread.selected = layouter.enableSiblingSpread;
 				//layouter.orientation can crash....
+				
+				/* this alternative use provided methods */
+				/*
+				orientSel.refreshSelection();
+				nodeSpacing.refreshSlider();
+				sibSpread.refreshCheckbox();
+				*/
 			}
 			
 			/**
