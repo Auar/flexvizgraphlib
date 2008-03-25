@@ -471,36 +471,7 @@
 				
 			}
 			
-			private function setEdgeRenderer():void {
-				var selectedEdgeRenderer:IEdgeRenderer;
-				
-				switch(currentEdgeRendererType) {
-					case "Default":
-						selectedEdgeRenderer = new DefaultEdgeRenderer;
-						break;
-					case "Directed":
-						selectedEdgeRenderer = new DirectedEdgeRenderer;
-						break;
-					case "Orthogonal":
-						selectedEdgeRenderer = new OrthogonalEdgeRenderer;
-						break;
-					case "Flow":
-						selectedEdgeRenderer = new FlowEdgeRenderer;
-						vgraph.displayEdgeLabels = false;
-						break;
-					case "Belzier":
-						selectedEdgeRenderer = new CircularEdgeRenderer;
-						vgraph.displayEdgeLabels = false;
-						break;
-					default:
-						selectedEdgeRenderer = new DefaultEdgeRenderer;;
-				}
-				
-				vgraph.edgeRenderer = selectedEdgeRenderer;
-				vgraph.refresh();
-
-			}
-			
+	
 			
 			
 			/**
@@ -758,15 +729,9 @@
 							<flexlib:WindowShade id="edgeCnvs" styleName="linkButtonWindowShade" 
       							label="Edge Styles" width="100%" opened="true" horizontalAlign="center" paddingBottom="5" >
 								<mx:VBox width="97%" horizontalAlign="center" paddingLeft="5" paddingRight="5" paddingBottom="5" paddingTop="5" borderColor="#666666" borderThickness="1" cornerRadius="5" borderStyle="solid" backgroundColor="#CCCCCC" backgroundAlpha=".2" >
-									<mx:ComboBox id="edgeRendererSelector" prompt="Select edge style" width="100%" toolTip="Select the style of line drawn among nodes" change="changeEdgeRenderer()"  >
-											<mx:ArrayCollection>
-												<mx:String>Default</mx:String>
-												<mx:String>Directed</mx:String>
-												<mx:String>Orthogonal</mx:String>
-												<mx:String>Flow</mx:String>
-												<mx:String>Belzier</mx:String>
-											</mx:ArrayCollection>
-									</mx:ComboBox>
+									<!-- EDGE RENDEER>
+										
+									</EDGE -->
 	
 								</mx:VBox>
 							</flexlib:WindowShade>
