@@ -56,7 +56,6 @@
 			/* to be set if creation was complete */
 			private var _complete:Boolean = false;
 
-
 			/**
 			 * When enabling or disabling this component, we also
 			 * perform some specific tasks.
