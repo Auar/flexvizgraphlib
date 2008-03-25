@@ -85,7 +85,7 @@
 				var er:String;
 				var vgraph:IVisualGraph = GlobalParams.vgraph;
 				
-				/* get the currently selected orientation */
+				/* get the currently selected EdgeRenderer */
 				er = this.selectedItem as String;
 				
 				if(vgraph != null) {
