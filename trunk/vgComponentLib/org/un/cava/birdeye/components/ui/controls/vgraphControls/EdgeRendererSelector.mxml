@@ -29,27 +29,33 @@
 -->
 <mx:ComboBox xmlns:mx="http://www.adobe.com/2006/mxml"
 	height="20"
-	width="95%"
+	width="100%"
 	color="#CCCCCC"
-	prompt="Select edge annotation."
-	toolTip="Select the label type of edges."
+	prompt="Select edge style."
+	toolTip="Select the style of line drawn between nodes."
 	creationComplete="initData()"
-	change="changeEdgeLabelRenderer()" >
+	change="changeEdgeRenderer()" >
 	
-	<mx:ArrayCollection id="elvalues">
+	<mx:ArrayCollection id="ervalues">
 		<mx:String>Default</mx:String>
-		<mx:String>Basic</mx:String>
-		<mx:String>WFB</mx:String>
+		<mx:String>Directed</mx:String>
+		<mx:String>Orthogonal</mx:String>
+		<mx:String>Flow</mx:String>
+		<mx:String>Bezier</mx:String>
 	</mx:ArrayCollection>
 	
 	<mx:Script>	
 		<![CDATA[
+			import mx.events.ListEvent;
 			import mx.utils.ObjectUtil;
 			import org.un.cava.birdeye.utils.GlobalParams;
 			import org.un.flex.graphLayout.visual.IVisualGraph;
-			import org.un.cava.birdeye.components.renderers.edgeLabels.DefaultEdgeLabelRenderer;
-			import org.un.cava.birdeye.components.renderers.edgeLabels.BaseEdgeLabelRenderer;
-			import org.un.cava.birdeye.components.renderers.edgeLabels.WFBEdgeLabelRenderer;
+			import org.un.flex.graphLayout.visual.IEdgeRenderer;
+			import org.un.flex.graphLayout.visual.DefaultEdgeRenderer;
+			import org.un.flex.graphLayout.visual.DirectedEdgeRenderer;
+			import org.un.flex.graphLayout.visual.FlowCurveEdgeRenderer;
+			import org.un.flex.graphLayout.visual.FlowEdgeRenderer;
+			import org.un.flex.graphLayout.visual.OrthogonalEdgeRenderer;
 			
 			/**
 			 * When enabling or disabling this component, we also
@@ -74,35 +80,39 @@
 			/**
 			 * Set the selected EdgeLabelRenderer.
 			 * */
-			public function changeEdgeLabelRenderer():void {
+			public function changeEdgeRenderer():void {
 				
-				var elr:String;
+				var er:String;
 				var vgraph:IVisualGraph = GlobalParams.vgraph;
 				
 				/* get the currently selected orientation */
-				elr = this.selectedItem as String;
+				er = this.selectedItem as String;
 				
 				if(vgraph != null) {
-					switch(elr) {
+					switch(er) {
 						case "Default":
-							vgraph.edgeLabelRenderer = new ClassFactory(DefaultEdgeLabelRenderer);
+							vgraph.edgeRenderer = new DefaultEdgeRenderer;
 							break;
-						case "Basic":
-							vgraph.edgeLabelRenderer = new ClassFactory(BaseEdgeLabelRenderer);
+						case "Directed":
+							vgraph.edgeRenderer = new DirectedEdgeRenderer;
 							break;
-						case "WFB":
-							vgraph.edgeLabelRenderer = new ClassFactory(WFBEdgeLabelRenderer);
+						case "Orthogonal":
+							vgraph.edgeRenderer = new OrthogonalEdgeRenderer;
 							break;
-						default:
-							trace("Illegal EdgeLabelRenderer selected:"+elr);
-							vgraph.edgeLabelRenderer = new ClassFactory(DefaultEdgeLabelRenderer);
+						case "Flow":
+							vgraph.edgeRenderer = new FlowEdgeRenderer;
+							break;
+						case "Bezier":
+							vgraph.edgeRenderer = new FlowCurveEdgeRenderer;
+							break;
+					default:
+							trace("Illegal EdgeLabelRenderer selected:"+er);
+							vgraph.edgeRenderer = new DefaultEdgeRenderer;
 							break;
 					}
-					/* XXX WE NEED A FULL REFRESH HERE TO CHANGE OUT ALL THE CREATED RENDERER OBJECTS
-					 * TO IMPLEMENT */
-					vgraph.draw();
+					vgraph.refresh();
 				} else {
-					trace("EdgeLabelRenderer NOT CHANGED, no valid vgraph in GlobalParams, not redrawing!");
+					trace("EdgeRenderer NOT CHANGED, no valid vgraph in GlobalParams, not redrawing!");
 				}
 			}
 			
@@ -115,23 +125,29 @@
 				var vgraph:IVisualGraph = GlobalParams.vgraph;
 				
 				if(vgraph != null) {
-					switch(ObjectUtil.getClassInfo(vgraph.edgeLabelRenderer).name) {
-						case "DefaultEdgeLabelRenderer":
+					switch(ObjectUtil.getClassInfo(vgraph.edgeRenderer).name) {
+						case "DefaultEdgeRenderer":
 							this.selectedIndex = 0;
 							break;
-						case "BaseEdgeLabelRenderer":
+						case "DirectedEdgeRenderer":
 							this.selectedIndex = 1;
 							break;
-						case "WFBEdgeLabelRenderer":
+						case "OrthogonalEdgeRenderer":
 							this.selectedIndex = 2;
 							break;
+						case "FlowEdgeRenderer":
+							this.selectedIndex = 3;
+							break;
+						case "FlowCurveEdgeRenderer":
+							this.selectedIndex = 4;
+							break;
 						default:
-							trace("Illegal ELR class received:"+
-								ObjectUtil.getClassInfo(vgraph.edgeLabelRenderer).name);
+							trace("Illegal EdgeRenderer class received:"+
+								ObjectUtil.getClassInfo(vgraph.edgeRenderer).name);
 							break;
 					}
 				} else {
-					trace("EdgeLabelRenderer NOT refreshed, no valid vgraph in GlobalParams!");
+					trace("EdgeRenderer NOT refreshed, no valid vgraph in GlobalParams!");
 				}
 			}
 			
@@ -140,7 +156,7 @@
 			 * It is a bit unclear, why this seems to be necessary.
 			 * */
 			private function initData():void {
-				this.dataProvider = elvalues;
+				this.dataProvider = ervalues;
 			}
 		]]>
 	</mx:Script>
