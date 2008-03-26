@@ -26,18 +26,6 @@
  */
 package org.un.cava.birdeye.utils {
 	
-	import flexlib.containers.WindowShade;
-	
-	import mx.containers.Accordion;
-	import mx.controls.CheckBox;
-	import mx.controls.Text;
-	import mx.controls.TextArea;
-	import mx.controls.VSlider;
-	
-	import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
-	import org.un.flex.graphLayout.visual.IVisualGraph;
-	
-	
 	/**
 	 * This class will hold global params in static
 	 * variables in order to facilitate the passing of params
@@ -53,12 +41,9 @@ package org.un.cava.birdeye.utils {
 	 * registered from the application (but it is basically only VisualGraph
 	 * and the layouter).
 	 * */
-	public class GlobalParams {
+	public class GlobalParamsVGraph {
 		
-		/*
-		 * Core objects for VisualGraph.
-		 * */
-		 
+		
 		/**
 		 * This is the global instance of the VisualGraph
 		 * object. Currently there can only be one right now.
@@ -66,7 +51,7 @@ package org.un.cava.birdeye.utils {
 		 * ALL other components registered here, have to be parametrized
 		 * for each VisualGraph instance.
 		 * */
-		public static var vgraph:IVisualGraph;
+		//public static var vgraph:IVisualGraph;
 		
 		/**
 		 * This is the main instance for the currently
@@ -75,41 +60,15 @@ package org.un.cava.birdeye.utils {
 		 * it is less complicated to allow more than one
 		 * (I wonder if there will be a demand for it, though).
 		 * */
-		public static var layouter:ILayoutAlgorithm;
-			
-		/**
-		 * This holds the static class that contains all
-		 * relevant references to the layouter controls
-		 * This allows to delegate/modularise the global
-		 * parameters
-		 * */
-		public static var layoutComponents:Class = GlobalParamsLayout;
+		//public static var layouter:ILayoutAlgorithm;
 		
-		/**
-		 * This holds the static class that contains all
-		 * relevant references to the VisualGraph related controls
-		 * This allows to delegate/modularise the global
-		 * parameters
-		 * */
-		public static var vgraphComponents:Class = GlobalParamsVGraph;
+		/* these hold maps of the references, indexed by 
+		 * their id */
 		
-		/**
-		 * This holds the static class that contains all
-		 * relevant references to the data presentation related controls
-		 * This allows to delegate/modularise the global
-		 * parameters
-		 * */
-		public static var dataComponents:Class = GlobalParamsData;
+		public static var layoutSelectorControls:Object;
 		
-		/* top tier parameters */
+		public static var linkLengthControls:Object;
 		
-		/** 
-		 * zoom factor for rendered items */
-		public static var zoom:VSlider;
-		/* scale factor for rendered items */
-		public static var scaleFactor:Number = 1;
-		
-
 		
 	}
 }
