@@ -63,10 +63,10 @@ package org.un.cava.birdeye.components.renderers.nodes {
 			super.getDetails(e);
 			
 			/* set the name of the XML object as title */
-			if(GlobalParams.visualDetailTitle != null) {
+			if(GlobalParams.dataComponents.visualDetailTitle != null) {
 				/* make sure we have the XML attribute */
 				if(this.data.data.@name != null) {
-					GlobalParams.visualDetailTitle.text = this.data.data.@name;
+					GlobalParams.dataComponents.visualDetailTitle.text = this.data.data.@name;
 				} else {
 					trace("XML data object has no 'name' attribute");
 				}
@@ -75,9 +75,9 @@ package org.un.cava.birdeye.components.renderers.nodes {
 			}
 			
 			/* now the description */
-			if(GlobalParams.visualDetailDesc != null) {
+			if(GlobalParams.dataComponents.visualDetailDesc != null) {
 				if(this.data.data.@desc != null) {
-					GlobalParams.visualDetailDesc.text = this.data.data.@desc;
+					GlobalParams.dataComponents.visualDetailDesc.text = this.data.data.@desc;
 				} else {
 					trace("XML data object has no 'desc' attribute");
 				}
@@ -91,8 +91,8 @@ package org.un.cava.birdeye.components.renderers.nodes {
 			 * All this could possibly be better resolved using events
 			 * ...
 			 */
-			if(GlobalParams.visualLeftAccordion != null) {
-				GlobalParams.visualLeftAccordion.selectedIndex = 2;
+			if(GlobalParams.dataComponents.visualLeftAccordion != null) {
+				GlobalParams.dataComponents.visualLeftAccordion.selectedIndex = 2;
 			} else {
 				throw Error("GlobalParams.visualLeftAccordion not initialised!");
 			}

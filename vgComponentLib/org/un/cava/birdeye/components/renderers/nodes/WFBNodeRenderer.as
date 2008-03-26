@@ -69,38 +69,38 @@ package org.un.cava.birdeye.components.renderers.nodes {
 			
 			/* now add specifics
 			 * all would need checks for presence of the XML attribute */
-			if(GlobalParams.visualShade != null) {
-				GlobalParams.visualShade.opened = true;
+			if(GlobalParams.dataComponents.visualShade != null) {
+				GlobalParams.dataComponents.visualShade.opened = true;
 			}
-			if(GlobalParams.visualDetailContinent != null) {
-				GlobalParams.visualDetailContinent.text = this.data.data.@continent;
+			if(GlobalParams.dataComponents.visualDetailContinent != null) {
+				GlobalParams.dataComponents.visualDetailContinent.text = this.data.data.@continent;
 			}
-			if(GlobalParams.visualDetailCountry != null) {
-				GlobalParams.visualDetailCountry.text = this.data.data.@name;
+			if(GlobalParams.dataComponents.visualDetailCountry != null) {
+				GlobalParams.dataComponents.visualDetailCountry.text = this.data.data.@name;
 			}
-			if(GlobalParams.visualDetailCapital != null) {
-				GlobalParams.visualDetailCapital.text = this.data.data.@capital;
+			if(GlobalParams.dataComponents.visualDetailCapital != null) {
+				GlobalParams.dataComponents.visualDetailCapital.text = this.data.data.@capital;
 			}
-			if(GlobalParams.visualDetailGovernment != null) {
-				GlobalParams.visualDetailGovernment.text = this.data.data.@government;
+			if(GlobalParams.dataComponents.visualDetailGovernment != null) {
+				GlobalParams.dataComponents.visualDetailGovernment.text = this.data.data.@government;
 			}
-			if(GlobalParams.visualDetailDoI != null) {
-				GlobalParams.visualDetailDoI.text = this.data.data.@indep_date;
+			if(GlobalParams.dataComponents.visualDetailDoI != null) {
+				GlobalParams.dataComponents.visualDetailDoI.text = this.data.data.@indep_date;
 			}
-			if(GlobalParams.visualDetailGDP != null) {
-				GlobalParams.visualDetailGDP.text = this.data.data.@gdp_total;
+			if(GlobalParams.dataComponents.visualDetailGDP != null) {
+				GlobalParams.dataComponents.visualDetailGDP.text = this.data.data.@gdp_total;
 			}
-			if(GlobalParams.visualDetailInflation != null) {
-				GlobalParams.visualDetailInflation.text = this.data.data.@inflation;
+			if(GlobalParams.dataComponents.visualDetailInflation != null) {
+				GlobalParams.dataComponents.visualDetailInflation.text = this.data.data.@inflation;
 			}
-			if(GlobalParams.visualDetailIM != null) {
-				GlobalParams.visualDetailIM.text = this.data.data.@infant_mortality;
+			if(GlobalParams.dataComponents.visualDetailIM != null) {
+				GlobalParams.dataComponents.visualDetailIM.text = this.data.data.@infant_mortality;
 			}
-			if(GlobalParams.visualDetailPopGrowth != null) {
-				GlobalParams.visualDetailPopGrowth.text = this.data.data.@population_growth;
+			if(GlobalParams.dataComponents.visualDetailPopGrowth != null) {
+				GlobalParams.dataComponents.visualDetailPopGrowth.text = this.data.data.@population_growth;
 			}
-			if(GlobalParams.visualDetailPop != null) {
-				GlobalParams.visualDetailPop.text = this.data.data.@population;
+			if(GlobalParams.dataComponents.visualDetailPop != null) {
+				GlobalParams.dataComponents.visualDetailPop.text = this.data.data.@population;
 			}
 		}
 	
