@@ -382,7 +382,18 @@ package org.un.flex.graphLayout.data {
 			/* reset the dummy to null */
 			_parentMap[_root] = null;
 			
+			sortChildren()
 			return _parentMap;
+		}
+		
+		private function sortChildren() : void {
+			if(_graph.nodeSortFunction != null)
+				for each(var children : Array in _childrenMap){
+					children.sort(_graph.nodeSortFunction)
+					for (var childIndex : Number = 0; childIndex < children.length; childIndex++){
+						_nodeChildIndexMap[children[childIndex]] = childIndex
+					}
+				}
 		}
 		
 		/**

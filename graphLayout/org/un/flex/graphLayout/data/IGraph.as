@@ -63,6 +63,10 @@ package org.un.flex.graphLayout.data {
 		 * Indicator if the graph is directional or not.
 		 * */
 		function get isDirectional():Boolean;
+		
+		function set nodeSortFunction(f : Function) : void
+		
+		function get nodeSortFunction() : Function
 
 		/**
 		 * A lookup to find a node by it's string id.

@@ -102,6 +102,11 @@ package org.un.flex.graphLayout.data {
 		private var _treeMap:Dictionary;
 		
 		/**
+		 * 
+		 * */
+		private var _nodeSortFunction : Function = null
+		
+		/**
 		 * Constructor method that creates the graph and can
 		 * initialise it directly from an XML object, if one is specified.
 		 * 
@@ -196,6 +201,17 @@ package org.un.flex.graphLayout.data {
 		public function get noEdges():int {
 			return _numberOfEdges;
 		}
+		
+		public function set nodeSortFunction(f : Function) : void
+		{
+			_nodeSortFunction = f
+		}
+			
+		public function get nodeSortFunction() : Function
+		{
+			return _nodeSortFunction			
+		}
+
 	
 		/**
 		 * @inheritDoc
@@ -222,7 +238,8 @@ package org.un.flex.graphLayout.data {
 		/**
 		 * @inheritDoc
 		 * */
-		public function getTree(n:INode,restr:Boolean = false, nocache:Boolean = false, walkingDirection:int = GraphWalkingDirectionsEnum.FORWARD):IGTree{
+		public function getTree	(n:INode, restr:Boolean = false,
+				nocache:Boolean = false, walkingDirection:int = GraphWalkingDirectionsEnum.FORWARD):IGTree{
 			/* If nocache is set, we just return a new tree */
 			if(nocache) {
 				return new GTree(n,this,restr);
@@ -235,7 +252,7 @@ package org.un.flex.graphLayout.data {
 			}
 			return (_treeMap[n] as IGTree);
 		}
-	
+		
 		/**
 		 * @inheritDoc
 		 * */
