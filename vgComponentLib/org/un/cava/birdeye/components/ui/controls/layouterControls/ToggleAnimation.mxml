@@ -32,13 +32,30 @@
 	selected="false"
 	label="Disable Animations"
 	toolTip="If checked, animations are bypassed."
+	initialize="registerWithGlobal()"
 	click="toggleAnimation()" >
 	
 	<mx:Script>
 		<![CDATA[
 			
 			import org.un.cava.birdeye.utils.GlobalParams;
+			import org.un.cava.birdeye.utils.GlobalParamsLayout;
 			import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
+
+			/**
+			 * We need a custom constructor to register this
+			 * instance with the GlobalParams class
+			 * */
+			private function registerWithGlobal():void {
+				/* initialise the object, if not yet present */
+				if(GlobalParamsLayout.animationControls == null) {
+					GlobalParamsLayout.animationControls = new Object;
+				}
+				
+				/* register ourselves with out id, I think in an
+				 * MX Component this must always be present */
+				GlobalParamsLayout.animationControls[this.id] = this;
+			}
 			
 			/**
 			 * toggles if we want smooth animation (enabled per default)

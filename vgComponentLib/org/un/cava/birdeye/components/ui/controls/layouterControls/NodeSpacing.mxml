@@ -28,6 +28,7 @@
  *
 -->
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+	initialize="registerWithGlobal()"
 	creationComplete="registerComplete()"
 	>
 	
@@ -53,12 +54,29 @@
 	<mx:Script>
 		<![CDATA[
 			import org.un.cava.birdeye.utils.GlobalParams;
+			import org.un.cava.birdeye.utils.GlobalParamsLayout;
 			import org.un.flex.graphLayout.layout.HierarchicalLayouter;
 			import org.un.flex.graphLayout.visual.IVisualGraph;
 			import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
 			
 			/* to be set if creation was complete */
 			private var _complete:Boolean = false;
+
+			/**
+			 * We need a custom constructor to register this
+			 * instance with the GlobalParams class
+			 * */
+			private function registerWithGlobal():void {
+				/* initialise the object, if not yet present */
+				if(GlobalParamsLayout.nodeSpacingControls == null) {
+					GlobalParamsLayout.nodeSpacingControls = new Object;
+				}
+				
+				/* register ourselves with out id, I think in an
+				 * MX Component this must always be present */
+				GlobalParamsLayout.nodeSpacingControls[this.id] = this;
+			}
+
 			
 			/**
 			 * When enabling or disabling this component, we also

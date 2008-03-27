@@ -29,6 +29,7 @@
 -->
 <mx:VBox 
 	xmlns:mx="http://www.adobe.com/2006/mxml"
+	initialize="registerWithGlobal()"
 	creationComplete="registerComplete()"
 	>
 	
@@ -45,12 +46,12 @@
 			id="minusLinkLength"
 			icon="{EmbeddedIcons.zoomoutIcon}"
 			cornerRadius="5"
-			click="linkLength.value=linkLength.value-25;updateLinkLength();"
+			click="lslider.value=lslider.value-25;updateLinkLength();"
 			/>		
 		<mx:HSlider
 			tickInterval="25"
 			width="95%"
-			id="linkLength"
+			id="lslider"
 			value="100"
 			minimum="0"
 			maximum="600"
@@ -61,7 +62,7 @@
 			id="plusLinkLength"
 			icon="{EmbeddedIcons.zoomoutIcon}"
 			cornerRadius="5"
-			click="linkLength.value=linkLength.value+25;updateLinkLength();"
+			click="lslider.value=lslider.value+25;updateLinkLength();"
 			/>	
 	</mx:HBox>
 	
@@ -70,12 +71,28 @@
 	<mx:Script>
 		<![CDATA[
 			import org.un.cava.birdeye.utils.GlobalParams;
+			import org.un.cava.birdeye.utils.GlobalParamsLayout;
 			import org.un.flex.graphLayout.visual.IVisualGraph;
 			import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
 			import org.un.cava.birdeye.assets.icons.EmbeddedIcons;
 			
 			/* to be set if creation was complete */
 			private var _complete:Boolean = false;
+			
+			/**
+			 * We need a custom constructor to register this
+			 * instance with the GlobalParams class
+			 * */
+			private function registerWithGlobal():void {	
+				/* initialise the object, if not yet present */
+				if(GlobalParamsLayout.linkLengthControls == null) {
+					GlobalParamsLayout.linkLengthControls = new Object;
+				}
+				
+				/* register ourselves with out id, I think in an
+				 * MX Component this must always be present */
+				GlobalParamsLayout.linkLengthControls[this.id] = this;
+			}
 			
 			/**
 			 * When enabling or disabling this component, we also
@@ -89,10 +106,10 @@
 				if(_complete) {
 					if(e == true) {
 						lllabel.setStyle("color",0x000000);
-						linkLength.alpha=1;
+						lslider.alpha=1;
 					} else {
 						lllabel.setStyle("color",0xCCCCCC);
-						linkLength.alpha=0.3;
+						lslider.alpha=0.3;
 					}
 				}
 				/* call superclass (VBox) */
@@ -117,7 +134,7 @@
 				
 				/* set the local layouter reference */
 				layouter = GlobalParams.layouter;
-				layouter.linkLength = linkLength.value;
+				layouter.linkLength = lslider.value;
 			
 				if(vgraph != null) {
 					vgraph.draw();
@@ -139,7 +156,7 @@
 					return;
 				}
 				/* refresh the value */
-				linkLength.value = GlobalParams.layouter.linkLength;
+				lslider.value = GlobalParams.layouter.linkLength;
 			}
 			
 			/**

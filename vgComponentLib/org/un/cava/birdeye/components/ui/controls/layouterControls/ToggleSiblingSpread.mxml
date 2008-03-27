@@ -31,14 +31,32 @@
 	selected="true"
 	label="Sibling Spread"
 	toolTip="Enable/Disable Sibling Spread"
+	initialize="registerWithGlobal()"
 	click="toggleSiblingSpread()">
 	
 	<mx:Script>
 		<![CDATA[
 			import org.un.cava.birdeye.utils.GlobalParams;
+			import org.un.cava.birdeye.utils.GlobalParamsLayout;
 			import org.un.flex.graphLayout.layout.HierarchicalLayouter;
 			import org.un.flex.graphLayout.visual.IVisualGraph;
 			import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
+
+			/**
+			 * We need a custom constructor to register this
+			 * instance with the GlobalParams class
+			 * */
+			private function registerWithGlobal():void {
+				/* initialise the object, if not yet present */
+				if(GlobalParamsLayout.siblingSpreadControls == null) {
+					GlobalParamsLayout.siblingSpreadControls = new Object;
+				}
+				
+				/* register ourselves with out id, I think in an
+				 * MX Component this must always be present */
+				GlobalParamsLayout.siblingSpreadControls[this.id] = this;
+			}
+
 			
 			/**
 			 * When enabling or disabling this component, we also
