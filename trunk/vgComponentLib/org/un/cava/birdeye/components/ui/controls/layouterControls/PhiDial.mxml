@@ -27,7 +27,9 @@
  * THE SOFTWARE.
  *
 -->
-<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml">
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+	initialize="registerWithGlobal()"
+	>
 	
 	<mx:Label
 		id="phidiallabel"
@@ -51,11 +53,27 @@
 		<![CDATA[
 			import org.un.flex.graphLayout.visual.IVisualGraph;
 			import org.un.cava.birdeye.utils.GlobalParams;
+			import org.un.cava.birdeye.utils.GlobalParamsLayout;
 			import org.un.flex.graphLayout.layout.IAngularLayouter;
 			
 			/* to be set if creation was complete */
 			private var _complete:Boolean = false;
-			
+
+			/**
+			 * We need a custom constructor to register this
+			 * instance with the GlobalParams class
+			 * */
+			private function registerWithGlobal():void {
+				/* initialise the object, if not yet present */
+				if(GlobalParamsLayout.phiDialControls == null) {
+					GlobalParamsLayout.phiDialControls = new Object;
+				}
+				
+				/* register ourselves with out id, I think in an
+				 * MX Component this must always be present */
+				GlobalParamsLayout.phiDialControls[this.id] = this;
+			}
+		
 			/**
 			 * When enabling or disabling this component, we also
 			 * perform some specific tasks.

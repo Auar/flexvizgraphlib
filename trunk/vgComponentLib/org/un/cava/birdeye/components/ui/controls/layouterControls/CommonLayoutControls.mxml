@@ -41,22 +41,38 @@
 	borderStyle="solid"
 	backgroundColor="#CCCCCC"
 	backgroundAlpha=".2"
+	initialize="registerWithGlobal()"
 	creationComplete="registerComplete()"
 	 >
 	
-	
+	<local:LinkLength id="linklengthctl" />
 	<local:ToggleAnimation id="toggleanim" />
 	<local:ToggleAutoFit id="toggleaf" />
 	
 	<mx:Script>
 		<![CDATA[
+			import org.un.cava.birdeye.utils.GlobalParamsLayout;
 			import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
 			import flexlib.scheduling.scheduleClasses.layout.ILayout;
 			import org.un.cava.birdeye.utils.GlobalParams;
-			import org.un.flex.graphLayout.layout.HierarchicalLayouter;
 
 			/* to be set if creation was complete */
 			private var _complete:Boolean = false;
+
+			/**
+			 * We need a custom constructor to register this
+			 * instance with the GlobalParams class
+			 * */
+			private function registerWithGlobal():void {
+				/* initialise the object, if not yet present */
+				if(GlobalParamsLayout.commonLayoutControls == null) {
+					GlobalParamsLayout.commonLayoutControls = new Object;
+				}
+				
+				/* register ourselves with out id, I think in an
+				 * MX Component this must always be present */
+				GlobalParamsLayout.commonLayoutControls[this.id] = this;
+			}
 
 			/**
 			 * When enabling or disabling this component, we also
@@ -71,6 +87,7 @@
 				/* only do this if creation was complete including children */
 				if(_complete) {
 					/* disable children */
+					linklengthctl.enabled = e;
 					toggleanim.enabled = e;
 					toggleaf.enabled = e;
 				}
@@ -100,6 +117,9 @@
 				
 				layouter.disableAnimation = toggleanim.selected;
 				layouter.autoFitEnabled = toggleaf.selected;
+				
+				/* have to do it like this, because is compound already */
+				linklengthctl.updateLinkLength();
 				
 				/* the following would use the update methods provided
 				 * the layouter is not done, since the calling of that
@@ -134,7 +154,8 @@
 				 * the layouter is not done, since the calling of that
 				 * might call vgraph.draw() which could result in a crash....
 				 * have to investigate ... XXX */
-				 
+				
+				linklengthctl.refreshSlider();
 				/*
 				toggleanim.refreshAnimCheckbox();
 				toggleaf.refreshAFCheckbox();

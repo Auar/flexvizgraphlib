@@ -32,12 +32,14 @@
 	selected="true"
 	label="AutoFit"
 	toolTip="Select to restrict graph to boundaries of current view space.  Graph will autofit its size so that all nodes are visible."
+	initialize="registerWithGlobal()"
 	click="toggleAutoFit()" >
 	
 	<mx:Script>
 		<![CDATA[
 			
 			import org.un.cava.birdeye.utils.GlobalParams;
+			import org.un.cava.birdeye.utils.GlobalParamsLayout;
 			import org.un.flex.graphLayout.visual.IVisualGraph;
 			import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
 			
@@ -46,6 +48,21 @@
 			 * specific controls, we should somehow inform those controls
 			 * possibly by sending an event 
 			 * */
+			
+			/**
+			 * We need a custom constructor to register this
+			 * instance with the GlobalParams class
+			 * */
+			private function registerWithGlobal():void {	
+				/* initialise the object, if not yet present */
+				if(GlobalParamsLayout.autoFitControls == null) {
+					GlobalParamsLayout.autoFitControls = new Object;
+				}
+				
+				/* register ourselves with out id, I think in an
+				 * MX Component this must always be present */
+				GlobalParamsLayout.autoFitControls[this.id] = this;
+			}
 			
 			/**
 			 * toggles the autoFit capability of most layouters.

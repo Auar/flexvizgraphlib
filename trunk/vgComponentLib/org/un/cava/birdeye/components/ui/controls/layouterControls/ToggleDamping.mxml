@@ -32,6 +32,7 @@
 	selected="true"
 	label="Damping"
 	toolTip="Enable/Disable damping"
+	initialize="registerWithGlobal()"
 	click="toggleDamping()" >
 	
 	
@@ -39,9 +40,25 @@
 		<![CDATA[
 			
 			import org.un.cava.birdeye.utils.GlobalParams;
+			import org.un.cava.birdeye.utils.GlobalParamsLayout;
 			import org.un.flex.graphLayout.layout.ForceDirectedLayouter;
 			import org.un.flex.graphLayout.visual.IVisualGraph;
 			import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
+
+			/**
+			 * We need a custom constructor to register this
+			 * instance with the GlobalParams class
+			 * */
+			private function registerWithGlobal():void {
+				/* initialise the object, if not yet present */
+				if(GlobalParamsLayout.dampingControls == null) {
+					GlobalParamsLayout.dampingControls = new Object;
+				}
+				
+				/* register ourselves with out id, I think in an
+				 * MX Component this must always be present */
+				GlobalParamsLayout.dampingControls[this.id] = this;
+			}
 			
 			/**
 			 * When enabling or disabling this component, we also

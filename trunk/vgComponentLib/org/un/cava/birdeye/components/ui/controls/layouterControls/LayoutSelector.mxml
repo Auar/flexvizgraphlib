@@ -34,6 +34,7 @@
 	prompt="Select layout algorithm."
 	toolTip="Some layouters may not be fully stable."
 	creationComplete="initData()"
+	initialize="registerWithGlobal()"
 	change="changeLayouter()" >
 	
 	<mx:ArrayCollection id="layouts">
@@ -74,7 +75,7 @@
 			 * We need a custom constructor to register this
 			 * instance with the GlobalParams class
 			 * */
-			public function LayoutSelector():void {
+			private function registerWithGlobal():void {
 				super(); // call default constructor
 				
 				/* initialise the object, if not yet present */
