@@ -44,17 +44,14 @@
 	creationComplete="registerComplete()"
 	 >
 	
-	<local:EdgeLabelSelector id="elselector" />
-	<local:ToggleEdgeLabels id="eltoggle" />
-	
+	<local:NodeRendererSelector id="nodeRenSel" />
+	<local:EdgeLabelControls id="elcontrols" />
+	<local:EdgeRendererSelector id="erSel" />
+
 	<mx:Script>
 		<![CDATA[
-			import org.un.cava.birdeye.utils.GlobalParams;
-			import org.un.flex.graphLayout.layout.HierarchicalLayouter;
-
 			/* to be set if creation was complete */
 			private var _complete:Boolean = false;
-
 
 			/**
 			 * When enabling or disabling this component, we also
@@ -69,8 +66,9 @@
 				/* only do this if creation was complete including children */
 				if(_complete) {
 					/* disable children */
-					elselector.enabled = e;
-					eltoggle.enabled = e;
+					nodeRenSel.enabled = e;
+					elcontrols.enabled = e;
+					erSel.enabled = e;
 				}
 				
 				/* do it for the super class */
@@ -86,8 +84,9 @@
 			 * the layouter set in GlobalParams
 			 * */
 			public function applyValues():void {
-				elselector.changeEdgeLabelRenderer();
-				eltoggle.toggleShowEdgeLabels();
+				nodeRenSel.changeNodeRenderer();
+				elcontrols.applyValues();
+				erSel.changeEdgeRenderer();
 			}
 			
 			/**
@@ -95,14 +94,9 @@
 			 * those of the layouter set in GlobalParams
 			 * */
 			public function refreshValues():void {
-				/* cannot do it easily for edgeLabelRendererSelector
-				 * deferred until required */
-				 
-				if(GlobalParams.vgraph) {
-					eltoggle.selected = GlobalParams.vgraph.displayEdgeLabels;
-				} else {
-					trace("cannot refresh ToggleEdgeLabels, vgraph ref in GlobalParams is invalid");
-				}
+				nodeRenSel.refreshSelector();
+				elcontrols.refreshValues();
+				erSel.refreshSelector();
 			}
 			
 			/**

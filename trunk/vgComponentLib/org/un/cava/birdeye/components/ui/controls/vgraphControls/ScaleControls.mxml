@@ -44,14 +44,11 @@
 	creationComplete="registerComplete()"
 	 >
 	
-	<local:EdgeLabelSelector id="elselector" />
-	<local:ToggleEdgeLabels id="eltoggle" />
-	
+	<local:BirdEyeZoom id="beyezoom" />
+	<local:ScaleLabels id="scalelbs" />
+
 	<mx:Script>
 		<![CDATA[
-			import org.un.cava.birdeye.utils.GlobalParams;
-			import org.un.flex.graphLayout.layout.HierarchicalLayouter;
-
 			/* to be set if creation was complete */
 			private var _complete:Boolean = false;
 
@@ -69,8 +66,8 @@
 				/* only do this if creation was complete including children */
 				if(_complete) {
 					/* disable children */
-					elselector.enabled = e;
-					eltoggle.enabled = e;
+					beyezoom.enabled = e;
+					scalelbs.enabled = e;
 				}
 				
 				/* do it for the super class */
@@ -86,8 +83,8 @@
 			 * the layouter set in GlobalParams
 			 * */
 			public function applyValues():void {
-				elselector.changeEdgeLabelRenderer();
-				eltoggle.toggleShowEdgeLabels();
+				beyezoom.updateVScale();
+				scalelbs.updateScale();
 			}
 			
 			/**
@@ -95,14 +92,8 @@
 			 * those of the layouter set in GlobalParams
 			 * */
 			public function refreshValues():void {
-				/* cannot do it easily for edgeLabelRendererSelector
-				 * deferred until required */
-				 
-				if(GlobalParams.vgraph) {
-					eltoggle.selected = GlobalParams.vgraph.displayEdgeLabels;
-				} else {
-					trace("cannot refresh ToggleEdgeLabels, vgraph ref in GlobalParams is invalid");
-				}
+				beyezoom.refreshVScale();
+				scalelbs.refreshSlider();
 			}
 			
 			/**

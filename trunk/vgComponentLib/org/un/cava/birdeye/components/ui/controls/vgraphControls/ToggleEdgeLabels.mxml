@@ -32,7 +32,7 @@
 	selected="true"
 	label="Edge Labels"
 	toolTip="Select to show edge labels."
-	click="updateShowEdgeLabels()" >
+	click="toggleShowEdgeLabels()" >
 	
 	<mx:Script>
 		<![CDATA[
@@ -43,7 +43,7 @@
 			/**
 			 * toggles to show edge labels or not
 			 * */
-			public function updateShowEdgeLabels():void {
+			public function toggleShowEdgeLabels():void {
 				
 				var vgraph:IVisualGraph = GlobalParams.vgraph;
 				
@@ -54,7 +54,20 @@
 				} else {
 					trace("Show EdgeLabels not toggled, no valid vgraph in GlobalParams, not redrawing!");
 				}
-			}		
+			}
+			
+			/**
+			 * refreshes the checkbox from the value in VGraph.
+			 * */
+			public function refreshCheckbox():void {
+				var vgraph:IVisualGraph = GlobalParams.vgraph;
+				
+				if(vgraph != null) {
+					this.selected = vgraph.displayEdgeLabels;
+				} else {
+					trace("Show EdgeLabels not refreshed, no valid vgraph in GlobalParams!");
+				}
+			}			
 		]]>
 	</mx:Script>
 </mx:CheckBox>
