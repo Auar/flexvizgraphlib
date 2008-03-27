@@ -430,6 +430,7 @@ package org.un.flex.graphLayout.visual {
 			_canvas.addEventListener(MouseEvent.MOUSE_DOWN,backgroundDragBegin);
 			_canvas.addEventListener(MouseEvent.MOUSE_UP,dragEnd);
 			
+//			_canvas.addEventListener(MouseEvent.MOUSE_OUT,dragEnd);			
 			_origin = new Point(0,0);
 		}
 		
@@ -1925,8 +1926,10 @@ package org.un.flex.graphLayout.visual {
 			
 			/* set the progress flag and save the starting coordinates */
 			_backgroundDragInProgress = true;
-			_dragCursorStartX = event.stageX;
-			_dragCursorStartY = event.stageY;
+			
+			const point : Point = globalMousePosition();
+			_dragCursorStartX = point.x;
+			_dragCursorStartY = point.y;
 			
 			/* register the backgroundDrag listener to react to
 			 * the mouse movements */
@@ -1934,6 +1937,11 @@ package org.un.flex.graphLayout.visual {
 			
 			/* and inform the layouter about the dragEvent */
 			_layouter.bgDragEvent(event);
+		}
+		
+		private function globalMousePosition() : Point
+		{
+			return localToGlobal(new Point(mouseX, mouseY))
 		}
 		
 		/**
@@ -1945,13 +1953,17 @@ package org.un.flex.graphLayout.visual {
 			
 			var deltaX:Number;
 			var deltaY:Number;
+
+			const point : Point = globalMousePosition();
+			const x : Number = point.x;
+			const y : Number = point.y;
 			
 			if (_scrollBackgroundInDrag) {
 				/* compute the movement offset of this move by
 				 * subtracting the current mouse position from
 				 * the last mouse position */
-				deltaX = event.stageX - _dragCursorStartX;
-				deltaY = event.stageY - _dragCursorStartY;
+				deltaX = x - _dragCursorStartX;
+				deltaY = y - _dragCursorStartY;
 			 
 				deltaX /= scaleX
 				deltaY /= scaleY
@@ -1963,8 +1975,8 @@ package org.un.flex.graphLayout.visual {
 			_layouter.bgDragContinue(event);
 			
 			/* reset the drag start point for the next step */
-			_dragCursorStartX = event.stageX;
-			_dragCursorStartY = event.stageY;
+			_dragCursorStartX = x;
+			_dragCursorStartY = y;
 			
 			/* make sure edges are redrawn */
 			//_drawingSurface.invalidateDisplayList();
