@@ -28,7 +28,7 @@
  *
 -->
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
-	xmlns:local="org.un.cava.birdeye.components.ui.controls.vgraphControls.*"
+	xmlns:local="org.un.cava.birdeye.components.ui.controls.layouterControls.*"
 	width="97%"
 	horizontalAlign="left"
 	paddingLeft="5"
@@ -44,17 +44,19 @@
 	creationComplete="registerComplete()"
 	 >
 	
-	<local:EdgeLabelSelector id="elselector" />
-	<local:ToggleEdgeLabels id="eltoggle" />
+	
+	<local:ToggleAnimation id="toggleanim" />
+	<local:ToggleAutoFit id="toggleaf" />
 	
 	<mx:Script>
 		<![CDATA[
+			import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
+			import flexlib.scheduling.scheduleClasses.layout.ILayout;
 			import org.un.cava.birdeye.utils.GlobalParams;
 			import org.un.flex.graphLayout.layout.HierarchicalLayouter;
 
 			/* to be set if creation was complete */
 			private var _complete:Boolean = false;
-
 
 			/**
 			 * When enabling or disabling this component, we also
@@ -69,8 +71,8 @@
 				/* only do this if creation was complete including children */
 				if(_complete) {
 					/* disable children */
-					elselector.enabled = e;
-					eltoggle.enabled = e;
+					toggleanim.enabled = e;
+					toggleaf.enabled = e;
 				}
 				
 				/* do it for the super class */
@@ -86,8 +88,28 @@
 			 * the layouter set in GlobalParams
 			 * */
 			public function applyValues():void {
-				elselector.changeEdgeLabelRenderer();
-				eltoggle.toggleShowEdgeLabels();
+				var layouter:ILayoutAlgorithm;
+				
+				if(GlobalParams.layouter == null) {
+					trace("GP layouter is null, doing nothing");
+					return;
+				}
+				
+				/* this is a direct version, but less transparent */
+				layouter = GlobalParams.layouter;
+				
+				layouter.disableAnimation = toggleanim.selected;
+				layouter.autoFitEnabled = toggleaf.selected;
+				
+				/* the following would use the update methods provided
+				 * the layouter is not done, since the calling of that
+				 * might call vgraph.draw() which could result in a crash....
+				 * have to investigate ... XXX */
+				 
+				/*
+				toggleanim.toggleAnimation();
+				toggleaf.toggleAutoFit();
+				*/
 			}
 			
 			/**
@@ -95,14 +117,28 @@
 			 * those of the layouter set in GlobalParams
 			 * */
 			public function refreshValues():void {
-				/* cannot do it easily for edgeLabelRendererSelector
-				 * deferred until required */
-				 
-				if(GlobalParams.vgraph) {
-					eltoggle.selected = GlobalParams.vgraph.displayEdgeLabels;
-				} else {
-					trace("cannot refresh ToggleEdgeLabels, vgraph ref in GlobalParams is invalid");
+				var layouter:ILayoutAlgorithm;
+				
+				if(GlobalParams.layouter == null) {
+					trace("GP layouter is null, doing nothing");
+					return;
 				}
+		
+				/* this is a direct version, but less transparent */
+				layouter = GlobalParams.layouter;
+				
+				toggleanim.selected = layouter.disableAnimation;
+				toggleaf.selected = layouter.autoFitEnabled;
+				
+				/* the following would use the update methods provided
+				 * the layouter is not done, since the calling of that
+				 * might call vgraph.draw() which could result in a crash....
+				 * have to investigate ... XXX */
+				 
+				/*
+				toggleanim.refreshAnimCheckbox();
+				toggleaf.refreshAFCheckbox();
+				*/
 			}
 			
 			/**

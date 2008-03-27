@@ -80,7 +80,7 @@
 			/**
 			 * this updates the scale factor in all children of the vgraph
 			 * */	
-			private function updateScale():void {
+			public function updateScale():void {
 				
 				/* we need the VGraph object in its capacity as a Container */
 				var vgraph:Container = (GlobalParams.vgraph as Container);
@@ -115,6 +115,33 @@
 					trace("Scale NOT changed, no valid vgraph in GlobalParams, not redrawing!");
 				}
 			}
+			
+			/**
+			 * refreshes the slider from the current scale value
+			 * of the first child object of VGraph
+			 * */
+			public function refreshSlider():void {
+				
+				/* we need the VGraph object in its capacity as a Container */
+				var vgraph:Container = (GlobalParams.vgraph as Container);
+				var children:Array;
+				var child:UIComponent;
+
+				if(vgraph != null) {		
+					
+					/* get from first child. XXX Needs to check that
+					 * we actually have at least 1 child (we should
+					 * at least always have the drawing surface for the edges.....
+					 */
+					scaleSlider.value = vgraph.getChildAt(0).scaleX;
+					
+					/* npw update the global parameter */
+					GlobalParams.scaleFactor = scaleSlider.value;
+				} else {
+					trace("Scale NOT refreshed, no valid vgraph in GlobalParams!");
+				}
+			}
+			
 			/**
 			 * register that we are complete
 			 * */

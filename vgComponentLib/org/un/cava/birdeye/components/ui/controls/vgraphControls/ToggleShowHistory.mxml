@@ -32,7 +32,7 @@
 	selected="false"
 	label="History"
 	toolTip="Select will retain visibility of all nodes visited."
-	click="updateShowHistory()" >
+	click="toggleShowHistory()" >
 	
 	<mx:Script>
 		<![CDATA[
@@ -44,7 +44,7 @@
 			 * toggles to show previously visited root nodes
 			 * (root node history)
 			 * */
-			private function updateShowHistory():void {
+			public function toggleShowHistory():void {
 				
 				var vgraph:IVisualGraph = GlobalParams.vgraph;
 				
@@ -54,7 +54,23 @@
 				} else {
 					trace("History NOT changed, no valid vgraph in GlobalParams, not redrawing!");
 				}
+			}
+
+			/**
+			 * refreshes the checkbox from the current value
+			 * in VGraph
+			 * */
+			public function refreshCheckbox():void {
+				
+				var vgraph:IVisualGraph = GlobalParams.vgraph;
+				
+				if(vgraph != null) {
+					this.selected = vgraph.showHistory;
+				} else {
+					trace("History NOT refreshed, no valid vgraph in GlobalParams!");
+				}
 			}		
+	
 		]]>
 	</mx:Script>
 </mx:CheckBox>

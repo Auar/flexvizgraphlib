@@ -34,7 +34,7 @@
 	prompt="Select the orientation"
 	toolTip="Select the orientation of the layout"
 	creationComplete="initData()"
-	change="setOrientation()" >
+	change="changeOrientation()" >
 	
 	<mx:ArrayCollection id="orvalues">
 		<mx:String>Top Down</mx:String>
@@ -74,7 +74,7 @@
 			 * Set the orientation value in the layouter
 			 * according to the current selected value
 			 * */
-			public function setOrientation():void {
+			public function changeOrientation():void {
 				
 				var or:String;
 				var hlayouter:HierarchicalLayouter;

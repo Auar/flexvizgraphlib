@@ -32,7 +32,7 @@
 	selected="true"
 	label="Damping"
 	toolTip="Enable/Disable damping"
-	click="changeDamping()" >
+	click="toggleDamping()" >
 	
 	
 	<mx:Script>
@@ -66,7 +66,7 @@
 			/**
 			 * toggles the damping feature of the ForceDirected Layouter
 			 * */
-			public function changeDamping():void {
+			public function toggleDamping():void {
 				
 				var flayouter:ForceDirectedLayouter;
 				var vgraph:IVisualGraph = GlobalParams.vgraph;

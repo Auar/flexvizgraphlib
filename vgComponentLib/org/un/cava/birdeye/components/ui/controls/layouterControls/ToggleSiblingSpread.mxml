@@ -31,7 +31,7 @@
 	selected="true"
 	label="Sibling Spread"
 	toolTip="Enable/Disable Sibling Spread"
-	click="updateSiblingSpread()">
+	click="toggleSiblingSpread()">
 	
 	<mx:Script>
 		<![CDATA[
@@ -64,7 +64,7 @@
 			 * toggles the sibling spread feature in the
 			 * hierarchical layouter
 			 * */
-			public function updateSiblingSpread():void {
+			public function toggleSiblingSpread():void {
 				
 				var hlayouter:HierarchicalLayouter;
 				var vgraph:IVisualGraph = GlobalParams.vgraph;

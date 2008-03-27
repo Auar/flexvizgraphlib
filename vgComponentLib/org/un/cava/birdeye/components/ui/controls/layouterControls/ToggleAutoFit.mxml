@@ -32,7 +32,7 @@
 	selected="true"
 	label="AutoFit"
 	toolTip="Select to restrict graph to boundaries of current view space.  Graph will autofit its size so that all nodes are visible."
-	click="updateAutoFit()" >
+	click="toggleAutoFit()" >
 	
 	<mx:Script>
 		<![CDATA[
@@ -50,7 +50,7 @@
 			/**
 			 * toggles the autoFit capability of most layouters.
 			 * */
-			public function updateAutoFit():void {
+			public function toggleAutoFit():void {
 				
 				var layouter:ILayoutAlgorithm;
 				var vgraph:IVisualGraph = GlobalParams.vgraph;
