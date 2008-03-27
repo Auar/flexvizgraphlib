@@ -89,6 +89,23 @@ package org.un.cava.birdeye.utils {
 		 * This mapping holds all instantiated ToggleSiblingSpread
 		 * components. They are indexed by their component id.
 		 * */		
-		public static var siblingSpreadControls:Object;			
+		public static var siblingSpreadControls:Object;		
+		
+		/**
+		 * This mapping holds instantiated HierLayoutControls
+		 * components, which aggregate as a compound component
+		 * the OrientationSelector, NodeSpacing and SiblingSpread
+		 * components.
+		 * */
+		public static var hierLayoutControls:Object;
+
+		/**
+		 * This mapping holds instantiated CommonLayoutControls
+		 * components, which aggregate as a compound component
+		 * all controls common to all layouters, currently 
+		 * AutoFit, Animation and LinkLength.
+		 * */
+		public static var commonLayoutControls:Object;
+
 	}
 }

@@ -28,13 +28,7 @@ package org.un.cava.birdeye.utils {
 	
 	/**
 	 * This class will hold global params in static
-	 * variables in order to facilitate the passing of params
-	 * and to avoid issues with parentDocument and/or 
-	 * parentApplication (and other issues)
-	 * 
-	 * This is essential for the proper functioning of
-	 * all the provided control components for the graphLayout
-	 * features. This is the main communication interface.
+	 * variables related to VisualGraph properties.
 	 * 
 	 * Basically every instantiated component will register itself
 	 * with this class. graphLayout based components will have to be
@@ -43,32 +37,73 @@ package org.un.cava.birdeye.utils {
 	 * */
 	public class GlobalParamsVGraph {
 		
-		
-		/**
-		 * This is the global instance of the VisualGraph
-		 * object. Currently there can only be one right now.
-		 * In a future time, this could be generalized, but then
-		 * ALL other components registered here, have to be parametrized
-		 * for each VisualGraph instance.
-		 * */
-		//public static var vgraph:IVisualGraph;
-		
-		/**
-		 * This is the main instance for the currently
-		 * active layouter in the VisualGraph object.
-		 * Again currently only one instance is allowed, but
-		 * it is less complicated to allow more than one
-		 * (I wonder if there will be a demand for it, though).
-		 * */
-		//public static var layouter:ILayoutAlgorithm;
-		
+
 		/* these hold maps of the references, indexed by 
 		 * their id */
 		
-		public static var layoutSelectorControls:Object;
+		/**
+		 * This mapping holds all instantiated BirdEyeZoom
+		 * components. They are indexed by their component id.
+		 * */
+		public static var birdEyeZoomControls:Object;
 		
-		public static var linkLengthControls:Object;
+		/**
+		 * This mapping holds all instantiated ScaleLabels
+		 * components. They are indexed by their component id.
+		 * */		
+		public static var scaleLabelsControls:Object;
+
+		/**
+		 * This mapping holds all instantiated DegreeOfSeparation
+		 * components. They are indexed by their component id.
+		 * */		
+		public static var degreeOfSeparationControls:Object;
 		
+		/**
+		 * This mapping holds all instantiated NodeRendererSelector
+		 * components. They are indexed by their component id.
+		 * */		
+		public static var nodeRendererSelectorControls:Object;
+
+		/**
+		 * This mapping holds all instantiated NodeRendererSelector
+		 * components. They are indexed by their component id.
+		 * */		
+		public static var nodeRendererSelControls:Object;
+
+		/**
+		 * This mapping holds all instantiated EdgeLabelSelector
+		 * components. They are indexed by their component id.
+		 * */		
+		public static var edgeLabelSelectorControls:Object;
+
+		/**
+		 * This mapping holds all instantiated EdgeRendererSelector
+		 * components. They are indexed by their component id.
+		 * */		
+		public static var edgeRendererSelectorControls:Object;
+
+		/**
+		 * This mapping holds all instantiated ToggleEdgeLabels
+		 * components. They are indexed by their component id.
+		 * */		
+		public static var toggleEdgeLabelsControls:Object;
+
+		/**
+		 * This mapping holds all instantiated ToggleShowHistory
+		 * components. They are indexed by their component id.
+		 * */		
+		public static var toggleShowHistoryControls:Object;
+
+		/**
+		 * This mapping holds all instantiated EdgeLabelControls
+		 * components. This is a compount component of all EdgeLabel
+		 * related controls.
+		 * They are indexed by their component id.
+		 * */		
+		public static var edgeLabelSelControls:Object;
+
+			
 		
 	}
 }
