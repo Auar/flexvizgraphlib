@@ -66,12 +66,6 @@ package org.un.cava.birdeye.utils {
 		public static var nodeRendererSelectorControls:Object;
 
 		/**
-		 * This mapping holds all instantiated NodeRendererSelector
-		 * components. They are indexed by their component id.
-		 * */		
-		public static var nodeRendererSelControls:Object;
-
-		/**
 		 * This mapping holds all instantiated EdgeLabelSelector
 		 * components. They are indexed by their component id.
 		 * */		
@@ -101,9 +95,23 @@ package org.un.cava.birdeye.utils {
 		 * related controls.
 		 * They are indexed by their component id.
 		 * */		
-		public static var edgeLabelSelControls:Object;
+		public static var edgeLabelControls:Object;
 
-			
+		/**
+		 * This mapping holds all instantiated RendererControls
+		 * components. This is a compount component of all renderer
+		 * related controls.
+		 * They are indexed by their component id.
+		 * */		
+		public static var rendererControls:Object;
+		
+		/**
+		 * This mapping holds all instantiated ScaleControls
+		 * components. This is a compount component of all scale
+		 * related controls.
+		 * They are indexed by their component id.
+		 * */		
+		public static var scaleControls:Object;	
 		
 	}
 }
