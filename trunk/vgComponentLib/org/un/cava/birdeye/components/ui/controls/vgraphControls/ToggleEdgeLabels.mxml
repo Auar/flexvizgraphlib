@@ -32,12 +32,14 @@
 	selected="true"
 	label="Edge Labels"
 	toolTip="Select to show edge labels."
+	creationComplete="registerComplete()"
 	click="toggleShowEdgeLabels()" >
 	
 	<mx:Script>
 		<![CDATA[
 			
 			import org.un.cava.birdeye.utils.GlobalParams;
+			import org.un.cava.birdeye.utils.GlobalParamsVGraph;
 			import org.un.flex.graphLayout.visual.IVisualGraph;
 			
 			/**
@@ -67,7 +69,22 @@
 				} else {
 					trace("Show EdgeLabels not refreshed, no valid vgraph in GlobalParams!");
 				}
-			}			
+			}
+			
+			/**
+			 * register that we are complete
+			 * */
+			private function registerComplete():void {
+				
+				/* initialise the object, if not yet present */
+				if(GlobalParamsVGraph.toggleEdgeLabelsControls == null) {
+					GlobalParamsVGraph.toggleEdgeLabelsControls = new Object;
+				}
+				
+				/* register ourselves with out id, I think in an
+				 * MX Component this must always be present */
+				GlobalParamsVGraph.toggleEdgeLabelsControls[this.id] = this;
+			}		
 		]]>
 	</mx:Script>
 </mx:CheckBox>
