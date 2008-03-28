@@ -27,7 +27,8 @@
  * THE SOFTWARE.
  *
 -->
-<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" >
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+	creationComplete="registerComplete()" >
 	
 	<mx:Label
 		toolTip="Use this control to specify visible link distance"
@@ -51,6 +52,7 @@
 	<mx:Script>
 		<![CDATA[
 			import org.un.cava.birdeye.utils.GlobalParams;
+			import org.un.cava.birdeye.utils.GlobalParamsVGraph;
 			import org.un.flex.graphLayout.visual.IVisualGraph;
 
 			/* to be set if creation was complete */
@@ -83,6 +85,22 @@
 				} else {
 					trace("DegreeOfSeparation NOT refreshed, no valid vgraph in GlobalParams!");
 				}
+			}
+			
+			/**
+			 * register that we are complete
+			 * */
+			private function registerComplete():void {
+				_complete = true;
+				
+				/* initialise the object, if not yet present */
+				if(GlobalParamsVGraph.degreeOfSeparationControls == null) {
+					GlobalParamsVGraph.degreeOfSeparationControls = new Object;
+				}
+				
+				/* register ourselves with out id, I think in an
+				 * MX Component this must always be present */
+				GlobalParamsVGraph.degreeOfSeparationControls[this.id] = this;
 			}
 			
 		]]>

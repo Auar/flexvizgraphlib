@@ -49,6 +49,8 @@
 
 	<mx:Script>
 		<![CDATA[
+			import org.un.cava.birdeye.utils.GlobalParamsVGraph;
+			
 			/* to be set if creation was complete */
 			private var _complete:Boolean = false;
 
@@ -101,6 +103,15 @@
 			 * */
 			private function registerComplete():void {
 				_complete = true;
+				
+				/* initialise the object, if not yet present */
+				if(GlobalParamsVGraph.scaleControls == null) {
+					GlobalParamsVGraph.scaleControls = new Object;
+				}
+				
+				/* register ourselves with out id, I think in an
+				 * MX Component this must always be present */
+				GlobalParamsVGraph.scaleControls[this.id] = this;
 			}
 		]]>
 	</mx:Script>

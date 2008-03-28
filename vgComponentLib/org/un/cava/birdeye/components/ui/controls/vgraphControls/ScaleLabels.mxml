@@ -71,6 +71,7 @@
 			import mx.core.Container;
 			import mx.core.UIComponent;
 			import org.un.cava.birdeye.utils.GlobalParams;
+			import org.un.cava.birdeye.utils.GlobalParamsVGraph;
 			import org.un.flex.graphLayout.visual.IVisualGraph;
 			import org.un.cava.birdeye.assets.icons.EmbeddedIcons;
 			
@@ -147,6 +148,15 @@
 			 * */
 			private function registerComplete():void {
 				_complete = true;
+				
+				/* initialise the object, if not yet present */
+				if(GlobalParamsVGraph.scaleLabelsControls == null) {
+					GlobalParamsVGraph.scaleLabelsControls = new Object;
+				}
+				
+				/* register ourselves with out id, I think in an
+				 * MX Component this must always be present */
+				GlobalParamsVGraph.scaleLabelsControls[this.id] = this;
 			}
 		]]>
 	</mx:Script>

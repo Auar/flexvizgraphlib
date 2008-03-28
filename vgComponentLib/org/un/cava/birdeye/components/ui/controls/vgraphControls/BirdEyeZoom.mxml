@@ -67,6 +67,7 @@
 	<mx:Script>
 		<![CDATA[
 			import org.un.cava.birdeye.utils.GlobalParams;
+			import org.un.cava.birdeye.utils.GlobalParamsVGraph;
 			import org.un.flex.graphLayout.visual.IVisualGraph;
 			import org.un.cava.birdeye.assets.icons.EmbeddedIcons;
 			
@@ -103,6 +104,15 @@
 			 * */
 			private function registerComplete():void {
 				_complete = true;
+				
+				/* initialise the object, if not yet present */
+				if(GlobalParamsVGraph.birdEyeZoomControls == null) {
+					GlobalParamsVGraph.birdEyeZoomControls = new Object;
+				}
+				
+				/* register ourselves with out id, I think in an
+				 * MX Component this must always be present */
+				GlobalParamsVGraph.birdEyeZoomControls[this.id] = this;
 			}
 		]]>
 	</mx:Script>

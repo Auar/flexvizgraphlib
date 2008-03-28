@@ -32,12 +32,14 @@
 	selected="false"
 	label="History"
 	toolTip="Select will retain visibility of all nodes visited."
+	creationComplete="registerComplete()"
 	click="toggleShowHistory()" >
 	
 	<mx:Script>
 		<![CDATA[
 			
 			import org.un.cava.birdeye.utils.GlobalParams;
+			import org.un.cava.birdeye.utils.GlobalParamsVGraph;
 			import org.un.flex.graphLayout.visual.IVisualGraph;
 			
 			/**
@@ -71,6 +73,20 @@
 				}
 			}		
 	
+			/**
+			 * register that we are complete
+			 * */
+			private function registerComplete():void {
+				
+				/* initialise the object, if not yet present */
+				if(GlobalParamsVGraph.toggleShowHistoryControls == null) {
+					GlobalParamsVGraph.toggleShowHistoryControls = new Object;
+				}
+				
+				/* register ourselves with out id, I think in an
+				 * MX Component this must always be present */
+				GlobalParamsVGraph.toggleShowHistoryControls[this.id] = this;
+			}		
 		]]>
 	</mx:Script>
 </mx:CheckBox>
