@@ -469,28 +469,8 @@
 							
 						</mx:VBox>		
 					</mx:Canvas>
-					<mx:Canvas id="searchcnvs" label="Search/Filter Nodes" height="100%" width="100%">
-						<mx:VBox width="100%" height="100%" paddingLeft="5" paddingRight="5">
-							<mx:HBox width="100%" verticalAlign="middle" >
-							<mx:Image source="{EmbeddedIcons.searchIcon}" />
-							<mx:Label text="Enter Search Criteria:" />
-							</mx:HBox>
-							
-							<mx:TextInput 
-								id="txtFilter" 
-								width="100%"
-								change="filterNodes.refresh()" />
-							<mx:HRule width="95%" />
-									
-							<!-- Use DataGrid Click to call graph dataprovider() function to center node -->
-							<mx:DataGrid id="dgSearch" doubleClick="centerNode(dgSearch.selectedItem.@id)" width="100%" height="100%" 
-								dataProvider="{filterNodes}" doubleClickEnabled="true" toolTip="Please double click to center" >
-								<mx:columns>
-									<mx:DataGridColumn id="nodeTitle" headerText="Node" dataField="@name" />
-								</mx:columns>
-							</mx:DataGrid>
-						</mx:VBox>
-					</mx:Canvas>
+					
+					<!-- Search filter grid -->
 					
 					<mx:Canvas id="detailcnvs" label="Details" height="100%" width="100%">
 						<mx:VBox width="100%" height="100%">
