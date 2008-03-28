@@ -41,6 +41,13 @@ package org.un.cava.birdeye.utils {
 	public class GlobalParamsData {
 		
 		
+		/**
+		 * This mapping holds all instantiated SearchFilterGrid
+		 * components. They are indexed by their component id.
+		 * */		
+		public static var searchFilterGrids:Object;
+		
+	
 		/* some components in Visualize.mxml that have to 
 		 * communicate with the icon renderer to handle mouse events */
 		public static var visualLeftAccordion:Accordion;
