@@ -88,14 +88,13 @@
 			private var currentNodeRendererType:String = "";
 			private var rootNodeHistory:Array;
 			private var currentHistoryIndex:uint;
+			
+			
 			private var xmlNames:Array;
 			
 			// Public Variables */
 			
-			/* array collection to hold the XML data in order
-			 * to allow searching and filtering */
-			[Bindable]
-			public var filterNodes:ArrayCollection;
+			
 			 
 			[Bindable]
 			public var selectedNodeID:String;
@@ -181,161 +180,8 @@
 				
 			}
 			
-			/* re-enable the refresh button in all cases */
-			private function refresh():void {
-				
-				var oldroot:IVisualNode;
-				var oldsid:String;
-				var newroot:INode;
-				
-				/* remove and create a new layouter */			
-				if(layouter != null) {
-					layouter.resetAll();
-					layouter = null;
-				}
-				
-				/* init a graph object with the XML data */
-				graph = new org.un.flex.graphLayout.data.Graph("XMLAsDocsGraph",false,xmldata,xmlNames);
-				
-				oldroot = vgraph.currentRootVNode;
-				oldsid = oldroot.node.stringid;
-				
-				/* set the graph in the VGraph object, this automatically
-				 * initializes the VGraph items */
-				vgraph.graph = graph;
-				
-				setLayouter();
-				
-				/* setting a new graph invalidated our old root, we need to reset it */
-				/* we try to find a node, that has the same string-id as the old root node */
-				newroot = graph.nodeByStringId(oldsid);
-				if(newroot != null) {
-					startRoot = newroot.vnode;
-					vgraph.currentRootVNode = startRoot; // this redraws the whole thing
-				} else {
-					throw Error("Cannot set a default root, bailing out");
-				}
-			}
-			
-		
-			
 			
 
-			
-			
-			
-			/**
-			 * this function is called on any vgraphChanged event
-			 * so that some UI elements like lables could be
-			 * updated */
-			private function refreshUI():void {
-				if(infoText != null) {
-					infoText.text = vgraph.currentRootVNode.data.@name;
-				}
-				
-				linkLength.value = layouter.linkLength;
-				
-				if(layouter is HierarchicalLayouter) {
-					bslider.value = (layouter as HierarchicalLayouter).breadth;
-				
-				}
-				
-				novisnodeslabel.text = vgraph.noVisibleVNodes.toString();
-			}
-			
-			
-			/* this function takes the node and selects it as a root
-			 * node, automatically centering the layout around it */
-			private function centerNode(nodeID:String):void {
-				/* we assume we have the vgraph and graph objects */
-				
-				var newroot:INode;
-				
-				newroot = graph.nodeByStringId(nodeID);
-				
-				/* if we have a node, set its vnode as the new root */
-				if(newroot) {
-					
-					/* is it really a new node */
-					if(newroot.vnode != vgraph.currentRootVNode) {
-						
-						/* set it in the vgraph */
-						vgraph.currentRootVNode = newroot.vnode;
-						
-						/* add it to the history */
-						rootNodeHistory.push(newroot.vnode);
-						
-						
-					}
-				} else {
-					trace("Node with id:"+nodeID+" not found!!");
-				}
-			}
- 
-
- 			/**
- 			 * handle a resize event, but only do anything if the init was
- 			 * done
- 			 */
- 			private function handleResize():void {
- 				if(initDone) {
- 					/* it can happen that the linklength is reduced to 0
- 					 * in this case we reset it */
- 					if(layouter.linkLength == 0) {
- 						layouter.linkLength = 100; // current default
- 					}
- 					vgraph.draw();	
- 				}
- 			}
- 
-			/**
-			 * initialises the 'filterNodes' array collection in order 
-			 * to allow filtering and sorting etc. */
- 			private function initLocalData(result:XMLList):void {
- 				var arr:Array = new Array();
- 				
-				for (var i:uint = 0; i < result.length(); ++i) {
-				    arr[i] = result[i];
-				}
-				filterNodes = new ArrayCollection(arr);
-				filterNodes.filterFunction = processFilter;
- 			}
- 			
- 			/**
- 			 * function to implement a filter function on the
- 			 * "filterNodes" ArrayCollection that holds our XML data
- 			 * locally */
- 			private function processFilter(item:Object):Boolean {
-
-				var name:String;
-				
-				name = item.@name;
-
-				// If no filter text, or a match, then true 
-				if(!name.length || 
-					name.toUpperCase().indexOf(txtFilter.text.toUpperCase()) >= 0) {
-					return true;
-				} 
-				return false;
-			}
-		
-			/**
-			 * local double click, note that the node is
-			 * made root node anyway from the vgraph itself
-			 * but we have to add it to the history
-			 */
-			public function itemDoubleClick(e:Event):void {
-				var vn:IVisualNode;
-				var dr:IDataRenderer;
-				
-				dr = (e.currentTarget as IDataRenderer);
-				
-				if(dr) {
-					vn = (dr.data as IVisualNode);
-					rootNodeHistory.push(vn);
-					// trace("added node:"+vn.id+" to history");
-				}
-			}
 
 			public function singleClick(e:Event): void {
 				var ir:IDataRenderer;
@@ -413,82 +259,6 @@
 				width="17" height="100%" horizontalAlign="center"
 				gripTip="Show/Hide Control Panel" />
 			<mx:VBox id="NavContainerRB" horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle" horizontalAlign="center" verticalGap="1" horizontalGap="0" width="100%" height="100%" hideEffect="{wipeLeft}" showEffect="{wipeRight}">
-				<mx:Accordion id="leftAccordion" paddingBottom="5" paddingRight="5" paddingTop="5" paddingLeft="5" width="100%" height="100%" creationPolicy="all" >
-					<mx:Canvas id="visibilitycnvs" label="Visibility/Layout" height="100%" width="100%" paddingBottom="5" >
-						<mx:VBox width="100%" horizontalAlign="center">
-							
-							<mx:Spacer height="3" />
-								
-							<!-- Graph and Layout Parameters -->
-							<flexlib:WindowShade id="layoutCnvs" styleName="linkButtonWindowShade" 
-  							label="Layout" width="100%" opened="true" horizontalAlign="center" paddingBottom="5" >
-								<mx:VBox width="97%" horizontalAlign="center" paddingLeft="5" paddingRight="5" paddingBottom="5" paddingTop="5" borderColor="#666666" borderThickness="1" cornerRadius="5" borderStyle="solid" backgroundColor="#CCCCCC" backgroundAlpha=".2" >
-									<!-- LAYOUT SELEVTOR -->
-									<mx:HBox width="100%" >
-										<mx:Label text="Center Node: " />
-										<mx:Text text="no data loaded" id="infoText" fontSize="9" textAlign="left" width="100%" />
-									</mx:HBox>
-									<mx:HBox width="100%" >
-										<mx:Label text="Visible Nodes:" fontSize="9" textAlign="left" />
-										<mx:Text id="novisnodeslabel" text="unknown" fontSize="9" textAlign="left" />
-									</mx:HBox>
-								</mx:VBox>
-							</flexlib:WindowShade>
-							
-						
-							
-							<!-- Node Styles -->
-							<flexlib:WindowShade id="nodeCnvs" styleName="linkButtonWindowShade" 
-      							label="Node Styles" width="100%" opened="true" horizontalAlign="center" paddingBottom="5" >
-								<mx:VBox width="97%" horizontalAlign="center" paddingLeft="5" paddingRight="5" paddingBottom="5" paddingTop="5" borderColor="#666666" borderThickness="1" cornerRadius="5" borderStyle="solid" backgroundColor="#CCCCCC" backgroundAlpha=".2" >
-									<mx:HBox width="100%" >
-										<!-- NODE RENDERER -->
-										<mx:CheckBox selected="true" toolTip="Select to show node labels."
-												id="nodeCheckBox" label="Node Labels" change="refresh()" />
-									</mx:HBox>
-								</mx:VBox>
-							</flexlib:WindowShade>
-							
-							<!-- Edge Styles -->
-							<flexlib:WindowShade id="edgeCnvs" styleName="linkButtonWindowShade" 
-      							label="Edge Styles" width="100%" opened="true" horizontalAlign="center" paddingBottom="5" >
-								<mx:VBox width="97%" horizontalAlign="center" paddingLeft="5" paddingRight="5" paddingBottom="5" paddingTop="5" borderColor="#666666" borderThickness="1" cornerRadius="5" borderStyle="solid" backgroundColor="#CCCCCC" backgroundAlpha=".2" >
-									<!-- EDGE RENDEER>
-										
-									</EDGE -->
-	
-								</mx:VBox>
-							</flexlib:WindowShade>
-							
-							<!-- View Controls -->
-		
-							<mx:Button id="fromSixDegreesDataButton" width="100%" label="Refresh Data" toolTip="Refresh data to reflect database changes..."
-								click="refresh()" fontSize="9" icon="{EmbeddedIcons.refreshIcon}" />
-							
-							
-							
-						</mx:VBox>		
-					</mx:Canvas>
-					
-					<!-- Search filter grid -->
-					
-					<mx:Canvas id="detailcnvs" label="Details" height="100%" width="100%">
-						<mx:VBox width="100%" height="100%">
-							<mx:Spacer height="5" width="100%" />
-							<mx:VBox width="100%" height="100%" paddingLeft="5" paddingRight="5" paddingBottom="5" id="myVBox" borderColor="#666666" borderThickness="1" cornerRadius="5" borderStyle="solid" backgroundColor="#CCCCCC" backgroundAlpha=".2" >
-								<mx:Label text="Title" fontWeight="bold" />
-								<mx:TextArea id="detailTitle" borderStyle="none" backgroundAlpha=".1" width="100%" editable="false" wordWrap="true" text="" />	
-								<mx:Label text="Description" fontWeight="bold" />
-								<mx:TextArea id="detailDesc" verticalScrollPolicy="off" borderStyle="none" backgroundAlpha=".1" editable="false" width="100%" height="100%" wordWrap="true" text="" />
-							</mx:VBox>
-							<!--
-							<mx:Button label="Remove Node from View" icon="@Embed('/imgs/detailclose2.gif')" width="100%" toolTip="Will remove node from graph.  Will not be deleted from database." click="removeNode(selectedNodeID)" />
-							-->
-							
-						</mx:VBox>
-					</mx:Canvas>
-					
-				</mx:Accordion>
 				
 			</mx:VBox>		
 		</mx:HBox>
