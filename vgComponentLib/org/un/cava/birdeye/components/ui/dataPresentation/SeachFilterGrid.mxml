@@ -49,7 +49,7 @@
 		<!-- Use DataGrid Click to call graph dataprovider() function to center node -->
 		<mx:DataGrid
 			id="dgSearch"
-			doubleClick="centerNode(dgSearch.selectedItem.@id)"
+			doubleClick="GlobalControls.centerNodeByStringId(dgSearch.selectedItem.@id)"
 			width="100%"
 			height="100%" 
 			dataProvider="{filterNodes}"
@@ -69,6 +69,7 @@
 		<![CDATA[
 			import mx.collections.ArrayCollection;
 			import org.un.cava.birdeye.assets.icons.EmbeddedIcons;
+			import org.un.cava.birdeye.utils.GlobalControls;
 			import org.un.cava.birdeye.utils.GlobalParams;
 			import org.un.cava.birdeye.utils.GlobalParamsData;
 			import org.un.flex.graphLayout.layout.HierarchicalLayouter;
@@ -146,12 +147,6 @@
 				/* register ourselves with out id, I think in an
 				 * MX Component this must always be present */
 				GlobalParamsData.searchFilterGrids[this.id] = this;
-			}
-			
-			/**
-			 * dummy
-			 * */
-			private function centerNode(bla:Object):void {
 			}
 		]]>
 	</mx:Script>
