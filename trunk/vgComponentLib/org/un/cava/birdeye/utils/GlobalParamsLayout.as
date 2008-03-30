@@ -38,6 +38,12 @@ package org.un.cava.birdeye.utils {
 	public class GlobalParamsLayout {
 		
 		/**
+		 * This string contains the descriptive name of the
+		 * currently selected layouter
+		 * */
+		public static var currentLayouterName:String;
+		
+		/**
 		 * This mapping holds all instantiated LayoutSelecter
 		 * components. They are indexed by their component id.
 		 * */

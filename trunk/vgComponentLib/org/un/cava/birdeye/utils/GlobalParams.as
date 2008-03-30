@@ -78,6 +78,25 @@ package org.un.cava.birdeye.utils {
 		 * */
 		public static var layouter:ILayoutAlgorithm;
 		
+		/**
+		 * This is the current XML object that contains all
+		 * graph Data.
+		 * It is not clear, if this will remain in API like that
+		 * but we do it like that for now.
+		 * */
+		public static var xmlData:XML;
+		
+		/**
+		 * This is the current array that contains all
+		 * the tag and attribute names, that are used to
+		 * parse the XML graph structure. This may
+		 * change in the future if "real" GraphML syntax
+		 * could be suppoered.
+		 * It is not clear, if this will remain in API like that
+		 * but we do it like that for now.
+		 * */
+		public static var xmlNames:Array = ['Node','Edge','fromID','toID'];
+		
 		/*
 		 * Other parameter modules 
 		 */
