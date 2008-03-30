@@ -26,7 +26,21 @@
  */
 package org.un.cava.birdeye.utils {
 	
+	import org.un.flex.graphLayout.data.Graph;
+	import org.un.flex.graphLayout.data.IGraph;
+	import org.un.flex.graphLayout.data.INode;
+	import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
 	import org.un.flex.graphLayout.visual.IVisualGraph;
+	import org.un.flex.graphLayout.visual.IVisualNode;
+	import org.un.flex.graphLayout.layout.CircularLayouter;
+	import org.un.flex.graphLayout.layout.ConcentricRadialLayouter;
+	import org.un.flex.graphLayout.layout.DirectPlacementLayouter;
+	import org.un.flex.graphLayout.layout.ForceDirectedLayouter;
+	import org.un.flex.graphLayout.layout.HierarchicalLayouter;
+	import org.un.flex.graphLayout.layout.Hyperbolic2DLayouter;
+	import org.un.flex.graphLayout.layout.ISOMLayouter;
+	import org.un.flex.graphLayout.layout.ParentCenteredRadialLayouter;
+	import org.un.flex.graphLayout.layout.PhylloTreeLayouter;
 	
 	/**
 	 * This class will hold global static methods
@@ -56,7 +70,44 @@ package org.un.cava.birdeye.utils {
 	 			trace("Cannot redraw invalid GlobalParams.vgraph object");
 	 		}
  		}
- 		
+ 	
+ 		/**
+ 		 * this function takes the node with the specified
+ 		 * string id and selects it as a root
+		 * node, automatically centering the layout around it
+		 * */
+		public static function centerNodeByStringId(nodeID:String):void {
+			/* we assume we have the vgraph and graph objects */
+			
+			var newroot:INode;
+			
+			if(GlobalParams.vgraph == null) {
+				trace("cannot center around null VisualGraph object");
+				return;
+			}
+			
+			if(GlobalParams.vgraph.graph == null) {
+				trace("VGraph has no Graph object, probably not correctly initialised, yet");
+				return;
+			}
+			
+			newroot = GlobalParams.vgraph.graph.nodeByStringId(nodeID);
+			
+			/* if we have a node, set its vnode as the new root */
+			if(newroot) {
+				/* is it really a new node */
+				if(newroot.vnode != GlobalParams.vgraph.currentRootVNode) {
+					/* set it in the vgraph */
+					GlobalParams.vgraph.currentRootVNode = newroot.vnode;
+					
+					/* add it to the history */
+					//rootNodeHistory.push(newroot.vnode);
+				}
+			} else {
+				trace("Node with id:"+nodeID+" not found!");
+				return;
+			}
+		}
  		
  		/**
  		 * Refresh the VGraph fully. I.e. recreate and
@@ -64,6 +115,7 @@ package org.un.cava.birdeye.utils {
  		 * This is a heavy operation */
 		public static function fullVGraphRefresh():void {
 				
+			var graph:IGraph;
 			var oldroot:IVisualNode;
 			var oldsid:String;
 			var newroot:INode;
@@ -75,23 +127,23 @@ package org.un.cava.birdeye.utils {
 			}
 			
 			/* init a graph object with the XML data */
-			graph = new org.un.flex.graphLayout.data.Graph("XMLAsDocsGraph",false,xmldata,xmlNames);
+			graph = new Graph("myXMLbasedGraphID",false,GlobalParams.xmlData,GlobalParams.xmlNames);
 			
-			oldroot = vgraph.currentRootVNode;
+			/* remember the old root and id */
+			oldroot = GlobalParams.vgraph.currentRootVNode;
 			oldsid = oldroot.node.stringid;
 			
 			/* set the graph in the VGraph object, this automatically
 			 * initializes the VGraph items */
-			vgraph.graph = graph;
+			GlobalParams.vgraph.graph = graph;
 			
-			setLayouter();
+			applyLayouter();
 			
 			/* setting a new graph invalidated our old root, we need to reset it */
 			/* we try to find a node, that has the same string-id as the old root node */
 			newroot = graph.nodeByStringId(oldsid);
 			if(newroot != null) {
-				startRoot = newroot.vnode;
-				vgraph.currentRootVNode = startRoot; // this redraws the whole thing
+				GlobalParams.vgraph.currentRootVNode = newroot.vnode;
 			} else {
 				throw Error("Cannot set a default root, bailing out");
 			}
@@ -104,6 +156,8 @@ package org.un.cava.birdeye.utils {
  		 * XXX: consider to delegate as much as possible to data binding
  		 * which is currently not really the case...
  		 * 
+ 		 * OR add event listeners to the controls that require updating
+ 		 * 
  		 * This can be used as an event handler for a vgraphChanged event
  		 * 
  		 * */
@@ -112,7 +166,146 @@ package org.un.cava.birdeye.utils {
  			 * to refresh, maybe it is not really required
  			 */	
  			
+ 			/* original stuff
  			
+ 				/* THIS SHOULD BE FIXED BY DATA BINDING
+ 				if(infoText != null) {
+					infoText.text = vgraph.currentRootVNode.data.@name;
+				}
+				
+				/* THIS HAS ITS OWN EVENT LISTENER
+				linkLength.value = layouter.linkLength;
+				
+				/* THIS TOO
+				if(layouter is HierarchicalLayouter) {
+					bslider.value = (layouter as HierarchicalLayouter).breadth;
+				
+				}
+				
+				/* THIS SHOULD BE FIXED BY DATA BINDING
+				novisnodeslabel.text = vgraph.noVisibleVNodes.toString();
+ 			*/
  		}
+ 		
+ 		/**
+		 * Set/Activate the layouter set in the corresponding
+		 * global parameter.
+		 * XXX Historically we had this as part of the layout selector,
+		 * but actually the layouter can be specified independently of
+		 * a combo-box selector and would still need to be applied
+		 * thus we externalise the method to a global one.
+		 * */
+		public static function applyLayouter():void {
+			
+			var vgraph:IVisualGraph = GlobalParams.vgraph;
+			var layouter:ILayoutAlgorithm;
+			
+			/* kill off animation in old layouter if present */
+			if(GlobalParams.layouter != null) {
+				GlobalParams.layouter.resetAll();
+				/* remove also existing references thus
+				 * destroying the object (maybe this is not needed?) */
+				GlobalParams.layouter = null;
+			}
+			
+			/* careful ... */
+			if(vgraph != null) {
+				vgraph.layouter = null;
+			} else {
+				trace("No valid vgraph object in GlobalParams, cannot continue");
+				return;	
+			}
+			
+			/* Prior to selection of a new layouter, 
+			 * we disable all layouter specific controls.
+			 * After, we enable only those relevant for the
+			 * specific layouter.
+			 */
+			disableLayouterControls();
+
+			/* now choose the selected layouter */
+			switch(GlobalParamsLayout.currentLayouterName) {
+				case "ConcentricRadial":
+					layouter = new ConcentricRadialLayouter(vgraph);
+					break;
+				case "ParentCenteredRadial":
+					layouter = new ParentCenteredRadialLayouter(vgraph);
+					/* enable the phidials, call a local method (or remote) */
+					/* apply the current phidial value to the layouters .phi property */
+					break;
+				case "SingleCycleCircle":
+					layouter = new CircularLayouter(vgraph);
+					/*
+					/* set the hyperbolic edge renderer type *
+					vgraph.edgeRenderer = new CircularEdgeRenderer();
+					vgraph.scrollBackgroundInDrag = false;
+					vgraph.moveNodeInDrag = false;
+					absoluteScaling = true;
+					updateScale();
+					*/
+					break;
+				case "Hyperbolic":
+					layouter = new Hyperbolic2DLayouter(vgraph);
+					
+					/* set some layouter specific defaults:
+					vgraph.edgeRenderer = new HyperbolicEdgeRenderer((layouter as Hyperbolic2DLayouter).projector);
+					vgraph.scrollBackgroundInDrag = false;
+					vgraph.moveNodeInDrag = false;
+					absoluteScaling = false;
+					*/
+					break;
+				case "Hierarchical":
+					layouter = new HierarchicalLayouter(vgraph);
+					/* enable the hierarchical controls */
+					/* apply the current values of all controls to the layouter */
+					break;
+				case "ForceDirected":
+					layouter = new ForceDirectedLayouter(vgraph);
+					/* enable the damping controls */
+					/* apply the damping value to the layouter */
+					break;
+				case "ISOM":
+					layouter = new ISOMLayouter(vgraph);
+					break;
+				case "DirectPlacement":
+					layouter = new DirectPlacementLayouter(vgraph);
+					/* set some layouter specific values, i.e. create a control
+					 * for these first, also they could be prepopulated from
+					 * XML data
+					(layouter as DirectPlacementLayouter).relativeHeight = 400;
+					(layouter as DirectPlacementLayouter).relativeWidth = 400;
+					 */
+					/*
+					/* set the orthogonal edge renderer type *
+					vgraph.edgeRenderer = new OrthogonalEdgeRenderer();
+					vgraph.scrollBackgroundInDrag = true;
+					vgraph.moveNodeInDrag = true;
+					absoluteScaling = true;
+					updateScale();
+					*/
+					break;
+				case "Phyllotactic":
+					layouter = new PhylloTreeLayouter(vgraph);
+					/* enable the phidials, call a local method (or remote) */
+					/* apply the current phidial value to the layouters .phi property */
+					break;
+				default:
+					trace("Illegal Layouter selected, defaulting to ConcentricRadial"+
+						GlobalParamsLayout.currentLayouterName);
+					layouter = new ConcentricRadialLayouter(vgraph);
+					break;
+			}
+			GlobalParams.layouter = layouter;
+			vgraph.layouter = layouter;
+		}
+		
+		/**
+		 * Disable all controls registered in GlobalParams,
+		 * which are specific to a subset of layouters.
+		 * */
+		public static function disableLayouterControls():void {
+			trace("TODO");
+		}
+		
 	}
 }
