@@ -32,15 +32,7 @@ package org.un.cava.birdeye.utils {
 	import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
 	import org.un.flex.graphLayout.visual.IVisualGraph;
 	import org.un.flex.graphLayout.visual.IVisualNode;
-	import org.un.flex.graphLayout.layout.CircularLayouter;
-	import org.un.flex.graphLayout.layout.ConcentricRadialLayouter;
-	import org.un.flex.graphLayout.layout.DirectPlacementLayouter;
-	import org.un.flex.graphLayout.layout.ForceDirectedLayouter;
-	import org.un.flex.graphLayout.layout.HierarchicalLayouter;
-	import org.un.flex.graphLayout.layout.Hyperbolic2DLayouter;
-	import org.un.flex.graphLayout.layout.ISOMLayouter;
-	import org.un.flex.graphLayout.layout.ParentCenteredRadialLayouter;
-	import org.un.flex.graphLayout.layout.PhylloTreeLayouter;
+	import org.un.cava.birdeye.utils.GlobalLayoutControls;
 	
 	/**
 	 * This class will hold global static methods
@@ -137,7 +129,7 @@ package org.un.cava.birdeye.utils {
 			 * initializes the VGraph items */
 			GlobalParams.vgraph.graph = graph;
 			
-			applyLayouter();
+			GlobalLayoutControls.applyLayouter();
 			
 			/* setting a new graph invalidated our old root, we need to reset it */
 			/* we try to find a node, that has the same string-id as the old root node */
@@ -186,126 +178,5 @@ package org.un.cava.birdeye.utils {
 				novisnodeslabel.text = vgraph.noVisibleVNodes.toString();
  			*/
  		}
- 		
- 		/**
-		 * Set/Activate the layouter set in the corresponding
-		 * global parameter.
-		 * XXX Historically we had this as part of the layout selector,
-		 * but actually the layouter can be specified independently of
-		 * a combo-box selector and would still need to be applied
-		 * thus we externalise the method to a global one.
-		 * */
-		public static function applyLayouter():void {
-			
-			var vgraph:IVisualGraph = GlobalParams.vgraph;
-			var layouter:ILayoutAlgorithm;
-			
-			/* kill off animation in old layouter if present */
-			if(GlobalParams.layouter != null) {
-				GlobalParams.layouter.resetAll();
-				/* remove also existing references thus
-				 * destroying the object (maybe this is not needed?) */
-				GlobalParams.layouter = null;
-			}
-			
-			/* careful ... */
-			if(vgraph != null) {
-				vgraph.layouter = null;
-			} else {
-				trace("No valid vgraph object in GlobalParams, cannot continue");
-				return;	
-			}
-			
-			/* Prior to selection of a new layouter, 
-			 * we disable all layouter specific controls.
-			 * After, we enable only those relevant for the
-			 * specific layouter.
-			 */
-			disableLayouterControls();
-
-			/* now choose the selected layouter */
-			switch(GlobalParamsLayout.currentLayouterName) {
-				case "ConcentricRadial":
-					layouter = new ConcentricRadialLayouter(vgraph);
-					break;
-				case "ParentCenteredRadial":
-					layouter = new ParentCenteredRadialLayouter(vgraph);
-					/* enable the phidials, call a local method (or remote) */
-					/* apply the current phidial value to the layouters .phi property */
-					break;
-				case "SingleCycleCircle":
-					layouter = new CircularLayouter(vgraph);
-					/*
-					/* set the hyperbolic edge renderer type *
-					vgraph.edgeRenderer = new CircularEdgeRenderer();
-					vgraph.scrollBackgroundInDrag = false;
-					vgraph.moveNodeInDrag = false;
-					absoluteScaling = true;
-					updateScale();
-					*/
-					break;
-				case "Hyperbolic":
-					layouter = new Hyperbolic2DLayouter(vgraph);
-					
-					/* set some layouter specific defaults:
-					vgraph.edgeRenderer = new HyperbolicEdgeRenderer((layouter as Hyperbolic2DLayouter).projector);
-					vgraph.scrollBackgroundInDrag = false;
-					vgraph.moveNodeInDrag = false;
-					absoluteScaling = false;
-					*/
-					break;
-				case "Hierarchical":
-					layouter = new HierarchicalLayouter(vgraph);
-					/* enable the hierarchical controls */
-					/* apply the current values of all controls to the layouter */
-					break;
-				case "ForceDirected":
-					layouter = new ForceDirectedLayouter(vgraph);
-					/* enable the damping controls */
-					/* apply the damping value to the layouter */
-					break;
-				case "ISOM":
-					layouter = new ISOMLayouter(vgraph);
-					break;
-				case "DirectPlacement":
-					layouter = new DirectPlacementLayouter(vgraph);
-					/* set some layouter specific values, i.e. create a control
-					 * for these first, also they could be prepopulated from
-					 * XML data
-					(layouter as DirectPlacementLayouter).relativeHeight = 400;
-					(layouter as DirectPlacementLayouter).relativeWidth = 400;
-					 */
-					/*
-					/* set the orthogonal edge renderer type *
-					vgraph.edgeRenderer = new OrthogonalEdgeRenderer();
-					vgraph.scrollBackgroundInDrag = true;
-					vgraph.moveNodeInDrag = true;
-					absoluteScaling = true;
-					updateScale();
-					*/
-					break;
-				case "Phyllotactic":
-					layouter = new PhylloTreeLayouter(vgraph);
-					/* enable the phidials, call a local method (or remote) */
-					/* apply the current phidial value to the layouters .phi property */
-					break;
-				default:
-					trace("Illegal Layouter selected, defaulting to ConcentricRadial"+
-						GlobalParamsLayout.currentLayouterName);
-					layouter = new ConcentricRadialLayouter(vgraph);
-					break;
-			}
-			GlobalParams.layouter = layouter;
-			vgraph.layouter = layouter;
-		}
-		
-		/**
-		 * Disable all controls registered in GlobalParams,
-		 * which are specific to a subset of layouters.
-		 * */
-		public static function disableLayouterControls():void {
-			trace("TODO");
-		}
-		
 	}
 }
