@@ -31,14 +31,44 @@ package org.un.flex.utils.events
 	 * this may be needed in case of a dragged node
 	 * for example */
 	public class VGraphEvent extends Event {
-	
-		public static const DO_REFRESH:String = "doRefresh";
 		
-		public function VGraphEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+		/**
+		 * This event type signals that something has changed
+		 * in the VGraph.
+		 * */
+		public static const VGRAPH_CHANGED:String = "vgraphChanged";
+	
+		/**
+		 * This subtype specifies some undefined general
+		 * change.
+		 * */
+		public static const VEST_DEFAULT:uint = 0;
+	
+		/**
+		 * This subtype specifies that the layouter
+		 * has changed.
+		 * */
+		public static const VEST_LAYOUTER:uint = 1;
+	
+		/* the subtype of this event */
+		private var _subtype:uint;
+	
+	
+		/**
+		 * constructor, allows specification of
+		 * event subtype
+		 * */	
+		public function VGraphEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false, subtype:uint = VEST_DEFAULT) {
+			_subtype = subtype;
 			super(type, bubbles, cancelable);
 		}
 		
-		
+		/**
+		 * Specifies the subtype of the event. 
+		 * */
+		public function get subtype():uint {
+			return _subtype;
+		}
 		
 	}
 }
