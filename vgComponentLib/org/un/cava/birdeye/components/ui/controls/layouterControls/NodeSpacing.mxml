@@ -53,6 +53,7 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import org.un.flex.utils.events.VGraphEvent;
 			import org.un.cava.birdeye.utils.GlobalParams;
 			import org.un.cava.birdeye.utils.GlobalParamsLayout;
 			import org.un.flex.graphLayout.layout.HierarchicalLayouter;
@@ -162,6 +163,8 @@
 			 * register that we are complete
 			 * */
 			private function registerComplete():void {
+				
+				this.addEventListener(VGraphEvent.VGRAPH_CHANGED,refreshSlider);
 				_complete = true;
 			}
 		]]>
