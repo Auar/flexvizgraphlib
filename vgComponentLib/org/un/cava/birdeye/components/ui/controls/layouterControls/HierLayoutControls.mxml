@@ -89,6 +89,8 @@
 					orientSel.enabled = e;
 					nodeSpacing.enabled = e;
 					sibSpread.enabled = e;
+					if(e == true)
+						refreshValues();
 				}
 				
 				/* do it for the super class */

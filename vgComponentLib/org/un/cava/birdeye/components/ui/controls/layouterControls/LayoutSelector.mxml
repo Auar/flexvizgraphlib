@@ -56,7 +56,7 @@
 
 	<mx:Script>	
 		<![CDATA[
-			import org.un.cava.birdeye.utils.GlobalControls;
+			import org.un.cava.birdeye.utils.GlobalLayoutControls;
 			import mx.utils.ObjectUtil;
 			import org.un.cava.birdeye.utils.GlobalParams;
 			import org.un.cava.birdeye.utils.GlobalParamsLayout;
@@ -77,8 +77,6 @@
 			 * instance with the GlobalParams class
 			 * */
 			private function registerWithGlobal():void {
-				super(); // call default constructor
-				
 				/* initialise the object, if not yet present */
 				if(GlobalParamsLayout.layoutSelectorControls == null) {
 					GlobalParamsLayout.layoutSelectorControls = new Object;
@@ -112,10 +110,9 @@
 			/**
 			 * Set the selected Layouter.
 			 * */
-			public function changeLayouter():void {
-				
+			public function changeLayouter():void {	
 				GlobalParamsLayout.currentLayouterName = this.selectedItem as String;
-				GlobalControls.applyLayouter();
+				GlobalLayoutControls.applyLayouter();
 			}
 
 			/**
