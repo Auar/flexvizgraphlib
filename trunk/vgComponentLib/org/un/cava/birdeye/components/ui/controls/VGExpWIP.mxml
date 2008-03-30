@@ -258,8 +258,9 @@
 			<ui:Grip id="navGrip" 
 				width="17" height="100%" horizontalAlign="center"
 				gripTip="Show/Hide Control Panel" />
-			<mx:VBox id="NavContainerRB" horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle" horizontalAlign="center" verticalGap="1" horizontalGap="0" width="100%" height="100%" hideEffect="{wipeLeft}" showEffect="{wipeRight}">
 				
+			<mx:VBox id="NavContainerRB" horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle" horizontalAlign="center" verticalGap="1" horizontalGap="0" width="100%" height="100%" hideEffect="{wipeLeft}" showEffect="{wipeRight}">
+				<!-- DefaultVGAccordion -->
 			</mx:VBox>		
 		</mx:HBox>
 
