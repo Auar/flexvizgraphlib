@@ -87,6 +87,7 @@
 					if(e == true) {
 						phidiallabel.setStyle("color",0x000000);
 						phidial.alpha=1;
+						refreshPhi();
 					} else {
 						phidiallabel.setStyle("color",0xCCCCCC);
 						phidial.alpha=0.3;
