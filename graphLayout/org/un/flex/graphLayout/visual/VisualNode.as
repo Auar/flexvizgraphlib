@@ -155,6 +155,7 @@ package org.un.flex.graphLayout.visual
 		/**
 		 * @inheritDoc
 		 * */
+		[Bindable]
 		public function get data():Object {
 			return _data;
 		}
