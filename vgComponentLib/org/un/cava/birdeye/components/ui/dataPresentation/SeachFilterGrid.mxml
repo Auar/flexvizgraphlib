@@ -43,7 +43,7 @@
 		<mx:TextInput 
 			id="txtFilter" 
 			width="100%"
-			change="_filterNodes.refresh()" />
+			change="filterNodes.refresh()" />
 		<mx:HRule width="95%" />
 				
 		<!-- Use DataGrid Click to call graph dataprovider() function to center node -->
@@ -52,7 +52,7 @@
 			doubleClick="centerNode(dgSearch.selectedItem.@id)"
 			width="100%"
 			height="100%" 
-			dataProvider="{_filterNodes}"
+			dataProvider="{filterNodes}"
 			doubleClickEnabled="true"
 			toolTip="Please double click to center"
 			>
@@ -75,7 +75,9 @@
 
 			/* to be set if creation was complete */
 			private var _complete:Boolean = false;
-			private var _filterNodes:ArrayCollection;
+			
+			[Bindable]
+			public var filterNodes:ArrayCollection;
 
 			/**
 			 * When enabling or disabling this component, we also
@@ -106,8 +108,8 @@
 				for (var i:uint = 0; i < result.length(); ++i) {
 				    arr[i] = result[i];
 				}
-				_filterNodes = new ArrayCollection(arr);
-				_filterNodes.filterFunction = processFilter;
+				filterNodes = new ArrayCollection(arr);
+				filterNodes.filterFunction = processFilter;
  			}
  			
  			/**
