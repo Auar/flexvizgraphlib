@@ -25,7 +25,6 @@
 package org.un.flex.graphLayout.visual {
 	
 	import flash.display.DisplayObject;
-	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -44,13 +43,14 @@ package org.un.flex.graphLayout.visual {
 	import org.un.flex.graphLayout.data.IGraph;
 	import org.un.flex.graphLayout.data.INode;
 	import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
+	import org.un.flex.utils.events.VGraphEvent;
 
 	/**
 	 *  Dispatched when there is any change to the nodes and/or links of this graph.
 	 *
-	 *  @eventType flash.events.Event
+	 *  @eventType org.un.flex.utils.events.VGraphEvent
 	 */
-	[Event(name="vgraphChanged", type="flash.events.Event")]
+	[Event(name=VGraphEvent.VGRAPH_CHANGED, type="org.un.flex.utils.events.VGraphEvent")]
 
 	/**
 	 * This component can visualize and layout a graph data structure in 
@@ -336,6 +336,8 @@ package org.un.flex.graphLayout.visual {
 		 * */
 		private var _showCurrentNodeHistory:Boolean = false;
 
+		/* for debugging purposes we need a component counter */
+		private var _componentCounter:int = 0;
 
 		/* public attributes */
 
@@ -366,9 +368,6 @@ package org.un.flex.graphLayout.visual {
 		 * is removed).
 		 * */
 		public var removeItemEffect:Effect;
-
-		/* for debugging purposes we need a component counter */
-		private var _componentCounter:int = 0;
 
 		/**
 		 * The constructor just initialises most data structures, but not all
@@ -1130,10 +1129,10 @@ package org.un.flex.graphLayout.visual {
 			/* dispatch this change event, so some UI items
 			 * in the application can poll for updated values
 			 * for labels or something.
-			 * XXX To do: define a proper event for this or
-			 * use an appropriate event from the canvas.
+			 * XXX To do: specify a subtype for more specific changes
 			 */
-			dispatchEvent(new Event("vgraphChanged"));
+			 
+			dispatchEvent(new VGraphEvent(VGraphEvent.VGRAPH_CHANGED));
 		}
 
 
