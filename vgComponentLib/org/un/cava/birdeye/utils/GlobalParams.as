@@ -26,14 +26,6 @@
  */
 package org.un.cava.birdeye.utils {
 	
-	import flexlib.containers.WindowShade;
-	
-	import mx.containers.Accordion;
-	import mx.controls.CheckBox;
-	import mx.controls.Text;
-	import mx.controls.TextArea;
-	import mx.controls.VSlider;
-	
 	import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
 	import org.un.flex.graphLayout.visual.IVisualGraph;
 	
@@ -66,7 +58,16 @@ package org.un.cava.birdeye.utils {
 		 * ALL other components registered here, have to be parametrized
 		 * for each VisualGraph instance.
 		 * */
+		[Bindable]
 		public static var vgraph:IVisualGraph;
+		
+		/**
+		 * This flag is set to true if the vgraph is initialised
+		 * correctly. It needs to be reset if the
+		 * vgraph assignment changes....
+		 * */
+		public static var vgraphInitOk:Boolean = false;
+		
 		
 		/**
 		 * This is the main instance for the currently
@@ -76,7 +77,11 @@ package org.un.cava.birdeye.utils {
 		 * (I wonder if there will be a demand for it, though).
 		 * */
 		public static var layouter:ILayoutAlgorithm;
-			
+		
+		/*
+		 * Other parameter modules 
+		 */
+		
 		/**
 		 * This holds the static class that contains all
 		 * relevant references to the layouter controls
@@ -105,7 +110,7 @@ package org.un.cava.birdeye.utils {
 		
 		/** 
 		 * zoom factor for rendered items */
-		public static var zoom:VSlider;
+		//	public static var zoom:VSlider;
 		/* scale factor for rendered items */
 		public static var scaleFactor:Number = 1;
 		

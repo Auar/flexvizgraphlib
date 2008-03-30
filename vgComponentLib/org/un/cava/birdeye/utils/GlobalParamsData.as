@@ -47,12 +47,45 @@ package org.un.cava.birdeye.utils {
 		 * */		
 		public static var searchFilterGrids:Object;
 		
+		/**
+		 * This holds the compound component to display
+		 * all details of a selected node. Be aware that this
+		 * is NOT necessarily the root node of the graph.
+		 * */
+		public static var selectedNodeDetails:Object;	
+		
+		/**
+		 * This holds the current title text of a selected
+		 * node, it can be used to be bound to various variables
+		 * */
+		[Bindable]
+		public static var nodeDetailTitle:String;
+		
+		/**
+		 * This holds the current description text of a selected
+		 * node, it can be used to be bound to various variables
+		 * */
+		[Bindable]
+		public static var nodeDetailDesc:String;
+		
+		
+		/**
+		 * This holds labels to display the current number of
+		 * visible nodes
+		 * */
+		public static var noVisVnodesLabels:Object;
+	
+		/**
+		 * This holds labels to display the current root node
+		 * */
+		public static var curRootNodeLabels:Object;	
+	
+
 	
 		/* some components in Visualize.mxml that have to 
 		 * communicate with the icon renderer to handle mouse events */
-		public static var visualLeftAccordion:Accordion;
-		public static var visualDetailTitle:TextArea;
-		public static var visualDetailDesc:TextArea;
+		//public static var visualLeftAccordion:Accordion;
+		
 		
 		public static var visualDetailContinent:Text;
 		public static var visualDetailCountry:Text;
