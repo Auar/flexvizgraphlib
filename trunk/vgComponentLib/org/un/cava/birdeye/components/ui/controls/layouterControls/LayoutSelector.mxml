@@ -56,6 +56,7 @@
 
 	<mx:Script>	
 		<![CDATA[
+			import org.un.cava.birdeye.utils.GlobalControls;
 			import mx.utils.ObjectUtil;
 			import org.un.cava.birdeye.utils.GlobalParams;
 			import org.un.cava.birdeye.utils.GlobalParamsLayout;
@@ -113,140 +114,8 @@
 			 * */
 			public function changeLayouter():void {
 				
-				var lt:String;
-				var vgraph:IVisualGraph = GlobalParams.vgraph;
-				var layouter:ILayoutAlgorithm;
-				
-				/* the current layouter could be null, so there 
-				 * is no check needed */
-				layouter = GlobalParams.layouter;
-				
-				/* kill off animation in old layouter if present */
-				if(layouter != null) {
-					layouter.resetAll();
-					/* remove also existing references thus
-					 * destroying the object (maybe this is not needed?) */
-					GlobalParams.layouter = 0;
-				}
-				
-				/* careful ... */
-				if(vgraph != null) {
-					vgraph.layouter = null;
-				} else {
-					trace("No valid vgraph object in GlobalParams, cannot continue");
-					return;	
-				}
-				
-				/* get the selected choice */
-				lt = this.selectedItem as String;
-				
-				/* Prior to selection of a new layouter, 
-				 * we disable all layouter specific controls.
-				 * After, we enable only those relevant for the
-				 * specific layouter.
-				 */
-				disableLayouterControls();
-		
-				/* now choose the selected layouter */
-				switch(lt) {
-					case "ConcentricRadial":
-						layouter = new ConcentricRadialLayouter(vgraph);
-						break;
-					case "ParentCenteredRadial":
-						layouter = new ParentCenteredRadialLayouter(vgraph);
-						/* enable the phidials, call a local method (or remote) */
-						/* apply the current phidial value to the layouters .phi property */
-						break;
-					case "SingleCycleCircle":
-						layouter = new CircularLayouter(vgraph);
-						/*
-						/* set the hyperbolic edge renderer type *
-						vgraph.edgeRenderer = new CircularEdgeRenderer();
-						vgraph.scrollBackgroundInDrag = false;
-						vgraph.moveNodeInDrag = false;
-						absoluteScaling = true;
-						updateScale();
-						*/
-						break;
-					case "Hyperbolic":
-						layouter = new Hyperbolic2DLayouter(vgraph);
-						
-						/* set some layouter specific defaults:
-						vgraph.edgeRenderer = new HyperbolicEdgeRenderer((layouter as Hyperbolic2DLayouter).projector);
-						vgraph.scrollBackgroundInDrag = false;
-						vgraph.moveNodeInDrag = false;
-						absoluteScaling = false;
-						*/
-						break;
-					case "Hierarchical":
-						layouter = new HierarchicalLayouter(vgraph);
-						/* enable the hierarchical controls */
-						/* apply the current values of all controls to the layouter */
-						break;
-					case "ForceDirected":
-						layouter = new ForceDirectedLayouter(vgraph);
-						/* enable the damping controls */
-						/* apply the damping value to the layouter */
-						break;
-					case "ISOM":
-						layouter = new ISOMLayouter(vgraph);
-						break;
-					case "DirectPlacement":
-						layouter = new DirectPlacementLayouter(vgraph);
-						/* set some layouter specific values, i.e. create a control
-						 * for these first, also they could be prepopulated from
-						 * XML data
-						(layouter as DirectPlacementLayouter).relativeHeight = 400;
-						(layouter as DirectPlacementLayouter).relativeWidth = 400;
-						 */
-						/*
-						/* set the orthogonal edge renderer type *
-						vgraph.edgeRenderer = new OrthogonalEdgeRenderer();
-						vgraph.scrollBackgroundInDrag = true;
-						vgraph.moveNodeInDrag = true;
-						absoluteScaling = true;
-						updateScale();
-						*/
-						break;
-					case "Phyllotactic":
-						layouter = new PhylloTreeLayouter(vgraph);
-						/* enable the phidials, call a local method (or remote) */
-						/* apply the current phidial value to the layouters .phi property */
-						break;
-					default:
-						trace("Illegal Layouter selected, defaulting to ConcentricRadial"+lt);
-						layouter = new ConcentricRadialLayouter(vgraph);
-						break;
-				}
-				
-				/* 
-				 * set the common parameters from controls in the
-				 * layouter, this includes:
-				 * linkLength
-				 * Animation
-				 * AutoFit
-				 */
-				applyCommonLayouterControlValues();
-				
-				/* apply some other defaults
-				/* set the directed edge renderer type *
-					vgraph.edgeRenderer = directedEdgeRenderer;
-					vgraph.scrollBackgroundInDrag = true;
-					vgraph.moveNodeInDrag = true;
-					absoluteScaling = true;
-					updateScale();
-				*/
-				
-				/* do we want that here ?*/
-				vgraph.draw();
-			}
-			
-			/**
-			 * Disable all controls registered in GlobalParams,
-			 * which are specific to a subset of layouters.
-			 * */
-			public function disableLayouterControls():void {
-				trace("TODO");
+				GlobalParamsLayout.currentLayouterName = this.selectedItem as String;
+				GlobalControls.applyLayouter();
 			}
 
 			/**

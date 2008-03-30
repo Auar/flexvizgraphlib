@@ -75,6 +75,7 @@
 			import org.un.flex.graphLayout.visual.IVisualGraph;
 			import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
 			import org.un.cava.birdeye.assets.icons.EmbeddedIcons;
+			import org.un.flex.utils.events.VGraphEvent;
 			
 			/* to be set if creation was complete */
 			private var _complete:Boolean = false;
@@ -160,9 +161,15 @@
 			}
 			
 			/**
-			 * register that we are complete
+			 * register that we are complete and
+			 * init various other issues
 			 * */
 			private function registerComplete():void {
+				
+				/* register an event listener for a VGraphChanged
+				 * event */
+				this.addEventListener(VGraphEvent.VGRAPH_CHANGED,refreshSlider);
+				
 				_complete = true;
 			}
 		]]>
