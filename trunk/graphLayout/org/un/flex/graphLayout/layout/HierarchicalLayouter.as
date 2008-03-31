@@ -64,6 +64,11 @@ package org.un.flex.graphLayout.layout {
 		 * */
 		public static const ORIENT_BOTTOM_UP:uint = 3;
 		
+		/**
+		 * Allows to specify an extra margin if required.
+		 * */
+		public var layerMargin:Number = 0;
+		
 		/* this holds the data for the Hierarchical layout drawing */
 		private var _currentDrawing:HierarchicalLayoutDrawing;
 		
@@ -91,6 +96,9 @@ package org.un.flex.graphLayout.layout {
 		/* the corresponding distance, should be at least */
 		private var _siblingSpreadDistance:Number;
 		
+		/* enables interleaved spread of nodes if _siblingSpreadEnabled is true */
+		private var _interleaveSiblings:Boolean;
+		
 		/**
 		 * The constructor only initialises some data structures.
 		 * @inheritDoc
@@ -107,6 +115,7 @@ package org.un.flex.graphLayout.layout {
 			_siblingSpreadEnabled = true;
 			_siblingSpreadDistance = 10;
 			_honorNodeSize = false;
+			_interleaveSiblings = false;
 		}
 
 		/**
@@ -252,6 +261,46 @@ package org.un.flex.graphLayout.layout {
 		}
 
 		/**
+		 * Enable a interleaved spreading out of sibling nodes to
+		 * make labels more legible in some cases.
+		 * */
+		public function set interleaveSiblings(value:Boolean):void {
+		 	_interleaveSiblings = value;
+		}
+		 
+		/**
+		 * @private
+		 * */
+		public function get interleaveSiblings():Boolean {
+		 	return _interleaveSiblings;
+		}
+
+		/**
+		 * Allows to specify the fixed distance to spread the
+		 * siblings.
+		 * @default 10
+		 * */
+		public function get siblingSpreadDistance():Number {
+			return _siblingSpreadDistance;	
+		}
+		
+		/**
+		 * @private
+		 * */
+		public function set siblingSpreadDistance(distance:Number):void {
+			_siblingSpreadDistance = distance;
+		}
+
+		/**
+		 * Allow to specify that node size should be honored
+		 * when spacing.
+		 * @default false
+		 * */
+		public function set honorNodeSize(honor:Boolean):void {
+			_honorNodeSize = honor;
+		}
+
+		/**
 		 * Set the orientation for the hierarchical
 		 * layouter. Available values are provided through
 		 * defined constants. Use one of:
@@ -285,7 +334,7 @@ package org.un.flex.graphLayout.layout {
 		public function get orientation():uint {
 			return _orientation;
 		}
-		
+
 		/* private methods */
 		
 		/**
@@ -308,6 +357,7 @@ package org.un.flex.graphLayout.layout {
 			var vindex:uint;
 			var depthOffset:Number;
 			var defaultAncestor:INode;
+			var ilfactor:int = 1; // for interleaving
 			
 			nochild = _stree.getNoChildren(v);
 			vindex = _stree.getChildIndex(v);
@@ -334,6 +384,7 @@ package org.un.flex.graphLayout.layout {
 				defaultAncestor = _stree.getIthChildPerNode(v,0);
 				
 				depthOffset = 0;
+				
 				for(i=0; i < nochild; ++i) {
 					child = _stree.getIthChildPerNode(v,i);
 					/* recurse */
@@ -344,7 +395,11 @@ package org.un.flex.graphLayout.layout {
 					/* apply the depth offset for each child */
 					if(_siblingSpreadEnabled) {
 						_currentDrawing.setDepthOffset(child,depthOffset);
-						depthOffset += _siblingSpreadDistance;
+						// Not so .. Dirty hack for interleaving
+						depthOffset += ilfactor * _siblingSpreadDistance;
+						if(_interleaveSiblings) {
+							ilfactor = -ilfactor;
+						}
 					}
 				}
 				
@@ -642,18 +697,18 @@ package org.un.flex.graphLayout.layout {
 		private function adjustCenter():void {
 			switch(_orientation) {
 				case ORIENT_TOP_DOWN:
-					_currentDrawing.centerOffset = new Point((_vgraph.width / 2), DEFAULT_MARGIN);
+					_currentDrawing.centerOffset = new Point((_vgraph.width / 2), DEFAULT_MARGIN + layerMargin);
 					break;
 				case ORIENT_BOTTOM_UP:
 					_currentDrawing.centerOffset =
-						new Point((_vgraph.width / 2), (_vgraph.height - DEFAULT_MARGIN));
+						new Point((_vgraph.width / 2), (_vgraph.height - DEFAULT_MARGIN - layerMargin));
 					break;
 				case ORIENT_LEFT_RIGHT:
-					_currentDrawing.centerOffset = new Point(DEFAULT_MARGIN, (_vgraph.height / 2) - DEFAULT_MARGIN);
+					_currentDrawing.centerOffset = new Point(DEFAULT_MARGIN + layerMargin, (_vgraph.height / 2) - DEFAULT_MARGIN);
 					break;
 				case ORIENT_RIGHT_LEFT:
 					_currentDrawing.centerOffset =
-						new Point((_vgraph.width - DEFAULT_MARGIN), (_vgraph.height / 2) - DEFAULT_MARGIN);
+						new Point((_vgraph.width - DEFAULT_MARGIN - layerMargin), (_vgraph.height / 2) - DEFAULT_MARGIN);
 					break;
 				default:
 					throw Error("Invalid orientation value found in internal variable");
@@ -687,7 +742,6 @@ package org.un.flex.graphLayout.layout {
 						break;
 					default:
 						throw Error("Invalid orientation value found in internal variable");
-					
 				}
 			}
 			return result;
@@ -704,13 +758,13 @@ package org.un.flex.graphLayout.layout {
 				switch(_orientation) {
 					case ORIENT_LEFT_RIGHT:
 					case ORIENT_RIGHT_LEFT:
-						_layerDistance = (_vgraph.width - (2 * DEFAULT_MARGIN))  / _stree.maxDepth;
-						_defaultNodeDistance = (_vgraph.height - (2 * DEFAULT_MARGIN)) / _stree.maxNumberPerLayer;
+						_layerDistance = (_vgraph.width - 2 * (DEFAULT_MARGIN + layerMargin))  / _stree.maxDepth;
+						_defaultNodeDistance = (_vgraph.height - 2 * DEFAULT_MARGIN) / _stree.maxNumberPerLayer;
 						break;
 					case ORIENT_TOP_DOWN:
 					case ORIENT_BOTTOM_UP:
-						_layerDistance = (_vgraph.height - (2 * DEFAULT_MARGIN))  / _stree.maxDepth;
-						_defaultNodeDistance = (_vgraph.width - (2 * DEFAULT_MARGIN)) / _stree.maxNumberPerLayer;
+						_layerDistance = (_vgraph.height - 2 * (DEFAULT_MARGIN + layerMargin))  / _stree.maxDepth;
+						_defaultNodeDistance = (_vgraph.width - 2 * DEFAULT_MARGIN) / _stree.maxNumberPerLayer;
 						break;
 					default:
 						throw Error("Invalid orientation value found in internal variable");
