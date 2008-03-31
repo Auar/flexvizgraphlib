@@ -80,8 +80,7 @@
 				var vgraph:IVisualGraph = GlobalParams.vgraph;
 				
 				if(vgraph != null) {
-					vgraph.scaleX = bzoom.value;
-					vgraph.scaleY = bzoom.value;
+					vgraph.scale = bzoom.value;
 				} else {
 					trace("BirdEyeZoom NOT changed, no valid vgraph in GlobalParams, not redrawing!");
 				}
@@ -93,7 +92,7 @@
 				var vgraph:IVisualGraph = GlobalParams.vgraph;
 				
 				if(vgraph != null) {
-					bzoom.value = vgraph.scaleX;
+					bzoom.value = vgraph.scale;
 				} else {
 					trace("BirdEyeZoom slider NOT refreshed, no valid vgraph in GlobalParams, not redrawing!");
 				}
