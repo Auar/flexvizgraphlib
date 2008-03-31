@@ -75,7 +75,7 @@ package org.un.flex.graphLayout.data {
 		 * If building a spanning tree, walk only both
 		 * directions
 		 * */
-		public static const WALK_BOTH:int = 2;		
+		public static const WALK_BOTH:int = 2;
 		
 		/**
 		 * @internal
@@ -121,6 +121,13 @@ package org.un.flex.graphLayout.data {
 		 * to a specific root node.
 		 * */
 		private var _treeMap:Dictionary;
+		
+		/**
+		 * @internal
+		 * Provide a function to be used for sorting the
+		 * graph items. This is used by GTree.
+		 * */
+		private var _nodeSortFunction:Function = null;
 		
 		/**
 		 * Constructor method that creates the graph and can
@@ -218,6 +225,20 @@ package org.un.flex.graphLayout.data {
 			return _numberOfEdges;
 		}
 		
+		/**
+		 * @inheritDoc
+		 * */
+		public function set nodeSortFunction(f:Function):void {
+			_nodeSortFunction = f;
+		}
+		
+		/**
+		 * @private
+		 * */
+		public function get nodeSortFunction():Function	{
+			return _nodeSortFunction;
+		}
+
 		/**
 		 * @inheritDoc
 		 * */
