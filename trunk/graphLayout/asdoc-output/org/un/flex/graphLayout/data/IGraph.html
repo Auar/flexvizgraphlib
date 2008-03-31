@@ -4,7 +4,7 @@
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="../../../../../style.css" type="text/css" media="screen">
 <link rel="stylesheet" href="../../../../../print.css" type="text/css" media="print">
-<meta content="IGraph,org.un.flex.graphLayout.data.IGraph,edges,id,isDirectional,noEdges,noNodes,nodes,createNode,getEdge,getTree,initFromXML,link,nodeById,nodeByStringId,purgeGraph,purgeTrees,removeEdge,removeNode,unlink" name="keywords">
+<meta content="IGraph,org.un.flex.graphLayout.data.IGraph,edges,id,isDirectional,noEdges,noNodes,nodes,nodeSortFunction,walkingDirection,createNode,getEdge,getTree,initFromXML,link,nodeById,nodeByStringId,purgeGraph,purgeTrees,removeEdge,removeNode,unlink" name="keywords">
 <title>org.un.flex.graphLayout.data.IGraph</title>
 </head>
 <body>
@@ -78,6 +78,11 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("In
 </td><td class="summaryTableOwnerCol">IGraph</td>
 </tr>
 <tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#nodeSortFunction">nodeSortFunction</a> : Function<div class="summaryTableDescription">
+   Provide a method to sort nodes in a graph.</div>
+</td><td class="summaryTableOwnerCol">IGraph</td>
+</tr>
+<tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#noEdges">noEdges</a> : int<div class="summaryTableDescription">[read-only]
    The number of edges in the graph.</div>
 </td><td class="summaryTableOwnerCol">IGraph</td>
@@ -85,6 +90,12 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("In
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#noNodes">noNodes</a> : int<div class="summaryTableDescription">[read-only]
    The number of nodes in the graph.</div>
+</td><td class="summaryTableOwnerCol">IGraph</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#walkingDirection">walkingDirection</a> : int<div class="summaryTableDescription">
+   This determines the walking direction when building
+   a spanning tree.</div>
 </td><td class="summaryTableOwnerCol">IGraph</td>
 </tr>
 </table>
@@ -118,7 +129,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("In
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
-<a class="signatureLink" href="#getTree()">getTree</a>(n:<a href="INode.html">INode</a>, restr:Boolean = false, nocache:Boolean = false, walkingDirection:int):<a href="../data/IGTree.html">IGTree</a>
+<a class="signatureLink" href="#getTree()">getTree</a>(n:<a href="INode.html">INode</a>, restr:Boolean = false, nocache:Boolean = false):<a href="../data/IGTree.html">IGTree</a>
 </div>
 <div class="summaryTableDescription">
    returns the current BFS tree of the graph, rooted in the given node,
@@ -268,6 +279,31 @@ showHideInherited();
 <code>&nbsp;&nbsp;&nbsp;&nbsp;public function get nodes():Array</code>
 <br>
 </div>
+<a name="nodeSortFunction"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">nodeSortFunction</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>nodeSortFunction:Function</code>&nbsp;&nbsp;[read-write]<p>
+   Provide a method to sort nodes in a graph.
+   This can be used by GTree when building
+   a spanning tree.
+   The function must be compatible with a function
+   to sort an Array.
+   </p><p>The default value is <code>null</code>.</p>
+<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get nodeSortFunction():Function</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set nodeSortFunction(value:Function):void</code>
+<br>
+<p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">Array</div>
+</div>
 <a name="noEdges"></a>
 <table cellspacing="0" cellpadding="0" class="detailHeader">
 <tr>
@@ -294,6 +330,35 @@ showHideInherited();
    </p><span class="label">Implementation</span>
 <br>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;public function get noNodes():int</code>
+<br>
+</div>
+<a name="walkingDirection"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">walkingDirection</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>walkingDirection:int</code>&nbsp;&nbsp;[read-write]<p>
+   This determines the walking direction when building
+   a spanning tree. Possible values are
+   Graph.WALK_FORWARD
+   Graph.WALK_BACKWARDS
+   Graph.WALK_BOTH
+   All make only sense in a directional graph.
+   Forward means we follow edges in its regular direction
+   from the root node.
+   Backwards means, we follow edges back from the root
+   node (e.g. the root is a sink with multiple sources)
+   Both obviously means both.
+   
+   This property will be queried by GTree to determine the
+   walking direction set.
+   </p><span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get walkingDirection():int</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set walkingDirection(value:int):void</code>
 <br>
 </div>
 <a name="methodDetail"></a>
@@ -384,7 +449,7 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public function getTree(n:<a href="INode.html">INode</a>, restr:Boolean = false, nocache:Boolean = false, walkingDirection:int):<a href="../data/IGTree.html">IGTree</a></code><p>
+<code>public function getTree(n:<a href="INode.html">INode</a>, restr:Boolean = false, nocache:Boolean = false):<a href="../data/IGTree.html">IGTree</a></code><p>
    returns the current BFS tree of the graph, rooted in the given node,
    optionally the tree is restricted to only contain currently visible
    nodes. 
@@ -411,15 +476,6 @@ showHideInherited();
 </tr>
 <tr>
 <td width="20px"></td><td><code><span class="label">nocache</span>:Boolean</code> (default = <code>false</code>)<code></code> &mdash; If set, always a new tree will be created and returned and the cache will be untouched.
-   </td>
-</tr>
-<tr>
-<td class="paramSpacer">&nbsp;</td>
-</tr>
-<tr>
-<td width="20px"></td><td><code><span class="label">walkingDirection</span>:int</code> &mdash; The direction in which the graph must be walked to create the spanning tree.
-            The value of GraphWalkingDirectionsEnum.FORWARD is the default and it represents the old (buggy) functionality.
-            GraphWalkingDirectionsEnum.BOTH is the current (proper) functionality.
    </td>
 </tr>
 </table>

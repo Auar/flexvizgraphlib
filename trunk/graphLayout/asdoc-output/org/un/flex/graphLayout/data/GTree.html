@@ -219,7 +219,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
-<a class="signatureLink" href="#initTree()">initTree</a>(walkingDirection:int):Dictionary</div>
+<a class="signatureLink" href="#initTree()">initTree</a>():Dictionary</div>
 <div class="summaryTableDescription">
    
    This initialiases the (spanning) tree
@@ -653,20 +653,11 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public function initTree(walkingDirection:int):Dictionary</code><p>
+<code>public function initTree():Dictionary</code><p>
    
    This initialiases the (spanning) tree
    using BFS (Breadth first search).
-   </p><span class="label">Parameters</span>
-<table border="0" cellspacing="0" cellpadding="0">
-<tr>
-<td width="20px"></td><td><code><span class="label">walkingDirection</span>:int</code> &mdash; The direction in which to walk the graph.
-       The proper value is GraphWalkingDirectionsEnum.BOTH.
-       The value for the old functionality is GraphWalkingDirectionsEnum.FORWARD.
-   </td>
-</tr>
-</table>
-<p></p>
+   </p><p></p>
 <span class="label">Returns</span>
 <table border="0" cellspacing="0" cellpadding="0">
 <tr>
