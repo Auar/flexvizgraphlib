@@ -52,6 +52,22 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("VÂ
    of this Edge.</td>
 </tr>
 <tr>
+<td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('org/un/flex/utils/events/class-list.html');" href="org/un/flex/utils/events/VGraphEvent.html#VEST_DEFAULT">VEST_DEFAULT</a> &mdash; Constant static property in class org.un.flex.utils.events.<a onclick="javascript:loadClassListFrame('org/un/flex/utils/events/class-list.html');" href="org/un/flex/utils/events/VGraphEvent.html">VGraphEvent</a></td>
+</tr>
+<tr>
+<td width="20"></td><td>
+   This subtype specifies some undefined general
+   change.</td>
+</tr>
+<tr>
+<td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('org/un/flex/utils/events/class-list.html');" href="org/un/flex/utils/events/VGraphEvent.html#VEST_LAYOUTER">VEST_LAYOUTER</a> &mdash; Constant static property in class org.un.flex.utils.events.<a onclick="javascript:loadClassListFrame('org/un/flex/utils/events/class-list.html');" href="org/un/flex/utils/events/VGraphEvent.html">VGraphEvent</a></td>
+</tr>
+<tr>
+<td width="20"></td><td>
+   This subtype specifies that the layouter
+   has changed.</td>
+</tr>
+<tr>
 <td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/layout/class-list.html');" href="org/un/flex/graphLayout/layout/BaseLayouter.html#_vgraph">_vgraph</a> &mdash; Property in class org.un.flex.graphLayout.layout.<a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/layout/class-list.html');" href="org/un/flex/graphLayout/layout/BaseLayouter.html">BaseLayouter</a></td>
 </tr>
 <tr>
@@ -99,11 +115,19 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("VÂ
    Access to the associated VisualGraph, that this VisualNode lives in.</td>
 </tr>
 <tr>
-<td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/visual/class-list.html');" href="org/un/flex/graphLayout/visual/VisualGraph.html#event:vgraphChanged">vgraphChanged</a> &mdash; Event in class org.un.flex.graphLayout.visual.<a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/visual/class-list.html');" href="org/un/flex/graphLayout/visual/VisualGraph.html">VisualGraph</a></td>
+<td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/visual/class-list.html');" href="org/un/flex/graphLayout/visual/VisualGraph.html#event:VGRAPH_CHANGED">VGRAPH_CHANGED</a> &mdash; Event in class org.un.flex.graphLayout.visual.<a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/visual/class-list.html');" href="org/un/flex/graphLayout/visual/VisualGraph.html">VisualGraph</a></td>
 </tr>
 <tr>
 <td width="20"></td><td>
    Dispatched when there is any change to the nodes and/or links of this graph.</td>
+</tr>
+<tr>
+<td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('org/un/flex/utils/events/class-list.html');" href="org/un/flex/utils/events/VGraphEvent.html#VGRAPH_CHANGED">VGRAPH_CHANGED</a> &mdash; Constant static property in class org.un.flex.utils.events.<a onclick="javascript:loadClassListFrame('org/un/flex/utils/events/class-list.html');" href="org/un/flex/utils/events/VGraphEvent.html">VGraphEvent</a></td>
+</tr>
+<tr>
+<td width="20"></td><td>
+   This event type signals that something has changed
+   in the VGraph.</td>
 </tr>
 <tr>
 <td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('org/un/flex/utils/events/class-list.html');" href="org/un/flex/utils/events/VGraphEvent.html">VGraphEvent</a> &mdash; Class in package <a onclick="javascript:loadClassListFrame('org/un/flex/utils/events/class-list.html');" href="org/un/flex/utils/events/package-detail.html">org.un.flex.utils.events</a></td>
@@ -112,10 +136,13 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("VÂ
 <td width="20"></td><td></td>
 </tr>
 <tr>
-<td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('org/un/flex/utils/events/class-list.html');" href="org/un/flex/utils/events/VGraphEvent.html#VGraphEvent()">VGraphEvent</a>(type, bubbles, cancelable) &mdash; Constructor in class org.un.flex.utils.events.<a onclick="javascript:loadClassListFrame('org/un/flex/utils/events/class-list.html');" href="org/un/flex/utils/events/VGraphEvent.html">VGraphEvent</a></td>
+<td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('org/un/flex/utils/events/class-list.html');" href="org/un/flex/utils/events/VGraphEvent.html#VGraphEvent()">VGraphEvent</a>(type, bubbles, cancelable, subtype) &mdash; Constructor in class org.un.flex.utils.events.<a onclick="javascript:loadClassListFrame('org/un/flex/utils/events/class-list.html');" href="org/un/flex/utils/events/VGraphEvent.html">VGraphEvent</a></td>
 </tr>
 <tr>
-<td width="20"></td><td></td>
+<td width="20"></td><td>
+   constructor, allows specification of
+   event subtype
+   </td>
 </tr>
 <tr>
 <td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/visual/class-list.html');" href="org/un/flex/graphLayout/visual/IVisualNode.html#view">view</a> &mdash; Property in interface org.un.flex.graphLayout.visual.<a onclick="javascript:loadClassListFrame('org/un/flex/graphLayout/visual/class-list.html');" href="org/un/flex/graphLayout/visual/IVisualNode.html">IVisualNode</a></td>

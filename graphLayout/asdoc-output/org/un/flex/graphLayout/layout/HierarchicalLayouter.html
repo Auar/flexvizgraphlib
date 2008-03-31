@@ -4,7 +4,7 @@
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="../../../../../style.css" type="text/css" media="screen">
 <link rel="stylesheet" href="../../../../../print.css" type="text/css" media="print">
-<meta content="HierarchicalLayouter,org.un.flex.graphLayout.layout.HierarchicalLayouter,ORIENT_BOTTOM_UP,ORIENT_LEFT_RIGHT,ORIENT_RIGHT_LEFT,ORIENT_TOP_DOWN,linkLength,breadth,enableSiblingSpread,orientation,layoutPass,resetAll" name="keywords">
+<meta content="HierarchicalLayouter,org.un.flex.graphLayout.layout.HierarchicalLayouter,ORIENT_BOTTOM_UP,ORIENT_LEFT_RIGHT,ORIENT_RIGHT_LEFT,ORIENT_TOP_DOWN,layerMargin,interleaveSiblings,linkLength,siblingSpreadDistance,breadth,compareNodesFunction,enableSiblingSpread,honorNodeSize,orientation,layoutPass,resetAll" name="keywords">
 <title>org.un.flex.graphLayout.layout.HierarchicalLayouter</title>
 </head>
 <body>
@@ -87,6 +87,10 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
    Set the spacing between the nodes within a layer.</div>
 </td><td class="summaryTableOwnerCol">HierarchicalLayouter</td>
 </tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#compareNodesFunction">compareNodesFunction</a> : Function<div class="summaryTableDescription">[write-only]</div>
+</td><td class="summaryTableOwnerCol">HierarchicalLayouter</td>
+</tr>
 <tr class="hideInheritedProperty">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="BaseLayouter.html#disableAnimation">disableAnimation</a> : Boolean<div class="summaryTableDescription">
    
@@ -110,6 +114,18 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
    </div>
 </td><td class="summaryTableOwnerCol"><a href="BaseLayouter.html">BaseLayouter</a></td>
 </tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#honorNodeSize">honorNodeSize</a> : Boolean<div class="summaryTableDescription">[write-only]</div>
+</td><td class="summaryTableOwnerCol">HierarchicalLayouter</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#interleaveSiblings">interleaveSiblings</a> : Boolean<div class="summaryTableDescription"></div>
+</td><td class="summaryTableOwnerCol">HierarchicalLayouter</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#layerMargin">layerMargin</a> : int = 0<div class="summaryTableDescription"></div>
+</td><td class="summaryTableOwnerCol">HierarchicalLayouter</td>
+</tr>
 <tr class="hideInheritedProperty">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="BaseLayouter.html#layoutChanged">layoutChanged</a> : Boolean<div class="summaryTableDescription">
    
@@ -123,7 +139,13 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 </td><td class="summaryTableOwnerCol">HierarchicalLayouter</td>
 </tr>
 <tr class="">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#orientation">orientation</a> : uint<div class="summaryTableDescription">[write-only]</div>
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#orientation">orientation</a> : uint<div class="summaryTableDescription">
+   Set the orientation for the hierarchical
+   layouter.</div>
+</td><td class="summaryTableOwnerCol">HierarchicalLayouter</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#siblingSpreadDistance">siblingSpreadDistance</a> : Number<div class="summaryTableDescription"></div>
 </td><td class="summaryTableOwnerCol">HierarchicalLayouter</td>
 </tr>
 <tr class="hideInheritedProperty">
@@ -454,25 +476,25 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 </td><td class="summaryTableOwnerCol"><a href="BaseLayouter.html">BaseLayouter</a></td>
 </tr>
 <tr class="">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#ORIENT_BOTTOM_UP">ORIENT_BOTTOM_UP</a> : uint = 3<div class="summaryTableDescription">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#ORIENT_BOTTOM_UP">ORIENT_BOTTOM_UP</a> : uint = 3<div class="summaryTableDescription">[static]
    Set the orientation to this to result in a
    bottom up layout.</div>
 </td><td class="summaryTableOwnerCol">HierarchicalLayouter</td>
 </tr>
 <tr class="">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#ORIENT_LEFT_RIGHT">ORIENT_LEFT_RIGHT</a> : uint = 0<div class="summaryTableDescription">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#ORIENT_LEFT_RIGHT">ORIENT_LEFT_RIGHT</a> : uint = 0<div class="summaryTableDescription">[static]
    Set the orientation to this to result in a
    left to right layout.</div>
 </td><td class="summaryTableOwnerCol">HierarchicalLayouter</td>
 </tr>
 <tr class="">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#ORIENT_RIGHT_LEFT">ORIENT_RIGHT_LEFT</a> : uint = 1<div class="summaryTableDescription">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#ORIENT_RIGHT_LEFT">ORIENT_RIGHT_LEFT</a> : uint = 1<div class="summaryTableDescription">[static]
    Set the orientation to this to result in a
    right to left layout.</div>
 </td><td class="summaryTableOwnerCol">HierarchicalLayouter</td>
 </tr>
 <tr class="">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#ORIENT_TOP_DOWN">ORIENT_TOP_DOWN</a> : uint = 2<div class="summaryTableDescription">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#ORIENT_TOP_DOWN">ORIENT_TOP_DOWN</a> : uint = 2<div class="summaryTableDescription">[static]
    Set the orientation to this to result in a
    top down layout.</div>
 </td><td class="summaryTableOwnerCol">HierarchicalLayouter</td>
@@ -503,6 +525,18 @@ showHideInherited();
 <code>&nbsp;&nbsp;&nbsp;&nbsp;public function set breadth(value:Number):void</code>
 <br>
 </div>
+<a name="compareNodesFunction"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">compareNodesFunction</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>compareNodesFunction:Function</code>&nbsp;&nbsp;[write-only]<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set compareNodesFunction(value:Function):void</code>
+<br>
+</div>
 <a name="enableSiblingSpread"></a>
 <table cellspacing="0" cellpadding="0" class="detailHeader">
 <tr>
@@ -519,6 +553,41 @@ showHideInherited();
 <br>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;public function set enableSiblingSpread(value:Boolean):void</code>
 <br>
+</div>
+<a name="honorNodeSize"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">honorNodeSize</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>honorNodeSize:Boolean</code>&nbsp;&nbsp;[write-only]<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set honorNodeSize(value:Boolean):void</code>
+<br>
+</div>
+<a name="interleaveSiblings"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">interleaveSiblings</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>interleaveSiblings:Boolean</code>&nbsp;&nbsp;[read-write]<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get interleaveSiblings():Boolean</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set interleaveSiblings(value:Boolean):void</code>
+<br>
+</div>
+<a name="layerMargin"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">layerMargin</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public var layerMargin:int = 0</code>
 </div>
 <a name="linkLength"></a>
 <table cellspacing="0" cellpadding="0" class="detailHeader">
@@ -544,9 +613,34 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>orientation:uint</code>&nbsp;&nbsp;[write-only]<span class="label">Implementation</span>
+<code>orientation:uint</code>&nbsp;&nbsp;[read-write]<p>
+   Set the orientation for the hierarchical
+   layouter. Available values are provided through
+   defined constants. Use one of:
+   HierarchicalLayouter.ORIENT_TOP_DOWN
+   HierarchicalLayouter.ORIENT_BOTTOM_UP
+   HierarchicalLayouter.ORIENT_LEFT_RIGHT
+   HierarchicalLayouter.ORIENT_RIGHT_LEFT
+   
+   </p><span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get orientation():uint</code>
 <br>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;public function set orientation(value:uint):void</code>
+<br>
+</div>
+<a name="siblingSpreadDistance"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">siblingSpreadDistance</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>siblingSpreadDistance:Number</code>&nbsp;&nbsp;[read-write]<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get siblingSpreadDistance():Number</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set siblingSpreadDistance(value:Number):void</code>
 <br>
 </div>
 <a name="constructorDetail"></a>
@@ -612,7 +706,7 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public const ORIENT_BOTTOM_UP:uint = 3</code><p>
+<code>public static const ORIENT_BOTTOM_UP:uint = 3</code><p>
    Set the orientation to this to result in a
    bottom up layout.
    </p></div>
@@ -623,7 +717,7 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public const ORIENT_LEFT_RIGHT:uint = 0</code><p>
+<code>public static const ORIENT_LEFT_RIGHT:uint = 0</code><p>
    Set the orientation to this to result in a
    left to right layout.
    </p></div>
@@ -634,7 +728,7 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public const ORIENT_RIGHT_LEFT:uint = 1</code><p>
+<code>public static const ORIENT_RIGHT_LEFT:uint = 1</code><p>
    Set the orientation to this to result in a
    right to left layout.
    </p></div>
@@ -645,7 +739,7 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public const ORIENT_TOP_DOWN:uint = 2</code><p>
+<code>public static const ORIENT_TOP_DOWN:uint = 2</code><p>
    Set the orientation to this to result in a
    top down layout.
    </p></div>
