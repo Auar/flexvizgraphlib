@@ -66,6 +66,9 @@ package org.un.flex.graphLayout.data {
 		 * Provide a method to sort nodes in a graph.
 		 * This can be used by GTree when building
 		 * a spanning tree.
+		 * The function must be compatible with a function
+		 * to sort an Array.
+		 * @see Array
 		 * @param f The function reference to use.
 		 * @default null
 		 * */
