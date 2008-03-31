@@ -66,7 +66,7 @@ package org.un.flex.graphLayout.visual {
 	 * XXX provide example code here
 	 * */
 	public class VisualGraph extends Canvas implements IVisualGraph {
-
+		
 		/**
 		 * We keep a reference to ourselves (this) in this attribute.
 		 * Not really necessary, but it makes the code more clear if
@@ -119,13 +119,22 @@ package org.un.flex.graphLayout.visual {
 		 * A similar map needs to exist for edges
 		 * */
 		private var _viewToVEdgeMap:Dictionary;
-
+		
 		/**
 		 * The standard origin is the upper left corner, but if
 		 * the graph is scrolled, this origin may change, so we keep
 		 * track of that here.
 		 * */
-        private var _origin:Point;
+		private var _origin:Point;
+		
+		/**
+		 * The current zooming scale of the vgraph.
+		 * This is used to facilitate the use of scaleX/scaleY
+		 * and take it into account for drag and drop.
+		 * Supported by getter/setting methods.
+		 * (Contributed by Ivan Bulanov)
+		 * */
+		private var _scale:Number = 1;
         
 		/* drag and drop support */
         
@@ -769,6 +778,32 @@ package org.un.flex.graphLayout.visual {
 					}
 				}
 			}
+		}
+
+		/**
+		 * @inheritDoc
+		 * */
+		public function get scale():Number {
+			return _scale;
+		}
+		
+		/**
+		 * @private
+		 * */
+		public function set scale(s:Number):void {
+			/* get the current value */
+			const s0:Number = scaleX;
+			/* set the new value */
+			scaleX = s;
+			scaleY = s;
+			/* scroll to the center */
+			scroll(center.x * (1 - s / s0) / s, center.y * (1 - s / s0) / s);
+			/* redraw the edges */
+			refresh();
+			/* remember the set value, this is probably unnecesary
+			 * since the getter could just return the value of scaleX
+			 * but anyway */
+			_scale = s;
 		}
 
 		/**
@@ -1460,6 +1495,11 @@ package org.un.flex.graphLayout.visual {
 			mycomponent.x = _canvas.width / 2.0;
 			mycomponent.y = _canvas.height / 2.0;
 			
+			/* in Ivan's code it was like this:
+			mycomponent.x = origin.x + _canvas.width / 2.0;
+			mycomponent.y = origin.y + _canvas.height / 2.0;
+			*/
+			
 			/* add event handlers for dragging and double click */			
 			mycomponent.doubleClickEnabled = true;
 			mycomponent.addEventListener(MouseEvent.DOUBLE_CLICK, nodeDoubleClick);
@@ -1570,8 +1610,9 @@ package org.un.flex.graphLayout.visual {
 			
 			/* add the component to its parent component
 			 * this can create problems, we have to see where we
-			 * check for all children */
-			_canvas.addChild(mycomponent);
+			 * check for all children
+			 * Add after the edges layer, but below all other elements such as nodes */
+			_canvas.addChildAt(mycomponent, 1);
 			
 			/* register it the view in the vnode and the mapping */
 			/*
@@ -1722,14 +1763,15 @@ package org.un.flex.graphLayout.visual {
 					} else {
 						// lockCenter is true, ignore the mouse coordinates
 						// and use (0,0) instead as the point
+						//TODO: change to the components`s center instead
 						pt = ecomponent.localToGlobal(new Point(0,0));
 					}
 			
 					/* Save the offset values in the map 
 					 * so we can compute x and y correctly in case
 					 * we use lockCenter */
-					_drag_x_offsetMap[ecomponent] = pt.x - ecomponent.x;
-					_drag_y_offsetMap[ecomponent] = pt.y - ecomponent.y;
+					_drag_x_offsetMap[ecomponent] = pt.x / scaleX - ecomponent.x;
+					_drag_y_offsetMap[ecomponent] = pt.y / scaleY - ecomponent.y;
 			
 					/* now we would need to set the bounds
 					 * rectangle in _drag_boundsMap, but this is
@@ -1793,8 +1835,8 @@ package org.un.flex.graphLayout.visual {
 				/* update the coordinates with the current
 				 * event's stage coordinates (i.e. current mouse position),
 				 * modified by the lock-center offset */
-				sp.x = event.stageX - _drag_x_offsetMap[sp];
-				sp.y = event.stageY - _drag_y_offsetMap[sp];
+				sp.x = event.stageX / scaleX - _drag_x_offsetMap[sp];
+				sp.y = event.stageY / scaleY - _drag_y_offsetMap[sp];
 				
 				/* bounds code, currently unused 
 				if ( bounds != null ) {
@@ -1830,6 +1872,7 @@ package org.un.flex.graphLayout.visual {
 		private function backgroundDragBegin(event:MouseEvent):void {
 		
 			var mycomponent:UIComponent;
+			const mpoint:Point = globalMousePosition();
 		
 			/* if there is an animation in progress, we ignore
 			 * the drag attempt */
@@ -1851,8 +1894,9 @@ package org.un.flex.graphLayout.visual {
 			
 			/* set the progress flag and save the starting coordinates */
 			_backgroundDragInProgress = true;
-			_dragCursorStartX = event.stageX;
-			_dragCursorStartY = event.stageY;
+			
+			_dragCursorStartX = mpoint.x;
+			_dragCursorStartY = mpoint.y;
 			
 			/* register the backgroundDrag listener to react to
 			 * the mouse movements */
@@ -1869,6 +1913,8 @@ package org.un.flex.graphLayout.visual {
 		 * */ 
 		private function backgroundDragContinue(event:MouseEvent):void {
 			
+			const mpoint:Point = globalMousePosition();
+			
 			var deltaX:Number;
 			var deltaY:Number;
 			
@@ -1876,9 +1922,12 @@ package org.un.flex.graphLayout.visual {
 				/* compute the movement offset of this move by
 				 * subtracting the current mouse position from
 				 * the last mouse position */
-				deltaX = event.stageX - _dragCursorStartX;
-				deltaY = event.stageY - _dragCursorStartY;
+				deltaX = mpoint.x - _dragCursorStartX;
+				deltaY = mpoint.y - _dragCursorStartY;
 			 
+				deltaX /= scaleX
+				deltaY /= scaleY
+			
 				/* scroll all objects by this offset */
 				scroll(deltaX, deltaY);
 			}
@@ -1886,8 +1935,8 @@ package org.un.flex.graphLayout.visual {
 			_layouter.bgDragContinue(event);
 			
 			/* reset the drag start point for the next step */
-			_dragCursorStartX = event.stageX;
-			_dragCursorStartY = event.stageY;
+			_dragCursorStartX = mpoint.x;
+			_dragCursorStartY = mpoint.y;
 			
 			/* make sure edges are redrawn */
 			//_drawingSurface.invalidateDisplayList();
@@ -1955,7 +2004,11 @@ package org.un.flex.graphLayout.visual {
 				
 				/* remove the event listeners */
 				//mycomp.stage.removeEventListener(MouseEvent.MOUSE_DOWN, dragEnd);
-				mycomp.stage.removeEventListener(MouseEvent.MOUSE_MOVE, handleDrag);
+				// HACK: I have to check the stage because there are eventual components not added to the display list
+				if (mycomp.stage != null)
+				{
+					mycomp.stage.removeEventListener(MouseEvent.MOUSE_MOVE, handleDrag);
+				}
 				
 				/* get the associated VNode to notify the layouter */
 				myvnode = _viewToVNodeMap[mycomp];
@@ -1969,6 +2022,14 @@ package org.un.flex.graphLayout.visual {
 			/* and stop propagation, as otherwise we could get the
 			 * event multiple times */
 			event.stopImmediatePropagation();			
+		}
+		
+		/**
+		 * return the current mouse position, used by 
+		 * certain drag&drop issues
+		 * */
+		private function globalMousePosition():Point {
+			return localToGlobal(new Point(mouseX, mouseY));
 		}
 		
 		/** 

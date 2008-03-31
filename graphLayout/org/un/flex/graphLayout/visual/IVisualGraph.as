@@ -230,6 +230,18 @@ package org.un.flex.graphLayout.visual {
 		function set maxVisibleDistance(md:int):void;
 		
 		/**
+		 * The scale property of VGraph will affect
+		 * the scaleX and scaleY properties and also
+		 * will ensure drag&drop works properly.
+		 * */
+		function get scale():Number;
+		
+		/**
+		 * @private
+		 * */
+		function set scale(s:Number):void;
+		
+		/**
 		 * Initializes the VisualGraph from its currently set Graph object,
 		 * basically removing all existing VNodes and VEdges and
 		 * recreating them based on the information found in the associated
