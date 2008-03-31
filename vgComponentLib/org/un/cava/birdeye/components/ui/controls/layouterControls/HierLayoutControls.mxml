@@ -48,6 +48,7 @@
 	<local:OrientationSelector id="orientSel" />
 	<local:NodeSpacing id="nodeSpacing" />
 	<local:ToggleSiblingSpread id="sibSpread" />
+	<local:ToggleNodeInterleaving id="nodeILeave" />
 	
 	<mx:Script>
 		<![CDATA[
@@ -89,6 +90,7 @@
 					orientSel.enabled = e;
 					nodeSpacing.enabled = e;
 					sibSpread.enabled = e;
+					nodeILeave.enabled = e;
 					if(e == true)
 						refreshValues();
 				}
@@ -122,6 +124,7 @@
 				layouter = GlobalParams.layouter as HierarchicalLayouter;
 				layouter.breadth = nodeSpacing.bslider.value;
 				layouter.enableSiblingSpread = sibSpread.selected;
+				layouter.interleaveSiblings = nodeILeave.selected;
 				//layouter.orientation can crash....
 				
 				/* the following would use the update methods provided
@@ -131,7 +134,8 @@
 				/*
 				orientSel.setOrientation();
 				nodeSpacing.updateNodeSpacing();
-				sibSpread.updateSiblingSpread();
+				sibSpread.toggleSiblingSpread();
+				nodeIleave.toggleNodeInterleaving();
 				*/
 			}
 			
@@ -159,6 +163,7 @@
 				 */
 				nodeSpacing.bslider.value = layouter.breadth;
 				sibSpread.selected = layouter.enableSiblingSpread;
+				nodeILeave.selected = layouter.interleaveSiblings;
 				//layouter.orientation can crash....
 				
 				/* this alternative use provided methods */
@@ -166,6 +171,7 @@
 				orientSel.refreshSelection();
 				nodeSpacing.refreshSlider();
 				sibSpread.refreshCheckbox();
+				nodeILeave.refreshCheckbox();
 				*/
 			}
 			
