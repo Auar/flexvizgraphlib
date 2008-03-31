@@ -385,6 +385,10 @@ package org.un.flex.graphLayout.data {
 			/* reset the dummy to null */
 			_parentMap[_root] = null;
 			
+			/* sort the children if we have a nodeSortFunction
+			 * set in the Graph object */
+			nodeSortChildren();
+			
 			return _parentMap;
 		}
 		
@@ -452,6 +456,32 @@ package org.un.flex.graphLayout.data {
 			for(var i:int=0; i<_graph.noNodes; ++i) {
 				_parentMap[_graph.nodes[i]] = null;
 				
+			}
+		}
+		
+		/**
+		 * @internal
+		 * This method checks for an existing nodeSortFunction
+		 * in the Graph object and applies it to the
+		 * entries in the childrenMap.
+		 * 
+		 * This method was provided by Ivan Bulanov and
+		 * his team. 
+		 * */
+		private function nodeSortChildren():void {
+			var children:Array;
+			var childIndex:int;
+			
+			/* only act if a function is present */
+			if(_graph.nodeSortFunction != null) {
+				for each(children in _childrenMap){
+					/* sort the array */
+					children.sort(_graph.nodeSortFunction);
+					/* update the childIndexMap */
+					for(childIndex = 0; childIndex < children.length; ++childIndex) {
+						_nodeChildIndexMap[children[childIndex]] = childIndex;
+					}
+				}
 			}
 		}
 		

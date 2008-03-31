@@ -63,6 +63,20 @@ package org.un.flex.graphLayout.data {
 		function get isDirectional():Boolean;
 
 		/**
+		 * Provide a method to sort nodes in a graph.
+		 * This can be used by GTree when building
+		 * a spanning tree.
+		 * @param f The function reference to use.
+		 * @default null
+		 * */
+		function set nodeSortFunction(f:Function):void;
+		
+		/**
+		 * @private
+		 * */
+		function get nodeSortFunction():Function;
+
+		/**
 		 * This determines the walking direction when building
 		 * a spanning tree. Possible values are
 		 * Graph.WALK_FORWARD
