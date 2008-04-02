@@ -1,0 +1,10 @@
+#summary Information Visualization and Visual Analytics Library
+#labels Featured
+
+= Introduction =
+
+BirdEye is the parent project of this library.
+
+BirdEye is a community project to advance the design and development of a comprehensive open source information visualization and visual analytics library for Adobe Flex. The actionscript-based library enables users to create multi-dimensional data visualization interfaces for the analysis and presentation of information.
+
+Link [http://code.google.com/p/birdeye/ here.]
