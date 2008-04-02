@@ -1,7 +1,7 @@
 #summary Information Visualization and Visual Analytics Library
 #labels Featured
 
-= Introduction =
+=== Introduction ===
 
 BirdEye is the parent project of this library.
 
