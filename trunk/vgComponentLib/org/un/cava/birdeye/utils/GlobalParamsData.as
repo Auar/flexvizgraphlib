@@ -28,10 +28,13 @@ package org.un.cava.birdeye.utils {
 	
 	import flexlib.containers.WindowShade;
 	
-	import mx.containers.Accordion;
 	import mx.controls.CheckBox;
 	import mx.controls.Text;
-	import mx.controls.TextArea;
+	
+	import org.un.cava.birdeye.components.ui.dataPresentation.CenteredNodeLabel;
+	import org.un.cava.birdeye.components.ui.dataPresentation.NoVisNodesLabel;
+	import org.un.cava.birdeye.components.ui.dataPresentation.NodeDetailLabel;
+	import org.un.cava.birdeye.components.ui.dataPresentation.SeachFilterGrid;
 	
 	/**
 	 * This class will hold global params in static
@@ -42,43 +45,43 @@ package org.un.cava.birdeye.utils {
 		
 		
 		/**
-		 * This mapping holds all instantiated SearchFilterGrid
-		 * components. They are indexed by their component id.
+		 * This mapping holds the SearchFilterGrid
+		 * component.
 		 * */		
-		public static var searchFilterGrids:Object;
+		public static var searchFilterGrid:SeachFilterGrid;
 		
 		/**
 		 * This holds the compound component to display
 		 * all details of a selected node. Be aware that this
 		 * is NOT necessarily the root node of the graph.
 		 * */
-		public static var selectedNodeDetails:Object;	
+		public static var selectedNodeDetail:NodeDetailLabel;	
 		
 		/**
 		 * This holds the current title text of a selected
-		 * node, it can be used to be bound to various variables
+		 * node, it can be used to be bound to various variables.
 		 * */
 		[Bindable]
 		public static var nodeDetailTitle:String;
 		
 		/**
 		 * This holds the current description text of a selected
-		 * node, it can be used to be bound to various variables
+		 * node, it can be used to be bound to various variables.
 		 * */
 		[Bindable]
 		public static var nodeDetailDesc:String;
 		
 		
 		/**
-		 * This holds labels to display the current number of
-		 * visible nodes
+		 * This holds a label to display the current number of
+		 * visible nodes.
 		 * */
-		public static var noVisVnodesLabels:Object;
-	
+		public static var noVisVnodesLabel:NoVisNodesLabel;
+			
 		/**
-		 * This holds labels to display the current root node
+		 * This holds a label to display the current root node.
 		 * */
-		public static var curRootNodeLabels:Object;	
+		public static var curRootNodeLabel:CenteredNodeLabel;	
 	
 
 	

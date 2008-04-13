@@ -29,10 +29,8 @@ package org.un.cava.birdeye.utils {
 	import org.un.flex.graphLayout.data.Graph;
 	import org.un.flex.graphLayout.data.IGraph;
 	import org.un.flex.graphLayout.data.INode;
-	import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
 	import org.un.flex.graphLayout.visual.IVisualGraph;
 	import org.un.flex.graphLayout.visual.IVisualNode;
-	import org.un.cava.birdeye.utils.GlobalLayoutControls;
 	
 	/**
 	 * This class will hold global static methods
@@ -49,13 +47,18 @@ package org.un.cava.birdeye.utils {
 		 * This is typically used to handle a resize event
 		 * */
  		public static function redrawGraphLL():void {
+ 			trace("called rsize handler");
  			if(GlobalParams.vgraph is IVisualGraph) {
+ 				trace("OK: got vgraph");
 	 			if(GlobalParams.vgraphInitOk) {
+	 				
+	 				trace("OK: VgraphInitted");
 	 				/* it can happen that the linklength is reduced to 0
 	 				 * in this case we reset it */
 	 				if(GlobalParams.layouter.linkLength == 0) {
 	 					GlobalParams.layouter.linkLength = 100; // current default
 	 				}
+	 				
 	 				GlobalParams.vgraph.draw();	
 	 			}
 	 		} else {
@@ -130,6 +133,7 @@ package org.un.cava.birdeye.utils {
 			GlobalParams.vgraph.graph = graph;
 			
 			GlobalLayoutControls.applyLayouter();
+			GlobalParamsLayout.commonLayoutControls.refreshValues();
 			
 			/* setting a new graph invalidated our old root, we need to reset it */
 			/* we try to find a node, that has the same string-id as the old root node */

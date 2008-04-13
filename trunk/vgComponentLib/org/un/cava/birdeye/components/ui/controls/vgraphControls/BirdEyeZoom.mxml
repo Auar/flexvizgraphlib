@@ -103,15 +103,8 @@
 			 * */
 			private function registerComplete():void {
 				_complete = true;
-				
-				/* initialise the object, if not yet present */
-				if(GlobalParamsVGraph.birdEyeZoomControls == null) {
-					GlobalParamsVGraph.birdEyeZoomControls = new Object;
-				}
-				
-				/* register ourselves with out id, I think in an
-				 * MX Component this must always be present */
-				GlobalParamsVGraph.birdEyeZoomControls[this.id] = this;
+				/* register ourselves */
+				GlobalParamsVGraph.birdEyeZoomControl = this;
 			}
 		]]>
 	</mx:Script>

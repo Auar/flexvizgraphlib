@@ -149,14 +149,8 @@
 			private function registerComplete():void {
 				_complete = true;
 				
-				/* initialise the object, if not yet present */
-				if(GlobalParamsVGraph.scaleLabelsControls == null) {
-					GlobalParamsVGraph.scaleLabelsControls = new Object;
-				}
-				
-				/* register ourselves with out id, I think in an
-				 * MX Component this must always be present */
-				GlobalParamsVGraph.scaleLabelsControls[this.id] = this;
+				/* register ourselves */
+				GlobalParamsVGraph.scaleLabelsControl = this;
 			}
 		]]>
 	</mx:Script>

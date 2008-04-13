@@ -26,6 +26,19 @@
  */
 package org.un.cava.birdeye.utils {
 	
+	import org.un.cava.birdeye.components.ui.controls.vgraphControls.BirdEyeZoom;
+	import org.un.cava.birdeye.components.ui.controls.vgraphControls.DegreesOfSeparation;
+	import org.un.cava.birdeye.components.ui.controls.vgraphControls.EdgeLabelControls;
+	import org.un.cava.birdeye.components.ui.controls.vgraphControls.EdgeLabelSelector;
+	import org.un.cava.birdeye.components.ui.controls.vgraphControls.EdgeRendererSelector;
+	import org.un.cava.birdeye.components.ui.controls.vgraphControls.NodeRendererSelector;
+	import org.un.cava.birdeye.components.ui.controls.vgraphControls.RendererControls;
+	import org.un.cava.birdeye.components.ui.controls.vgraphControls.ScaleControls;
+	import org.un.cava.birdeye.components.ui.controls.vgraphControls.ScaleLabels;
+	import org.un.cava.birdeye.components.ui.controls.vgraphControls.ToggleEdgeLabels;
+	import org.un.cava.birdeye.components.ui.controls.vgraphControls.ToggleShowHistory;
+	
+	
 	/**
 	 * This class will hold global params in static
 	 * variables related to VisualGraph properties.
@@ -42,76 +55,73 @@ package org.un.cava.birdeye.utils {
 		 * their id */
 		
 		/**
-		 * This mapping holds all instantiated BirdEyeZoom
-		 * components. They are indexed by their component id.
+		 * This mapping holds the BirdEyeZoom
+		 * component.
 		 * */
-		public static var birdEyeZoomControls:Object;
+		public static var birdEyeZoomControl:BirdEyeZoom;
 		
 		/**
-		 * This mapping holds all instantiated ScaleLabels
-		 * components. They are indexed by their component id.
+		 * This mapping holds the ScaleLabels
+		 * component.
 		 * */		
-		public static var scaleLabelsControls:Object;
+		public static var scaleLabelsControl:ScaleLabels;
 
 		/**
-		 * This mapping holds all instantiated DegreeOfSeparation
-		 * components. They are indexed by their component id.
+		 * This mapping holds the DegreeOfSeparation
+		 * component.
 		 * */		
-		public static var degreeOfSeparationControls:Object;
+		public static var degreeOfSeparationControl:DegreesOfSeparation;
 		
 		/**
-		 * This mapping holds all instantiated NodeRendererSelector
-		 * components. They are indexed by their component id.
+		 * This mapping holds the NodeRendererSelector
+		 * component.
 		 * */		
-		public static var nodeRendererSelectorControls:Object;
+		public static var nodeRendererSelectorControl:NodeRendererSelector;
 
 		/**
-		 * This mapping holds all instantiated EdgeLabelSelector
-		 * components. They are indexed by their component id.
+		 * This mapping holds the EdgeLabelSelector
+		 * component.
 		 * */		
-		public static var edgeLabelSelectorControls:Object;
+		public static var edgeLabelSelectorControl:EdgeLabelSelector;
 
 		/**
-		 * This mapping holds all instantiated EdgeRendererSelector
-		 * components. They are indexed by their component id.
+		 * This mapping holds the EdgeRendererSelector
+		 * component.
 		 * */		
-		public static var edgeRendererSelectorControls:Object;
+		public static var edgeRendererSelectorControl:EdgeRendererSelector;
 
 		/**
-		 * This mapping holds all instantiated ToggleEdgeLabels
-		 * components. They are indexed by their component id.
+		 * This mapping holds the ToggleEdgeLabels
+		 * component.
 		 * */		
-		public static var toggleEdgeLabelsControls:Object;
+		public static var toggleEdgeLabelsControl:ToggleEdgeLabels;
 
 		/**
-		 * This mapping holds all instantiated ToggleShowHistory
-		 * components. They are indexed by their component id.
+		 * This mapping holds the ToggleShowHistory
+		 * component.
 		 * */		
-		public static var toggleShowHistoryControls:Object;
+		public static var toggleShowHistoryControl:ToggleShowHistory;
 
 		/**
-		 * This mapping holds all instantiated EdgeLabelControls
-		 * components. This is a compount component of all EdgeLabel
+		 * This mapping holds the EdgeLabelControls
+		 * component. This is a compount component of all EdgeLabel
 		 * related controls.
-		 * They are indexed by their component id.
 		 * */		
-		public static var edgeLabelControls:Object;
+		public static var edgeLabelControls:EdgeLabelControls;
 
 		/**
-		 * This mapping holds all instantiated RendererControls
-		 * components. This is a compount component of all renderer
+		 * This mapping holds the RendererControls
+		 * component. This is a compount component of all renderer
 		 * related controls.
-		 * They are indexed by their component id.
 		 * */		
-		public static var rendererControls:Object;
+		public static var rendererControls:RendererControls;
 		
 		/**
-		 * This mapping holds all instantiated ScaleControls
-		 * components. This is a compount component of all scale
+		 * This mapping holds the ScaleControls
+		 * component. This is a compount component of all scale
 		 * related controls.
-		 * They are indexed by their component id.
 		 * */		
-		public static var scaleControls:Object;	
+		public static var scaleControls:ScaleControls;
 		
 	}
 }

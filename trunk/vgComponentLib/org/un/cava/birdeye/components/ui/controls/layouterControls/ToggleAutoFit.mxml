@@ -54,14 +54,8 @@
 			 * instance with the GlobalParams class
 			 * */
 			private function registerWithGlobal():void {	
-				/* initialise the object, if not yet present */
-				if(GlobalParamsLayout.autoFitControls == null) {
-					GlobalParamsLayout.autoFitControls = new Object;
-				}
-				
-				/* register ourselves with out id, I think in an
-				 * MX Component this must always be present */
-				GlobalParamsLayout.autoFitControls[this.id] = this;
+				/* register ourselves */
+				GlobalParamsLayout.autoFitControl = this;
 			}
 			
 			/**

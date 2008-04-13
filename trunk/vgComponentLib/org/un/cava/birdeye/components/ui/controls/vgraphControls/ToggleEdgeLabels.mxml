@@ -75,15 +75,8 @@
 			 * register that we are complete
 			 * */
 			private function registerComplete():void {
-				
-				/* initialise the object, if not yet present */
-				if(GlobalParamsVGraph.toggleEdgeLabelsControls == null) {
-					GlobalParamsVGraph.toggleEdgeLabelsControls = new Object;
-				}
-				
-				/* register ourselves with out id, I think in an
-				 * MX Component this must always be present */
-				GlobalParamsVGraph.toggleEdgeLabelsControls[this.id] = this;
+				/* register ourselves */
+				GlobalParamsVGraph.toggleEdgeLabelsControl = this;
 			}		
 		]]>
 	</mx:Script>

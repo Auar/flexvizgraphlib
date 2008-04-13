@@ -57,14 +57,8 @@
 			 * instance with the GlobalParams class
 			 * */
 			private function registerWithGlobal():void {
-				/* initialise the object, if not yet present */
-				if(GlobalParamsLayout.orientationControls == null) {
-					GlobalParamsLayout.orientationControls = new Object;
-				}
-				
-				/* register ourselves with out id, I think in an
-				 * MX Component this must always be present */
-				GlobalParamsLayout.orientationControls[this.id] = this;
+				/* register ourselves */
+				GlobalParamsLayout.orientationControl = this;
 			}
 			
 			/**

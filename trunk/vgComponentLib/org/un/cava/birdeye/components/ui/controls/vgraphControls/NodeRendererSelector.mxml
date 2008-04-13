@@ -189,15 +189,8 @@
 			 * */
 			private function initData():void {
 				this.dataProvider = nrvalues;
-				
-				/* initialise the object, if not yet present */
-				if(GlobalParamsVGraph.nodeRendererSelectorControls == null) {
-					GlobalParamsVGraph.nodeRendererSelectorControls = new Object;
-				}
-				
-				/* register ourselves with out id, I think in an
-				 * MX Component this must always be present */
-				GlobalParamsVGraph.nodeRendererSelectorControls[this.id] = this;
+				/* register ourselves */
+				GlobalParamsVGraph.nodeRendererSelectorControl = this;
 			}
 		]]>
 	</mx:Script>

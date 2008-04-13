@@ -76,15 +76,9 @@
 			 * register that we are complete
 			 * */
 			private function registerComplete():void {
-				
-				/* initialise the object, if not yet present */
-				if(GlobalParamsData.selectedNodeDetails == null) {
-					GlobalParamsData.selectedNodeDetails = new Object;
-				}
-				
 				/* register ourselves with out id, I think in an
 				 * MX Component this must always be present */
-				GlobalParamsData.selectedNodeDetails[this.id] = this;
+				GlobalParamsData.selectedNodeDetail = this;
 			}
 		]]>
 	</mx:Script>

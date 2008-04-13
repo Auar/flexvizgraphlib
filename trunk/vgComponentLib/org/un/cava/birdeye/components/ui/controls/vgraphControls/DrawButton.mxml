@@ -34,13 +34,13 @@
 	toolTip="Do a drawing..."
 	fontSize="9"
 	icon="{EmbeddedIcons.resetIcon}"
-	click="GlobalControls.fullVGraphRefresh()"
+	click="GlobalParams.vgraph.draw()"
 	>
 	
 	<mx:Script>
 		<![CDATA[
 			import org.un.cava.birdeye.assets.icons.EmbeddedIcons;
-			import org.un.cava.birdeye.utils.GlobalControls;
+			import org.un.cava.birdeye.utils.GlobalParams;
 		]]>
 	</mx:Script>
 </mx:Button>
