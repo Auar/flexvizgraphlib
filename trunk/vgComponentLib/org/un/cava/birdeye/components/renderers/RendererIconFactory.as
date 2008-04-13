@@ -74,8 +74,15 @@ package org.un.cava.birdeye.components.renderers {
 			
 			/* now assign the results */
 			result = pattern.exec(type);
-			prefix = result.prefix;
-			suffix = result.suffix;
+			
+			if(result) {
+				prefix = result.prefix;
+				suffix = result.suffix;
+			} else {
+				trace("Warning: node type is not well formed (:: missing), assuming embed");
+				prefix = "embed";
+				suffix = type;
+			}
 			
 			/* now switch depending on the prefix to how to handle
 			 * the generation */

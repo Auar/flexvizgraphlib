@@ -33,13 +33,15 @@
 	>
 	<mx:Label text="Center Node: " />
 	<mx:Label
+		id="myNodeNameLbl"
 		fontSize="9"
 		textAlign="left"
 		width="100%"
-		text="{GlobalParams.vgraph.currentRootVNode.data.@name}" />
+		/>
 	
 	<mx:Script>
 		<![CDATA[
+			import mx.binding.utils.BindingUtils;
 			
 			import org.un.cava.birdeye.utils.GlobalParams;
 			import org.un.cava.birdeye.utils.GlobalParamsData;
@@ -57,6 +59,10 @@
 				/* register ourselves with out id, I think in an
 				 * MX Component this must always be present */
 				GlobalParamsData.curRootNodeLabels[this.id] = this;
+				
+				if(GlobalParams.vgraph != null) {
+					BindingUtils.bindProperty(myNodeNameLbl,"text",GlobalParams.vgraph,["currentRootVNode","data","@name"]);
+				}
 			}
 		]]>
 	</mx:Script>
