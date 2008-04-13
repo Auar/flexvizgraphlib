@@ -142,15 +142,8 @@
 			 * */
 			private function initData():void {
 				this.dataProvider = elvalues;
-				
-				/* initialise the object, if not yet present */
-				if(GlobalParamsVGraph.edgeLabelSelectorControls == null) {
-					GlobalParamsVGraph.edgeLabelSelectorControls = new Object;
-				}
-				
-				/* register ourselves with out id, I think in an
-				 * MX Component this must always be present */
-				GlobalParamsVGraph.edgeLabelSelectorControls[this.id] = this;
+				/* register ourselves */
+				GlobalParamsVGraph.edgeLabelSelectorControl = this;
 			}
 		]]>
 	</mx:Script>

@@ -25,6 +25,19 @@
  * THE SOFTWARE.
  */
 package org.un.cava.birdeye.utils {
+	import org.un.cava.birdeye.components.ui.controls.layouterControls.CommonLayoutControls;
+	import org.un.cava.birdeye.components.ui.controls.layouterControls.HierLayoutControls;
+	import org.un.cava.birdeye.components.ui.controls.layouterControls.LayoutSelector;
+	import org.un.cava.birdeye.components.ui.controls.layouterControls.LinkLength;
+	import org.un.cava.birdeye.components.ui.controls.layouterControls.NodeSpacing;
+	import org.un.cava.birdeye.components.ui.controls.layouterControls.OrientationSelector;
+	import org.un.cava.birdeye.components.ui.controls.layouterControls.PhiDial;
+	import org.un.cava.birdeye.components.ui.controls.layouterControls.ToggleAnimation;
+	import org.un.cava.birdeye.components.ui.controls.layouterControls.ToggleAutoFit;
+	import org.un.cava.birdeye.components.ui.controls.layouterControls.ToggleDamping;
+	import org.un.cava.birdeye.components.ui.controls.layouterControls.ToggleNodeInterleaving;
+	import org.un.cava.birdeye.components.ui.controls.layouterControls.ToggleSiblingSpread;
+	
 	
 	/**
 	 * This class will hold global params and object
@@ -39,78 +52,78 @@ package org.un.cava.birdeye.utils {
 		
 		/**
 		 * This string contains the descriptive name of the
-		 * currently selected layouter
+		 * currently selected layouter.
 		 * */
 		public static var currentLayouterName:String;
 		
 		/**
-		 * This mapping holds all instantiated LayoutSelecter
-		 * components. They are indexed by their component id.
+		 * This mapping holds the LayoutSelecter
+		 * component.
 		 * */
-		public static var layoutSelectorControls:Object;
+		public static var layoutSelectorControl:LayoutSelector;
 		
 		/**
-		 * This mapping holds all instantiated LinkLength
-		 * components. They are indexed by their component id.
+		 * This mapping holds the LinkLength
+		 * component.
 		 * */		
-		public static var linkLengthControls:Object;
+		public static var linkLengthControl:LinkLength;
 		
 		/**
-		 * This mapping holds all instantiated ToggleAutoFit
-		 * components. They are indexed by their component id.
+		 * This mapping holds the ToggleAutoFit
+		 * component.
 		 * */		
-		public static var autoFitControls:Object;
+		public static var autoFitControl:ToggleAutoFit;
 
 		/**
-		 * This mapping holds all instantiated ToggleAnimation
-		 * components. They are indexed by their component id.
+		 * This mapping holds the ToggleAnimation
+		 * component.
 		 * */		
-		public static var animationControls:Object;
-
-		/**
-		 * This mapping holds all instantiated ToggleDamping
-		 * components. They are indexed by their component id.
-		 * */		
-		public static var dampingControls:Object;
+		public static var animationControl:ToggleAnimation;
 		
 		/**
-		 * This mapping holds all instantiated PhiDial
-		 * components. They are indexed by their component id.
+		 * This mapping holds the ToggleDamping
+		 * component.
 		 * */		
-		public static var phiDialControls:Object;
-
-		/**
-		 * This mapping holds all instantiated Orientation
-		 * components. They are indexed by their component id.
-		 * */		
-		public static var orientationControls:Object;
+		public static var dampingControl:ToggleDamping;
 		
 		/**
-		 * This mapping holds all instantiated NodeSpacing
-		 * components. They are indexed by their component id.
+		 * This mapping holds the PhiDial
+		 * component.
 		 * */		
-		public static var nodeSpacingControls:Object;
+		public static var phiDialControl:PhiDial;
 
 		/**
-		 * This mapping holds all instantiated ToggleNodeInterleaving
-		 * components. They are indexed by their component id.
+		 * This mapping holds the OrientationSelector
+		 * component.
 		 * */		
-		public static var nodeInterleavingControls:Object;
-
-
-		/**
-		 * This mapping holds all instantiated ToggleSiblingSpread
-		 * components. They are indexed by their component id.
-		 * */		
-		public static var siblingSpreadControls:Object;		
+		public static var orientationControl:OrientationSelector;
 		
 		/**
-		 * This mapping holds instantiated HierLayoutControls
-		 * components, which aggregate as a compound component
+		 * This mapping holds the NodeSpacing
+		 * component.
+		 * */		
+		public static var nodeSpacingControl:NodeSpacing;
+
+		/**
+		 * This mapping holds the ToggleNodeInterleaving
+		 * component.
+		 * */		
+		public static var nodeInterleavingControl:ToggleNodeInterleaving;
+
+
+		/**
+		 * This mapping holds the ToggleSiblingSpread
+		 * component.
+		 * */		
+		public static var siblingSpreadControl:ToggleSiblingSpread;	
+		
+		/**
+		 * This mapping the HierLayoutControls
+		 * component, which aggregate as a compound component
 		 * the OrientationSelector, NodeSpacing and SiblingSpread
 		 * components.
 		 * */
-		public static var hierLayoutControls:Object;
+		public static var hierLayoutControls:HierLayoutControls;
 
 		/**
 		 * This mapping holds instantiated CommonLayoutControls
@@ -118,7 +131,7 @@ package org.un.cava.birdeye.utils {
 		 * all controls common to all layouters, currently 
 		 * AutoFit, Animation and LinkLength.
 		 * */
-		public static var commonLayoutControls:Object;
+		public static var commonLayoutControls:CommonLayoutControls;
 
 	}
 }

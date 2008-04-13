@@ -50,15 +50,8 @@
 			 * register that we are complete
 			 * */
 			private function registerComplete():void {
-				
-				/* initialise the object, if not yet present */
-				if(GlobalParamsData.curRootNodeLabels == null) {
-					GlobalParamsData.curRootNodeLabels = new Object;
-				}
-				
-				/* register ourselves with out id, I think in an
-				 * MX Component this must always be present */
-				GlobalParamsData.curRootNodeLabels[this.id] = this;
+				/* register ourselves */
+				GlobalParamsData.curRootNodeLabel = this;
 				
 				if(GlobalParams.vgraph != null) {
 					BindingUtils.bindProperty(myNodeNameLbl,"text",GlobalParams.vgraph,["currentRootVNode","data","@name"]);

@@ -92,15 +92,8 @@
 			 * */
 			private function registerComplete():void {
 				_complete = true;
-				
-				/* initialise the object, if not yet present */
-				if(GlobalParamsVGraph.degreeOfSeparationControls == null) {
-					GlobalParamsVGraph.degreeOfSeparationControls = new Object;
-				}
-				
-				/* register ourselves with out id, I think in an
-				 * MX Component this must always be present */
-				GlobalParamsVGraph.degreeOfSeparationControls[this.id] = this;
+				/* register ourselves */
+				GlobalParamsVGraph.degreeOfSeparationControl = this;
 			}
 			
 		]]>

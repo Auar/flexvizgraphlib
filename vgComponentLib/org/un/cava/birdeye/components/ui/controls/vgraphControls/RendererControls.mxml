@@ -108,15 +108,8 @@
 			 * */
 			private function registerComplete():void {
 				_complete = true;
-				
-				/* initialise the object, if not yet present */
-				if(GlobalParamsVGraph.rendererControls == null) {
-					GlobalParamsVGraph.rendererControls = new Object;
-				}
-				
-				/* register ourselves with out id, I think in an
-				 * MX Component this must always be present */
-				GlobalParamsVGraph.rendererControls[this.id] = this;
+				/* register ourselves  */
+				GlobalParamsVGraph.rendererControls = this;
 			}
 		]]>
 	</mx:Script>

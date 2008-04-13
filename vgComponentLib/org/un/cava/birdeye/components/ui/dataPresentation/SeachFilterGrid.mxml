@@ -139,14 +139,8 @@
 			private function registerComplete():void {
 				_complete = true;
 				
-				/* initialise the object, if not yet present */
-				if(GlobalParamsData.searchFilterGrids == null) {
-					GlobalParamsData.searchFilterGrids = new Object;
-				}
-				
-				/* register ourselves with out id, I think in an
-				 * MX Component this must always be present */
-				GlobalParamsData.searchFilterGrids[this.id] = this;
+				/* register ourselves */
+				GlobalParamsData.searchFilterGrid = this;
 			}
 		]]>
 	</mx:Script>

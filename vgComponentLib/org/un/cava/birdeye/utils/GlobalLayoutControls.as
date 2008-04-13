@@ -29,17 +29,6 @@ package org.un.cava.birdeye.utils {
 	
 	import mx.core.UIComponent;
 	
-	import org.un.cava.birdeye.components.ui.controls.layouterControls.CommonLayoutControls;
-	import org.un.cava.birdeye.components.ui.controls.layouterControls.HierLayoutControls;
-	import org.un.cava.birdeye.components.ui.controls.layouterControls.LayoutSelector;
-	import org.un.cava.birdeye.components.ui.controls.layouterControls.LinkLength;
-	import org.un.cava.birdeye.components.ui.controls.layouterControls.NodeSpacing;
-	import org.un.cava.birdeye.components.ui.controls.layouterControls.OrientationSelector;
-	import org.un.cava.birdeye.components.ui.controls.layouterControls.PhiDial;
-	import org.un.cava.birdeye.components.ui.controls.layouterControls.ToggleAnimation;
-	import org.un.cava.birdeye.components.ui.controls.layouterControls.ToggleAutoFit;
-	import org.un.cava.birdeye.components.ui.controls.layouterControls.ToggleDamping;
-	import org.un.cava.birdeye.components.ui.controls.layouterControls.ToggleSiblingSpread;
 	import org.un.flex.graphLayout.layout.CircularLayouter;
 	import org.un.flex.graphLayout.layout.ConcentricRadialLayouter;
 	import org.un.flex.graphLayout.layout.DirectPlacementLayouter;
@@ -102,7 +91,7 @@ package org.un.cava.birdeye.utils {
 					break;
 				case "ParentCenteredRadial":
 					layouter = new ParentCenteredRadialLayouter(vgraph);
-					setAllInstancesEnabled(GlobalParamsLayout.phiDialControls, true);
+					setComponentEnabled(GlobalParamsLayout.phiDialControl, true);
 					break;
 				case "SingleCycleCircle":
 					layouter = new CircularLayouter(vgraph);
@@ -127,12 +116,12 @@ package org.un.cava.birdeye.utils {
 					break;
 				case "Hierarchical":
 					layouter = new HierarchicalLayouter(vgraph);
-					setAllInstancesEnabled(GlobalParamsLayout.hierLayoutControls, true);
+					setComponentEnabled(GlobalParamsLayout.hierLayoutControls, true);
 					/* apply the current values of all controls to the layouter */
 					break;
 				case "ForceDirected":
 					layouter = new ForceDirectedLayouter(vgraph);
-					setAllInstancesEnabled(GlobalParamsLayout.dampingControls, true);
+					setComponentEnabled(GlobalParamsLayout.dampingControl, true);
 					/* apply the damping value to the layouter */
 					break;
 				case "ISOM":
@@ -157,7 +146,7 @@ package org.un.cava.birdeye.utils {
 					break;
 				case "Phyllotactic":
 					layouter = new PhylloTreeLayouter(vgraph);
-					setAllInstancesEnabled(GlobalParamsLayout.phiDialControls, true);
+					setComponentEnabled(GlobalParamsLayout.phiDialControl, true);
 					/* apply the current phidial value to the layouters .phi property */
 					break;
 				default:
@@ -181,110 +170,17 @@ package org.un.cava.birdeye.utils {
 		 * trying this way.
 		 * */
 		public static function disableLayouterControls():void {
-			
-			setAllInstancesEnabled(GlobalParamsLayout.layoutSelectorControls, false);
-			setAllInstancesEnabled(GlobalParamsLayout.linkLengthControls, false);
-			setAllInstancesEnabled(GlobalParamsLayout.autoFitControls, false);
-			setAllInstancesEnabled(GlobalParamsLayout.animationControls, false);
-			setAllInstancesEnabled(GlobalParamsLayout.dampingControls, false);
-			setAllInstancesEnabled(GlobalParamsLayout.phiDialControls, false);
-			setAllInstancesEnabled(GlobalParamsLayout.orientationControls, false);
-			setAllInstancesEnabled(GlobalParamsLayout.nodeSpacingControls, false);
-			setAllInstancesEnabled(GlobalParamsLayout.siblingSpreadControls, false);
-			setAllInstancesEnabled(GlobalParamsLayout.hierLayoutControls, false);
-			setAllInstancesEnabled(GlobalParamsLayout.commonLayoutControls, false);
-			
-			/* disabled to see if general method works 
-			if(GlobalParamsLayout.layoutSelectorControls != null) {
-				for each(controlobj in 	GlobalParamsLayout.layoutSelectorControls) {
-					if(controlobj is LayoutSelector) {
-						(controlobj as LayoutSelector).enabled = false;
-					}
-				}
-			}
-			
-			if(GlobalParamsLayout.linkLengthControls != null) {
-				for each(controlobj in 	GlobalParamsLayout.linkLengthControls) {
-					if(controlobj is LinkLength) {
-						(controlobj as LinkLength).enabled = false;
-					}
-				}
-			}
-			
-			if(GlobalParamsLayout.autoFitControls != null) {
-				for each(controlobj in 	GlobalParamsLayout.autoFitControls) {
-					if(controlobj is ToggleAutoFit) {
-						(controlobj as ToggleAutoFit).enabled = false;
-					}
-				}
-			}
-			
-			if(GlobalParamsLayout.animationControls != null) {
-				for each(controlobj in 	GlobalParamsLayout.animationControls) {
-					if(controlobj is ToggleAnimation) {
-						(controlobj as ToggleAnimation).enabled = false;
-					}
-				}
-			}
-			
-			if(GlobalParamsLayout.dampingControls != null) {
-				for each(controlobj in 	GlobalParamsLayout.dampingControls) {
-					if(controlobj is ToggleDamping) {
-						(controlobj as ToggleDamping).enabled = false;
-					}
-				}
-			}
-			
-			if(GlobalParamsLayout.phiDialControls != null) {
-				for each(controlobj in 	GlobalParamsLayout.phiDialControls) {
-					if(controlobj is PhiDial) {
-						(controlobj as PhiDial).enabled = false;
-					}
-				}
-			}
-			
-			if(GlobalParamsLayout.orientationControls != null) {
-				for each(controlobj in 	GlobalParamsLayout.orientationControls) {
-					if(controlobj is OrientationSelector) {
-						(controlobj as OrientationSelector).enabled = false;
-					}
-				}
-			}
-			
-			if(GlobalParamsLayout.nodeSpacingControls != null) {
-				for each(controlobj in 	GlobalParamsLayout.nodeSpacingControls) {
-					if(controlobj is NodeSpacing) {
-						(controlobj as NodeSpacing).enabled = false;
-					}
-				}
-			}
-			
-			if(GlobalParamsLayout.siblingSpreadControls != null) {
-				for each(controlobj in 	GlobalParamsLayout.siblingSpreadControls) {
-					if(controlobj is ToggleSiblingSpread) {
-						(controlobj as ToggleSiblingSpread).enabled = false;
-					}
-				}
-			}
-			
-			/* attention, this should re-disable the components of the compound component *
-			if(GlobalParamsLayout.hierLayoutControls != null) {
-				for each(controlobj in 	GlobalParamsLayout.hierLayoutControls) {
-					if(controlobj is HierLayoutControls) {
-						(controlobj as HierLayoutControls).enabled = false;
-					}
-				}
-			}
-			
-			/* attention, this should re-disable the components of the compound component *
-			if(GlobalParamsLayout.commonLayoutControls != null) {
-				for each(controlobj in 	GlobalParamsLayout.commonLayoutControls) {
-					if(controlobj is CommonLayoutControls) {
-						(controlobj as CommonLayoutControls).enabled = false;
-					}
-				}
-			}
-			*/	
+			setComponentEnabled(GlobalParamsLayout.layoutSelectorControl, false);
+			setComponentEnabled(GlobalParamsLayout.linkLengthControl, false);
+			setComponentEnabled(GlobalParamsLayout.autoFitControl, false);
+			setComponentEnabled(GlobalParamsLayout.animationControl, false);
+			setComponentEnabled(GlobalParamsLayout.dampingControl, false);
+			setComponentEnabled(GlobalParamsLayout.phiDialControl, false);
+			setComponentEnabled(GlobalParamsLayout.orientationControl, false);
+			setComponentEnabled(GlobalParamsLayout.nodeSpacingControl, false);
+			setComponentEnabled(GlobalParamsLayout.siblingSpreadControl, false);
+			setComponentEnabled(GlobalParamsLayout.hierLayoutControls, false);
+			setComponentEnabled(GlobalParamsLayout.commonLayoutControls, false);
 		}
 
 		/**
@@ -292,32 +188,25 @@ package org.un.cava.birdeye.utils {
 		 * set their enabled state to true.
 		 * */
 		public static function enableCommonLayouterControls():void {	
-			setAllInstancesEnabled(GlobalParamsLayout.layoutSelectorControls, true);
-			setAllInstancesEnabled(GlobalParamsLayout.linkLengthControls, true);
-			setAllInstancesEnabled(GlobalParamsLayout.autoFitControls, true);
-			setAllInstancesEnabled(GlobalParamsLayout.animationControls, true);
-			setAllInstancesEnabled(GlobalParamsLayout.commonLayoutControls, true);
+			setComponentEnabled(GlobalParamsLayout.layoutSelectorControl, true);
+			setComponentEnabled(GlobalParamsLayout.linkLengthControl, true);
+			setComponentEnabled(GlobalParamsLayout.autoFitControl, true);
+			setComponentEnabled(GlobalParamsLayout.animationControl, true);
+			setComponentEnabled(GlobalParamsLayout.commonLayoutControls, true);
 		}
 
 
 		/**
-		 * This method assumes the passed object is a map of UIComponents
-		 * and sets the enabled property of all these UIComponents to the
-		 * specified value. Typically a map object from a GlobalParams
-		 * static class could be specified. Maybe this method will be
-		 * publized and moved to GlobalControls.
+		 * This sets the enabled property of all these UIComponents to the
+		 * specified value. The main benefit is basically that it makes
+		 * sure the passed object exists (and is not null).
 		 * 
-		 * @param map An object with UIComponents indexed 
+		 * @param uicomp An UIComponent to be enabled or disabled. 
 		 * @param value The boolean value to set the UIComponents to.
 		 * */
-		private static function setAllInstancesEnabled(map:Object, value:Boolean):void {
-			var uicomp:Object;
-			if(map != null) {
-				for each(uicomp in map) {
-					if(uicomp is UIComponent) {
-						(uicomp as UIComponent).enabled = value;
-					}
-				}
+		private static function setComponentEnabled(uicomp:UIComponent, value:Boolean):void {
+			if(uicomp != null) {
+				uicomp.enabled = value;
 			}
 		}
 	}

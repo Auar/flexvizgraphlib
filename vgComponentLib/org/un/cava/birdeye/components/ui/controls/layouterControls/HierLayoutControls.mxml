@@ -64,14 +64,8 @@
 			 * instance with the GlobalParams class
 			 * */
 			private function registerWithGlobal():void {
-				/* initialise the object, if not yet present */
-				if(GlobalParamsLayout.hierLayoutControls == null) {
-					GlobalParamsLayout.hierLayoutControls = new Object;
-				}
-				
-				/* register ourselves with out id, I think in an
-				 * MX Component this must always be present */
-				GlobalParamsLayout.hierLayoutControls[this.id] = this;
+				/* register ourselves */
+				GlobalParamsLayout.hierLayoutControls = this;
 			}
 
 			/**
