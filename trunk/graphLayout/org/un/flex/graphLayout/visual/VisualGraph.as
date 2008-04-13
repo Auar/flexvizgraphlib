@@ -741,7 +741,8 @@ package org.un.flex.graphLayout.visual {
 					/* if we do not limit visibility, we still need
 					 * to force a new layout and redraw()
 					 * (in the other case, this is done by updateVisibility()) */
-					draw();
+					// disabled to remove implicit call to
+					// draw();
 				}
 			}
 		}		
@@ -2217,7 +2218,8 @@ package org.un.flex.graphLayout.visual {
 			
 			/* this restarts any layouting */
 			/* maybe not a good idea?? */
-			draw();
+			// removing all implicit calls to draw()
+			// draw();
 		}
 
 		/**
@@ -2261,7 +2263,8 @@ package org.un.flex.graphLayout.visual {
 			}
 			
 			/* maybe not XXX */
-			draw();
+			// remove all implicit calls to draw()
+			// draw();
 		}
 	
 		/**
