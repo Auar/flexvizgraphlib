@@ -47,12 +47,8 @@ package org.un.cava.birdeye.utils {
 		 * This is typically used to handle a resize event
 		 * */
  		public static function redrawGraphLL():void {
- 			trace("called rsize handler");
  			if(GlobalParams.vgraph is IVisualGraph) {
- 				trace("OK: got vgraph");
 	 			if(GlobalParams.vgraphInitOk) {
-	 				
-	 				trace("OK: VgraphInitted");
 	 				/* it can happen that the linklength is reduced to 0
 	 				 * in this case we reset it */
 	 				if(GlobalParams.layouter.linkLength == 0) {

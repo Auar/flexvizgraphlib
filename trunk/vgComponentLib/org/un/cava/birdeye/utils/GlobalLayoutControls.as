@@ -92,6 +92,7 @@ package org.un.cava.birdeye.utils {
 				case "ParentCenteredRadial":
 					layouter = new ParentCenteredRadialLayouter(vgraph);
 					setComponentEnabled(GlobalParamsLayout.phiDialControl, true);
+					GlobalParamsLayout.phiDialControl.updatePhi();
 					break;
 				case "SingleCycleCircle":
 					layouter = new CircularLayouter(vgraph);
@@ -117,11 +118,13 @@ package org.un.cava.birdeye.utils {
 				case "Hierarchical":
 					layouter = new HierarchicalLayouter(vgraph);
 					setComponentEnabled(GlobalParamsLayout.hierLayoutControls, true);
+					GlobalParamsLayout.hierLayoutControls.applyValues();
 					/* apply the current values of all controls to the layouter */
 					break;
 				case "ForceDirected":
 					layouter = new ForceDirectedLayouter(vgraph);
 					setComponentEnabled(GlobalParamsLayout.dampingControl, true);
+					GlobalParamsLayout.dampingControl.toggleDamping();
 					/* apply the damping value to the layouter */
 					break;
 				case "ISOM":
@@ -147,6 +150,7 @@ package org.un.cava.birdeye.utils {
 				case "Phyllotactic":
 					layouter = new PhylloTreeLayouter(vgraph);
 					setComponentEnabled(GlobalParamsLayout.phiDialControl, true);
+					GlobalParamsLayout.phiDialControl.updatePhi();
 					/* apply the current phidial value to the layouters .phi property */
 					break;
 				default:
@@ -160,7 +164,10 @@ package org.un.cava.birdeye.utils {
 			
 			/* now re-enable all common layouter Controls */
 			enableCommonLayouterControls();
-			
+			GlobalParamsLayout.commonLayoutControls.applyValues();
+
+			/* and make sure we draw right away to reflect the change */		
+			vgraph.draw();	
 		}
 		
 		/**
