@@ -1712,6 +1712,8 @@ package org.un.flex.graphLayout.visual {
 			
 			//trace("currentVNode:"+this.currentRootVNode.id);
 			
+			/* here we still want to implicitly redraw */
+			draw();
 		}
 
 		/**
