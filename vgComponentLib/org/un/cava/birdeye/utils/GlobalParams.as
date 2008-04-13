@@ -26,6 +26,7 @@
  */
 package org.un.cava.birdeye.utils {
 	
+	import org.un.cava.birdeye.components.ui.VGAccordion;
 	import org.un.flex.graphLayout.layout.ILayoutAlgorithm;
 	import org.un.flex.graphLayout.visual.IVisualGraph;
 	
@@ -126,6 +127,13 @@ package org.un.cava.birdeye.utils {
 		public static var dataComponents:Class = GlobalParamsData;
 		
 		/* top tier parameters */
+		
+		/**
+		 * Holds a reference to the main navigation accordion
+		 * */
+		public static var vgAccordion:VGAccordion;
+		
+		
 		
 		/** 
 		 * zoom factor for rendered items */

@@ -168,6 +168,10 @@ package org.un.cava.birdeye.utils {
 			}
 			GlobalParams.layouter = layouter;
 			vgraph.layouter = layouter;
+			
+			/* now re-enable all common layouter Controls */
+			enableCommonLayouterControls();
+			
 		}
 		
 		/**
@@ -282,6 +286,19 @@ package org.un.cava.birdeye.utils {
 			}
 			*/	
 		}
+
+		/**
+		 * Go through all COMMON registered layouter controls and
+		 * set their enabled state to true.
+		 * */
+		public static function enableCommonLayouterControls():void {	
+			setAllInstancesEnabled(GlobalParamsLayout.layoutSelectorControls, true);
+			setAllInstancesEnabled(GlobalParamsLayout.linkLengthControls, true);
+			setAllInstancesEnabled(GlobalParamsLayout.autoFitControls, true);
+			setAllInstancesEnabled(GlobalParamsLayout.animationControls, true);
+			setAllInstancesEnabled(GlobalParamsLayout.commonLayoutControls, true);
+		}
+
 
 		/**
 		 * This method assumes the passed object is a map of UIComponents

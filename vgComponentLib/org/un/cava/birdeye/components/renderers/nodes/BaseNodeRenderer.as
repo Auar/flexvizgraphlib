@@ -28,16 +28,14 @@ package org.un.cava.birdeye.components.renderers.nodes {
 	
 	// Flash classes
 	import flash.events.Event;
-	import flash.events.MouseEvent;
 	
 	import mx.controls.Label;
 	import mx.controls.LinkButton;
-	import mx.controls.Spacer;
-	import mx.core.IDataRenderer;
-	import mx.events.FlexEvent;
 	
 	import org.un.cava.birdeye.components.renderers.BaseRenderer;
+	import org.un.cava.birdeye.components.ui.VGAccordion;
 	import org.un.cava.birdeye.utils.GlobalParams;
+	import org.un.cava.birdeye.utils.GlobalParamsData;
 	
 	/**
 	 * This is an extension to the base renderer
@@ -63,27 +61,30 @@ package org.un.cava.birdeye.components.renderers.nodes {
 			super.getDetails(e);
 			
 			/* set the name of the XML object as title */
-			if(GlobalParams.dataComponents.visualDetailTitle != null) {
+			
+			/* XXX We may want to omit the check for null pointer, is redundant for
+			 * static string variable */
+			//if(GlobalParamsData.nodeDetailTitle != null) {
 				/* make sure we have the XML attribute */
 				if(this.data.data.@name != null) {
-					GlobalParams.dataComponents.visualDetailTitle.text = this.data.data.@name;
+					GlobalParamsData.nodeDetailTitle = this.data.data.@name;
 				} else {
 					trace("XML data object has no 'name' attribute");
 				}
-			} else {
-				throw Error("GlobalParams.visualDetailTitle not initialised!");
-			}
+			//} else {
+				//throw Error("GlobalParamsData not initialised!");
+			//}
 			
 			/* now the description */
-			if(GlobalParams.dataComponents.visualDetailDesc != null) {
+			//if(GlobalParamsData.nodeDetailDesc != null) {
 				if(this.data.data.@desc != null) {
-					GlobalParams.dataComponents.visualDetailDesc.text = this.data.data.@desc;
+					GlobalParamsData.nodeDetailDesc = this.data.data.@desc;
 				} else {
 					trace("XML data object has no 'desc' attribute");
 				}
-			} else {
-				throw Error("GlobalParams.visualDetailDesc not initialised!");
-			}
+		//	} else {
+		//		throw Error("GlobalParams.visualDetailDesc not initialised!");
+		//	}
 			
 			/* this is a bit obscure and should be done through a constant
 			 * basically the index 2 in the current implementation means to
@@ -91,10 +92,10 @@ package org.un.cava.birdeye.components.renderers.nodes {
 			 * All this could possibly be better resolved using events
 			 * ...
 			 */
-			if(GlobalParams.dataComponents.visualLeftAccordion != null) {
-				GlobalParams.dataComponents.visualLeftAccordion.selectedIndex = 2;
+			if(GlobalParams.vgAccordion != null) {
+				GlobalParams.vgAccordion.selectPane(VGAccordion.INDEX_DATADETAIL);
 			} else {
-				throw Error("GlobalParams.visualLeftAccordion not initialised!");
+				throw Error("GlobalParams.vgAccordion not initialised!");
 			}
 		}
 		

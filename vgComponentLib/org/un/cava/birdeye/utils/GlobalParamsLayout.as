@@ -92,6 +92,13 @@ package org.un.cava.birdeye.utils {
 		public static var nodeSpacingControls:Object;
 
 		/**
+		 * This mapping holds all instantiated ToggleNodeInterleaving
+		 * components. They are indexed by their component id.
+		 * */		
+		public static var nodeInterleavingControls:Object;
+
+
+		/**
 		 * This mapping holds all instantiated ToggleSiblingSpread
 		 * components. They are indexed by their component id.
 		 * */		
