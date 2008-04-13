@@ -59,7 +59,7 @@
 			/>
 		<mx:Button
 			id="plusScale"
-			icon="{EmbeddedIcons.zoomoutIcon}"
+			icon="{EmbeddedIcons.zoominIcon}"
 			cornerRadius="5"
 			click="scaleSlider.value=scaleSlider.value+.1; updateScale();"
 			/>	

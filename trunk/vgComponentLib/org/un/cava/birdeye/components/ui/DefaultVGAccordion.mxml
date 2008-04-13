@@ -125,6 +125,8 @@
 		<vc:ScaleControls id="mySCs" />
 		
 		<vc:FullRefreshButton id="myFRB" />
+		
+		<vc:DrawButton id="myDB" />
 	</mx:VBox>		
 
 	

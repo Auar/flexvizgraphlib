@@ -58,7 +58,7 @@
 			/>
 		<mx:Button
 			id="plusZoom"
-			icon="{EmbeddedIcons.zoomoutIcon}"
+			icon="{EmbeddedIcons.zoominIcon}"
 			cornerRadius="5"
 			click="bzoom.value=bzoom.value+.10;updateVScale();"
 			/>	
