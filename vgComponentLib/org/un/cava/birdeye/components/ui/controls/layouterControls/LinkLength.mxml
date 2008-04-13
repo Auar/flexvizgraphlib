@@ -60,7 +60,7 @@
 			/>
 		<mx:Button
 			id="plusLinkLength"
-			icon="{EmbeddedIcons.zoomoutIcon}"
+			icon="{EmbeddedIcons.zoominIcon}"
 			cornerRadius="5"
 			click="lslider.value=lslider.value+25;updateLinkLength();"
 			/>	

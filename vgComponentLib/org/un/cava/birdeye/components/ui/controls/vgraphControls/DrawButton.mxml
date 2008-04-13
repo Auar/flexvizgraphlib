@@ -30,17 +30,17 @@
 <mx:Button
 	xmlns:mx="http://www.adobe.com/2006/mxml"
 	width="100%" 
-	label="Refresh Data"
-	toolTip="Do a full refresh of data and drawing..."
+	label="Draw Graph"
+	toolTip="Do a drawing..."
 	fontSize="9"
-	icon="{EmbeddedIcons.refreshIcon}"
-	click="GlobalParams.vgraph.draw()"
+	icon="{EmbeddedIcons.resetIcon}"
+	click="GlobalControls.fullVGraphRefresh()"
 	>
 	
 	<mx:Script>
 		<![CDATA[
 			import org.un.cava.birdeye.assets.icons.EmbeddedIcons;
-			import org.un.cava.birdeye.utils.GlobalParams;
+			import org.un.cava.birdeye.utils.GlobalControls;
 		]]>
 	</mx:Script>
 </mx:Button>

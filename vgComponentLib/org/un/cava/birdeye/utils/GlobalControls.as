@@ -139,6 +139,9 @@ package org.un.cava.birdeye.utils {
 			} else {
 				throw Error("Cannot set a default root, bailing out");
 			}
+			
+			/* this refreshes everything */
+			GlobalParams.vgraph.draw();
 		}		
  		
  		
