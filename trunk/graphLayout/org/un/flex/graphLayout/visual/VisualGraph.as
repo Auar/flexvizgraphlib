@@ -487,6 +487,11 @@ package org.un.flex.graphLayout.visual {
 		 * */
 		public function set itemRenderer(ifac:IFactory):void {
 			_itemRendererFactory = ifac;
+			
+			/* if that has changed, we would need to recreate all
+			 * currently visible nodes */
+			setAllInVisible();
+			updateVisibility();
 		}
 		
 		/**
@@ -2217,11 +2222,6 @@ package org.un.flex.graphLayout.visual {
 					}
 				}
 			}
-			
-			/* this restarts any layouting */
-			/* maybe not a good idea?? */
-			// removing all implicit calls to draw()
-			// draw();
 		}
 
 		/**
@@ -2263,10 +2263,39 @@ package org.un.flex.graphLayout.visual {
 			for each(e in _graph.edges) {
 				_visibleEdges[e] = e;
 			}
+		}
+		
+		/**
+		 * Reset visibility of all nodes, all nodes are INVISIBLE.
+		 * */
+		private function setAllInVisible():void {
+			var vn:IVisualNode;
 			
-			/* maybe not XXX */
-			// remove all implicit calls to draw()
-			// draw();
+			var e:IEdge;
+			
+			/* not sure if this is really, really needed, but
+			 * since similar code was added, I optimise it a bit.
+			 */
+			if(_graph == null) {
+				trace("setAllInVisible() called, but graph is null");
+				return;
+			}
+			
+			/* since a layouter that uses timer based iterations
+			 * might find itself on a changing node set, we need
+			 * to stop/reset anything before altering the node
+			 * visibility */
+			if(_layouter != null) {
+				_layouter.resetAll();
+			}
+			
+			for each(vn in _visibleVNodes) {
+				setNodeVisibility(vn, false);
+			}
+			
+			/* just reset the visible edges array
+			 * XXX THERE MAY BE MORE TO IT HERE!!  */
+			_visibleEdges = new Dictionary;
 		}
 	
 		/**
