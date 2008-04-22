@@ -23,25 +23,15 @@
  * THE SOFTWARE.
  */
 package org.un.flex.graphLayout.layout {
-
-	import org.un.flex.graphLayout.data.Graph;
-	import org.un.flex.graphLayout.data.IGraph;
-	import org.un.flex.graphLayout.data.IEdge;
-	import org.un.flex.graphLayout.data.INode;
+	import flash.events.MouseEvent;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
+	import flash.utils.Dictionary;
 	
+	import org.un.flex.graphLayout.data.IEdge;
 	import org.un.flex.graphLayout.visual.IVisualEdge;
 	import org.un.flex.graphLayout.visual.IVisualGraph;
 	import org.un.flex.graphLayout.visual.IVisualNode;
-	
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.events.TimerEvent;
-	import flash.geom.Rectangle;
-	import flash.geom.Point;
-	import flash.utils.Dictionary;
-	import flash.utils.Timer;
-	
-	import mx.core.UIComponent;
 	/**
 	 * This is an implementation of the ForceDirected/SpringGraph
 	 * Layouting algorithm. The implementation took the general
@@ -424,6 +414,11 @@ package org.un.flex.graphLayout.layout {
 						t_dy = 0;
 						t_vx = t_vn1.x - t_vn2.x;
 						t_vy = t_vn1.y - t_vn2.y;
+						/* spread coincident nodes */
+						if (t_vx == 0 && t_vy == 0) {
+							t_vx = Math.random() * 10 - 5;
+							t_vy = Math.random() * 10 - 5;
+						}
 						var lenSquare:Number = (t_vx * t_vx) + (t_vy * t_vy);
 						var minSquareDistance:Number = _MIN_NODE_SEPARATION * _MIN_NODE_SEPARATION;
 						
