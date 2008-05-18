@@ -49,6 +49,7 @@
 	<local:NodeSpacing id="nodeSpacing" />
 	<local:ToggleSiblingSpread id="sibSpread" />
 	<local:ToggleNodeInterleaving id="nodeILeave" />
+	<local:ToggleHonorNodeSize id="honNodeSize" />
 	
 	<mx:Script>
 		<![CDATA[
@@ -85,6 +86,7 @@
 					nodeSpacing.enabled = e;
 					sibSpread.enabled = e;
 					nodeILeave.enabled = e;
+					honNodeSize.enabled = e;
 					if(e == true)
 						refreshValues();
 				}
@@ -119,6 +121,7 @@
 				layouter.breadth = nodeSpacing.bslider.value;
 				layouter.enableSiblingSpread = sibSpread.selected;
 				layouter.interleaveSiblings = nodeILeave.selected;
+				layouter.honorNodeSize = honNodeSize.selected;
 				//layouter.orientation can crash....
 				
 				/* the following would use the update methods provided
@@ -158,6 +161,7 @@
 				nodeSpacing.bslider.value = layouter.breadth;
 				sibSpread.selected = layouter.enableSiblingSpread;
 				nodeILeave.selected = layouter.interleaveSiblings;
+				honNodeSize.selected = layouter.honorNodeSize;
 				//layouter.orientation can crash....
 				
 				/* this alternative use provided methods */
