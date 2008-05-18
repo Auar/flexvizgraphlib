@@ -35,6 +35,7 @@ package org.un.cava.birdeye.utils {
 	import org.un.cava.birdeye.components.ui.controls.layouterControls.ToggleAnimation;
 	import org.un.cava.birdeye.components.ui.controls.layouterControls.ToggleAutoFit;
 	import org.un.cava.birdeye.components.ui.controls.layouterControls.ToggleDamping;
+	import org.un.cava.birdeye.components.ui.controls.layouterControls.ToggleHonorNodeSize;
 	import org.un.cava.birdeye.components.ui.controls.layouterControls.ToggleNodeInterleaving;
 	import org.un.cava.birdeye.components.ui.controls.layouterControls.ToggleSiblingSpread;
 	
@@ -109,6 +110,12 @@ package org.un.cava.birdeye.utils {
 		 * component.
 		 * */		
 		public static var nodeInterleavingControl:ToggleNodeInterleaving;
+
+		/**
+		 * This mapping holds the ToggleHonorNodeSize
+		 * component.
+		 * */		
+		public static var honorNodeSizeControl:ToggleHonorNodeSize;
 
 
 		/**
