@@ -296,6 +296,13 @@ package org.un.flex.graphLayout.layout {
 		 * when spacing.
 		 * @default false
 		 * */
+		public function get honorNodeSize():Boolean {
+			return _honorNodeSize;
+		}
+		
+		/**
+		 * @private
+		 * */
 		public function set honorNodeSize(honor:Boolean):void {
 			_honorNodeSize = honor;
 		}
