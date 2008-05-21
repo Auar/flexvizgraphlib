@@ -3,6 +3,6 @@
 
 === Layout Explorer ===
 
-  * [http://flexvizgraphlib.googlecode.com/svn/trunk/vgExplorer/bin/VGExplorer.html Demo 1]
+  * [http://birdeye.googlecode.com/svn/trunk/ravis/examples/bin/RaVisExplorer.html Demo 1]
   * Updated March 2, 2008
  
