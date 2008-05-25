@@ -25,6 +25,7 @@
 package org.un.flex.graphLayout.visual
 {
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
 	
 	import mx.core.IDataRenderer;
@@ -35,7 +36,7 @@ package org.un.flex.graphLayout.visual
 	/**
 	 * The VisualNode to be used in the Graph.
 	 * */
-	public class VisualNode implements IVisualNode, IDataRenderer {
+	public class VisualNode extends EventDispatcher implements IVisualNode, IDataRenderer {
 		
 		/* The associated VisualGraph */
 		private var _vgraph:IVisualGraph;

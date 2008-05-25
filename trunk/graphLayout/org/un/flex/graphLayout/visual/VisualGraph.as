@@ -72,7 +72,7 @@ package org.un.flex.graphLayout.visual {
 		 * Not really necessary, but it makes the code more clear if
 		 * a method is called, that really belongs to the super class.
 		 * */
-		private var _canvas:Canvas;
+		protected var _canvas:Canvas;
 
 		/**
 		 * This property holds the Graph object with the graph
@@ -80,27 +80,27 @@ package org.un.flex.graphLayout.visual {
 		 * the only data structure that keeps track of nodes and
 		 * edges.
 		 * */
-		private var _graph:IGraph = null;
+		protected var _graph:IGraph = null;
 	
 		/**
 		 * This property holds the layouter object. The layouter does the 
 		 * calculation of the layout and the placement of the nodes.
 		 * It may be exchanged on the fly.
 		 * */
-		private var _layouter:ILayoutAlgorithm;
+		protected var _layouter:ILayoutAlgorithm;
 
 		/**
 		 * This is a drawing surface to draw the edges on. It is only
 		 * used for the edges and is added as a child to the canvas.
 		 * */
-		private var _drawingSurface:UIComponent; 
+		protected var _drawingSurface:UIComponent; 
 
 		/**
 		 * for cleanup we also need a reference source for
 		 * vnodes and vedges
 		 * */
-		private var _vnodes:Dictionary;
-		private var _vedges:Dictionary;
+		protected var _vnodes:Dictionary;
+		protected var _vedges:Dictionary;
 
 		/**
 		 * Every visual node is associated with an UIComponent that 
@@ -113,19 +113,19 @@ package org.un.flex.graphLayout.visual {
 		 * only access to the UIComponent and we need to get hold of
 		 * the corresponding node.
 		 * */
-		private var _viewToVNodeMap:Dictionary;
+		protected var _viewToVNodeMap:Dictionary;
 
 		/**
 		 * A similar map needs to exist for edges
 		 * */
-		private var _viewToVEdgeMap:Dictionary;
+		protected var _viewToVEdgeMap:Dictionary;
 		
 		/**
 		 * The standard origin is the upper left corner, but if
 		 * the graph is scrolled, this origin may change, so we keep
 		 * track of that here.
 		 * */
-		private var _origin:Point;
+		protected var _origin:Point;
 		
 		/**
 		 * The current zooming scale of the vgraph.
@@ -134,14 +134,14 @@ package org.un.flex.graphLayout.visual {
 		 * Supported by getter/setting methods.
 		 * (Contributed by Ivan Bulanov)
 		 * */
-		private var _scale:Number = 1;
+		protected var _scale:Number = 1;
         
 		/* drag and drop support */
         
         /**
          * This is the current UIComponent that is dragged by the mouse.
          * */
-        private var _dragComponent:UIComponent;
+        protected var _dragComponent:UIComponent;
 
 		/**
 		 * These two maps keep the drag cursor offset positions
@@ -149,15 +149,15 @@ package org.un.flex.graphLayout.visual {
 		 * drag more than one component at once and to correctly reposition the
 		 * component during the drag and at the drop.
 		 * */
-		private var _drag_x_offsetMap:Dictionary;
-		private var _drag_y_offsetMap:Dictionary;
+		protected var _drag_x_offsetMap:Dictionary;
+		protected var _drag_y_offsetMap:Dictionary;
 		
 		/**
 		 * There is generally support to restrict dragging and dropping
 		 * to a certain area. These bounds are kept for each dragged
 		 * component in this map.
 		 * */
-		private var _drag_boundsMap:Dictionary;
+		protected var _drag_boundsMap:Dictionary;
 
 		/**
 		 * The drag cursors starting position is required
@@ -166,27 +166,27 @@ package org.un.flex.graphLayout.visual {
 		 * components with the mouse, thus creating the effect of a 
 		 * background drag.
 		 * */
-        private var _dragCursorStartX:Number;
-        private var _dragCursorStartY:Number;
+        protected var _dragCursorStartX:Number;
+        protected var _dragCursorStartY:Number;
         
 		/**
 		 * To distinguish an active mouse move drag that drags
 		 * a component from one that should drag the background, 
 		 * we need this property.
 		 * */
-        private var _backgroundDragInProgress:Boolean = false;
+        protected var _backgroundDragInProgress:Boolean = false;
 				
 		/**
 		 * To enable/disable scrolling while background is being
 		 * dragged 
 		 * */
-		private var _scrollBackgroundInDrag:Boolean = true;
+		protected var _scrollBackgroundInDrag:Boolean = true;
 		
 		/**
 		 * To enable/disable movement while node is being
 		 * dragged 
 		 * */
-		private var _moveNodeInDrag:Boolean = true;
+		protected var _moveNodeInDrag:Boolean = true;
 
 		/* Rendering */
 
@@ -195,30 +195,30 @@ package org.un.flex.graphLayout.visual {
 		 * that draws the Edges using the graphics part of the
 		 * drawing surface.
 		 * */
-        private var _edgeRenderer:IEdgeRenderer = null;
+        protected var _edgeRenderer:IEdgeRenderer = null;
 
 		/**
 		 * We allow the specification of an ItemRenderer (i.e. an IFactory)
 		 * that allows us to specify the view's for each node in MXML
 		 * */
-        private var _itemRendererFactory:IFactory = null;
+        protected var _itemRendererFactory:IFactory = null;
         
         /**
          * Also allow the specification of an IFactory for edge
          * labels.
          * */
-        private var _edgeLabelRendererFactory:IFactory = null;
+        protected var _edgeLabelRendererFactory:IFactory = null;
         
         /**
          * Specify whether edge labels should be displayed or not
          * */
-        private var _displayEdgeLabels:Boolean = true;
+        protected var _displayEdgeLabels:Boolean = true;
         
         /* Spring Graph also allowed a specification of an IViewFactory
          * which is a custom implementation of a factory that returns
          * UIComponents to be used as a view for a node.
          * Currently not implemented, nor needed.
-        private var _viewFactory:IViewFactory = null;
+        protected var _viewFactory:IViewFactory = null;
          */
 
 		/**
@@ -230,7 +230,7 @@ package org.un.flex.graphLayout.visual {
 		 * We keep a separate default set for regular edges and
 		 * for distinguished edges.
 		 * */
-		private var _defaultEdgeStyle:Object = {
+		protected var _defaultEdgeStyle:Object = {
 			thickness:1,
 			alpha:1.0,
 			color:0xcccccc,
@@ -241,7 +241,7 @@ package org.un.flex.graphLayout.visual {
 			miterLimit:3
 		}
 		/* currently inactive *
-		private var _defaultDistEdgeSettings:Object = {
+		protected var _defaultDistEdgeSettings:Object = {
 			thickness:1,
 			alpha:1.0,
 			color:0xff0000,
@@ -265,13 +265,13 @@ package org.un.flex.graphLayout.visual {
 		 * The application will be brought to its knees if thousands of nodes
 		 * should be displayed. 
 		 * */
-		private var _visibilityLimitActive:Boolean = true;
+		protected var _visibilityLimitActive:Boolean = true;
 		
 		/**
 		 * Controls the maximum distance from the root that a node
 		 * can have to still be visible.
 		 * */
-		private var _maxVisibleDistance:uint = uint.MAX_VALUE;
+		protected var _maxVisibleDistance:uint = uint.MAX_VALUE;
 
 		/**
 		 * This object hash contains all node ids 
@@ -281,7 +281,7 @@ package org.un.flex.graphLayout.visual {
 		 * visible nodes (since the history nodes are also
 		 * visible).
 		 * */
-		private var _nodeIDsWithinDistanceLimit:Dictionary;
+		protected var _nodeIDsWithinDistanceLimit:Dictionary;
 		
 		/**
 		 * This object contains the previuos hash of nodes
@@ -289,13 +289,13 @@ package org.un.flex.graphLayout.visual {
 		 * running through all nodes to render the olds
 		 * invisible and the new ones visible.
 		 * */
-		private var _prevNodeIDsWithinDistanceLimit:Dictionary;
+		protected var _prevNodeIDsWithinDistanceLimit:Dictionary;
 		
 		/**
 		 * This is the number of nodes within the distance
 		 * limit.
 		 * */
-		private var _noNodesWithinDistance:uint;
+		protected var _noNodesWithinDistance:uint;
 		
 		/**
 		 * This Dictionary holds all visible nodes,
@@ -305,12 +305,12 @@ package org.un.flex.graphLayout.visual {
 		 * This directory is indexed by VNode and the values
 		 * are the same VNode.
 		 * */
-		private var _visibleVNodes:Dictionary;
+		protected var _visibleVNodes:Dictionary;
 		
 		/**
 		 * The number of currently visible VNodes.
 		 * */
-		private var _noVisibleVNodes:int;
+		protected var _noVisibleVNodes:int;
 		
 		/**
 		 * This Dictionary keeps track of all currently
@@ -320,7 +320,7 @@ package org.un.flex.graphLayout.visual {
 		 * (We do not work really with VEdges, so we keep the
 		 * Graph Edges here).
 		 * */
-		private var _visibleEdges:Dictionary;
+		protected var _visibleEdges:Dictionary;
 		
 		/* root nodes, distinguished nodes and history */
 		
@@ -330,7 +330,7 @@ package org.un.flex.graphLayout.visual {
 		 * currently all layouters depend on this.
 		 * Typically the root node is selected by double-click.
 		 * */
-		private var _currentRootVNode:IVisualNode = null;
+		protected var _currentRootVNode:IVisualNode = null;
 	
 		/**
 		 * This hash keeps track of all the past root VNodes
@@ -338,15 +338,15 @@ package org.un.flex.graphLayout.visual {
 		 * these nodes are also visible even if they are outside
 		 * the visible distance.
 		 * */
-		private var _currentVNodeHistory:Array = null;
+		protected var _currentVNodeHistory:Array = null;
 		
 		/**
 		 * This flag controls whether to show the history nodes or not.
 		 * */
-		private var _showCurrentNodeHistory:Boolean = false;
+		protected var _showCurrentNodeHistory:Boolean = false;
 
 		/* for debugging purposes we need a component counter */
-		private var _componentCounter:int = 0;
+		protected var _componentCounter:int = 0;
 
 		/* public attributes */
 
@@ -1205,7 +1205,7 @@ package org.un.flex.graphLayout.visual {
 		 * @param n The graph node to be associated with.
 		 * @return The created VisualNode.
 		 * */
-		private function createVNode(n:INode):IVisualNode {
+		protected function createVNode(n:INode):IVisualNode {
 			
 			var vnode:IVisualNode;
 			
@@ -1236,7 +1236,7 @@ package org.un.flex.graphLayout.visual {
 		 * if it existed, but does not touch the Graph node.
 		 * @param vn The VisualNode to be removed.
 		 * */
-		private function removeVNode(vn:IVisualNode):void {
+		protected function removeVNode(vn:IVisualNode):void {
 			
 			var view:UIComponent;
 			
@@ -1275,7 +1275,7 @@ package org.un.flex.graphLayout.visual {
 		 * @param e The Graph Edge.
 		 * @return The created VEdge.
 		 * */
-		private function createVEdge(e:IEdge):IVisualEdge {
+		protected function createVEdge(e:IEdge):IVisualEdge {
 			
 			var vedge:IVisualEdge;
 			var n1:INode;
@@ -1321,7 +1321,7 @@ package org.un.flex.graphLayout.visual {
 		 * Remove a VisualEdge, but leaves the Graph Edge alone.
 		 * @param ve The VisualEdge to be removed.
 		 * */
-		private function removeVEdge(ve:IVisualEdge):void {
+		protected function removeVEdge(ve:IVisualEdge):void {
 			
 			/* just in case */
 			if(ve == null) {
@@ -1351,7 +1351,7 @@ package org.un.flex.graphLayout.visual {
 		 * keep track of them in the VGraph, they are only referenced
 		 * by the Graph nodes and egdes.
 		 * */
-		private function purgeVGraph():void {
+		protected function purgeVGraph():void {
 			
 			var ves:Array = new Array;
 			var vns:Array = new Array;
@@ -1442,7 +1442,7 @@ package org.un.flex.graphLayout.visual {
 		 * into redrawEdges(). For now we leave it like this
 		 * 
 		 * */
-		private function drawEdge(edge:IEdge):void {
+		protected function drawEdge(edge:IEdge):void {
 			_edgeRenderer.draw(_drawingSurface.graphics, edge, _displayEdgeLabels);
 		}
 		
@@ -1454,7 +1454,7 @@ package org.un.flex.graphLayout.visual {
 		 * @return The found Node.
 		 * @throws An Error if the component was not registered in the map.
 		 * */
-		private function lookupNode(c:UIComponent):IVisualNode {
+		protected function lookupNode(c:UIComponent):IVisualNode {
 			var vn:IVisualNode = _viewToVNodeMap[c];
 			if(vn == null) {
 				throw Error("Component not in viewToVNodeMap");
@@ -1472,7 +1472,7 @@ package org.un.flex.graphLayout.visual {
 		 * @param vn The node to replace/add a view object.
 		 * @return The created view object.
 		 * */
-		private function createVNodeComponent(vn:IVisualNode):UIComponent {
+		protected function createVNodeComponent(vn:IVisualNode):UIComponent {
 			
 			var mycomponent:UIComponent = null;
 			
@@ -1551,7 +1551,7 @@ package org.un.flex.graphLayout.visual {
 		 * @param component The UIComponent to be removed.
 		 * @param honorEffect To specify whether the effect should be applied or not.
 		 * */
-		private function removeComponent(component:UIComponent, honorEffect:Boolean = true):void {
+		protected function removeComponent(component:UIComponent, honorEffect:Boolean = true):void {
 			
 			var vn:IVisualNode;
 			
@@ -1592,7 +1592,7 @@ package org.un.flex.graphLayout.visual {
 		 * @param ve The edge to replace/add a view object.
 		 * @return The created view object.
 		 * */
-		private function createVEdgeView(ve:IVisualEdge):UIComponent {
+		protected function createVEdgeView(ve:IVisualEdge):UIComponent {
 			
 			var mycomponent:UIComponent = null;
 
@@ -1656,7 +1656,7 @@ package org.un.flex.graphLayout.visual {
 		 * Remove a "view" object (UIComponent) for the given edge.
 		 * @param component The UIComponent to be removed.
 		 * */
-		private function removeVEdgeView(component:UIComponent):void {
+		protected function removeVEdgeView(component:UIComponent):void {
 			
 			var ve:IVisualEdge;
 			
@@ -1683,7 +1683,7 @@ package org.un.flex.graphLayout.visual {
 		 * Event handler for a removal node procedure. Calls
 		 * removeComponent with a flag to avoid doing the effect again.
 		 * */
-		private function removeEffectDone(event:EffectEvent):void {
+		protected function removeEffectDone(event:EffectEvent):void {
 			var mycomponent:UIComponent = event.effectInstance.target as UIComponent;
 			/* call remove component again, but specify to ignore the effect */
 			removeComponent(mycomponent, false);
@@ -1696,7 +1696,7 @@ package org.un.flex.graphLayout.visual {
 		 * sets a new root node.
 		 * @param e The corresponding event.
 		 * */
-		private function nodeDoubleClick(e:MouseEvent):void {
+		protected function nodeDoubleClick(e:MouseEvent):void {
 			var comp:UIComponent;
 			var vnode:IVisualNode;
 			
@@ -1727,7 +1727,7 @@ package org.un.flex.graphLayout.visual {
 		 * - Starts a drag operation of this node.
 		 * @param e The associated event.
 		 * */
-		private function nodeMouseDown(e:MouseEvent):void {
+		protected function nodeMouseDown(e:MouseEvent):void {
 			dragBegin(e);
 		}
 		
@@ -1738,7 +1738,7 @@ package org.un.flex.graphLayout.visual {
 		 * @param event The MouseEvent that was triggered by clicking on the node.
 		 * @see handleDrag()
 		 * */
-		private function dragBegin(event:MouseEvent):void {
+		protected function dragBegin(event:MouseEvent):void {
 			
 			var ecomponent:UIComponent;
 			var evnode:IVisualNode;
@@ -1819,7 +1819,7 @@ package org.un.flex.graphLayout.visual {
 		 * the location of the mouse cursor.
 		 * @param event The MouseMove event that has been triggered.
 		 */
-		private function handleDrag(event:MouseEvent):void {
+		protected function handleDrag(event:MouseEvent):void {
 			var myvnode:IVisualNode;
 			var sp:UIComponent;
 			
@@ -1877,7 +1877,7 @@ package org.un.flex.graphLayout.visual {
 		 * i.e. this object.
 		 * @param event The triggered event.
 		 * */
-		private function backgroundDragBegin(event:MouseEvent):void {
+		protected function backgroundDragBegin(event:MouseEvent):void {
 		
 			var mycomponent:UIComponent;
 			const mpoint:Point = globalMousePosition();
@@ -1919,7 +1919,7 @@ package org.un.flex.graphLayout.visual {
 		 * all UIComponents move to follow the mouse
 		 * @param event The triggered mouse move event.
 		 * */ 
-		private function backgroundDragContinue(event:MouseEvent):void {
+		protected function backgroundDragContinue(event:MouseEvent):void {
 			
 			const mpoint:Point = globalMousePosition();
 			
@@ -1958,7 +1958,7 @@ package org.un.flex.graphLayout.visual {
 		 * and unregisters the current dragged node.
 		 * @param event The triggered event.
 		 * */
-		private function dragEnd(event:MouseEvent):void {
+		protected function dragEnd(event:MouseEvent):void {
 			
 			var mycomp:UIComponent;
 			var myback:DisplayObject;
@@ -2036,7 +2036,7 @@ package org.un.flex.graphLayout.visual {
 		 * return the current mouse position, used by 
 		 * certain drag&drop issues
 		 * */
-		private function globalMousePosition():Point {
+		protected function globalMousePosition():Point {
 			return localToGlobal(new Point(mouseX, mouseY));
 		}
 		
@@ -2048,7 +2048,7 @@ package org.un.flex.graphLayout.visual {
 		 *    counting them. This may be optimized...
 		 * @param vnids Object containing a hash with all node id's currently within the distance limit.
 		 * */
-		private function setDistanceLimitedNodeIds(vnids:Dictionary):void {
+		protected function setDistanceLimitedNodeIds(vnids:Dictionary):void {
 			var val:Boolean;
 			var amount:uint;
 			var vn:IVisualNode;
@@ -2097,7 +2097,7 @@ package org.un.flex.graphLayout.visual {
 		 * we don't really need it, we would rather need
 		 * an array of node ids....
 		 * */
-		private function updateVisibility():void {
+		protected function updateVisibility():void {
 			var n:INode;
 			var e:IEdge;
 			var edges:Array;
@@ -2228,7 +2228,7 @@ package org.un.flex.graphLayout.visual {
 		 * Reset visibility of all nodes, all nodes are back to visible.
 		 * This can be a very very heavy operation if you have many nodes. 
 		 * */
-		private function setAllVisible():void {
+		protected function setAllVisible():void {
 			var n:INode;
 			var e:IEdge;
 			
@@ -2268,7 +2268,7 @@ package org.un.flex.graphLayout.visual {
 		/**
 		 * Reset visibility of all nodes, all nodes are INVISIBLE.
 		 * */
-		private function setAllInVisible():void {
+		protected function setAllInVisible():void {
 			var vn:IVisualNode;
 			
 			var e:IEdge;
@@ -2304,7 +2304,7 @@ package org.un.flex.graphLayout.visual {
 		 * @param vn The VisualNode to be turned invisible or not.
 		 * @param visible The indicator if visible or not.
 		 * */	
-		private function setNodeVisibility(vn:IVisualNode, visible:Boolean):void {
+		protected function setNodeVisibility(vn:IVisualNode, visible:Boolean):void {
 			
 			var comp:UIComponent;
 			
