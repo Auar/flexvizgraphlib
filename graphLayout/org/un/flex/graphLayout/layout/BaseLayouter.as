@@ -24,23 +24,24 @@
  */
 package org.un.flex.graphLayout.layout {
 
-	import org.un.flex.graphLayout.visual.IVisualGraph;
-	import org.un.flex.graphLayout.data.IGraph;
-	import org.un.flex.graphLayout.data.IGTree;
+	import flash.events.EventDispatcher;
 	import flash.events.MouseEvent;
-	import org.un.flex.graphLayout.visual.IVisualNode;
-	import org.un.flex.graphLayout.data.INode;
-	import org.un.flex.graphLayout.data.Graph;
-	import flash.events.Event;
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
+	
+	import org.un.flex.graphLayout.data.Graph;
+	import org.un.flex.graphLayout.data.IGTree;
+	import org.un.flex.graphLayout.data.IGraph;
+	import org.un.flex.graphLayout.data.INode;
+	import org.un.flex.graphLayout.visual.IVisualGraph;
+	import org.un.flex.graphLayout.visual.IVisualNode;
 	
 	/**
 	 * This is an base class to various layout implementations
 	 * it does not really do any layouting but implements
 	 * everything required by the Interface.
 	 * */
-	public class BaseLayouter implements ILayoutAlgorithm {
+	public class BaseLayouter extends EventDispatcher implements ILayoutAlgorithm {
 		
 		/**
 		 * The default minimum node height to be used if the exact node
