@@ -24,7 +24,10 @@
  */
 package org.un.flex.graphLayout.data {
 	
+	import flash.events.EventDispatcher;
+	
 	import mx.core.IDataRenderer;
+	
 	import org.un.flex.graphLayout.visual.IVisualNode;
 	
 	
@@ -34,18 +37,18 @@ package org.un.flex.graphLayout.data {
 	 * non-directional edges. A node has an id, a String id
 	 * and may be associated with a visual node.
 	 * */
-	public class Node implements INode, IDataRenderer {
+	public class Node extends EventDispatcher implements INode, IDataRenderer {
 	
 		/**
 		 * @internal
 		 * attributes
 		 * */
-		private var _inEdges:Array;
-		private var _outEdges:Array;
-		private var _dataObject:Object;
-		private var _id:int;
-		private var _stringid:String; // this is used by the app, so we need to add it
-		private var _vnode:IVisualNode;
+		protected var _inEdges:Array;
+		protected var _outEdges:Array;
+		protected var _dataObject:Object;
+		protected var _id:int;
+		protected var _stringid:String; // this is used by the app, so we need to add it
+		protected var _vnode:IVisualNode;
 		
 		/**
 		 * @internal
@@ -57,8 +60,8 @@ package org.un.flex.graphLayout.data {
 		 * maybe all this should just be kept within
 		 * the graph object....
 		 * */
-		private var _predecessors:Array;
-		private var _successors:Array;
+		protected var _predecessors:Array;
+		protected var _successors:Array;
 		
 		/**
 		 * The constructor assigns the two ids and may also be used

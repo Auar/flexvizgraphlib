@@ -24,13 +24,15 @@
  */
 
 package org.un.flex.graphLayout.data {
+	import flash.events.IEventDispatcher;
+	
 	
 	/**
 	 * Interface to the Graph datastructure class
 	 * that hold the set of nodes
 	 * and edges that actually form that graph
 	 * */
-	public interface IGraph	{
+	public interface IGraph	extends IEventDispatcher {
 		
 		/**
 		 * The id (or name) of the graph

@@ -25,6 +25,7 @@
 
 package org.un.flex.graphLayout.data {
 	
+	import flash.events.EventDispatcher;
 	import flash.utils.Dictionary;
 	
 	
@@ -40,39 +41,39 @@ package org.un.flex.graphLayout.data {
 	 * root.
 	 * </p>
 	 * */
-	public class GTree implements IGTree {
+	public class GTree extends EventDispatcher implements IGTree {
 			
-		private var _graph:IGraph;
-		private var _root:INode;
+		protected var _graph:IGraph;
+		protected var _root:INode;
 
 		/* max depth of the tree */
-		private var _maxDepth:int = 0;
+		protected var _maxDepth:int = 0;
 		
 		/* the following are indexed by node objects */
-		private var _parentMap:Dictionary;
-		private var _childrenMap:Dictionary;
-		private var _distanceMap:Dictionary;
+		protected var _parentMap:Dictionary;
+		protected var _childrenMap:Dictionary;
+		protected var _distanceMap:Dictionary;
 		
 		/* this is indexed by a distance value and stores
 		 * the number of nodes with that distance. Since this
 		 * is compact it can be an array */
-		private var _amountNodesWithDistance:Array;
+		protected var _amountNodesWithDistance:Array;
 		
 		/* this is the maximum of nodes that are in a certain distance */
-		private var _maxNumberPerLayer:uint;
+		protected var _maxNumberPerLayer:uint;
 		
 		/* for some algorithms
 		 * we also need to establish a specific order, i.e.
 		 * for each node to know that it is the 'i'th child
 		 * and it has m siblings */
-		private var _nodeChildIndexMap:Dictionary;
-		private var _nodeNoChildrenMap:Dictionary;
+		protected var _nodeChildIndexMap:Dictionary;
+		protected var _nodeNoChildrenMap:Dictionary;
 
 		/* in some cases we rather build a tree
 		 * that is restriced to the _visible_ nodes
 		 * we create a flag for that, which has to be
 		 * set in the constructor */
-		private var _restrictToVisible:Boolean;
+		protected var _restrictToVisible:Boolean;
 
 
 		/**
@@ -437,7 +438,7 @@ package org.un.flex.graphLayout.data {
 		 * @internal
 		 * Initialises all the maps, throwing away old values. 
 		 * */
- 		private function initMaps():void {				
+ 		protected function initMaps():void {				
 			_parentMap = new Dictionary;
 			_childrenMap = new Dictionary;
 			_distanceMap = new Dictionary;
@@ -468,7 +469,7 @@ package org.un.flex.graphLayout.data {
 		 * This method was provided by Ivan Bulanov and
 		 * his team. 
 		 * */
-		private function nodeSortChildren():void {
+		protected function nodeSortChildren():void {
 			var children:Array;
 			var childIndex:int;
 			
@@ -493,7 +494,7 @@ package org.un.flex.graphLayout.data {
 		 * @param d The distance of node n from the root.
 		 * @param cindex The child index of node n among p's children.
 		 * */ 
-		private function setValues(n:INode, p:INode, d:Number, cindex:int):void {
+		protected function setValues(n:INode, p:INode, d:Number, cindex:int):void {
 		
 			var childarray:Array;
 		

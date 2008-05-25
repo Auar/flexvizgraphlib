@@ -24,7 +24,10 @@
  */
 package org.un.flex.graphLayout.data {
 	
+	import flash.events.EventDispatcher;
+	
 	import mx.core.IDataRenderer;
+	
 	import org.un.flex.graphLayout.visual.IVisualEdge;
 	
 	
@@ -37,21 +40,21 @@ package org.un.flex.graphLayout.data {
 	 * @see Node
 	 * @see IVisualEdge
 	 * */
-	public class Edge implements IEdge, IDataRenderer {
+	public class Edge extends EventDispatcher implements IEdge, IDataRenderer {
 		
 		/** 
 		 * attributes
 		 * 
 		 * */
-		private var _graph:IGraph;
-		private var _node1:INode; /* potential fromNode */
-		private var _node2:INode; /* potential toNode */
-		private var _dataObject:Object;
-		private var _id:int;
-		private var _vedge:IVisualEdge;
+		protected var _graph:IGraph;
+		protected var _node1:INode; /* potential fromNode */
+		protected var _node2:INode; /* potential toNode */
+		protected var _dataObject:Object;
+		protected var _id:int;
+		protected var _vedge:IVisualEdge;
 		
 		/* per default we have undirected graphs */
-		private var _directional:Boolean;
+		protected var _directional:Boolean;
 		
 		
 		/**

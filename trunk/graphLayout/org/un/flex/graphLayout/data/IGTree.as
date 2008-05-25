@@ -25,13 +25,14 @@
 
 package org.un.flex.graphLayout.data {
 	
+	import flash.events.IEventDispatcher;
 	import flash.utils.Dictionary;
 	
 	/**
 	 * interface to the GTree data structure that
 	 * holds a spanning tree of the graph
 	 * */
-	public interface IGTree	{
+	public interface IGTree	extends IEventDispatcher {
 		
 		/**
 		 * Indicating flag if the returned tree is restricted to currently invisible nodes.
