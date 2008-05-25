@@ -25,6 +25,7 @@
 
 package org.un.flex.graphLayout.data {
 	
+	import flash.events.EventDispatcher;
 	import flash.utils.Dictionary;
 	
 	/**
@@ -38,7 +39,7 @@ package org.un.flex.graphLayout.data {
 	 * @see Node
 	 * @see Edge
 	 * */
-	public class Graph implements IGraph {
+	public class Graph extends EventDispatcher implements IGraph {
 		
 		/**
 		 * The default XML tagname of an XML item that defines a node.
@@ -81,19 +82,19 @@ package org.un.flex.graphLayout.data {
 		 * @internal
 		 * attributes of a graph
 		 * */
-		private var _id:String;
-		private var _nodes:Array;
-		private var _edges:Array;
+		protected var _id:String;
+		protected var _nodes:Array;
+		protected var _edges:Array;
 
 		/* lookup by string id and by id */
-		private var _nodesByStringId:Object;
-		private var _nodesById:Object;
+		protected var _nodesByStringId:Object;
+		protected var _nodesById:Object;
 		
 		/* indicator if the graph is directional or not */
-		private var _directional:Boolean;
+		protected var _directional:Boolean;
 		/* if directional we could have a walking direction for the
 		 * spanning tree */
-		private var _walkingDirection:int = WALK_FORWARD;
+		protected var _walkingDirection:int = WALK_FORWARD;
 
 		
 		/** 
@@ -102,8 +103,8 @@ package org.un.flex.graphLayout.data {
 		 * and edges the id's will start from 1 (not 0) !!
 		 * and are always increased.
 		 * */
-		private var _currentNodeId:int;
-		private var _currentEdgeId:int;
+		protected var _currentNodeId:int;
+		protected var _currentEdgeId:int;
 		
 		/**
 		 * @internal
@@ -111,8 +112,8 @@ package org.un.flex.graphLayout.data {
 		 * and are also decreased if nodes or edges
 		 * are removed
 		 * */
-		private var _numberOfNodes:int;
-		private var _numberOfEdges:int;
+		protected var _numberOfNodes:int;
+		protected var _numberOfEdges:int;
 		
 		/**
 		 * @internal
@@ -120,14 +121,14 @@ package org.un.flex.graphLayout.data {
 		 * BFS and DFS implementations, all related
 		 * to a specific root node.
 		 * */
-		private var _treeMap:Dictionary;
+		protected var _treeMap:Dictionary;
 		
 		/**
 		 * @internal
 		 * Provide a function to be used for sorting the
 		 * graph items. This is used by GTree.
 		 * */
-		private var _nodeSortFunction:Function = null;
+		protected var _nodeSortFunction:Function = null;
 		
 		/**
 		 * Constructor method that creates the graph and can

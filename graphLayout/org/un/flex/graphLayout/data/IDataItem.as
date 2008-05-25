@@ -24,13 +24,15 @@
  */
 
 package org.un.flex.graphLayout.data {
+	import flash.events.IEventDispatcher;
+	
 	
 	/** 
 	 * This is the base interface
 	 * of our data items, like nodes (vertices)
 	 * and edges, it specifies ID and data properties.
 	 */
-	public interface IDataItem {
+	public interface IDataItem extends IEventDispatcher {
 		
 		/**
 		 * Access to the id property of any item.
