@@ -23,13 +23,15 @@
  * THE SOFTWARE.
  */
 package org.un.flex.graphLayout.visual {
+	import flash.events.IEventDispatcher;
+	
 
 	/**
 	 * Interface for any visual item, provides
 	 * access to an internal id, a data object
 	 * and a related VisualGraph.
 	 */
-	public interface IVisualItem {
+	public interface IVisualItem extends IEventDispatcher {
 		 
 		/**
 		 * Access to the item's unique id. Every item has one.

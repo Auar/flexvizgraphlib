@@ -24,6 +24,8 @@
  */
 package org.un.flex.graphLayout.visual {
 	
+	import flash.events.EventDispatcher;
+	
 	import mx.core.IDataRenderer;
 	import mx.core.UIComponent;
 	
@@ -36,7 +38,7 @@ package org.un.flex.graphLayout.visual {
 	 * and a data object to support it's drawing features.
 	 * There is a small possibility that this class will be removed.
 	 * */
-	public class VisualEdge implements IVisualEdge, IDataRenderer {
+	public class VisualEdge extends EventDispatcher implements IVisualEdge, IDataRenderer {
 		
 		/* internal id of the edge */
 		private var _id:int;
