@@ -23,6 +23,7 @@
  * THE SOFTWARE.
  */
 package org.un.flex.graphLayout.layout {
+	import flash.events.IEventDispatcher;
 	import flash.events.MouseEvent;
 	
 	import org.un.flex.graphLayout.data.IGraph;
@@ -44,7 +45,7 @@ package org.un.flex.graphLayout.layout {
 	 * structures. This interface defines all the methods required
 	 * to control the aspects of a layouter.
 	 * */
-	public interface ILayoutAlgorithm {
+	public interface ILayoutAlgorithm extends IEventDispatcher {
 		
 		/**
 		 * Assign a VisualGraph object to the layouter,
