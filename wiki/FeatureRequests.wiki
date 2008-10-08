@@ -1,9 +1,0 @@
-#summary Submit your requests for enhancements and functionality.
-#labels Requests,Enhancements
-
-
-=== Layouts ===
-
-  # Hyperbolic
-  # Circle Layout
-  # 3D
