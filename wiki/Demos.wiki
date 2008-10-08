@@ -1,8 +1,0 @@
-#summary Try the demonstration apps to explore the potential.
-#labels Featured
-
-=== Layout Explorer ===
-
-  * [http://birdeye.googlecode.com/svn/trunk/ravis/examples/bin/RaVisExplorer.html Demo 1]
-  * Updated March 2, 2008
- 
