@@ -1,6 +1,0 @@
-#summary How to get started using the library in your projects.
-#labels Featured
-
-= Details =
-
-We've set up a folder of example applications to demonstrate use of the library.  Check out the vgExplorer directory from the SVN source repository.
